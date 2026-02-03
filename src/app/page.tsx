@@ -449,104 +449,58 @@ export default function Home() {
       </section>
 
       {/* ============================================
-          W.D. GANN LEGEND
-          ============================================ */}
-      <section className="py-20 px-4 bg-terminal-card/30 relative z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                <span className="text-white">The Legend Behind </span>
-                <span className="text-gradient-gold-static">the Method</span>
-              </h2>
-              <p className="text-terminal-muted leading-relaxed mb-6">
-                <span className="text-white font-semibold">William Delbert Gann (1878-1955)</span> was a legendary trader who reportedly
-                turned <span className="text-gold-500 font-semibold">$130 into $12,000</span> in just 30 days.
-              </p>
-              <p className="text-terminal-muted leading-relaxed mb-6">
-                His methods, based on natural law, geometry, and planetary cycles, remain some of the
-                most guarded secrets in trading history. PriceVibration Pro brings his century-old techniques
-                into the modern era.
-              </p>
-              <Link href="/register" className="btn-gold inline-flex items-center gap-2">
-                Discover His Secrets
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
-            </div>
-            <div className="relative">
-              <div className="aspect-[4/3] bg-terminal-card rounded-2xl border border-terminal-border overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-transparent"></div>
-                {/* Vintage W.D. Gann stylized illustration */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    {/* Portrait frame */}
-                    <svg className="w-48 h-56" viewBox="0 0 120 140" fill="none">
-                      {/* Ornate frame */}
-                      <rect x="10" y="10" width="100" height="120" rx="4" stroke="#c9a227" strokeWidth="2" fill="none"/>
-                      <rect x="15" y="15" width="90" height="110" rx="2" stroke="#c9a227" strokeWidth="1" strokeOpacity="0.5" fill="none"/>
-
-                      {/* Stylized figure silhouette */}
-                      <ellipse cx="60" cy="45" rx="18" ry="22" fill="#1a1a24"/>
-                      <path d="M35 75 Q60 65 85 75 L90 125 L30 125 Z" fill="#1a1a24"/>
-
-                      {/* Collar/tie detail */}
-                      <path d="M52 70 L60 85 L68 70" stroke="#c9a227" strokeWidth="1" fill="none"/>
-
-                      {/* Geometric elements around - Gann's symbols */}
-                      <circle cx="20" cy="20" r="6" stroke="#c9a227" strokeWidth="1" fill="none" strokeOpacity="0.4"/>
-                      <circle cx="100" cy="20" r="6" stroke="#c9a227" strokeWidth="1" fill="none" strokeOpacity="0.4"/>
-                      <path d="M17 17 L23 23 M17 23 L23 17" stroke="#c9a227" strokeWidth="0.5" strokeOpacity="0.4"/>
-                      <path d="M97 17 L103 23 M97 23 L103 17" stroke="#c9a227" strokeWidth="0.5" strokeOpacity="0.4"/>
-
-                      {/* Square of 9 hint at bottom */}
-                      <rect x="45" y="128" width="30" height="8" fill="none" stroke="#c9a227" strokeWidth="1" strokeOpacity="0.3"/>
-                      <line x1="52" y1="128" x2="52" y2="136" stroke="#c9a227" strokeWidth="0.5" strokeOpacity="0.3"/>
-                      <line x1="60" y1="128" x2="60" y2="136" stroke="#c9a227" strokeWidth="0.5" strokeOpacity="0.3"/>
-                      <line x1="68" y1="128" x2="68" y2="136" stroke="#c9a227" strokeWidth="0.5" strokeOpacity="0.3"/>
-                    </svg>
-
-                    {/* Quote below */}
-                    <div className="text-center mt-4">
-                      <p className="text-terminal-muted text-sm italic">&ldquo;Time is the most important factor&rdquo;</p>
-                      <p className="text-gold-500 font-cursive text-lg mt-1">— W.D. Gann</p>
-                      <p className="text-terminal-muted/50 text-xs mt-1">1878 - 1955</p>
-                    </div>
-                  </div>
-                </div>
-                {/* Vintage paper texture overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-terminal-card/50"></div>
-              </div>
-            </div>
+    GANN LEGEND
+    ============================================ */}
+<section className="py-20 px-4 bg-terminal-card/30 relative z-10">
+  <div className="max-w-5xl mx-auto">
+    <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <span className="text-white">The Legend Behind </span>
+          <span className="text-gradient-gold-static">the Method</span>
+        </h2>
+        <p className="text-terminal-muted leading-relaxed mb-6">
+          <span className="text-white font-semibold">William Delbert Gann (1878-1955)</span> was a legendary trader who reportedly
+          turned <span className="text-gold-500 font-semibold">$130 into $12,000</span> in just 30 days.
+        </p>
+        <p className="text-terminal-muted leading-relaxed mb-6">
+          His methods, based on natural law, geometry, and planetary cycles, remain some of the
+          most guarded secrets in trading history. PriceVibration Pro brings his century-old techniques
+          into the modern era.
+        </p>
+        <Link href="/register" className="btn-gold inline-flex items-center gap-2">
+          Discover His Secrets
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
+      </div>
+      <div className="relative">
+        <div className="aspect-[4/3] bg-terminal-card rounded-2xl border border-terminal-border overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-transparent"></div>
+          
+          {/* NUEVA IMAGEN MODERNIZADA */}
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <img 
+              src="/gann7.jpeg" 
+              alt="William D. Gann" 
+              className="h-full w-auto object-contain rounded-lg shadow-2xl border border-gold-500/30"
+            />
           </div>
-        </div>
-      </section>
 
-      {/* ============================================
-          TESTIMONIALS TICKER
-          ============================================ */}
-      <section className="py-12 px-4 relative z-10 overflow-hidden">
-        <div className="flex animate-[scroll_30s_linear_infinite] gap-6">
-          {[...testimonials, ...testimonials].map((t, i) => (
-            <div key={i} className="flex-shrink-0 w-80 card-terminal">
-              <div className="flex items-center gap-2 mb-3">
-                {[1,2,3,4,5].map(star => (
-                  <svg key={star} className="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <p className="text-terminal-muted text-sm mb-4">&ldquo;{t.text}&rdquo;</p>
-              <div className="flex items-center gap-2">
-                <span className="text-white font-medium">{t.name}</span>
-                <span>{t.country}</span>
-              </div>
-            </div>
-          ))}
+          {/* Filtro de textura opcional */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-terminal-card/50 pointer-events-none"></div>
         </div>
-      </section>
-
+        
+        {/* Cita debajo de la imagen */}
+        <div className="text-center mt-4">
+          <p className="text-terminal-muted text-sm italic">&ldquo;Time is the most important factor&rdquo;</p>
+          <p className="text-gold-500 font-cursive text-lg mt-1">— W.D. Gann</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
       {/* ============================================
           FAQ SECTION
           ============================================ */}
