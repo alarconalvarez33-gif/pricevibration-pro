@@ -272,7 +272,7 @@ export default function DashboardPage() {
 
           {/* Exness Partner Banner */}
           <div className="mt-8">
-            <ExnessBanner variant="compact" />
+            <ExnessBanner />
           </div>
         </div>
       </div>

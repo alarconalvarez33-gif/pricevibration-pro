@@ -281,7 +281,7 @@ export default function AstrologyPage() {
         <div className="max-w-7xl mx-auto">
           {/* Exness Partner Banner */}
           <div className="mb-6">
-            <ExnessBanner variant="compact" />
+            <ExnessBanner />
           </div>
 
           {/* Header */}
@@ -478,13 +478,13 @@ export default function AstrologyPage() {
               </div>
 
               {/* Exness Partner Banner */}
-              <ExnessBanner variant="sidebar" />
+              <ExnessBanner />
             </div>
           </div>
 
           {/* Bottom Exness Banner */}
           <div className="mt-8">
-            <ExnessBanner variant="full" />
+            <ExnessBanner />
           </div>
         </div>
       </div>

@@ -144,7 +144,7 @@ export default function Home() {
             <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Trade with Our Official Partner</h3>
             <p className="text-terminal-muted">0% commission on Gold trading</p>
           </div>
-          <ExnessBanner variant="full" />
+          <ExnessBanner />
         </div>
       </section>
 
