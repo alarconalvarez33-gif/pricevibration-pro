@@ -482,7 +482,7 @@ export default function Home() {
           {/* NUEVA IMAGEN MODERNIZADA */}
           <div className="absolute inset-0 flex items-center justify-center p-4">
             <img 
-              src="/gann7.jpeg" 
+              src="/gann7.jpg" 
               alt="William D. Gann" 
               className="h-full w-auto object-contain rounded-lg shadow-2xl border border-gold-500/30"
             />
