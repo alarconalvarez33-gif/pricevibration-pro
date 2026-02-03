@@ -1,0 +1,467 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   CSS VARIABLES - Professional Theme
+   ============================================ */
+:root {
+  --gold-primary: #c9a227;
+  --gold-secondary: #d4af37;
+  --gold-dark: #a88820;
+  --terminal-bg: #0d1117;
+  --terminal-card: #161b22;
+  --terminal-border: #30363d;
+  --text-primary: #e6edf3;
+  --text-muted: #8b949e;
+  --accent-blue: #1a73e8;
+  --support-green: #10b981;
+  --resistance-red: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ============================================
+   BASE TYPOGRAPHY
+   ============================================ */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--terminal-bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.font-cursive {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-mono, code, pre, [data-mono] {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   ANIMATED GOLD GRADIENT TEXT
+   ============================================ */
+.text-gradient-gold {
+  background: linear-gradient(
+    90deg,
+    #c9a227 0%,
+    #f0d78c 25%,
+    #c9a227 50%,
+    #f0d78c 75%,
+    #c9a227 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-x 3s ease infinite;
+}
+
+.text-gradient-gold-static {
+  background: linear-gradient(135deg, #f0d78c 0%, #c9a227 50%, #a88820 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--terminal-card);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c9a227 0%, #a88820 100%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #d4af37 0%, #c9a227 100%);
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+}
+
+.glow-gold-intense {
+  box-shadow:
+    0 0 30px rgba(201, 162, 39, 0.5),
+    0 0 60px rgba(201, 162, 39, 0.3),
+    0 0 100px rgba(201, 162, 39, 0.1);
+}
+
+.glow-gold-subtle {
+  box-shadow: 0 0 10px rgba(201, 162, 39, 0.15);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(201, 162, 39, 0.5);
+}
+
+.text-glow-intense {
+  text-shadow:
+    0 0 10px rgba(201, 162, 39, 0.8),
+    0 0 20px rgba(201, 162, 39, 0.5),
+    0 0 40px rgba(201, 162, 39, 0.3);
+}
+
+/* ============================================
+   BACKGROUNDS & PATTERNS
+   ============================================ */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(201, 162, 39, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 162, 39, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, #d4af37 0%, #c9a227 50%, #a88820 100%);
+}
+
+.gradient-dark {
+  background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+}
+
+.gradient-radial-gold {
+  background: radial-gradient(ellipse at center, rgba(201, 162, 39, 0.08) 0%, transparent 70%);
+}
+
+/* Subtle stars background */
+.bg-stars {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 200px 50px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 250px 90px, rgba(255,255,255,0.25), transparent);
+  background-size: 300px 300px;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn-gold {
+  @apply bg-gradient-to-r from-gold-400 to-gold-600 text-black font-semibold py-3 px-6 rounded-lg
+         hover:from-gold-300 hover:to-gold-500 transition-all duration-300
+         shadow-lg hover:shadow-gold-500/30 active:scale-[0.98];
+}
+
+.btn-gold-large {
+  @apply bg-gradient-to-r from-gold-400 to-gold-600 text-black font-bold py-4 px-8 rounded-xl text-lg
+         hover:from-gold-300 hover:to-gold-500 transition-all duration-300
+         shadow-xl hover:shadow-gold-500/30 active:scale-[0.98]
+         hover:-translate-y-0.5;
+}
+
+.btn-outline-gold {
+  @apply border-2 border-gold-500 text-gold-500 font-semibold py-3 px-6 rounded-lg
+         hover:bg-gold-500 hover:text-black transition-all duration-300
+         active:scale-[0.98];
+}
+
+.btn-ghost {
+  @apply text-terminal-muted hover:text-white hover:bg-white/5
+         py-2 px-4 rounded-lg transition-all duration-200;
+}
+
+.btn-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(201, 162, 39, 0.5), 0 0 10px rgba(201, 162, 39, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.8), 0 0 40px rgba(201, 162, 39, 0.5);
+  }
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card-terminal {
+  @apply bg-terminal-card border border-terminal-border rounded-xl p-6
+         transition-all duration-300;
+}
+
+.card-terminal-hover {
+  @apply bg-terminal-card border border-terminal-border rounded-xl p-6
+         transition-all duration-300 hover:border-gold-500/30 hover:shadow-lg
+         hover:shadow-gold-500/5;
+}
+
+.card-premium {
+  @apply bg-gradient-to-br from-terminal-card to-terminal-bg
+         border border-gold-500/20 rounded-xl p-6
+         shadow-lg shadow-gold-500/5;
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+.input-terminal {
+  @apply w-full bg-terminal-bg border border-terminal-border rounded-lg px-4 py-3
+         text-white placeholder-terminal-muted focus:outline-none focus:border-gold-500
+         focus:ring-1 focus:ring-gold-500 transition-all duration-300;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes blur-reveal {
+  0%, 100% { filter: blur(8px); opacity: 0.6; }
+  40%, 60% { filter: blur(0px); opacity: 1; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes notification-slide {
+  0% { transform: translateX(100%); opacity: 0; }
+  10% { transform: translateX(0); opacity: 1; }
+  90% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+.animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+.animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-fadeInDown { animation: fadeInDown 0.6s ease-out forwards; }
+.animate-scaleIn { animation: scaleIn 0.4s ease-out forwards; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(201, 162, 39, 0.1) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+.animate-gradient-x { animation: gradient-x 3s ease infinite; }
+.animate-blur-reveal { animation: blur-reveal 4s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+.animate-notification { animation: notification-slide 5s ease-in-out forwards; }
+
+/* Stagger delays */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* ============================================
+   SKELETON LOADING
+   ============================================ */
+.skeleton {
+  @apply bg-terminal-border rounded;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(201, 162, 39, 0.05) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ============================================
+   BLUR EFFECT FOR MYSTERY
+   ============================================ */
+.blur-mystery {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+}
+
+.blur-mystery:hover {
+  filter: blur(4px);
+}
+
+.blur-numbers {
+  animation: blur-reveal 4s ease-in-out infinite;
+}
+
+/* ============================================
+   STATUS INDICATORS
+   ============================================ */
+.status-online {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400;
+}
+
+.status-premium {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gold-500/20 text-gold-400;
+}
+
+/* ============================================
+   LIVE NOTIFICATION
+   ============================================ */
+.live-notification {
+  @apply fixed bottom-4 right-4 bg-terminal-card border border-terminal-border rounded-lg p-4 shadow-xl z-50;
+  animation: notification-slide 5s ease-in-out forwards;
+}
+
+/* ============================================
+   EXNESS BANNER
+   ============================================ */
+.exness-banner {
+  @apply bg-gradient-to-r from-terminal-card via-terminal-bg to-terminal-card
+         border border-gold-500/20 rounded-2xl p-6 md:p-8
+         relative overflow-hidden;
+}
+
+.exness-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c9a227, transparent);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+.table-terminal {
+  @apply w-full border-collapse;
+}
+
+.table-terminal th {
+  @apply bg-terminal-card text-gold-500 font-semibold text-left py-3 px-4 border-b border-terminal-border;
+}
+
+.table-terminal td {
+  @apply py-3 px-4 border-b border-terminal-border;
+}
+
+.table-terminal tr:hover {
+  @apply bg-terminal-card/50;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.backdrop-blur-gold {
+  backdrop-filter: blur(20px);
+  background: rgba(13, 17, 23, 0.85);
+}
+
+::selection {
+  background: rgba(201, 162, 39, 0.3);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 2px;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.hover-lift {
+  @apply transition-all duration-300;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.glass {
+  background: rgba(22, 27, 34, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(201, 162, 39, 0.1);
+}
+
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.3), transparent);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 640px) {
+  .btn-gold-large {
+    @apply py-3 px-6 text-base;
+  }
+  h1 { @apply text-3xl; }
+  h2 { @apply text-2xl; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
