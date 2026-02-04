@@ -28,7 +28,7 @@ const PLANS = [
       { text: 'Priority support', included: false },
     ],
     cta: 'Get Started',
-    stripePriceId: null,
+    payable: false,
   },
   {
     id: 'pro',
@@ -52,7 +52,7 @@ const PLANS = [
       { text: 'API access (100 req/day)', included: false },
     ],
     cta: 'Start Pro Trial',
-    stripePriceId: 'price_pro_monthly',
+    payable: true,
   },
   {
     id: 'whale',
@@ -75,7 +75,7 @@ const PLANS = [
       { text: 'Priority Support', included: true },
     ],
     cta: 'Become a Whale',
-    stripePriceId: 'price_whale_monthly',
+    payable: true,
   },
 ]
 
@@ -84,13 +84,11 @@ export default function BillingPage() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly')
   const [isLoading, setIsLoading] = useState<string | null>(null)
 
-  const handleSubscribe = async (planId: string, stripePriceId: string | null) => {
-    if (!stripePriceId) {
-      // Plan gratuito o contacto de ventas
+  const handleSubscribe = async (planId: string, payable: boolean) => {
+    if (!payable) {
+      // Free plan - redirect to register
       if (planId === 'free') {
         window.location.href = '/register'
-      } else {
-        alert('Contact sales@pricevibration.com for Whale plan')
       }
       return
     }
@@ -103,26 +101,28 @@ export default function BillingPage() {
     setIsLoading(planId)
 
     try {
-      // Llamar al API Route de Stripe Checkout
-      const response = await fetch('/api/stripe/checkout', {
+      // Call Pagopar checkout API
+      const response = await fetch('/api/pagopar/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          priceId: stripePriceId,
-          period: billingPeriod,
+          planType: planId,
+          billingPeriod,
         }),
       })
 
       const data = await response.json()
 
-      if (data.url) {
-        window.location.href = data.url
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl
+      } else if (data.error) {
+        alert(data.error)
       } else {
-        alert('Error creating checkout session')
+        alert('Error creating payment session')
       }
     } catch (error) {
       console.error('Checkout error:', error)
-      alert('Error processing payment')
+      alert('Error processing payment. Please try again.')
     } finally {
       setIsLoading(null)
     }
@@ -249,7 +249,7 @@ export default function BillingPage() {
 
                   {/* CTA Button */}
                   <button
-                    onClick={() => handleSubscribe(plan.id, plan.stripePriceId)}
+                    onClick={() => handleSubscribe(plan.id, plan.payable)}
                     disabled={isLoading === plan.id}
                     className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${
                       plan.popular
@@ -287,7 +287,7 @@ export default function BillingPage() {
                 <svg className="w-5 h-5 text-gann-support" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
-                Powered by Stripe
+                Powered by Pagopar
               </div>
               <div className="flex items-center gap-2 text-terminal-muted">
                 <svg className="w-5 h-5 text-gann-support" fill="none" stroke="currentColor" viewBox="0 0 24 24">
