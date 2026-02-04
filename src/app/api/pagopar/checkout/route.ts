@@ -80,21 +80,33 @@ export async function POST(request: Request) {
     })
 
     const result = await response.json()
+    console.log('Pagopar response:', JSON.stringify(result, null, 2))
 
-    if (result.respuesta && result.respuesta.status === 'success' && result.data) {
+    // Extract hash from different possible response structures
+    let pagoparHash = null
+
+    if (result.resultado && Array.isArray(result.resultado) && result.resultado[0]?.data) {
+      pagoparHash = result.resultado[0].data
+    } else if (result.resultado?.data) {
+      pagoparHash = result.resultado.data
+    } else if (result.data) {
+      pagoparHash = result.data
+    }
+
+    if (pagoparHash) {
       // Update payment with Pagopar hash
       await prisma.payment.update({
         where: { numeroPedido: idPedido },
-        data: { pagoparToken: result.data },
+        data: { pagoparToken: pagoparHash },
       })
 
-      // Return redirect URL
+      // Return redirect URL to Pagopar payment page
       return NextResponse.json({
         success: true,
-        redirectUrl: `https://pagopar.com/pagos/${result.data}`,
+        redirectUrl: `https://www.pagopar.com/pagos/${pagoparHash}`,
       })
     } else {
-      console.error('Pagopar error:', result)
+      console.error('Pagopar error - no hash received:', result)
       return NextResponse.json({
         error: 'Error al crear pago',
         details: result
