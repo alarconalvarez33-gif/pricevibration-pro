@@ -139,8 +139,9 @@ function BillingContent() {
 
       const data = await response.json()
 
-      if (data.redirectUrl) {
-        window.location.href = data.redirectUrl
+      if (data.hash) {
+        // Client-side redirect to Pagopar with the hash
+        window.location.href = 'https://www.pagopar.com/pagos/' + data.hash
       } else if (data.error) {
         alert(data.error)
       } else {

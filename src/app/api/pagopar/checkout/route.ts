@@ -100,10 +100,10 @@ export async function POST(request: Request) {
         data: { pagoparToken: pagoparHash },
       })
 
-      // Return redirect URL to Pagopar payment page
+      // Return hash for client-side redirect
       return NextResponse.json({
         success: true,
-        redirectUrl: `https://www.pagopar.com/pagos/${pagoparHash}`,
+        hash: pagoparHash,
       })
     } else {
       console.error('Pagopar error - no hash received:', result)
