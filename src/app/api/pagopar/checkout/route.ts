@@ -4,185 +4,105 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
-// Plan prices in USD
-const PLAN_PRICES: Record<string, number> = {
-  pro: 29,
-  whale: 99,
+// Fixed prices in Guaranies (PYG)
+const PLAN_PRICES_PYG: Record<string, number> = {
+  pro: 217500,    // ~$29 USD
+  whale: 742500,  // ~$99 USD
 }
-
-// Exchange rate USD to PYG (Guaranies)
-const USD_TO_PYG = 7500 // Adjust this rate as needed
 
 export async function POST(request: Request) {
   try {
-    // Get authenticated user
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'You must be logged in to subscribe' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Debes iniciar sesión' }, { status: 401 })
     }
 
-    // Get request body
     const body = await request.json()
-    const { planType, billingPeriod } = body
+    const { planType } = body
 
-    // Validate plan type
     if (!planType || !['pro', 'whale'].includes(planType)) {
-      return NextResponse.json(
-        { error: 'Invalid plan type. Must be "pro" or "whale"' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
     }
 
-    // Get user from database
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     })
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 })
     }
 
-    // Calculate amounts
-    let priceUsd = PLAN_PRICES[planType]
-
-    // Apply yearly discount (20% off)
-    if (billingPeriod === 'yearly') {
-      priceUsd = Math.round(priceUsd * 12 * 0.8)
-    }
-
-    const pricePyg = Math.round(priceUsd * USD_TO_PYG)
-
-    // Generate unique order number
-    const timestamp = Date.now()
-    const randomPart = crypto.randomBytes(4).toString('hex')
-    const numeroPedido = `PV-${planType.toUpperCase()}-${timestamp}-${randomPart}`
-
-    // Get Pagopar credentials
-    const publicKey = process.env.PAGOPAR_PUBLIC_KEY
     const privateKey = process.env.PAGOPAR_PRIVATE_KEY
+    const publicKey = process.env.PAGOPAR_PUBLIC_KEY
 
-    if (!publicKey || !privateKey) {
-      console.error('Pagopar credentials not configured')
-      return NextResponse.json(
-        { error: 'Payment system not configured' },
-        { status: 500 }
-      )
+    if (!privateKey || !publicKey) {
+      return NextResponse.json({ error: 'Pagopar no configurado' }, { status: 500 })
     }
 
-    // Create payment record in database
-    const payment = await prisma.payment.create({
+    // Generate unique order ID
+    const timestamp = Date.now()
+    const idPedido = `${planType.toUpperCase()}-${user.id.slice(-6)}-${timestamp}`
+    const monto = PLAN_PRICES_PYG[planType]
+
+    // Create hash using SHA1: sha1(PRIV_KEY + idPedido + monto)
+    const token = crypto.createHash('sha1').update(`${privateKey}${idPedido}${monto}`).digest('hex')
+
+    // Save payment in database
+    await prisma.payment.create({
       data: {
-        numeroPedido,
+        numeroPedido: idPedido,
         userId: user.id,
         planType,
-        amountUsd: priceUsd,
-        amountPyg: pricePyg,
+        amountUsd: planType === 'pro' ? 29 : 99,
+        amountPyg: monto,
         status: 'pending',
       },
     })
 
-    // Prepare Pagopar request data
-    const descripcion = billingPeriod === 'yearly'
-      ? `PriceVibration ${planType.charAt(0).toUpperCase() + planType.slice(1)} - Annual Subscription`
-      : `PriceVibration ${planType.charAt(0).toUpperCase() + planType.slice(1)} - Monthly Subscription`
-
-    // Create hash for security
-    // Hash = SHA-256(privateKey + publicKey + numeroPedido + montoTotal)
-    const hashString = `${privateKey}${publicKey}${numeroPedido}${pricePyg}`
-    const hash = crypto.createHash('sha256').update(hashString).digest('hex')
-
-    const pagoparData = {
+    // Pagopar API v2.0 request
+    const pagoparBody = {
       token: publicKey,
-      comprador: {
-        ruc: '0',
-        email: user.email,
-        telefono: '0',
-        razon_social: user.name || user.email,
-        tipo_documento: 'CI',
-        documento: '0',
-        direccion: 'N/A',
-        ciudad: 1, // Asuncion
-        ciudad_descripcion: 'Asuncion',
-      },
-      orden: {
-        numero_pedido: numeroPedido,
-        descripcion,
-        monto_total: pricePyg.toString(),
-        tipo_pedido: 'VENTA-SERVICIO',
-        tipo_pago: 'CONTADO',
-        fecha_maxima_pago: '', // No expiration
-        id_carro_compra: 0,
-        detalle: [
-          {
-            producto: {
-              cantidad: 1,
-              codigo_categoria_portal: 99, // Services
-              id_producto: planType,
-              nombre_producto: descripcion,
-              precio_unitario: pricePyg.toString(),
-            },
-          },
-        ],
-      },
-      url_retorno: `${process.env.NEXTAUTH_URL}/billing`,
-      hash,
+      comprador_email: user.email,
+      comprador_telefono: '0000000000',
+      comprador_documento: '0000000',
+      comprador_razon_social: user.name || user.email,
+      id_pedido: idPedido,
+      descripcion: `PriceVibration ${planType.charAt(0).toUpperCase() + planType.slice(1)} - Suscripción Mensual`,
+      monto: monto.toString(),
+      moneda: 'PYG',
+      hash: token,
     }
 
-    // Make request to Pagopar API
-    const pagoparResponse = await fetch('https://api.pagopar.com/api/comercios/1.1/iniciar-transaccion', {
+    const response = await fetch('https://api.pagopar.com/api/comercios/2.0/iniciar-transaccion', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(pagoparData),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pagoparBody),
     })
 
-    const pagoparResult = await pagoparResponse.json()
+    const result = await response.json()
 
-    if (!pagoparResponse.ok || pagoparResult.respuesta?.status === 'error') {
-      console.error('Pagopar error:', pagoparResult)
-
-      // Update payment as failed
+    if (result.respuesta && result.respuesta.status === 'success' && result.data) {
+      // Update payment with Pagopar hash
       await prisma.payment.update({
-        where: { id: payment.id },
-        data: { status: 'failed' },
+        where: { numeroPedido: idPedido },
+        data: { pagoparToken: result.data },
       })
 
-      return NextResponse.json(
-        { error: 'Error creating payment session', details: pagoparResult },
-        { status: 500 }
-      )
-    }
-
-    // Update payment with Pagopar token
-    if (pagoparResult.resultado?.data) {
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: { pagoparToken: pagoparResult.resultado.data },
+      // Return redirect URL
+      return NextResponse.json({
+        success: true,
+        redirectUrl: `https://pagopar.com/pagos/${result.data}`,
       })
+    } else {
+      console.error('Pagopar error:', result)
+      return NextResponse.json({
+        error: 'Error al crear pago',
+        details: result
+      }, { status: 500 })
     }
-
-    // Return the redirect URL
-    const redirectUrl = `https://pagopar.com/pagos/${pagoparResult.resultado?.data || ''}`
-
-    return NextResponse.json({
-      success: true,
-      numeroPedido,
-      redirectUrl,
-      token: pagoparResult.resultado?.data,
-    })
 
   } catch (error) {
     console.error('Checkout error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error', details: String(error) },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
   }
 }
