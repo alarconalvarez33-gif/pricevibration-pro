@@ -97,10 +97,6 @@ export async function POST(request: Request) {
     const hashString = `${privateKey}${publicKey}${numeroPedido}${pricePyg}`
     const hash = crypto.createHash('sha256').update(hashString).digest('hex')
 
-    // Create hash for return URL
-    const hashRetornoString = `${privateKey}${publicKey}${numeroPedido}`
-    const hashRetorno = crypto.createHash('sha256').update(hashRetornoString).digest('hex')
-
     const pagoparData = {
       token: publicKey,
       comprador: {
@@ -134,7 +130,7 @@ export async function POST(request: Request) {
           },
         ],
       },
-      url_retorno: `${process.env.NEXTAUTH_URL}/billing?payment=success&hash=${hashRetorno}`,
+      url_retorno: `${process.env.NEXTAUTH_URL}/billing`,
       hash,
     }
 

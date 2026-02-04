@@ -88,17 +88,25 @@ function BillingContent() {
   const [paymentStatus, setPaymentStatus] = useState<'success' | 'pending' | 'error' | null>(null)
 
   useEffect(() => {
+    // Check for Pagopar redirect parameters
     const payment = searchParams.get('payment')
-    if (payment === 'success') {
+    const estado = searchParams.get('estado')
+    const pagado = searchParams.get('pagado')
+
+    // Handle different parameter formats from Pagopar
+    if (payment === 'success' || estado === 'pagado' || pagado === 'true') {
       setPaymentStatus('success')
-      // Clear the URL parameter after showing the message
+    } else if (payment === 'pending' || estado === 'pendiente') {
+      setPaymentStatus('pending')
+    } else if (payment === 'error' || estado === 'error' || estado === 'rechazado') {
+      setPaymentStatus('error')
+    }
+
+    // Clear the URL parameters after showing the message
+    if (payment || estado || pagado) {
       setTimeout(() => {
         window.history.replaceState({}, '', '/billing')
       }, 5000)
-    } else if (payment === 'pending') {
-      setPaymentStatus('pending')
-    } else if (payment === 'error') {
-      setPaymentStatus('error')
     }
   }, [searchParams])
 
