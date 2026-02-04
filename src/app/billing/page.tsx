@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSession } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ExnessBanner from '@/components/ExnessBanner'
@@ -79,10 +80,27 @@ const PLANS = [
   },
 ]
 
-export default function BillingPage() {
+function BillingContent() {
   const { data: session } = useSession()
+  const searchParams = useSearchParams()
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly')
   const [isLoading, setIsLoading] = useState<string | null>(null)
+  const [paymentStatus, setPaymentStatus] = useState<'success' | 'pending' | 'error' | null>(null)
+
+  useEffect(() => {
+    const payment = searchParams.get('payment')
+    if (payment === 'success') {
+      setPaymentStatus('success')
+      // Clear the URL parameter after showing the message
+      setTimeout(() => {
+        window.history.replaceState({}, '', '/billing')
+      }, 5000)
+    } else if (payment === 'pending') {
+      setPaymentStatus('pending')
+    } else if (payment === 'error') {
+      setPaymentStatus('error')
+    }
+  }, [searchParams])
 
   const handleSubscribe = async (planId: string, payable: boolean) => {
     if (!payable) {
@@ -134,6 +152,41 @@ export default function BillingPage() {
 
       <div className="pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
+          {/* Payment Status Message */}
+          {paymentStatus === 'success' && (
+            <div className="mb-8 p-4 bg-green-500/20 border border-green-500 rounded-xl text-center">
+              <div className="flex items-center justify-center gap-2 text-green-400 mb-2">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-bold text-lg">Payment Successful!</span>
+              </div>
+              <p className="text-green-300">Your subscription has been activated. Enjoy your premium features!</p>
+            </div>
+          )}
+          {paymentStatus === 'pending' && (
+            <div className="mb-8 p-4 bg-yellow-500/20 border border-yellow-500 rounded-xl text-center">
+              <div className="flex items-center justify-center gap-2 text-yellow-400 mb-2">
+                <svg className="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-bold text-lg">Payment Pending</span>
+              </div>
+              <p className="text-yellow-300">Your payment is being processed. This may take a few minutes.</p>
+            </div>
+          )}
+          {paymentStatus === 'error' && (
+            <div className="mb-8 p-4 bg-red-500/20 border border-red-500 rounded-xl text-center">
+              <div className="flex items-center justify-center gap-2 text-red-400 mb-2">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-bold text-lg">Payment Failed</span>
+              </div>
+              <p className="text-red-300">There was an issue with your payment. Please try again or contact support.</p>
+            </div>
+          )}
+
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -311,5 +364,17 @@ export default function BillingPage() {
 
       <Footer />
     </main>
+  )
+}
+
+export default function BillingPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-terminal-bg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
+      </main>
+    }>
+      <BillingContent />
+    </Suspense>
   )
 }
