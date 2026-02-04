@@ -92,6 +92,15 @@ export async function POST(request: Request) {
       ? `PriceVibration ${planType.charAt(0).toUpperCase() + planType.slice(1)} - Annual Subscription`
       : `PriceVibration ${planType.charAt(0).toUpperCase() + planType.slice(1)} - Monthly Subscription`
 
+    // Create hash for security
+    // Hash = SHA-256(privateKey + publicKey + numeroPedido + montoTotal)
+    const hashString = `${privateKey}${publicKey}${numeroPedido}${pricePyg}`
+    const hash = crypto.createHash('sha256').update(hashString).digest('hex')
+
+    // Create hash for return URL
+    const hashRetornoString = `${privateKey}${publicKey}${numeroPedido}`
+    const hashRetorno = crypto.createHash('sha256').update(hashRetornoString).digest('hex')
+
     const pagoparData = {
       token: publicKey,
       comprador: {
@@ -125,13 +134,9 @@ export async function POST(request: Request) {
           },
         ],
       },
-      url_retorno: `${process.env.NEXTAUTH_URL}/billing?payment=success`,
+      url_retorno: `${process.env.NEXTAUTH_URL}/billing?payment=success&hash=${hashRetorno}`,
+      hash,
     }
-
-    // Create hash for security
-    // Hash = SHA-256(privateKey + publicKey + numeroPedido + montoTotal)
-    const hashString = `${privateKey}${publicKey}${numeroPedido}${pricePyg}`
-    const hash = crypto.createHash('sha256').update(hashString).digest('hex')
 
     // Make request to Pagopar API
     const pagoparResponse = await fetch('https://api.pagopar.com/api/comercios/1.1/iniciar-transaccion', {
@@ -139,10 +144,7 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        ...pagoparData,
-        hash,
-      }),
+      body: JSON.stringify(pagoparData),
     })
 
     const pagoparResult = await pagoparResponse.json()
