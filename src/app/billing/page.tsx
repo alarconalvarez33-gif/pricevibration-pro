@@ -11,8 +11,10 @@ const PLANS = [
   {
     id: 'free',
     name: 'Free',
-    price: 0,
-    yearlyPrice: 0,
+    priceUsd: 0,
+    yearlyPriceUsd: 0,
+    pricePyg: 0,
+    yearlyPricePyg: 0,
     period: 'forever',
     description: 'Perfect for learning Gann basics',
     icon: '🌱',
@@ -34,8 +36,10 @@ const PLANS = [
   {
     id: 'pro',
     name: 'Pro',
-    price: 29,
-    yearlyPrice: 278,
+    priceUsd: 29,
+    yearlyPriceUsd: 278,
+    pricePyg: 200000,
+    yearlyPricePyg: 1900000,
     period: 'month',
     description: 'For serious traders',
     icon: '🚀',
@@ -58,8 +62,10 @@ const PLANS = [
   {
     id: 'whale',
     name: 'Whale',
-    price: 99,
-    yearlyPrice: 948,
+    priceUsd: 99,
+    yearlyPriceUsd: 948,
+    pricePyg: 700000,
+    yearlyPricePyg: 6500000,
     period: 'month',
     description: 'For professional traders',
     icon: '🐋',
@@ -80,6 +86,10 @@ const PLANS = [
   },
 ]
 
+function formatPyg(amount: number): string {
+  return new Intl.NumberFormat('es-PY').format(amount)
+}
+
 function BillingContent() {
   const { data: session } = useSession()
   const searchParams = useSearchParams()
@@ -92,18 +102,19 @@ function BillingContent() {
     const payment = searchParams.get('payment')
     const estado = searchParams.get('estado')
     const pagado = searchParams.get('pagado')
+    const hash = searchParams.get('hash')
 
     // Handle different parameter formats from Pagopar
     if (payment === 'success' || estado === 'pagado' || pagado === 'true') {
       setPaymentStatus('success')
-    } else if (payment === 'pending' || estado === 'pendiente') {
+    } else if (payment === 'pending' || estado === 'pendiente' || hash) {
       setPaymentStatus('pending')
     } else if (payment === 'error' || estado === 'error' || estado === 'rechazado') {
       setPaymentStatus('error')
     }
 
     // Clear the URL parameters after showing the message
-    if (payment || estado || pagado) {
+    if (payment || estado || pagado || hash) {
       setTimeout(() => {
         window.history.replaceState({}, '', '/billing')
       }, 5000)
@@ -112,7 +123,6 @@ function BillingContent() {
 
   const handleSubscribe = async (planId: string, payable: boolean) => {
     if (!payable) {
-      // Free plan - redirect to register
       if (planId === 'free') {
         window.location.href = '/register'
       }
@@ -127,8 +137,7 @@ function BillingContent() {
     setIsLoading(planId)
 
     try {
-      // Call Pagopar checkout API
-      const response = await fetch('/api/pagopar/checkout', {
+      const response = await fetch('/api/pagopar/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -140,8 +149,7 @@ function BillingContent() {
       const data = await response.json()
 
       if (data.hash) {
-        // Client-side redirect to Pagopar with the hash
-        window.location.href = 'https://www.pagopar.com/pagos/' + data.hash
+        window.location.href = `https://www.pagopar.com/pagos/${data.hash}`
       } else if (data.error) {
         alert(data.error)
       } else {
@@ -239,10 +247,13 @@ function BillingContent() {
           {/* Pricing Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {PLANS.map((plan) => {
-              const displayPrice = billingPeriod === 'yearly' && plan.price > 0
-                ? plan.yearlyPrice
-                : plan.price
-              const savings = plan.price > 0 ? (plan.price * 12) - plan.yearlyPrice : 0
+              const displayPriceUsd = billingPeriod === 'yearly' && plan.priceUsd > 0
+                ? plan.yearlyPriceUsd
+                : plan.priceUsd
+              const displayPricePyg = billingPeriod === 'yearly' && plan.pricePyg > 0
+                ? plan.yearlyPricePyg
+                : plan.pricePyg
+              const savingsUsd = plan.priceUsd > 0 ? (plan.priceUsd * 12) - plan.yearlyPriceUsd : 0
 
               return (
                 <div
@@ -267,27 +278,40 @@ function BillingContent() {
                     <p className="text-terminal-muted text-sm">{plan.description}</p>
                   </div>
 
-                  {/* Price */}
-                  <div className="text-center mb-6">
+                  {/* Price USD */}
+                  <div className="text-center mb-2">
                     <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-5xl font-bold text-white">${displayPrice}</span>
-                      {plan.price > 0 && (
+                      <span className="text-5xl font-bold text-white">${displayPriceUsd}</span>
+                      {plan.priceUsd > 0 && (
                         <span className="text-terminal-muted">
                           /{billingPeriod === 'yearly' ? 'year' : plan.period}
                         </span>
                       )}
                     </div>
-                    {billingPeriod === 'yearly' && plan.price > 0 && (
+                    {billingPeriod === 'yearly' && plan.priceUsd > 0 && (
                       <div className="text-gann-support text-sm mt-1">
-                        Save ${savings}/year
+                        Save ${savingsUsd}/year
                       </div>
                     )}
-                    {billingPeriod === 'monthly' && plan.price > 0 && (
+                    {billingPeriod === 'monthly' && plan.priceUsd > 0 && (
                       <div className="text-terminal-muted text-xs mt-1">
-                        or ${plan.yearlyPrice}/year <span className="text-gann-support">(Save 20%)</span>
+                        or ${plan.yearlyPriceUsd}/year <span className="text-gann-support">(Save 20%)</span>
                       </div>
                     )}
                   </div>
+
+                  {/* Price PYG */}
+                  {plan.pricePyg > 0 && (
+                    <div className="text-center mb-6">
+                      <span className="text-gold-500 text-sm font-medium">
+                        Gs. {formatPyg(displayPricePyg)} PYG
+                      </span>
+                      <span className="text-terminal-muted text-xs">
+                        {' '}/ {billingPeriod === 'yearly' ? 'year' : plan.period}
+                      </span>
+                    </div>
+                  )}
+                  {plan.pricePyg === 0 && <div className="mb-6" />}
 
                   {/* Features */}
                   <ul className="space-y-3 mb-8">
