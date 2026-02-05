@@ -2,12 +2,16 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: { hash: string } }
+) {
   try {
+    const hashPedido = params.hash
     const body = await request.json()
-    console.log('Webhook recibido:', JSON.stringify(body, null, 2))
+    console.log('Webhook recibido para hash:', hashPedido, JSON.stringify(body, null, 2))
 
-    const { hash_pedido, pagado, numero_pedido, token } = body
+    const { pagado, numero_pedido, token } = body
 
     // CRITICAL: Validate the token - sha1(PRIV_KEY + hash_pedido) === token
     const privateKey = process.env.PAGOPAR_PRIVATE_KEY
@@ -18,14 +22,14 @@ export async function POST(request: Request) {
 
     const expectedToken = crypto
       .createHash('sha1')
-      .update(`${privateKey}${hash_pedido}`)
+      .update(`${privateKey}${hashPedido}`)
       .digest('hex')
 
     if (token !== expectedToken) {
       console.error('Token inválido - posible intento de fraude', {
         received: token,
         expected: expectedToken,
-        hash_pedido,
+        hash_pedido: hashPedido,
       })
       return NextResponse.json({ error: 'Token inválido' }, { status: 403 })
     }
@@ -38,7 +42,6 @@ export async function POST(request: Request) {
 
     if (!payment) {
       console.error('Pago no encontrado:', numero_pedido)
-      // Return the body as Pagopar expects
       return NextResponse.json(body)
     }
 
@@ -93,6 +96,9 @@ export async function POST(request: Request) {
 }
 
 // GET for Pagopar URL validation
-export async function GET() {
-  return NextResponse.json({ status: 'ok', service: 'pagopar-webhook' })
+export async function GET(
+  _request: Request,
+  { params }: { params: { hash: string } }
+) {
+  return NextResponse.json({ status: 'ok', service: 'pagopar-webhook', hash: params.hash })
 }

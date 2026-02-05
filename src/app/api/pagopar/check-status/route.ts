@@ -12,21 +12,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { orderId } = body
+    const { orderId, pagoparHash } = body
 
-    if (!orderId) {
-      return NextResponse.json({ error: 'orderId es requerido' }, { status: 400 })
+    if (!orderId && !pagoparHash) {
+      return NextResponse.json({ error: 'orderId o pagoparHash es requerido' }, { status: 400 })
     }
 
-    // Verify the payment belongs to this user
-    const payment = await prisma.payment.findUnique({
-      where: { orderId },
-    })
+    // Find payment by orderId or pagoparHash
+    const payment = orderId
+      ? await prisma.payment.findUnique({ where: { orderId } })
+      : await prisma.payment.findFirst({ where: { pagoparHash } })
 
     if (!payment) {
       return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 })
     }
 
+    // Verify the payment belongs to this user
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     })
@@ -66,6 +67,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       localStatus: payment.status,
+      plan: payment.planType,
+      amount: `${payment.amount} ${payment.currency}`,
       pagoparResponse: result,
     })
   } catch (error) {
