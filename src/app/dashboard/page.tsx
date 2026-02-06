@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import GannCalculator from '@/components/GannCalculator'
 import GannCosmogram from '@/components/GannCosmogram'
 import AstroGann from '@/components/AstroGann'
@@ -51,8 +52,12 @@ export default function DashboardPage() {
 
   const isPremium = session.user.isPremium
   const email = session.user.email || ''
-  const isWhale = email.includes('whale')
-  const tier = isWhale ? 'whale' : isPremium ? 'pro' : 'free'
+  const plan = session.user.plan || 'free'
+  const role = session.user.role || 'user'
+  const isAdmin = role === 'admin'
+  const isWhale = plan === 'whale' || isAdmin
+  const isPro = plan === 'pro' || isAdmin
+  const tier = isWhale ? 'whale' : isPro ? 'pro' : 'free'
 
   if (!isPremium) {
     return (
@@ -276,6 +281,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

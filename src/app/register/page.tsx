@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -11,12 +12,18 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    if (!acceptedTerms) {
+      setError('You must accept the Terms & Conditions and Risk Disclaimer')
+      return
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match')
@@ -127,10 +134,40 @@ export default function RegisterPage() {
                 />
               </div>
 
+              {/* Terms and Conditions Checkbox */}
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-terminal-border bg-terminal-bg text-gold-500 focus:ring-gold-500 focus:ring-2 cursor-pointer"
+                  required
+                />
+                <label htmlFor="terms" className="text-terminal-muted text-sm cursor-pointer">
+                  I accept the{' '}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    className="text-gold-500 hover:text-gold-400 underline"
+                  >
+                    Terms & Conditions
+                  </Link>
+                  {' '}and{' '}
+                  <Link
+                    href="/disclaimer"
+                    target="_blank"
+                    className="text-gold-500 hover:text-gold-400 underline"
+                  >
+                    Risk Disclaimer
+                  </Link>
+                </label>
+              </div>
+
               <button
                 type="submit"
-                disabled={isLoading}
-                className="btn-gold w-full flex items-center justify-center"
+                disabled={isLoading || !acceptedTerms}
+                className="btn-gold w-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <>
@@ -161,6 +198,7 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

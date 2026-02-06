@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import Link from 'next/link'
 
 interface UserSettings {
@@ -131,8 +132,11 @@ export default function SettingsPage() {
   }
 
   const email = session.user.email || ''
-  const isWhale = email.includes('whale')
-  const isPro = session.user.isPremium
+  const plan = session.user.plan || 'free'
+  const role = session.user.role || 'user'
+  const isAdmin = role === 'admin'
+  const isWhale = plan === 'whale' || isAdmin
+  const isPro = plan === 'pro' || isAdmin
   const tier = isWhale ? 'whale' : isPro ? 'pro' : 'free'
 
   return (
@@ -180,6 +184,69 @@ export default function SettingsPage() {
               )}
             </div>
           </div>
+
+          {/* Subscription Management */}
+          {(tier === 'pro' || tier === 'whale') && !isAdmin && (
+            <div className="card-terminal mb-6">
+              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                Subscription
+              </h2>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-3 border-b border-terminal-border">
+                  <div>
+                    <div className="text-white font-medium">Current Plan</div>
+                    <div className="text-terminal-muted text-sm capitalize">{tier} Plan</div>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                    tier === 'whale'
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                      : 'bg-gold-500/20 text-gold-400'
+                  }`}>
+                    {tier.toUpperCase()}
+                  </span>
+                </div>
+
+                {session.user.premiumUntil && (
+                  <div className="flex justify-between items-center py-3 border-b border-terminal-border">
+                    <div>
+                      <div className="text-white font-medium">Access Until</div>
+                      <div className="text-terminal-muted text-sm">
+                        {new Date(session.user.premiumUntil).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                    <span className="text-green-400 text-sm font-medium">Active</span>
+                  </div>
+                )}
+
+                <div className="pt-2 border-t border-terminal-border">
+                  <p className="text-terminal-muted text-sm mb-4">
+                    Need to cancel your subscription? Your premium access will continue until the end of your current billing period.
+                  </p>
+                  <button
+                    onClick={() => {
+                      if (confirm('Are you sure you want to cancel? You will lose premium access after your current billing period ends.')) {
+                        alert('To complete cancellation, please contact support at raul@sacredlevels.com with your email address.')
+                      }
+                    }}
+                    className="text-red-400 hover:text-red-300 text-sm font-medium flex items-center gap-2 transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Request Cancellation
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Location Settings */}
           <div className="card-terminal mb-6">
@@ -364,6 +431,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

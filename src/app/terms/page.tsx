@@ -3,8 +3,8 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Terms of Service | PriceVibration Pro',
-  description: 'Terms of Service for PriceVibration Pro trading platform.',
+  title: 'Terms of Service | Sacred Levels',
+  description: 'Terms of Service for Sacred Levels trading platform.',
 }
 
 export default function TermsPage() {
@@ -31,21 +31,21 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">1. Acceptance of Terms</h2>
                 <p>
-                  By accessing and using PriceVibration Pro (&quot;the Service&quot;), you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.
+                  By accessing and using Sacred Levels (&quot;the Service&quot;), you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.
                 </p>
               </section>
 
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">2. Description of Service</h2>
                 <p>
-                  PriceVibration Pro provides financial analysis tools based on W.D. Gann&apos;s methodologies and heliocentric planetary calculations. The Service includes calculators, charts, and educational content for trading analysis purposes.
+                  Sacred Levels provides financial analysis tools based on W.D. Gann&apos;s methodologies and heliocentric planetary calculations. The Service includes calculators, charts, and educational content for trading analysis purposes.
                 </p>
               </section>
 
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">3. No Financial Advice</h2>
                 <p>
-                  <strong className="text-gold-500">Important:</strong> PriceVibration Pro does NOT provide financial, investment, or trading advice. All tools and information provided are for educational and informational purposes only. You should consult with a qualified financial advisor before making any investment decisions.
+                  <strong className="text-gold-500">Important:</strong> Sacred Levels does NOT provide financial, investment, or trading advice. All tools and information provided are for educational and informational purposes only. You should consult with a qualified financial advisor before making any investment decisions.
                 </p>
               </section>
 
@@ -78,7 +78,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">7. Intellectual Property</h2>
                 <p>
-                  All content, features, and functionality of PriceVibration Pro are owned by us and protected by international copyright, trademark, and other intellectual property laws. You may not copy, modify, or distribute any part of the Service without our written consent.
+                  All content, features, and functionality of Sacred Levels are owned by us and protected by international copyright, trademark, and other intellectual property laws. You may not copy, modify, or distribute any part of the Service without our written consent.
                 </p>
               </section>
 
@@ -107,8 +107,8 @@ export default function TermsPage() {
                 <h2 className="text-xl font-semibold text-white mb-3">11. Contact Information</h2>
                 <p>
                   For questions about these Terms, please contact us at{' '}
-                  <a href="mailto:legal@pricevibration.com" className="text-gold-500 hover:underline">
-                    legal@pricevibration.com
+                  <a href="mailto:raul@sacredlevels.com" className="text-gold-500 hover:underline">
+                    raul@sacredlevels.com
                   </a>
                 </p>
               </section>

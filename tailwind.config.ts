@@ -24,7 +24,7 @@ const config: Config = {
         },
         // Professional Dark Theme (GitHub style)
         terminal: {
-          bg: '#0d1117',      // Main background
+          bg: '#0d0d0d',      // Main background
           card: '#161b22',    // Card background
           border: '#30363d',  // Subtle border
           text: '#e6edf3',    // Soft white text

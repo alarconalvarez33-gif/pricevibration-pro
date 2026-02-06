@@ -37,7 +37,9 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           isPremium: user.isPremium,
-          premiumUntil: user.premiumUntil?.toISOString() || null
+          premiumUntil: user.premiumUntil?.toISOString() || null,
+          plan: user.plan,
+          role: user.role,
         }
       }
     })
@@ -66,6 +68,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.isPremium = (user as any).isPremium
         token.premiumUntil = (user as any).premiumUntil
+        token.plan = (user as any).plan
+        token.role = (user as any).role
       }
       return token
     },
@@ -75,6 +79,8 @@ export const authOptions: NextAuthOptions = {
         user.id = token.sub ?? ''
         user.isPremium = token.isPremium
         user.premiumUntil = token.premiumUntil
+        user.plan = token.plan
+        user.role = token.role
       }
       return session
     }

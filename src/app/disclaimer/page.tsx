@@ -3,8 +3,8 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Risk Disclaimer | PriceVibration Pro',
-  description: 'Important risk disclosure and trading disclaimer for PriceVibration Pro users.',
+  title: 'Risk Disclaimer | Sacred Levels',
+  description: 'Important risk disclosure and trading disclaimer for Sacred Levels users.',
 }
 
 export default function DisclaimerPage() {
@@ -46,7 +46,7 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">No Financial Advice</h2>
                 <p>
-                  PriceVibration Pro is an educational and analytical tool only. Nothing on this platform constitutes financial, investment, legal, or tax advice. The information provided should not be construed as a recommendation to buy, sell, or hold any security, cryptocurrency, or financial instrument.
+                  Sacred Levels is an educational and analytical tool only. Nothing on this platform constitutes financial, investment, legal, or tax advice. The information provided should not be construed as a recommendation to buy, sell, or hold any security, cryptocurrency, or financial instrument.
                 </p>
               </section>
 
@@ -66,7 +66,7 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">Gann Analysis Disclaimer</h2>
                 <p>
-                  The Gann methodologies and calculations provided by PriceVibration Pro are based on the historical work of W.D. Gann. While these techniques have been studied for decades, there is no guarantee that they will predict future market movements accurately.
+                  The Gann methodologies and calculations provided by Sacred Levels are based on the historical work of W.D. Gann. While these techniques have been studied for decades, there is no guarantee that they will predict future market movements accurately.
                 </p>
                 <p className="mt-2">
                   <strong className="text-gold-500">Important:</strong> Support and resistance levels, time cycles, and other calculated values are mathematical projections only. Markets can and do move beyond these levels without warning.
@@ -76,7 +76,7 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">Astrological Analysis Disclaimer</h2>
                 <p>
-                  The planetary calculations and astrological correlations presented in PriceVibration Pro are for informational and educational purposes only. The relationship between celestial events and market movements is speculative and has not been scientifically proven.
+                  The planetary calculations and astrological correlations presented in Sacred Levels are for informational and educational purposes only. The relationship between celestial events and market movements is speculative and has not been scientifically proven.
                 </p>
                 <p className="mt-2">
                   You should never base trading decisions solely on astrological indicators. Always use proper risk management and consider multiple factors in your analysis.
@@ -86,7 +86,7 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">No Guarantees</h2>
                 <p>
-                  We make no representations or warranties about the accuracy, reliability, completeness, or timeliness of any information provided on PriceVibration Pro. Specifically:
+                  We make no representations or warranties about the accuracy, reliability, completeness, or timeliness of any information provided on Sacred Levels. Specifically:
                 </p>
                 <ul className="list-disc pl-6 mt-2 space-y-1">
                   <li>We do not guarantee any specific trading results</li>
@@ -99,7 +99,7 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">Your Responsibility</h2>
                 <p>
-                  By using PriceVibration Pro, you acknowledge that:
+                  By using Sacred Levels, you acknowledge that:
                 </p>
                 <ul className="list-disc pl-6 mt-2 space-y-1">
                   <li>All trading decisions are made at your own risk</li>
@@ -113,7 +113,7 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">Limitation of Liability</h2>
                 <p>
-                  PriceVibration Pro, its owners, operators, employees, and affiliates shall not be liable for any direct, indirect, incidental, special, or consequential damages arising from:
+                  Sacred Levels, its owners, operators, employees, and affiliates shall not be liable for any direct, indirect, incidental, special, or consequential damages arising from:
                 </p>
                 <ul className="list-disc pl-6 mt-2 space-y-1">
                   <li>Your use of or reliance on any information provided</li>
@@ -138,7 +138,7 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">Acknowledgment</h2>
                 <p>
-                  By using PriceVibration Pro, you acknowledge that you have read, understood, and agree to this Risk Disclaimer. If you do not agree with any part of this disclaimer, please do not use our services.
+                  By using Sacred Levels, you acknowledge that you have read, understood, and agree to this Risk Disclaimer. If you do not agree with any part of this disclaimer, please do not use our services.
                 </p>
               </section>
             </div>

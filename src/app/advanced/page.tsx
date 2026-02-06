@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useMemo } from 'react'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import { TickerTape } from '@/components/TradingView'
 import Link from 'next/link'
 import useGannAdvanced from '@/hooks/useGannAdvanced'
@@ -60,7 +61,10 @@ export default function AdvancedPage() {
 
   const isPremium = session.user.isPremium
   const email = session.user.email || ''
-  const isWhale = email.includes('whale') || isPremium
+  const plan = session.user.plan || 'free'
+  const role = session.user.role || 'user'
+  const isAdmin = role === 'admin'
+  const isWhale = plan === 'whale' || isAdmin
 
   if (!isWhale) {
     return (
@@ -484,6 +488,7 @@ export default function AdvancedPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   )
 }
