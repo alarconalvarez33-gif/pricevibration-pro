@@ -3,23 +3,23 @@ import crypto from 'crypto';
 
 export async function POST(request: Request) {
   try {
-    const { plan, price } = await request.json();
+    const body = await request.json();
+    const plan = body.plan;
+    const price = body.price;
     
-    const publicKey = process.env.PAGOPAR_PUBLIC_KEY;
-    const privateKey = process.env.PAGOPAR_PRIVATE_KEY;
+    const publicKey = process.env.PAGOPAR_PUBLIC_KEY?.trim();
+    const privateKey = process.env.PAGOPAR_PRIVATE_KEY?.trim();
 
     if (!publicKey || !privateKey) {
-      return NextResponse.json({ error: "Faltan claves en el servidor" }, { status: 500 });
+      return NextResponse.json({ error: "Claves no configuradas" }, { status: 500 });
     }
 
-    // 1. ID de pedido único
     const pedidoId = `SL-${Date.now()}`;
+    const monto = Math.floor(Number(price)).toString();
     
-    // 2. MONTO: Pagopar exige que sea un STRING sin decimales para PYG
-    const monto = Math.floor(price).toString();
-    
-    // 3. TOKEN: sha1(privateKey + pedidoId + monto)
-    const token = crypto.createHash('sha1').update(privateKey + pedidoId + monto).digest('hex');
+    // Generación del Hash SHA1
+    const stringToHash = privateKey + pedidoId + monto;
+    const token = crypto.createHash('sha1').update(stringToHash).digest('hex');
 
     const payload = {
       public_key: publicKey,
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         shop_process_id: pedidoId,
         monto: monto,
         descripcion: `Plan ${plan} - Sacred Levels`,
-        cuotas: 1, // Importante: Número, no string
+        cuotas: 1,
         fecha_maxima_pago: ""
       }
     };
@@ -41,15 +41,14 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    // Si Pagopar responde con error, lo enviamos al alert para saber QUÉ PASA
     if (data.respuesta === "error") {
       return NextResponse.json({ error: data.resultado }, { status: 400 });
     }
 
-    // Si todo sale bien, devolvemos el hash
     return NextResponse.json({ hash: data.resultado[0].data });
 
-  } catch (error: any) {
-    return NextResponse.json({ error: "Error interno: " + error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
