@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-export async function POST(request: Request) {
+export async function POST(request) {
   try {
     const body = await request.json();
-    const plan = body.plan || 'Plan';
-    const price = body.price || 0;
+    const { plan, price } = body;
     
-    const publicKey = process.env.PAGOPAR_PUBLIC_KEY?.trim();
-    const privateKey = process.env.PAGOPAR_PRIVATE_KEY?.trim();
+    const publicKey = (process.env.PAGOPAR_PUBLIC_KEY || '').trim();
+    const privateKey = (process.env.PAGOPAR_PRIVATE_KEY || '').trim();
 
     if (!publicKey || !privateKey) {
       return NextResponse.json({ error: "Claves no configuradas" }, { status: 500 });
@@ -27,7 +26,7 @@ export async function POST(request: Request) {
         token: token,
         shop_process_id: pedidoId,
         monto: monto,
-        descripcion: `Plan ${plan} - Sacred Levels`,
+        descripcion: `Plan ${plan || 'Premium'} - Sacred Levels`,
         cuotas: 1,
         fecha_maxima_pago: ""
       }
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ hash: data.resultado[0].data });
 
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Error desconocido' }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message || "Error interno" }, { status: 500 });
   }
 }
