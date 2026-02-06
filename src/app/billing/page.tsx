@@ -28,13 +28,12 @@ const PLANS = [
       { text: 'Priority support', included: false },
     ],
     cta: 'Get Started',
-    stripePriceId: null,
   },
   {
     id: 'pro',
     name: 'Pro',
-    price: 29,
-    yearlyPrice: 278,
+    price: 217500, // Precio en Guaraníes aprox $29
+    yearlyPrice: 2000000,
     period: 'month',
     description: 'For serious traders',
     icon: '🚀',
@@ -52,13 +51,12 @@ const PLANS = [
       { text: 'API access (100 req/day)', included: false },
     ],
     cta: 'Start Pro Trial',
-    stripePriceId: 'price_pro_monthly',
   },
   {
     id: 'whale',
     name: 'Whale',
-    price: 99,
-    yearlyPrice: 948,
+    price: 742500, // Precio en Guaraníes aprox $99
+    yearlyPrice: 7000000,
     period: 'month',
     description: 'For professional traders',
     icon: '🐋',
@@ -75,7 +73,6 @@ const PLANS = [
       { text: 'Priority Support', included: true },
     ],
     cta: 'Become a Whale',
-    stripePriceId: 'price_whale_monthly',
   },
 ]
 
@@ -84,14 +81,10 @@ export default function BillingPage() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly')
   const [isLoading, setIsLoading] = useState<string | null>(null)
 
-  const handleSubscribe = async (planId: string, stripePriceId: string | null) => {
-    if (!stripePriceId) {
-      // Plan gratuito o contacto de ventas
-      if (planId === 'free') {
-        window.location.href = '/register'
-      } else {
-        alert('Contact sales@pricevibration.com for Whale plan')
-      }
+  // ESTA ES LA FUNCIÓN CORREGIDA PARA PAGOPAR
+  const handleSubscribe = async (planId: string, price: number) => {
+    if (planId === 'free') {
+      window.location.href = '/register'
       return
     }
 
@@ -103,22 +96,21 @@ export default function BillingPage() {
     setIsLoading(planId)
 
     try {
-      // Llamar al API Route de Stripe Checkout
-      const response = await fetch('/api/stripe/checkout', {
+      const response = await fetch('/api/pagopar/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          priceId: stripePriceId,
-          period: billingPeriod,
+          plan: planId,
+          price: price,
         }),
       })
 
       const data = await response.json()
 
-      if (data.url) {
-        window.location.href = data.url
+      if (data.hash) {
+        window.location.href = `https://www.pagopar.com/pagos/${data.hash}`
       } else {
-        alert('Error creating checkout session')
+        alert('Error: ' + (data.error || 'No se pudo generar la sesión de pago'))
       }
     } catch (error) {
       console.error('Checkout error:', error)
@@ -129,7 +121,7 @@ export default function BillingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-terminal-bg">
+    <main className="min-h-screen bg-black">
       <Navbar />
 
       <div className="pt-32 pb-20 px-4">
@@ -138,22 +130,22 @@ export default function BillingPage() {
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="text-white">Choose Your </span>
-              <span className="text-gold-500">Trading Edge</span>
+              <span className="text-yellow-500">Trading Edge</span>
             </h1>
-            <p className="text-terminal-muted text-lg max-w-2xl mx-auto">
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Unlock the power of Gann&apos;s Law of Vibration combined with planetary cycles
             </p>
           </div>
 
           {/* Billing Toggle */}
           <div className="flex justify-center mb-12">
-            <div className="bg-terminal-card p-1 rounded-xl inline-flex">
+            <div className="bg-zinc-900 p-1 rounded-xl inline-flex border border-zinc-800">
               <button
                 onClick={() => setBillingPeriod('monthly')}
                 className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
                   billingPeriod === 'monthly'
-                    ? 'bg-gold-500 text-black'
-                    : 'text-terminal-muted hover:text-white'
+                    ? 'bg-yellow-500 text-black'
+                    : 'text-gray-400 hover:text-white'
                 }`}
               >
                 Monthly
@@ -162,8 +154,8 @@ export default function BillingPage() {
                 onClick={() => setBillingPeriod('yearly')}
                 className={`px-6 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                   billingPeriod === 'yearly'
-                    ? 'bg-gold-500 text-black'
-                    : 'text-terminal-muted hover:text-white'
+                    ? 'bg-yellow-500 text-black'
+                    : 'text-gray-400 hover:text-white'
                 }`}
               >
                 Yearly
@@ -180,16 +172,14 @@ export default function BillingPage() {
               const displayPrice = billingPeriod === 'yearly' && plan.price > 0
                 ? plan.yearlyPrice
                 : plan.price
-              const savings = plan.price > 0 ? (plan.price * 12) - plan.yearlyPrice : 0
 
               return (
                 <div
                   key={plan.id}
-                  className={`relative rounded-2xl p-8 bg-terminal-card border-2 ${
-                    plan.popular ? plan.borderColor : 'border-terminal-border'
+                  className={`relative rounded-2xl p-8 bg-zinc-900 border-2 ${
+                    plan.popular ? 'border-yellow-500' : 'border-zinc-800'
                   } ${plan.popular ? 'scale-105 shadow-2xl' : ''}`}
                 >
-                  {/* Popular Badge */}
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                       <span className={`bg-gradient-to-r ${plan.color} text-black text-sm font-bold px-4 py-1 rounded-full`}>
@@ -198,36 +188,18 @@ export default function BillingPage() {
                     </div>
                   )}
 
-                  {/* Plan Header */}
                   <div className="text-center mb-6">
                     <div className="text-4xl mb-2">{plan.icon}</div>
                     <h3 className="text-2xl font-bold text-white mb-1">{plan.name}</h3>
-                    <p className="text-terminal-muted text-sm">{plan.description}</p>
+                    <p className="text-gray-400 text-sm">{plan.description}</p>
                   </div>
 
-                  {/* Price */}
                   <div className="text-center mb-6">
                     <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-5xl font-bold text-white">${displayPrice}</span>
-                      {plan.price > 0 && (
-                        <span className="text-terminal-muted">
-                          /{billingPeriod === 'yearly' ? 'year' : plan.period}
-                        </span>
-                      )}
+                      <span className="text-4xl font-bold text-white">Gs. {displayPrice.toLocaleString()}</span>
                     </div>
-                    {billingPeriod === 'yearly' && plan.price > 0 && (
-                      <div className="text-gann-support text-sm mt-1">
-                        Save ${savings}/year
-                      </div>
-                    )}
-                    {billingPeriod === 'monthly' && plan.price > 0 && (
-                      <div className="text-terminal-muted text-xs mt-1">
-                        or ${plan.yearlyPrice}/year <span className="text-gann-support">(Save 20%)</span>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Features */}
                   <ul className="space-y-3 mb-8">
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
@@ -236,84 +208,39 @@ export default function BillingPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         ) : (
-                          <svg className="w-5 h-5 text-terminal-muted flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         )}
-                        <span className={feature.included ? 'text-white' : 'text-terminal-muted'}>
+                        <span className={feature.included ? 'text-white' : 'text-gray-500'}>
                           {feature.text}
                         </span>
                       </li>
                     ))}
                   </ul>
 
-                  {/* CTA Button */}
                   <button
-                    onClick={() => handleSubscribe(plan.id, plan.stripePriceId)}
+                    onClick={() => handleSubscribe(plan.id, displayPrice)}
                     disabled={isLoading === plan.id}
                     className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${
                       plan.popular
-                        ? `bg-gradient-to-r ${plan.color} text-black hover:opacity-90`
-                        : 'border-2 border-terminal-border text-white hover:border-gold-500'
+                        ? `bg-yellow-500 text-black hover:bg-yellow-400`
+                        : 'border-2 border-zinc-700 text-white hover:border-yellow-500'
                     } disabled:opacity-50`}
                   >
-                    {isLoading === plan.id ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        Processing...
-                      </span>
-                    ) : (
-                      plan.cta
-                    )}
+                    {isLoading === plan.id ? 'Processing...' : plan.cta}
                   </button>
                 </div>
               )
             })}
           </div>
 
-          {/* Trust Badges */}
-          <div className="mt-16 text-center">
-            <div className="flex flex-wrap justify-center gap-8 mb-8">
-              <div className="flex items-center gap-2 text-terminal-muted">
-                <svg className="w-5 h-5 text-gann-support" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                SSL Secured
-              </div>
-              <div className="flex items-center gap-2 text-terminal-muted">
-                <svg className="w-5 h-5 text-gann-support" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                Powered by Stripe
-              </div>
-              <div className="flex items-center gap-2 text-terminal-muted">
-                <svg className="w-5 h-5 text-gann-support" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                Secure Checkout
-              </div>
-            </div>
-
-            <p className="text-terminal-muted text-sm">
-              Cancel anytime. No questions asked.
-            </p>
-          </div>
-
-          {/* Exness Partner Banner */}
           <div className="mt-12">
             <ExnessBanner variant="compact" />
           </div>
         </div>
       </div>
-
       <Footer />
     </main>
   )
-}
-      </div>
-    </div>
-  );
 }
