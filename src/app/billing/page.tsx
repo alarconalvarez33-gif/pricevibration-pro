@@ -1,47 +1,52 @@
 "use client";
+
 import React from 'react';
 
 export default function BillingPage() {
   const handleCheckout = async (plan: string, price: number) => {
     try {
+      // Llamamos a la API que ya configuramos
       const res = await fetch('/api/pagopar/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, price })
       });
+
       const data = await res.json();
+
       if (data.hash) {
+        // Redirigimos al usuario a la pasarela oficial de Pagopar
         window.location.href = `https://www.pagopar.com/pagos/${data.hash}`;
       } else {
-        alert("Error de Pagopar: " + (data.error || "No se pudo generar el hash"));
+        console.error("Error en data:", data);
+        alert("Hubo un problema al conectar con Pagopar. Intenta de nuevo.");
       }
     } catch (error) {
-      alert("Error de conexión");
+      console.error("Error de red:", error);
+      alert("Error interno del servidor al procesar el pago.");
     }
   };
 
   return (
-    <div style={{ backgroundColor: '#000', color: '#fff', minHeight: '100vh', padding: '50px', textAlign: 'center' }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '40px', fontWeight: 'bold' }}>Planes Sacred Levels</h1>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', flexWrap: 'wrap' }}>
-        
-        {/* Plan Whale */}
-        <div style={{ border: '1px solid #d4af37', padding: '30px', borderRadius: '15px', backgroundColor: '#111', width: '300px' }}>
-          <h2 style={{ fontSize: '1.8rem', color: '#d4af37' }}>Whale</h2>
-          <p style={{ fontSize: '1.5rem', margin: '20px 0' }}>742.500 PYG</p>
-          <ul style={{ textAlign: 'left', marginBottom: '30px', listStyle: 'none', padding: 0 }}>
-            <li>✓ Indicadores Premium</li>
-            <li>✓ Mentoría Algorítmica</li>
-            <li>✓ Soporte Prioritario</li>
-          </ul>
-          <button 
-            onClick={() => handleCheckout('Whale', 742500)}
-            style={{ width: '100%', padding: '12px', backgroundColor: '#d4af37', color: '#000', border: 'none', borderRadius: '5px', fontWeight: 'bold', cursor: 'pointer' }}
-          >
-            Become a Whale
-          </button>
-        </div>
+    <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'sans-serif' }}>
+      <h1 style={{ color: '#1a202c', marginBottom: '30px' }}>Selecciona tu Plan de Sacred Levels</h1>
+      
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+        {/* Botón para Plan Pro */}
+        <button 
+          onClick={() => handleCheckout('Pro', 217500)}
+          style={{ padding: '15px 30px', backgroundColor: '#4a5568', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+        >
+          Start Pro (217.500 PYG)
+        </button>
 
+        {/* Botón para Plan Whale */}
+        <button 
+          onClick={() => handleCheckout('Whale', 742500)}
+          style={{ padding: '15px 30px', backgroundColor: '#2b6cb0', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+        >
+          Become a Whale (742.500 PYG)
+        </button>
       </div>
     </div>
   );
