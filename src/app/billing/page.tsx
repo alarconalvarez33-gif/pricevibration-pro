@@ -19,7 +19,7 @@ export default function BillingPage() {
         window.location.href = `https://www.pagopar.com/pagos/${data.hash}`;
       } else {
         console.error("Error en data:", data);
-        alert("Hubo un problema al conectar con Pagopar. Intenta de nuevo.");
+      alert("Error de Pagopar: " + (data.error || "No se pudo generar el hash"));
       }
     } catch (error) {
       console.error("Error de red:", error);
