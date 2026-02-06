@@ -4,18 +4,21 @@ import crypto from 'crypto';
 export async function POST(request: Request) {
   try {
     const { plan, price } = await request.json();
+    
     const publicKey = process.env.PAGOPAR_PUBLIC_KEY;
     const privateKey = process.env.PAGOPAR_PRIVATE_KEY;
 
     if (!publicKey || !privateKey) {
-      return NextResponse.json({ error: "Faltan claves API en Vercel" }, { status: 500 });
+      return NextResponse.json({ error: "Faltan claves en el servidor" }, { status: 500 });
     }
 
-    // ID de pedido único (Sacred Levels + marca de tiempo)
+    // 1. ID de pedido único
     const pedidoId = `SL-${Date.now()}`;
-    const monto = price.toString();
     
-    // TOKEN CRÍTICO: sha1(private_key + pedido_id + monto)
+    // 2. MONTO: Pagopar exige que sea un STRING sin decimales para PYG
+    const monto = Math.floor(price).toString();
+    
+    // 3. TOKEN: sha1(privateKey + pedidoId + monto)
     const token = crypto.createHash('sha1').update(privateKey + pedidoId + monto).digest('hex');
 
     const payload = {
@@ -25,7 +28,7 @@ export async function POST(request: Request) {
         shop_process_id: pedidoId,
         monto: monto,
         descripcion: `Plan ${plan} - Sacred Levels`,
-        cuotas: "1",
+        cuotas: 1, // Importante: Número, no string
         fecha_maxima_pago: ""
       }
     };
@@ -38,14 +41,15 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
+    // Si Pagopar responde con error, lo enviamos al alert para saber QUÉ PASA
     if (data.respuesta === "error") {
-      // Esto nos dirá si el error es "Token inválido" o "Comercio no habilitado"
       return NextResponse.json({ error: data.resultado }, { status: 400 });
     }
 
+    // Si todo sale bien, devolvemos el hash
     return NextResponse.json({ hash: data.resultado[0].data });
 
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Error interno: " + error.message }, { status: 500 });
   }
 }
