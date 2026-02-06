@@ -4,8 +4,8 @@ import crypto from 'crypto';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const plan = body.plan;
-    const price = body.price;
+    const plan = body.plan || 'Plan';
+    const price = body.price || 0;
     
     const publicKey = process.env.PAGOPAR_PUBLIC_KEY?.trim();
     const privateKey = process.env.PAGOPAR_PRIVATE_KEY?.trim();
@@ -47,8 +47,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ hash: data.resultado[0].data });
 
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Error desconocido' }, { status: 500 });
   }
 }
