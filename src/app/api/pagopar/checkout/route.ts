@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { plan, price } = body;
@@ -47,6 +47,7 @@ export async function POST(request) {
     return NextResponse.json({ hash: data.resultado[0].data });
 
   } catch (error) {
-    return NextResponse.json({ error: error.message || "Error interno" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Error interno";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

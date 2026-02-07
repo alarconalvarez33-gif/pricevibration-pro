@@ -236,7 +236,7 @@ export default function BillingPage() {
           </div>
 
           <div className="mt-12">
-            <ExnessBanner variant="compact" />
+            <ExnessBanner />
           </div>
         </div>
       </div>
