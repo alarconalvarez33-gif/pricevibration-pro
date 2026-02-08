@@ -60,14 +60,12 @@ export async function POST(request: Request) {
     console.log('💰 Monto calculado:', monto, 'PYG')
     console.log('🆔 Order ID generado:', orderId)
 
-    // Create token: sha1(comercio_token_privado + idPedido + strval(floatval(monto_total)))
-    // Matching PHP: sha1($datos['comercio_token_privado'] . $idPedido . strval(floatval($j['monto_total'])))
-    const montoString = monto.toString()
-    const tokenString = `${privateKey}${orderId}${montoString}`
-    const token = crypto
-      .createHash('sha1')
-      .update(tokenString)
-      .digest('hex')
+    // Token: sha1(PRIVATE_KEY + id_pedido_comercio + strval(floatval(monto_total)))
+    const tokenString = privateKey + orderId + String(parseFloat(String(monto)))
+    const token = crypto.createHash('sha1').update(tokenString).digest('hex')
+
+    console.log('🔐 Token string:', tokenString)
+    console.log('🔐 Token SHA1:', token)
 
     // Save payment record
     const payment = await prisma.payment.create({
@@ -85,25 +83,54 @@ export async function POST(request: Request) {
 
     const periodLabel = billingPeriod === 'yearly' ? 'Anual' : 'Mensual'
     const planLabel = planType.charAt(0).toUpperCase() + planType.slice(1)
+    const descripcion = `Plan ${planLabel} - Sacred Levels`
 
-    // Call Pagopar API v2.0
+    // Fecha máxima de pago: 7 días desde ahora
+    const fechaMaxima = new Date()
+    fechaMaxima.setDate(fechaMaxima.getDate() + 7)
+    const fechaMaximaStr = fechaMaxima.toISOString().slice(0, 19).replace('T', ' ')
+
+    // Estructura oficial de Pagopar API 2.0
     const pagoparBody = {
-      token: publicKey,
-      comprador_email: user.email,
-      comprador_telefono: '0981000000',
-      comprador_documento: '1000000',
-      comprador_razon_social: user.name || user.email,
-      id_pedido_comercio: orderId,
-      descripcion: `SacredLevels ${planLabel} - ${periodLabel}`,
-      monto_total: montoString,
-      moneda: 'PYG',
+      token: token,
+      comprador: {
+        ruc: '',
+        email: user.email,
+        ciudad: '1',
+        nombre: user.name || user.email,
+        telefono: '0971000000',
+        direccion: '',
+        documento: '1000000',
+        coordenadas: '',
+        razon_social: '',
+        tipo_documento: 'CI',
+        direccion_referencia: ''
+      },
+      public_key: publicKey,
+      monto_total: monto,
       tipo_pedido: 'VENTA-COMERCIO',
-      forma_pago: '9',
-      hash: token,
+      compras_items: [
+        {
+          ciudad: '1',
+          nombre: descripcion,
+          cantidad: 1,
+          categoria: '909',
+          public_key: publicKey,
+          url_imagen: '',
+          descripcion: `Suscripción ${periodLabel} ${planLabel}`,
+          id_producto: 1,
+          precio_total: monto,
+          vendedor_telefono: '',
+          vendedor_direccion: '',
+          vendedor_direccion_referencia: '',
+          vendedor_direccion_coordenadas: ''
+        }
+      ],
+      fecha_maxima_pago: fechaMaximaStr,
+      id_pedido_comercio: orderId,
+      descripcion_resumen: descripcion,
+      forma_pago: 9
     }
-
-    console.log('Token calc:', `${privateKey}${orderId}${montoString}`)
-    console.log('Token hash:', token)
 
     console.log('\n' + '='.repeat(80))
     console.log('🔵 PAGOPAR API REQUEST')
@@ -143,7 +170,7 @@ export async function POST(request: Request) {
     // Extract hash from Pagopar response
     let pagoparHash: string | null = null
 
-    if (result.resultado && Array.isArray(result.resultado) && result.resultado[0]?.data) {
+    if (result.respuesta === true && result.resultado && Array.isArray(result.resultado) && result.resultado[0]?.data) {
       pagoparHash = result.resultado[0].data
       console.log('✅ Hash extraído de resultado[0].data:', pagoparHash)
     } else if (result.resultado?.data) {

@@ -109,6 +109,17 @@ export default function Footer() {
           <p className="text-terminal-muted/50 text-xs text-center mt-4">
             Trading involves substantial risk. Past performance is not indicative of future results. This is not financial advice.
           </p>
+          <p className="text-terminal-muted/50 text-xs text-center mt-2">
+            Service not available for residents of United States, North Korea, Iran, Syria, Cuba, and other sanctioned countries.
+            By using this service, you agree to our{' '}
+            <Link href="/terms" className="underline hover:text-gold-500 transition-colors">
+              Terms & Conditions
+            </Link>
+            {' '}and{' '}
+            <Link href="/disclaimer" className="underline hover:text-gold-500 transition-colors">
+              Disclaimer
+            </Link>.
+          </p>
         </div>
       </div>
     </footer>
