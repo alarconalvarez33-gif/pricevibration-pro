@@ -60,8 +60,10 @@ export async function POST(request: Request) {
     console.log('💰 Monto calculado:', monto, 'PYG')
     console.log('🆔 Order ID generado:', orderId)
 
-    // Create token: sha1(PAGOPAR_PRIVATE_KEY + id_pedido_comercio + monto_total)
-    const montoString = monto.toString()
+    // Create token: sha1(comercio_token_privado + idPedido + strval(floatval(monto_total)))
+    // Matching PHP: sha1($datos['comercio_token_privado'] . $idPedido . strval(floatval($j['monto_total'])))
+    const montoFloat = parseFloat(monto)
+    const montoString = montoFloat.toString()
     const tokenString = `${privateKey}${orderId}${montoString}`
     const token = crypto
       .createHash('sha1')
