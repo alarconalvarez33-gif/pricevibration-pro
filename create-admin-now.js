@@ -10,7 +10,7 @@ async function createAdmin() {
 
     console.log('👤 Creando usuario admin...')
     const admin = await prisma.user.upsert({
-      where: { email: 'raul' },
+      where: { email: 'raul@sacredlevels.com' },
       update: {
         password: hashedPassword,
         name: 'Raul',
@@ -20,7 +20,7 @@ async function createAdmin() {
         role: 'admin',
       },
       create: {
-        email: 'raul',
+        email: 'raul@sacredlevels.com',
         name: 'Raul',
         password: hashedPassword,
         isPremium: true,
@@ -32,7 +32,7 @@ async function createAdmin() {
 
     console.log('\n✅ ¡USUARIO ADMIN CREADO EXITOSAMENTE!')
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-    console.log('📧 Email:    raul')
+    console.log('📧 Email:    raul@sacredlevels.com')
     console.log('🔑 Password: ra')
     console.log('👑 Role:     admin')
     console.log('🐋 Plan:     whale')

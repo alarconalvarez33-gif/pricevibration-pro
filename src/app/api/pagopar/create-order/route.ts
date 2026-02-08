@@ -93,6 +93,11 @@ export async function POST(request: Request) {
       hash: token,
     }
 
+    console.log('🔵 Pagopar Request:', JSON.stringify(pagoparBody, null, 2))
+    console.log('🔑 Public Key:', publicKey)
+    console.log('🔐 Token generated from:', `${privateKey}${orderId}${monto}`)
+    console.log('🔐 Token hash:', token)
+
     const response = await fetch('https://api.pagopar.com/api/comercios/2.0/iniciar-transaccion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -100,7 +105,8 @@ export async function POST(request: Request) {
     })
 
     const result = await response.json()
-    console.log('Pagopar create-order response:', JSON.stringify(result, null, 2))
+    console.log('📥 Pagopar Response Status:', response.status)
+    console.log('📥 Pagopar Response:', JSON.stringify(result, null, 2))
 
     // Extract hash from Pagopar response
     let pagoparHash: string | null = null
