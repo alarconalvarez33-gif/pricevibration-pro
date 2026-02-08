@@ -47,7 +47,6 @@ const PLANS = [
       { text: 'Real-time planetary data', included: true },
       { text: 'Export to CSV/PDF', included: true },
       { text: 'Price alerts', included: true },
-      { text: 'Email support', included: true },
       { text: 'API access (100 req/day)', included: false },
     ],
     cta: 'Start Pro Trial',

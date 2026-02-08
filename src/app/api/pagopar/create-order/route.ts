@@ -60,15 +60,13 @@ export async function POST(request: Request) {
     console.log('💰 Monto calculado:', monto, 'PYG')
     console.log('🆔 Order ID generado:', orderId)
 
-    // Create token: sha1(PAGOPAR_PRIVATE_KEY + idPedido + monto_total)
-    const tokenString = `${privateKey}${orderId}${monto}`
+    // Create token: sha1(PAGOPAR_PRIVATE_KEY + id_pedido_comercio + monto_total)
+    const montoString = monto.toString()
+    const tokenString = `${privateKey}${orderId}${montoString}`
     const token = crypto
       .createHash('sha1')
       .update(tokenString)
       .digest('hex')
-
-    console.log('🔐 Token string (antes de hash):', tokenString)
-    console.log('🔐 Token SHA1:', token)
 
     // Save payment record
     const payment = await prisma.payment.create({
@@ -96,12 +94,15 @@ export async function POST(request: Request) {
       comprador_razon_social: user.name || user.email,
       id_pedido_comercio: orderId,
       descripcion: `SacredLevels ${planLabel} - ${periodLabel}`,
-      monto_total: monto.toString(),
+      monto_total: montoString,
       moneda: 'PYG',
       tipo_pedido: 'VENTA-COMERCIO',
       forma_pago: '9',
       hash: token,
     }
+
+    console.log('Token calc:', `${privateKey}${orderId}${montoString}`)
+    console.log('Token hash:', token)
 
     console.log('\n' + '='.repeat(80))
     console.log('🔵 PAGOPAR API REQUEST')
