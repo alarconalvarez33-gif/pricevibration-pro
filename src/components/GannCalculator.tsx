@@ -2,15 +2,18 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import { calculateGannLevels, validatePrice, INCREMENT_OPTIONS, GannLevels } from '@/lib/gann'
+import * as XLSX from 'xlsx'
 
 interface GannCalculatorProps {
   onCalculate?: (levels: GannLevels) => void
   showIncrementSelector?: boolean
+  isPremium?: boolean
 }
 
 export default function GannCalculator({
   onCalculate,
-  showIncrementSelector = true
+  showIncrementSelector = true,
+  isPremium = false
 }: GannCalculatorProps) {
   // Input state - completely controlled by user, no auto-updates
   const [inputValue, setInputValue] = useState('')
@@ -56,6 +59,60 @@ export default function GannCalculator({
       onCalculate?.(calculatedLevels)
     }
   }, [hasCalculated, validation, onCalculate])
+
+  // Export to Excel
+  const exportToExcel = useCallback(() => {
+    if (!levels) return
+
+    // Create data for Excel
+    const data = []
+
+    // Header
+    data.push(['Sacred Levels - Gann Calculator Results'])
+    data.push([])
+    data.push(['Center Price:', `$${levels.centerPrice.toFixed(2)}`])
+    data.push(['Increment:', levels.increment])
+    data.push([])
+
+    // Resistance levels
+    data.push(['RESISTANCE LEVELS'])
+    data.push(['Level', 'Price', 'Distance'])
+    levels.resistances.forEach((price, i) => {
+      data.push([
+        `R${i + 1}`,
+        price.toFixed(2),
+        `+${(price - levels.centerPrice).toFixed(2)}`
+      ])
+    })
+
+    data.push([])
+
+    // Support levels
+    data.push(['SUPPORT LEVELS'])
+    data.push(['Level', 'Price', 'Distance'])
+    levels.supports.forEach((price, i) => {
+      data.push([
+        `S${i + 1}`,
+        price > 0 ? price.toFixed(2) : '-',
+        price > 0 ? (price - levels.centerPrice).toFixed(2) : '-'
+      ])
+    })
+
+    // Create workbook and worksheet
+    const ws = XLSX.utils.aoa_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Gann Levels')
+
+    // Set column widths
+    ws['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }]
+
+    // Generate filename with timestamp
+    const timestamp = new Date().toISOString().split('T')[0]
+    const filename = `sacred-levels-${levels.centerPrice}-${timestamp}.xlsx`
+
+    // Download file
+    XLSX.writeFile(wb, filename)
+  }, [levels])
 
   // Handle clear
   const handleClear = useCallback(() => {
@@ -123,7 +180,7 @@ export default function GannCalculator({
           {showIncrementSelector && (
             <div>
               <label className="block text-terminal-muted text-sm mb-2">
-                Increment (√ adjustment)
+                Increment Level
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {INCREMENT_OPTIONS.map((opt) => (
@@ -166,10 +223,22 @@ export default function GannCalculator({
             <div className="text-2xl font-bold text-gold-500 font-mono">
               ${levels.centerPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
-            <span className="text-terminal-muted text-xs">
-              √ = {Math.sqrt(levels.centerPrice).toFixed(4)} | Increment: {levels.increment}
-            </span>
           </div>
+
+          {/* Export Button (Pro/Whale only) */}
+          {isPremium && (
+            <div className="mb-4">
+              <button
+                onClick={exportToExcel}
+                className="w-full btn-gold py-2.5 font-medium flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download Excel
+              </button>
+            </div>
+          )}
 
           {/* Levels Table */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -261,14 +330,6 @@ export default function GannCalculator({
                 </table>
               </div>
             </div>
-          </div>
-
-          {/* Formula Reference */}
-          <div className="mt-4 p-3 bg-terminal-bg rounded-lg border border-terminal-border">
-            <p className="text-terminal-muted text-xs">
-              <strong className="text-gold-500">Formula:</strong>{' '}
-              R = (√price + {increment})² | S = (√price - {increment})²
-            </p>
           </div>
         </div>
       )}
