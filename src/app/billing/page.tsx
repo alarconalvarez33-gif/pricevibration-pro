@@ -32,8 +32,10 @@ const PLANS = [
   {
     id: 'pro',
     name: 'Pro',
-    price: 217500, // Precio en Guaraníes aprox $29
-    yearlyPrice: 2000000,
+    priceUsd: 49,
+    yearlyPriceUsd: 470,
+    pricePyg: 340000,
+    yearlyPricePyg: 3145000,
     period: 'month',
     description: 'For serious traders',
     icon: '🚀',
@@ -49,13 +51,16 @@ const PLANS = [
       { text: 'Price alerts', included: true },
       { text: 'API access (100 req/day)', included: false },
     ],
-    cta: 'Start Pro Trial',
+    cta: 'Start Pro',
+    payable: true,
   },
   {
     id: 'whale',
     name: 'Whale',
-    price: 742500, // Precio en Guaraníes aprox $99
-    yearlyPrice: 7000000,
+    priceUsd: 100,
+    yearlyPriceUsd: 960,
+    pricePyg: 693900,
+    yearlyPricePyg: 6660000,
     period: 'month',
     description: 'For professional traders',
     icon: '🐋',
@@ -72,6 +77,7 @@ const PLANS = [
       { text: 'Priority Support', included: true },
     ],
     cta: 'Become a Whale',
+    payable: true,
   },
 ]
 
@@ -80,8 +86,7 @@ export default function BillingPage() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly')
   const [isLoading, setIsLoading] = useState<string | null>(null)
 
-  // ESTA ES LA FUNCIÓN CORREGIDA PARA PAGOPAR
-  const handleSubscribe = async (planId: string, price: number) => {
+  const handleSubscribe = async (planId: string) => {
     if (planId === 'free') {
       window.location.href = '/register'
       return
@@ -95,25 +100,25 @@ export default function BillingPage() {
     setIsLoading(planId)
 
     try {
-      const response = await fetch('/api/pagopar/checkout', {
+      const response = await fetch('/api/pagopar/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          plan: planId,
-          price: price,
+          planType: planId,
+          billingPeriod: billingPeriod,
         }),
       })
 
       const data = await response.json()
 
-      if (data.hash) {
-        window.location.href = `https://www.pagopar.com/pagos/${data.hash}`
+      if (data.success && data.paymentUrl) {
+        window.location.href = data.paymentUrl
       } else {
-        alert('Error: ' + (data.error || 'No se pudo generar la sesión de pago'))
+        alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar la sesión de pago'))
       }
     } catch (error) {
       console.error('Checkout error:', error)
-      alert('Error processing payment')
+      alert('Error al procesar el pago')
     } finally {
       setIsLoading(null)
     }
@@ -168,9 +173,8 @@ export default function BillingPage() {
           {/* Pricing Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {PLANS.map((plan) => {
-              const displayPrice = billingPeriod === 'yearly' && plan.price > 0
-                ? plan.yearlyPrice
-                : plan.price
+              const displayPriceUsd = billingPeriod === 'yearly' ? (plan.yearlyPriceUsd || 0) : (plan.priceUsd || 0)
+              const savingsText = billingPeriod === 'yearly' && plan.priceUsd ? ' (Save 20%)' : ''
 
               return (
                 <div
@@ -195,8 +199,12 @@ export default function BillingPage() {
 
                   <div className="text-center mb-6">
                     <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-4xl font-bold text-white">Gs. {displayPrice.toLocaleString()}</span>
+                      <span className="text-4xl font-bold text-white">${displayPriceUsd}</span>
+                      <span className="text-gray-400">/{billingPeriod === 'yearly' ? 'year' : 'month'}</span>
                     </div>
+                    {savingsText && (
+                      <p className="text-green-400 text-sm mt-1">{savingsText}</p>
+                    )}
                   </div>
 
                   <ul className="space-y-3 mb-8">
@@ -219,7 +227,7 @@ export default function BillingPage() {
                   </ul>
 
                   <button
-                    onClick={() => handleSubscribe(plan.id, displayPrice)}
+                    onClick={() => handleSubscribe(plan.id)}
                     disabled={isLoading === plan.id}
                     className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${
                       plan.popular

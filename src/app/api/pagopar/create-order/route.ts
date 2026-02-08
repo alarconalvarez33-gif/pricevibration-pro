@@ -7,11 +7,11 @@ import crypto from 'crypto'
 const PLAN_PRICES: Record<string, { monthly: { pyg: number; usd: number }; yearly: { pyg: number; usd: number } }> = {
   pro: {
     monthly: { pyg: 340000, usd: 49 },
-    yearly: { pyg: 3250000, usd: 470 },
+    yearly: { pyg: 3145000, usd: 470 },  // $49 x 12 = $588, 20% off = $470
   },
   whale: {
-    monthly: { pyg: 700000, usd: 99 },
-    yearly: { pyg: 6500000, usd: 948 },
+    monthly: { pyg: 693900, usd: 100 },
+    yearly: { pyg: 6660000, usd: 960 },  // $100 x 12 = $1200, 20% off = $960
   },
 }
 
