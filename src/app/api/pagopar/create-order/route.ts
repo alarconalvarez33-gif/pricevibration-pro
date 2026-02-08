@@ -62,8 +62,7 @@ export async function POST(request: Request) {
 
     // Create token: sha1(comercio_token_privado + idPedido + strval(floatval(monto_total)))
     // Matching PHP: sha1($datos['comercio_token_privado'] . $idPedido . strval(floatval($j['monto_total'])))
-    const montoFloat = parseFloat(monto)
-    const montoString = montoFloat.toString()
+    const montoString = monto.toString()
     const tokenString = `${privateKey}${orderId}${montoString}`
     const token = crypto
       .createHash('sha1')
