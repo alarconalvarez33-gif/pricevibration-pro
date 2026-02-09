@@ -7,27 +7,47 @@ const PRIVATE_KEY = '85ece630fff92520e3943f1f2a8d3c60'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    console.log('Webhook Pagopar recibido:', JSON.stringify(body, null, 2))
+    console.log('🔔 Webhook Pagopar recibido:', JSON.stringify(body, null, 2))
+    console.log('📦 Tipo de body:', Array.isArray(body) ? 'Array' : 'Object')
 
     // Pagopar envía un array con resultado[0]
     const resultado = Array.isArray(body) ? body[0] : body
     const { pagado, numero_pedido, hash_pedido, token } = resultado
 
+    console.log('📋 Datos extraídos:', {
+      pagado,
+      numero_pedido,
+      hash_pedido,
+      token_recibido: token,
+    })
+
     // Validar token del webhook según documentación de Pagopar
     // Token = sha1(PRIVATE_KEY + hash_pedido)
+    const concatenacion = PRIVATE_KEY + hash_pedido
     const expectedToken = crypto
       .createHash('sha1')
-      .update(PRIVATE_KEY + hash_pedido)
+      .update(concatenacion)
       .digest('hex')
 
+    console.log('🔐 Validación de token:', {
+      private_key: PRIVATE_KEY,
+      hash_pedido,
+      concatenacion_length: concatenacion.length,
+      token_calculado: expectedToken,
+      token_recibido: token,
+      coincide: token === expectedToken,
+    })
+
     if (token !== expectedToken) {
-      console.error('Token inválido - posible fraude', {
+      console.error('❌ Token inválido - posible fraude', {
         received: token,
         expected: expectedToken,
         hash_pedido,
       })
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
+
+    console.log('✅ Token validado correctamente')
 
     if (!hash_pedido || !numero_pedido) {
       console.error('Missing hash_pedido or numero_pedido')
