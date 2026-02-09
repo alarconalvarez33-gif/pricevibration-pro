@@ -38,19 +38,23 @@ export async function POST(request: Request) {
       coincide: token === expectedToken,
     })
 
-    if (token !== expectedToken) {
-      console.error('❌ Token inválido - posible fraude', {
+    // Validar token pero siempre retornar 200 a Pagopar
+    const tokenValido = token === expectedToken
+
+    if (!tokenValido) {
+      console.error('❌ Token inválido - NO se procesará el pago (posible fraude)', {
         received: token,
         expected: expectedToken,
         hash_pedido,
       })
-      return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
+      // IMPORTANTE: Retornar el body con 200 para que Pagopar no reintente
+      return NextResponse.json(body, { status: 200 })
     }
 
     console.log('✅ Token validado correctamente')
 
     if (!hash_pedido || !numero_pedido) {
-      console.error('Missing hash_pedido or numero_pedido')
+      console.error('❌ Missing hash_pedido or numero_pedido')
       return NextResponse.json(body, { status: 200 })
     }
 
