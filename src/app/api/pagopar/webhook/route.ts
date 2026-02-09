@@ -1,22 +1,32 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import crypto from 'crypto'
 
-const WEBHOOK_TOKEN = '85ece630fff92520e3943f1f2a8d3c60'
+const PRIVATE_KEY = '85ece630fff92520e3943f1f2a8d3c60'
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
     console.log('Webhook Pagopar recibido:', JSON.stringify(body, null, 2))
 
-    const { pagado, numero_pedido, hash_pedido, token } = body
+    // Pagopar envía un array con resultado[0]
+    const resultado = Array.isArray(body) ? body[0] : body
+    const { pagado, numero_pedido, hash_pedido, token } = resultado
 
-    // Validar token del webhook
-    if (token !== WEBHOOK_TOKEN) {
+    // Validar token del webhook según documentación de Pagopar
+    // Token = sha1(PRIVATE_KEY + hash_pedido)
+    const expectedToken = crypto
+      .createHash('sha1')
+      .update(PRIVATE_KEY + hash_pedido)
+      .digest('hex')
+
+    if (token !== expectedToken) {
       console.error('Token inválido - posible fraude', {
         received: token,
-        expected: WEBHOOK_TOKEN,
+        expected: expectedToken,
+        hash_pedido,
       })
-      return NextResponse.json({ error: 'Token inválido' }, { status: 403 })
+      return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
     if (!hash_pedido || !numero_pedido) {
@@ -78,7 +88,7 @@ export async function POST(request: Request) {
       console.log(`❌ Pago fallido para pedido ${numero_pedido}`)
     }
 
-    // Devolver el mismo body que recibimos
+    // Devolver el mismo array resultado que recibimos
     return NextResponse.json(body, { status: 200 })
   } catch (error) {
     console.error('Webhook error:', error)
