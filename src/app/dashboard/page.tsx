@@ -211,7 +211,7 @@ export default function DashboardPage() {
           {activeModule === 'calculator' && (
             <div className="grid lg:grid-cols-2 gap-6">
               <div>
-                <GannCalculator onCalculate={setLevels} isPremium={isPro || isWhale} />
+                <GannCalculator onCalculate={setLevels} isPremium={isPro || isWhale} userEmail={email} />
               </div>
               <div>
                 <GannCosmogram levels={levels} />

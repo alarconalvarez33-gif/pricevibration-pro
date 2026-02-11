@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { calculateGannLevels, validatePrice, INCREMENT_OPTIONS, GannLevels } from '@/lib/gann'
 import * as XLSX from 'xlsx'
 
@@ -8,17 +8,29 @@ interface GannCalculatorProps {
   onCalculate?: (levels: GannLevels) => void
   showIncrementSelector?: boolean
   isPremium?: boolean
+  userEmail?: string
 }
 
 export default function GannCalculator({
   onCalculate,
   showIncrementSelector = true,
-  isPremium = false
+  isPremium = false,
+  userEmail = 'guest@user.com'
 }: GannCalculatorProps) {
   // Input state - completely controlled by user, no auto-updates
   const [inputValue, setInputValue] = useState('')
   const [increment, setIncrement] = useState(0.25)
   const [hasCalculated, setHasCalculated] = useState(false)
+  const [showLegalWarning, setShowLegalWarning] = useState(false)
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
+
+  // Check if user has accepted terms before
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const accepted = localStorage.getItem('gann_terms_accepted')
+      setHasAcceptedTerms(accepted === 'true')
+    }
+  }, [])
 
   // Validation
   const validation = useMemo(() => {
@@ -46,9 +58,31 @@ export default function GannCalculator({
   const handleCalculate = useCallback(() => {
     if (!validation.valid) return
 
+    // Show legal warning if not accepted yet
+    if (!hasAcceptedTerms) {
+      setShowLegalWarning(true)
+      return
+    }
+
     setHasCalculated(true)
     const calculatedLevels = calculateGannLevels(validation.price, increment)
     onCalculate?.(calculatedLevels)
+  }, [validation, increment, onCalculate, hasAcceptedTerms])
+
+  // Handle terms acceptance
+  const handleAcceptTerms = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('gann_terms_accepted', 'true')
+    }
+    setHasAcceptedTerms(true)
+    setShowLegalWarning(false)
+
+    // Now calculate
+    if (validation.valid) {
+      setHasCalculated(true)
+      const calculatedLevels = calculateGannLevels(validation.price, increment)
+      onCalculate?.(calculatedLevels)
+    }
   }, [validation, increment, onCalculate])
 
   // Handle increment change
@@ -72,6 +106,11 @@ export default function GannCalculator({
     data.push([])
     data.push(['Center Price:', `$${levels.centerPrice.toFixed(2)}`])
     data.push(['Increment:', levels.increment])
+    data.push([])
+    // WATERMARK - User identification
+    data.push(['Generated for:', userEmail])
+    data.push(['Date:', new Date().toLocaleString()])
+    data.push(['⚠️ FOR PERSONAL USE ONLY - Commercial sharing prohibited'])
     data.push([])
 
     // Resistance levels
@@ -112,7 +151,7 @@ export default function GannCalculator({
 
     // Download file
     XLSX.writeFile(wb, filename)
-  }, [levels])
+  }, [levels, userEmail])
 
   // Handle clear
   const handleClear = useCallback(() => {
@@ -153,7 +192,7 @@ export default function GannCalculator({
                   value={inputValue}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  placeholder="3280"
+                  placeholder="Coloca aquí el precio de un mínimo o máximo"
                   className={`w-full bg-terminal-bg border-2 rounded-lg px-4 py-3 pl-8 text-white placeholder-terminal-muted/50 focus:outline-none font-mono text-lg transition-colors ${
                     validation.error
                       ? 'border-red-500 focus:border-red-400'
@@ -217,6 +256,16 @@ export default function GannCalculator({
       {/* Results */}
       {levels && (
         <div className="card-terminal animate-fadeIn">
+          {/* Watermark - User identification */}
+          <div className="mb-4 p-2 bg-terminal-bg/50 border border-terminal-border/30 rounded text-center">
+            <p className="text-terminal-muted/60 text-xs">
+              Generated for: <span className="text-gold-500/60 font-mono">{userEmail}</span>
+            </p>
+            <p className="text-terminal-muted/40 text-xs mt-1">
+              ⚠️ For personal use only - Commercial sharing prohibited
+            </p>
+          </div>
+
           {/* Center Price Display */}
           <div className="text-center mb-4 p-3 bg-gold-500/10 border border-gold-500/30 rounded-lg">
             <span className="text-terminal-muted text-sm">Center Price</span>
@@ -329,6 +378,74 @@ export default function GannCalculator({
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Legal Warning Modal */}
+      {showLegalWarning && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-terminal-card border-2 border-gold-500 rounded-2xl max-w-2xl w-full p-8 shadow-2xl animate-scaleIn">
+            {/* Warning Icon */}
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 bg-gold-500/20 rounded-full flex items-center justify-center">
+                <svg className="w-12 h-12 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Title */}
+            <h2 className="text-2xl font-bold text-white text-center mb-4">
+              Advertencia Legal Importante
+            </h2>
+
+            {/* Content */}
+            <div className="space-y-4 text-terminal-muted mb-8">
+              <p className="leading-relaxed">
+                Los niveles calculados por esta herramienta son para <strong className="text-white">uso personal y educativo únicamente</strong>.
+              </p>
+
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                <p className="text-red-400 font-semibold mb-2">🚫 Está Estrictamente Prohibido:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Revender o comercializar los niveles calculados</li>
+                  <li>Compartir los niveles en grupos de señales de trading</li>
+                  <li>Distribuir las exportaciones Excel/PDF comercialmente</li>
+                  <li>Crear servicios derivados usando estos cálculos</li>
+                </ul>
+              </div>
+
+              <div className="bg-gold-500/10 border border-gold-500/30 rounded-lg p-4">
+                <p className="text-gold-500 font-semibold mb-2">✅ Protección Legal:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Todos los cálculos incluyen marca de agua con tu email</li>
+                  <li>Las exportaciones son rastreables a tu cuenta</li>
+                  <li>Violaciones pueden resultar en suspensión permanente</li>
+                  <li>Nos reservamos el derecho de tomar acciones legales</li>
+                </ul>
+              </div>
+
+              <p className="text-sm text-center text-terminal-muted/70 mt-4">
+                Al continuar, confirmas que has leído y aceptas estos términos.
+              </p>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => setShowLegalWarning(false)}
+                className="flex-1 px-6 py-3 bg-terminal-bg border-2 border-terminal-border text-white rounded-xl font-semibold hover:border-red-500 hover:text-red-500 transition-all"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleAcceptTerms}
+                className="flex-1 px-6 py-3 bg-gold-500 text-black rounded-xl font-semibold hover:bg-gold-400 transition-all"
+              >
+                Acepto los Términos
+              </button>
             </div>
           </div>
         </div>
