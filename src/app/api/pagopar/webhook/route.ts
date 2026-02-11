@@ -8,14 +8,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     console.log('🔔 Webhook Pagopar recibido:', JSON.stringify(body, null, 2))
-    console.log('📦 Tipo de body:', Array.isArray(body) ? 'Array' : 'Object')
 
-    // Pagopar envía un array - guardarlo para retornarlo al final
-    const arrayResultado = Array.isArray(body) ? body : [body]
-    const resultado = arrayResultado[0]
-    const { pagado, numero_pedido, hash_pedido, token } = resultado
+    // Pagopar envía: {"resultado":[{...}],"respuesta":true}
+    // Extraer SOLO el array resultado
+    const arrayResultado = body.resultado || (Array.isArray(body) ? body : [body])
+    const primerElemento = arrayResultado[0]
+    const { pagado, numero_pedido, hash_pedido, token } = primerElemento
 
-    console.log('📋 Datos extraídos:', {
+    console.log('📋 Array resultado extraído:', JSON.stringify(arrayResultado, null, 2))
+    console.log('📋 Primer elemento:', {
       pagado,
       numero_pedido,
       hash_pedido,
@@ -49,14 +50,20 @@ export async function POST(request: Request) {
         hash_pedido,
       })
       // IMPORTANTE: Retornar SOLO el array para que Pagopar no reintente
-      return NextResponse.json(arrayResultado, { status: 200 })
+      return new Response(JSON.stringify(arrayResultado), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
     console.log('✅ Token validado correctamente')
 
     if (!hash_pedido || !numero_pedido) {
       console.error('❌ Missing hash_pedido or numero_pedido')
-      return NextResponse.json(arrayResultado, { status: 200 })
+      return new Response(JSON.stringify(arrayResultado), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
     // Buscar el pago en la base de datos
@@ -72,7 +79,10 @@ export async function POST(request: Request) {
 
     if (!payment) {
       console.error('Pago no encontrado:', numero_pedido, hash_pedido)
-      return NextResponse.json(arrayResultado, { status: 200 })
+      return new Response(JSON.stringify(arrayResultado), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
     // Procesar resultado del pago
@@ -115,11 +125,17 @@ export async function POST(request: Request) {
 
     // Devolver SOLO el array (sin envoltura de "respuesta" y "resultado")
     console.log('📤 Retornando a Pagopar:', JSON.stringify(arrayResultado, null, 2))
-    return NextResponse.json(arrayResultado, { status: 200 })
+    return new Response(JSON.stringify(arrayResultado), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
   } catch (error) {
     console.error('Webhook error:', error)
     // En caso de error, retornar un array vacío
-    return NextResponse.json([], { status: 200 })
+    return new Response(JSON.stringify([]), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }
 
