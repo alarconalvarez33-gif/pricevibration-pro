@@ -20,16 +20,27 @@ export async function GET(
     }
 
     // Generar token: sha1(PRIVATE_KEY + "CONSULTA")
+    const concatenacion = PRIVATE_KEY + 'CONSULTA'
     const token = crypto
       .createHash('sha1')
-      .update(PRIVATE_KEY + 'CONSULTA')
+      .update(concatenacion)
       .digest('hex')
 
-    console.log('🔍 Paso 3 Pagopar - Consultando pedido:', {
+    const requestBody = {
       hash_pedido,
-      token_generado: token,
-      url: PAGOPAR_CHECK_ORDER_URL,
-    })
+      token,
+      token_publico: PUBLIC_KEY,
+    }
+
+    console.log('=' .repeat(70))
+    console.log('🔍 PASO 3 PAGOPAR - CONSULTANDO PEDIDO')
+    console.log('=' .repeat(70))
+    console.log('📍 URL:', PAGOPAR_CHECK_ORDER_URL)
+    console.log('🔑 PRIVATE_KEY:', PRIVATE_KEY)
+    console.log('🔐 Concatenación:', concatenacion)
+    console.log('🎫 Token generado:', token)
+    console.log('📝 Request Body:', JSON.stringify(requestBody, null, 2))
+    console.log('=' .repeat(70))
 
     // POST a Pagopar para consultar el estado del pedido
     const pagoparResponse = await fetch(PAGOPAR_CHECK_ORDER_URL, {
@@ -37,20 +48,20 @@ export async function GET(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        hash_pedido,
-        token,
-        token_publico: PUBLIC_KEY,
-      }),
+      body: JSON.stringify(requestBody),
     })
+
+    console.log('📡 Fetch realizado a Pagopar')
 
     const pagoparData = await pagoparResponse.json()
 
-    console.log('📦 Respuesta de Pagopar:', {
-      status: pagoparResponse.status,
-      statusText: pagoparResponse.statusText,
-      data: JSON.stringify(pagoparData, null, 2),
-    })
+    console.log('=' .repeat(70))
+    console.log('📦 RESPUESTA DE PAGOPAR')
+    console.log('=' .repeat(70))
+    console.log('✅ Status:', pagoparResponse.status, pagoparResponse.statusText)
+    console.log('📄 Headers:', Object.fromEntries(pagoparResponse.headers.entries()))
+    console.log('📋 Data:', JSON.stringify(pagoparData, null, 2))
+    console.log('=' .repeat(70))
 
     if (!pagoparResponse.ok) {
       console.error('❌ Error de Pagopar:', pagoparData)
