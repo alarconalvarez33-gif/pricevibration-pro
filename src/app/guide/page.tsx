@@ -149,7 +149,7 @@ function EnglishContent() {
             </p>
             <ul className="list-disc list-inside text-terminal-muted mt-2 space-y-1 ml-4">
               <li>Recent swing high or swing low</li>
-              <li>Previous day's close</li>
+              <li>Previous day&apos;s close</li>
               <li>A major round number (e.g., $2,600 for Gold)</li>
               <li>A key psychological level</li>
             </ul>
@@ -345,7 +345,7 @@ function EnglishContent() {
             <div className="text-2xl">5️⃣</div>
             <div>
               <h3 className="text-white font-semibold">Stay Disciplined</h3>
-              <p className="text-terminal-muted text-sm">Follow your strategy consistently - don't chase trades or overtrade</p>
+              <p className="text-terminal-muted text-sm">Follow your strategy consistently - don&apos;t chase trades or overtrade</p>
             </div>
           </div>
         </div>
