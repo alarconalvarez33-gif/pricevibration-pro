@@ -130,6 +130,14 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Educational Disclaimer Banner */}
+          <div className="mb-6 p-3 bg-gold-500/10 border border-gold-500/30 rounded-lg">
+            <p className="text-center text-sm text-terminal-muted">
+              <span className="text-gold-500 font-medium">⚠️ Educational tool only.</span>{' '}
+              Not financial advice. Trading involves risk.
+            </p>
+          </div>
+
           {/* Mini Charts Row */}
           {showMiniCharts && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

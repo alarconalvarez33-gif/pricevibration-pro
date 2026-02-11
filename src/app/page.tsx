@@ -12,7 +12,7 @@ import LiveNotification from '@/components/LiveNotification'
 import OnlineCounter from '@/components/OnlineCounter'
 
 const testimonials = [
-  { name: 'Marcus C.', country: '🇸🇬', text: 'The levels are incredibly accurate. Made back my subscription in the first week.' },
+  { name: 'Marcus C.', country: '🇸🇬', text: 'The calculated levels provide valuable mathematical insights for my analysis.' },
   { name: 'Elena R.', country: '🇪🇸', text: 'Finally a tool that combines Gann with planetary cycles. Game changer.' },
   { name: 'James T.', country: '🇬🇧', text: 'Switched from traditional TA. Never looking back.' },
   { name: 'Yuki M.', country: '🇯🇵', text: 'The precision on gold reversals is unmatched.' },
@@ -81,7 +81,7 @@ export default function Home() {
 
             {/* Inspirational Quote */}
             <p className="font-cursive italic text-xl md:text-2xl lg:text-3xl text-gradient-gold mb-8 animate-fadeInUp stagger-2">
-              &ldquo;You will be rich, if you know how to use it&rdquo;
+              &ldquo;Mathematical Synergy: Where time cycles converge with price action.&rdquo;
             </p>
 
             {/* Subtitle */}
@@ -105,18 +105,12 @@ export default function Home() {
             </div>
 
             {/* Stats */}
-            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            <div className="mt-16 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
               <div className="text-center animate-fadeInUp stagger-4">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
                   <AnimatedCounter end={89.7} suffix="%" decimals={1} />
                 </div>
                 <div className="text-terminal-muted text-sm mt-1">Accuracy on Reversals</div>
-              </div>
-              <div className="text-center animate-fadeInUp stagger-5">
-                <div className="text-3xl md:text-4xl font-bold text-gold-500">
-                  $<AnimatedCounter end={2.4} suffix="M+" decimals={1} />
-                </div>
-                <div className="text-terminal-muted text-sm mt-1">Community Profits</div>
               </div>
               <div className="text-center animate-fadeInUp stagger-5">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
@@ -268,9 +262,9 @@ export default function Home() {
             <p className="text-terminal-muted leading-relaxed">
               Ancient mathematical principles. Planetary alignments. A formula hidden for over 100 years.
               <br />
-              <span className="text-white font-medium">W.D. Gann made millions with this knowledge.</span>
+              <span className="text-white font-medium">W.D. Gann developed these techniques based on natural law and geometry.</span>
               <br />
-              <span className="text-gold-500">Now it&apos;s your turn.</span>
+              <span className="text-gold-500">Now explore these time-tested methods.</span>
             </p>
           </div>
         </div>
@@ -460,13 +454,13 @@ export default function Home() {
           <span className="text-gradient-gold-static">the Method</span>
         </h2>
         <p className="text-terminal-muted leading-relaxed mb-6">
-          <span className="text-white font-semibold">William Delbert Gann (1878-1955)</span> was a legendary trader who reportedly
-          turned <span className="text-gold-500 font-semibold">$130 into $12,000</span> in just 30 days.
+          <span className="text-white font-semibold">William Delbert Gann (1878-1955)</span> was a legendary trader who
+          achieved remarkable results through disciplined application of mathematical principles.
         </p>
         <p className="text-terminal-muted leading-relaxed mb-6">
           His methods, based on natural law, geometry, and planetary cycles, remain some of the
-          most guarded secrets in trading history. PriceVibration Pro brings his century-old techniques
-          into the modern era.
+          most studied techniques in trading history. PriceVibration Pro brings his century-old analytical methods
+          into the modern era for educational purposes.
         </p>
         <Link href="/register" className="btn-gold inline-flex items-center gap-2">
           Discover His Secrets
@@ -527,7 +521,7 @@ export default function Home() {
               <span className="text-gradient-gold-static">Unlock the Formula?</span>
             </h2>
             <p className="font-cursive italic text-xl text-gold-500 mb-6">
-              &ldquo;You will be rich, if you know how to use it&rdquo;
+              &ldquo;Mathematical Synergy: Where time cycles converge with price action.&rdquo;
             </p>
             <p className="text-terminal-muted mb-8 max-w-2xl mx-auto">
               Join thousands of traders who discovered the century-old secrets to market prediction.

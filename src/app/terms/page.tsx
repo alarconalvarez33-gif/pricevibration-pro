@@ -47,24 +47,34 @@ export default function TermsPage() {
                 <p>
                   <strong className="text-gold-500">Important:</strong> Sacred Levels does NOT provide financial, investment, or trading advice. All tools and information provided are for educational and informational purposes only. You should consult with a qualified financial advisor before making any investment decisions.
                 </p>
+                <p className="mt-3">
+                  The platform provides mathematical analysis tools based on historical methodologies. Users must conduct their own research and due diligence. Any examples, case studies, or historical references are for illustration purposes only and do not guarantee similar outcomes.
+                </p>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">4. User Accounts</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">4. Educational Purpose Statement</h2>
+                <p>
+                  All tools, calculations, and information provided through Sacred Levels are designed for educational and analytical purposes. The calculated levels (support, resistance, time cycles, planetary aspects) are mathematical projections based on W.D. Gann methodologies and should be used as one component of a comprehensive trading strategy, never as the sole basis for trading decisions.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-white mb-3">5. User Accounts</h2>
                 <p>
                   To access certain features, you must create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities under your account. You must provide accurate and complete information when creating an account.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">5. Subscription and Payments</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">6. Subscription and Payments</h2>
                 <p>
                   Paid subscriptions are billed monthly or annually as selected. Subscriptions automatically renew unless cancelled before the renewal date. All fees are non-refundable. You may cancel your subscription at any time as described in our <Link href="/refund" className="text-gold-500 hover:underline">Cancellation Policy</Link>.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">6. Acceptable Use</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">7. Acceptable Use</h2>
                 <p>You agree not to:</p>
                 <ul className="list-disc pl-6 mt-2 space-y-1">
                   <li>Use the Service for any unlawful purpose</li>
@@ -76,35 +86,38 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">7. Intellectual Property</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">8. Intellectual Property</h2>
                 <p>
                   All content, features, and functionality of Sacred Levels are owned by us and protected by international copyright, trademark, and other intellectual property laws. You may not copy, modify, or distribute any part of the Service without our written consent.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">8. Disclaimer of Warranties</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">9. Disclaimer of Warranties</h2>
                 <p>
                   THE SERVICE IS PROVIDED &quot;AS IS&quot; WITHOUT WARRANTIES OF ANY KIND. WE DO NOT GUARANTEE THE ACCURACY, COMPLETENESS, OR USEFULNESS OF ANY INFORMATION PROVIDED. TRADING INVOLVES SUBSTANTIAL RISK OF LOSS AND IS NOT SUITABLE FOR ALL INVESTORS.
+                </p>
+                <p className="mt-3">
+                  Specifically, we make NO guarantees regarding trading profitability, accuracy of calculations, or suitability of the methodologies for any particular trading style or market condition.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">9. Limitation of Liability</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">10. Limitation of Liability</h2>
                 <p>
                   TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, OR OTHER INTANGIBLE LOSSES RESULTING FROM YOUR USE OF THE SERVICE.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">10. Changes to Terms</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">11. Changes to Terms</h2>
                 <p>
                   We reserve the right to modify these terms at any time. We will notify users of significant changes via email or through the Service. Continued use after changes constitutes acceptance of the modified terms.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-white mb-3">11. Contact Information</h2>
+                <h2 className="text-xl font-semibold text-white mb-3">12. Contact Information</h2>
                 <p>
                   For questions about these Terms, please contact us at{' '}
                   <a href="mailto:raul@sacredlevels.com" className="text-gold-500 hover:underline">

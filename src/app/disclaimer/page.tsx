@@ -35,6 +35,9 @@ export default function DisclaimerPage() {
                   <p className="text-white font-semibold">
                     Trading in financial markets involves substantial risk of loss and is not suitable for all investors. Past performance is not indicative of future results. You should carefully consider your financial situation before trading.
                   </p>
+                  <p className="text-terminal-muted text-sm mt-4">
+                    This service is NOT regulated by financial authorities and is NOT registered as an investment advisor. We do not manage funds, execute trades, or provide personalized trading recommendations.
+                  </p>
                 </div>
               </div>
             </div>
@@ -76,10 +79,10 @@ export default function DisclaimerPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">Astrological Analysis Disclaimer</h2>
                 <p>
-                  The planetary calculations and astrological correlations presented in Sacred Levels are for informational and educational purposes only. The relationship between celestial events and market movements is speculative and has not been scientifically proven.
+                  The planetary calculations and astrological correlations presented in Sacred Levels are for informational and educational purposes only. Astrological analysis is considered a speculative methodology and is not scientifically validated. The relationship between celestial events and market movements has not been scientifically proven.
                 </p>
                 <p className="mt-2">
-                  You should never base trading decisions solely on astrological indicators. Always use proper risk management and consider multiple factors in your analysis.
+                  <strong className="text-gold-500">Important:</strong> You should never base trading decisions solely on astrological indicators. It should be used for informational purposes only, never as a primary trading signal. Always use proper risk management and consider multiple factors in your analysis.
                 </p>
               </section>
 
@@ -133,6 +136,16 @@ export default function DisclaimerPage() {
                   <li>A tax professional for tax-related matters</li>
                   <li>A legal professional for legal questions</li>
                 </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-white mb-3">Google Ads Compliance Statement</h2>
+                <p>
+                  Sacred Levels complies with financial services advertising policies. We do not promise guaranteed returns, specific profit percentages, or risk-free trading. All promotional content is subject to the disclaimers on this page. Historical performance examples are provided for context only and do not represent typical user outcomes.
+                </p>
+                <p className="mt-2">
+                  Any references to historical achievements, case studies, or market examples are for educational illustration purposes and should not be interpreted as promises of future performance or earnings potential.
+                </p>
               </section>
 
               <section>
