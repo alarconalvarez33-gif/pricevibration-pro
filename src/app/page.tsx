@@ -10,6 +10,7 @@ import FAQAccordion from '@/components/FAQAccordion'
 import ExnessBanner from '@/components/ExnessBanner'
 import LiveNotification from '@/components/LiveNotification'
 import OnlineCounter from '@/components/OnlineCounter'
+import { TickerTape } from '@/components/TradingView'
 
 const testimonials = [
   { name: 'Marcus C.', country: '🇸🇬', text: 'The calculated levels provide valuable mathematical insights for my analysis.' },
@@ -49,80 +50,136 @@ const faqItems = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-terminal-bg overflow-hidden">
-      <ParticleBackground particleCount={60} />
+      <ParticleBackground particleCount={40} />
       <Navbar />
-      <LiveNotification />
+
+      {/* Market Ticker Tape */}
+      <div className="pt-16">
+        <TickerTape colorTheme="dark" />
+      </div>
 
       {/* ============================================
           HERO SECTION
           ============================================ */}
-      <section className="relative pt-24 pb-20 px-4 overflow-hidden">
+      <section className="relative pt-16 pb-20 px-4 overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-20"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-[120px]"></div>
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center">
-            {/* Online Counter */}
-            <div className="flex justify-center mb-6 animate-fadeIn">
-              <OnlineCounter />
-            </div>
-
             {/* Logo */}
-            <div className="flex justify-center mb-6 animate-fadeInDown">
+            <div className="flex justify-center mb-6">
               <Logo size="xl" showText={false} />
             </div>
 
             {/* Main Title */}
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 animate-fadeInUp stagger-1">
-              <span className="text-gradient-gold">The</span>
-              <span className="text-white">Mentor</span>
-              <span className="text-gradient-gold">Trading</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              <span className="text-white">Professional Trading Analysis</span>
+              <br />
+              <span className="text-gradient-gold">Based on W.D. Gann Methodology</span>
             </h1>
 
-            {/* Inspirational Quote */}
-            <p className="font-cursive italic text-xl md:text-2xl lg:text-3xl text-gradient-gold mb-8 animate-fadeInUp stagger-2">
-              &ldquo;Mathematical Synergy: Where time cycles converge with price action.&rdquo;
+            {/* Subtitle */}
+            <p className="text-terminal-muted text-base md:text-lg max-w-3xl mx-auto mb-4 leading-relaxed">
+              Advanced mathematical calculations and planetary cycle analysis for institutional-grade market insights.
+              Trusted by professional traders worldwide.
             </p>
 
-            {/* Subtitle */}
-            <p className="text-terminal-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 animate-fadeInUp stagger-3">
-              Ancient mathematical secrets. Planetary alignments. A formula hidden for over 100 years.
-            </p>
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap items-center justify-center gap-4 mb-10 text-sm text-terminal-muted">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>Secure Payments</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>Educational Platform</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>52+ Countries</span>
+              </div>
+            </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fadeInUp stagger-4">
-              <Link href="/register" className="btn-gold-large glow-gold group">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+              <Link href="/register" className="btn-gold-large group">
                 <span className="flex items-center gap-2">
-                  Unlock the Formula
+                  Start Free Trial
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </span>
               </Link>
               <Link href="/billing" className="btn-outline-gold text-lg px-8 py-4">
-                View Pricing
+                View Plans
               </Link>
             </div>
 
             {/* Stats */}
-            <div className="mt-16 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
-              <div className="text-center animate-fadeInUp stagger-4">
+            <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mb-12">
+              <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
                   <AnimatedCounter end={89.7} suffix="%" decimals={1} />
                 </div>
-                <div className="text-terminal-muted text-sm mt-1">Accuracy on Reversals</div>
+                <div className="text-terminal-muted text-sm mt-1">Analysis Accuracy</div>
               </div>
-              <div className="text-center animate-fadeInUp stagger-5">
+              <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
                   <AnimatedCounter end={12500} suffix="+" />
                 </div>
-                <div className="text-terminal-muted text-sm mt-1">Active Traders</div>
+                <div className="text-terminal-muted text-sm mt-1">Active Users</div>
               </div>
-              <div className="text-center animate-fadeInUp stagger-5">
+              <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
                   <AnimatedCounter end={52} suffix="+" />
                 </div>
                 <div className="text-terminal-muted text-sm mt-1">Countries</div>
+              </div>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="border-t border-terminal-border pt-8">
+              <p className="text-terminal-muted/60 text-xs mb-4 uppercase tracking-wide">Trusted & Secure</p>
+              <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
+                {/* Stripe */}
+                <div className="flex items-center gap-2">
+                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+                  </svg>
+                  <div className="text-left">
+                    <div className="text-xs font-semibold text-white">Stripe</div>
+                    <div className="text-xs text-terminal-muted">Secure Payments</div>
+                  </div>
+                </div>
+
+                {/* SSL */}
+                <div className="flex items-center gap-2">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  <div className="text-left">
+                    <div className="text-xs font-semibold text-white">SSL Encrypted</div>
+                    <div className="text-xs text-terminal-muted">Bank-Level Security</div>
+                  </div>
+                </div>
+
+                {/* 24/7 */}
+                <div className="flex items-center gap-2">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="text-left">
+                    <div className="text-xs font-semibold text-white">24/7 Access</div>
+                    <div className="text-xs text-terminal-muted">Always Available</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -143,16 +200,17 @@ export default function Home() {
       </section>
 
       {/* ============================================
-          THE SECRET SECTION
+          METHODOLOGY SECTION
           ============================================ */}
       <section className="py-20 px-4 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="text-white">The Secret Behind </span>
-            <span className="text-gradient-gold-static">Every Market Turn</span>
+            <span className="text-white">Advanced Mathematical </span>
+            <span className="text-gradient-gold-static">Price Analysis</span>
           </h2>
           <p className="text-terminal-muted text-lg mb-12 max-w-2xl mx-auto">
-            What if you could predict where price will reverse... <span className="text-gold-500">before it happens?</span>
+            Institutional-grade calculations for identifying key support and resistance levels
+            using <span className="text-gold-500">W.D. Gann&apos;s proven methodology</span>.
           </p>
 
           {/* Blurred Trading Chart with Levels */}
@@ -271,17 +329,17 @@ export default function Home() {
       </section>
 
       {/* ============================================
-          SEE IT IN ACTION (EXAMPLES)
+          ANALYSIS EXAMPLES
           ============================================ */}
       <section className="py-20 px-4 bg-terminal-card/30 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">See It </span>
-              <span className="text-gradient-gold-static">In Action</span>
+              <span className="text-white">Analysis </span>
+              <span className="text-gradient-gold-static">Demonstrations</span>
             </h2>
             <p className="text-terminal-muted max-w-2xl mx-auto">
-              Real examples. Real results. Hidden details.
+              Historical market analysis examples using Gann methodology. For educational purposes only.
             </p>
           </div>
 
@@ -517,20 +575,23 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="card-premium p-12 rounded-3xl">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">Ready to </span>
-              <span className="text-gradient-gold-static">Unlock the Formula?</span>
+              <span className="text-white">Start Your </span>
+              <span className="text-gradient-gold-static">Free Trial Today</span>
             </h2>
-            <p className="font-cursive italic text-xl text-gold-500 mb-6">
-              &ldquo;Mathematical Synergy: Where time cycles converge with price action.&rdquo;
-            </p>
             <p className="text-terminal-muted mb-8 max-w-2xl mx-auto">
-              Join thousands of traders who discovered the century-old secrets to market prediction.
+              Access professional-grade market analysis tools based on proven mathematical principles.
+              No credit card required for free tier.
             </p>
-            <Link href="/register" className="btn-gold-large glow-gold-intense">
-              Start Now →
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+              <Link href="/register" className="btn-gold-large">
+                Create Free Account
+              </Link>
+              <Link href="/billing" className="btn-outline-gold text-lg px-8 py-4">
+                Compare Plans
+              </Link>
+            </div>
             <p className="text-terminal-muted/60 text-sm mt-6">
-              Trusted by traders in 52+ countries
+              Join 12,500+ traders in 52 countries
             </p>
           </div>
         </div>
