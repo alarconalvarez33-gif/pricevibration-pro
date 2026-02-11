@@ -10,8 +10,9 @@ export async function POST(request: Request) {
     console.log('🔔 Webhook Pagopar recibido:', JSON.stringify(body, null, 2))
     console.log('📦 Tipo de body:', Array.isArray(body) ? 'Array' : 'Object')
 
-    // Pagopar envía un array con resultado[0]
-    const resultado = Array.isArray(body) ? body[0] : body
+    // Pagopar envía un array - guardarlo para retornarlo al final
+    const arrayResultado = Array.isArray(body) ? body : [body]
+    const resultado = arrayResultado[0]
     const { pagado, numero_pedido, hash_pedido, token } = resultado
 
     console.log('📋 Datos extraídos:', {
@@ -47,15 +48,15 @@ export async function POST(request: Request) {
         expected: expectedToken,
         hash_pedido,
       })
-      // IMPORTANTE: Retornar el body con 200 para que Pagopar no reintente
-      return NextResponse.json(body, { status: 200 })
+      // IMPORTANTE: Retornar SOLO el array para que Pagopar no reintente
+      return NextResponse.json(arrayResultado, { status: 200 })
     }
 
     console.log('✅ Token validado correctamente')
 
     if (!hash_pedido || !numero_pedido) {
       console.error('❌ Missing hash_pedido or numero_pedido')
-      return NextResponse.json(body, { status: 200 })
+      return NextResponse.json(arrayResultado, { status: 200 })
     }
 
     // Buscar el pago en la base de datos
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
 
     if (!payment) {
       console.error('Pago no encontrado:', numero_pedido, hash_pedido)
-      return NextResponse.json(body, { status: 200 })
+      return NextResponse.json(arrayResultado, { status: 200 })
     }
 
     // Procesar resultado del pago
@@ -112,11 +113,13 @@ export async function POST(request: Request) {
       console.log(`❌ Pago fallido para pedido ${numero_pedido}`)
     }
 
-    // Devolver el mismo array resultado que recibimos
-    return NextResponse.json(body, { status: 200 })
+    // Devolver SOLO el array (sin envoltura de "respuesta" y "resultado")
+    console.log('📤 Retornando a Pagopar:', JSON.stringify(arrayResultado, null, 2))
+    return NextResponse.json(arrayResultado, { status: 200 })
   } catch (error) {
     console.error('Webhook error:', error)
-    return NextResponse.json({}, { status: 200 })
+    // En caso de error, retornar un array vacío
+    return NextResponse.json([], { status: 200 })
   }
 }
 
