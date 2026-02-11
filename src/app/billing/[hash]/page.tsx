@@ -1,9 +1,27 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+
+// Extend Window interface for gtag
+declare global {
+  interface Window {
+    gtag?: (
+      command: string,
+      eventName: string,
+      params?: {
+        send_to?: string
+        value?: number
+        currency?: string
+        transaction_id?: string
+        new_customer?: boolean
+      }
+    ) => void
+    dataLayer?: any[]
+  }
+}
 
 interface PaymentStatus {
   status: 'pending' | 'paid' | 'failed' | 'not_found'
@@ -23,6 +41,7 @@ export default function PaymentStatusPage() {
   const hash = params?.hash as string
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const conversionSent = useRef(false) // Track if conversion was already sent
 
   useEffect(() => {
     if (!hash) return
@@ -54,6 +73,50 @@ export default function PaymentStatusPage() {
 
     return () => clearInterval(interval)
   }, [hash, paymentStatus?.status])
+
+  // Google Ads Conversion Tracking - ONLY when payment is successful
+  useEffect(() => {
+    // Only send conversion once when payment is confirmed as paid
+    if (
+      typeof window !== 'undefined' &&
+      window.gtag &&
+      paymentStatus?.status === 'paid' &&
+      !conversionSent.current
+    ) {
+      conversionSent.current = true // Mark as sent to prevent duplicates
+
+      // Calculate USD value based on plan and billing period
+      let valueUSD = 0
+      const planType = paymentStatus.planType?.toLowerCase()
+      const billingPeriod = paymentStatus.billingPeriod?.toLowerCase()
+
+      if (planType === 'pro') {
+        valueUSD = billingPeriod === 'yearly' ? 470 : 49
+      } else if (planType === 'whale') {
+        valueUSD = billingPeriod === 'yearly' ? 960 : 100
+      }
+
+      // Send conversion event to Google Ads
+      try {
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-17947767962/lRH1CPiy-fYbEJrplO5C',
+          value: valueUSD,
+          currency: 'USD',
+          transaction_id: paymentStatus.orderId || hash,
+          new_customer: true, // Assuming new customer for now
+        })
+
+        console.log('✅ Google Ads conversion tracked:', {
+          plan: planType,
+          period: billingPeriod,
+          value: valueUSD,
+          transaction_id: paymentStatus.orderId || hash,
+        })
+      } catch (error) {
+        console.error('Error sending Google Ads conversion:', error)
+      }
+    }
+  }, [paymentStatus, hash])
 
   const getStatusIcon = () => {
     switch (paymentStatus?.status) {
