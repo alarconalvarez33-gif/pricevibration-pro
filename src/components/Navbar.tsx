@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import Logo from './Logo'
+import LanguageSelector from './LanguageSelector'
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -54,6 +55,10 @@ export default function Navbar() {
             <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors">
               Pricing
             </Link>
+
+            {/* Language Selector */}
+            <LanguageSelector />
+
             {session ? (
               <>
                 <Link href="/dashboard" className="text-terminal-muted hover:text-gold-500 transition-colors">
