@@ -11,6 +11,7 @@ import ExnessBanner from '@/components/ExnessBanner'
 import LiveNotification from '@/components/LiveNotification'
 import OnlineCounter from '@/components/OnlineCounter'
 import { TickerTape } from '@/components/TradingView'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const testimonials = [
   { name: 'Marcus C.', country: '🇸🇬', text: 'The calculated levels provide valuable mathematical insights for my analysis.' },
@@ -48,6 +49,8 @@ const faqItems = [
 ]
 
 export default function Home() {
+  const { t } = useLanguage()
+
   return (
     <main className="min-h-screen bg-terminal-bg overflow-hidden">
       <ParticleBackground particleCount={40} />
@@ -74,15 +77,14 @@ export default function Home() {
 
             {/* Main Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-white">Professional Trading Analysis</span>
+              <span className="text-white">{t('hero.title1')}</span>
               <br />
-              <span className="text-gradient-gold">Based on W.D. Gann Methodology</span>
+              <span className="text-gradient-gold">{t('hero.title2')}</span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-terminal-muted text-base md:text-lg max-w-3xl mx-auto mb-4 leading-relaxed">
-              Advanced mathematical calculations and planetary cycle analysis for institutional-grade market insights.
-              Trusted by professional traders worldwide.
+              {t('hero.subtitle')}
             </p>
 
             {/* Trust Indicators */}
@@ -91,19 +93,19 @@ export default function Home() {
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span>Secure Payments</span>
+                <span>{t('hero.secure')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span>Educational Platform</span>
+                <span>{t('hero.educational')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span>52+ Countries</span>
+                <span>52+ {t('hero.countries')}</span>
               </div>
             </div>
 
@@ -111,14 +113,14 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
               <Link href="/register" className="btn-gold-large group">
                 <span className="flex items-center gap-2">
-                  Start Free Trial
+                  {t('hero.cta.start')}
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </span>
               </Link>
               <Link href="/billing" className="btn-outline-gold text-lg px-8 py-4">
-                View Plans
+                {t('hero.cta.pricing')}
               </Link>
             </div>
 
@@ -128,19 +130,19 @@ export default function Home() {
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
                   <AnimatedCounter end={89.7} suffix="%" decimals={1} />
                 </div>
-                <div className="text-terminal-muted text-sm mt-1">Analysis Accuracy</div>
+                <div className="text-terminal-muted text-sm mt-1">{t('stats.accuracy')}</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
                   <AnimatedCounter end={12500} suffix="+" />
                 </div>
-                <div className="text-terminal-muted text-sm mt-1">Active Users</div>
+                <div className="text-terminal-muted text-sm mt-1">{t('stats.users')}</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
                   <AnimatedCounter end={52} suffix="+" />
                 </div>
-                <div className="text-terminal-muted text-sm mt-1">Countries</div>
+                <div className="text-terminal-muted text-sm mt-1">{t('stats.countries')}</div>
               </div>
             </div>
 

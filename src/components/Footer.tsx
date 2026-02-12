@@ -1,7 +1,11 @@
+'use client'
+
 import Link from 'next/link'
 import Logo from './Logo'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Footer() {
+  const { t } = useLanguage()
   return (
     <footer className="bg-terminal-card border-t border-terminal-border relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -95,13 +99,10 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t border-terminal-border">
           <div className="bg-terminal-bg border border-gold-500/20 rounded-xl p-6">
             <h3 className="text-gold-500 font-semibold text-sm mb-3 uppercase tracking-wide">
-              Important Legal Disclaimer
+              {t('footer.legal')}
             </h3>
             <p className="text-terminal-muted/80 text-xs leading-relaxed">
-              Sacred Levels is an educational tool for technical analysis purposes only. It does not
-              constitute financial advice, trading signals, or investment recommendations. Trading
-              financial instruments involves substantial risk of loss. Past performance does not
-              guarantee future results. You are solely responsible for your trading decisions.
+              {t('footer.disclaimer')}
             </p>
           </div>
         </div>

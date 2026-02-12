@@ -5,9 +5,11 @@ import { useSession, signOut } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import Logo from './Logo'
 import LanguageSelector from './LanguageSelector'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Navbar() {
   const { data: session } = useSession()
+  const { t } = useLanguage()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -42,7 +44,7 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
             <Link href="/" className="text-terminal-muted hover:text-gold-500 transition-colors">
-              Home
+              {t('nav.home')}
             </Link>
             <Link href="/astrology" className="text-terminal-muted hover:text-gold-500 transition-colors">
               Astrology
@@ -53,7 +55,7 @@ export default function Navbar() {
               </Link>
             )}
             <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors">
-              Pricing
+              {t('nav.pricing')}
             </Link>
 
             {/* Language Selector */}
@@ -62,7 +64,7 @@ export default function Navbar() {
             {session ? (
               <>
                 <Link href="/dashboard" className="text-terminal-muted hover:text-gold-500 transition-colors">
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
 
                 {/* User Dropdown */}
@@ -152,10 +154,10 @@ export default function Navbar() {
             ) : (
               <div className="flex items-center space-x-4">
                 <Link href="/login" className="text-terminal-muted hover:text-gold-500 transition-colors">
-                  Login
+                  {t('nav.login')}
                 </Link>
                 <Link href="/register" className="btn-gold text-sm py-2 px-4">
-                  Get Started
+                  {t('nav.register')}
                 </Link>
               </div>
             )}
