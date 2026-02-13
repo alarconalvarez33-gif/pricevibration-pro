@@ -116,11 +116,7 @@ export default function LoginPage() {
 
           {/* Demo credentials */}
           <div className="mt-6 p-4 bg-gold-500/5 border border-gold-500/20 rounded-lg">
-            <p className="text-gold-500 text-sm font-medium mb-2">Demo Account</p>
-            <p className="text-terminal-muted text-xs">
-              Email: demo@pricevibration.com<br />
-              Password: demo123
-            </p>
+            
           </div>
         </div>
       </div>
