@@ -597,51 +597,34 @@ export default function Home() {
             </p>
           </div>
         </div>
-      import React from 'react';
-"use client";
+      "use client"; // Esta línea debe estar al principio del todo
+
+import { useLanguage } from "@/context/LanguageContext"; // O la ruta que uses
+// ... otros imports
 
 export default function Home() {
+  const { t } = useLanguage(); // Aquí es donde tenías el error
+
   return (
-    <main style={{ backgroundColor: '#0a0a0a', minHeight: '100vh', color: '#fff' }}>
-      {/* Tu contenido actual puede ir aquí arriba */}
+    <main className="min-h-screen bg-terminal-bg overflow-hidden">
+      <ParticleBackground particleCount={40} />
+      <Navbar />
       
-      <section style={{ padding: '80px 20px', textAlign: 'center' }}>
-        <div style={{ 
-          maxWidth: '550px', 
-          margin: '0 auto', 
-          border: '1px solid #D4AF37', 
-          borderRadius: '15px', 
-          padding: '40px', 
-          backgroundColor: '#111',
-          boxShadow: '0 10px 30px rgba(212, 175, 55, 0.1)'
-        }}>
-          <h2 style={{ color: '#D4AF37', fontSize: '2rem', marginBottom: '10px' }}>DIRECT CONSULTATION</h2>
-          <p style={{ color: '#888', marginBottom: '30px' }}>¿Dudas sobre la Estrella de Gann? Escríbeme directamente.</p>
-          
-          <form action="https://formspree.io/f/xreapnkb" method="POST" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <input 
-              type="email" 
-              name="email" 
-              placeholder="Tu Correo Electrónico" 
-              required 
-              style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff' }} 
-            />
-            <textarea 
-              name="message" 
-              placeholder="Escribe tu consulta aquí..." 
-              rows={5} 
-              required 
-              style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', resize: 'none' }}
-            ></textarea>
-            <button 
-              type="submit" 
-              style={{ padding: '15px', backgroundColor: '#D4AF37', color: '#000', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '1.1rem' }}
-            >
-              ENVIAR CONSULTA AL MENTOR
-            </button>
+      {/* Tu contenido actual */}
+
+      {/* PEGA AQUÍ EL FORMULARIO DE FORMSPREE */}
+      <section style={{ padding: '60px 20px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '500px', margin: '0 auto', border: '1px solid #D4AF37', padding: '30px', backgroundColor: 'rgba(17, 17, 17, 0.9)', borderRadius: '12px' }}>
+          <h2 style={{ color: '#D4AF37', textAlign: 'center' }}>CONTACT THE MENTOR</h2>
+          <form action="https://formspree.io/f/xreapnkb" method="POST" style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
+            <input type="email" name="email" placeholder="Email" required style={{ padding: '10px', background: '#1a1a1a', color: '#fff', border: '1px solid #333' }} />
+            <textarea name="message" placeholder="Message" rows={4} required style={{ padding: '10px', background: '#1a1a1a', color: '#fff', border: '1px solid #333' }}></textarea>
+            <button type="submit" style={{ padding: '12px', background: '#D4AF37', color: '#000', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>SEND</button>
           </form>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }
