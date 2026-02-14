@@ -597,48 +597,42 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </section>
-export default function ContactSection() {
+      import React from 'react';
+
+// 1. Definimos el componente del Formulario (Estilo Whale)
+function ContactSection() {
   return (
     <section style={{ padding: '80px 20px', backgroundColor: '#0a0a0a', textAlign: 'center' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', border: '1px solid #D4AF37', borderRadius: '15px', padding: '40px', backgroundColor: '#111', boxShadow: '0 10px 30px rgba(212, 175, 55, 0.1)' }}>
-        <h2 style={{ color: '#D4AF37', fontSize: '2rem', marginBottom: '10px', fontFamily: 'serif' }}>DIRECT CONSULTATION</h2>
-        <p style={{ color: '#888', marginBottom: '30px' }}>¿Tienes dudas sobre la Estrella de Gann o el Plan Whale? Escríbeme directamente.</p>
+        <h2 style={{ color: '#D4AF37', fontSize: '2rem', marginBottom: '10px' }}>DIRECT CONSULTATION</h2>
+        <p style={{ color: '#888', marginBottom: '30px' }}>¿Tienes dudas sobre algunos métodos? Escríbeme.</p>
         
+        {/* REEMPLAZA "TU_ID" con el que te dio Formspree */}
         <form action="https://formspree.io/f/xreapnkb" method="POST" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          <input 
-            type="text" 
-            name="name" 
-            placeholder="Tu Nombre" 
-            required 
-            style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none' }}
-          />
-          <input 
-            type="email" 
-            name="email" 
-            placeholder="alarconalvarez33@gmail.com" 
-            required 
-            style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none' }}
-          />
-          <textarea 
-            name="message" 
-            placeholder="Escribe tu consulta aquí..." 
-            rows="5" 
-            required 
-            style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none', resize: 'none' }}
-          ></textarea>
-          
-          <button 
-            type="submit" 
-            style={{ padding: '15px', backgroundColor: '#D4AF37', color: '#000', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '1.1rem', transition: '0.3s' }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#b8962d'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#D4AF37'}
-          >
-            ENVIAR CONSULTA AL MENTOR
+          <input type="text" name="name" placeholder="Tu Nombre" required style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff' }} />
+          <input type="email" name="email" placeholder="Tu Correo" required style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff' }} />
+          <textarea name="message" placeholder="Escribe tu consulta aquí..." rows={5} required style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', resize: 'none' }}></textarea>
+          <button type="submit" style={{ padding: '15px', backgroundColor: '#D4AF37', color: '#000', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+            ENVIAR CONSULTA A THE MENTOR
           </button>
         </form>
       </div>
     </section>
+  );
+}
+
+// 2. Esta es tu página principal
+export default function Home() {
+  return (
+    <main>
+      {/* AQUÍ VA EL CONTENIDO QUE YA TENÍAS (Hero, Gráficos, etc.) */}
+      <div style={{ padding: '100px', textAlign: 'center' }}>
+        <h1 style={{ color: '#D4AF37' }}>Bienvenidos a Sacred Levels</h1>
+      </div>
+
+      {/* INSERTAMOS EL FORMULARIO AL FINAL */}
+      <ContactSection />
+    </main>
   );
 }
       <Footer />
