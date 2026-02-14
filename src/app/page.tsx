@@ -597,33 +597,83 @@ export default function Home() {
             </p>
           </div>
         </div>
-      "use client"; // Esta línea debe estar al principio del todo
+      "use client";
 
-import { useLanguage } from "@/context/LanguageContext"; // O la ruta que uses
-// ... otros imports
+import React from 'react';
+import { useLanguage } from "@/context/LanguageContext";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ParticleBackground from "@/components/ParticleBackground";
 
 export default function Home() {
-  const { t } = useLanguage(); // Aquí es donde tenías el error
+  const { t } = useLanguage();
 
   return (
-    <main className="min-h-screen bg-terminal-bg overflow-hidden">
+    <main className="min-h-screen bg-terminal-bg overflow-hidden relative">
+      {/* Fondo de Partículas */}
       <ParticleBackground particleCount={40} />
-      <Navbar />
       
-      {/* Tu contenido actual */}
+      {/* Navegación Superior */}
+      <Navbar />
 
-      {/* PEGA AQUÍ EL FORMULARIO DE FORMSPREE */}
-      <section style={{ padding: '60px 20px', position: 'relative', zIndex: 10 }}>
-        <div style={{ maxWidth: '500px', margin: '0 auto', border: '1px solid #D4AF37', padding: '30px', backgroundColor: 'rgba(17, 17, 17, 0.9)', borderRadius: '12px' }}>
-          <h2 style={{ color: '#D4AF37', textAlign: 'center' }}>CONTACT THE MENTOR</h2>
-          <form action="https://formspree.io/f/xreapnkb" method="POST" style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
-            <input type="email" name="email" placeholder="Email" required style={{ padding: '10px', background: '#1a1a1a', color: '#fff', border: '1px solid #333' }} />
-            <textarea name="message" placeholder="Message" rows={4} required style={{ padding: '10px', background: '#1a1a1a', color: '#fff', border: '1px solid #333' }}></textarea>
-            <button type="submit" style={{ padding: '12px', background: '#D4AF37', color: '#000', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>SEND</button>
+      {/* Hero Section (Ajusta este espacio según tu contenido) */}
+      <section className="relative z-10 pt-32 pb-20 text-center">
+        <h1 className="text-[#D4AF37] text-4xl md:text-6xl font-bold mb-4">
+          SACRED LEVELS
+        </h1>
+        <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto px-4">
+          The Mentor Pro: Trading Intelligence & High Precision Levels
+        </p>
+      </section>
+
+      {/* Formulario de Consulta Directa */}
+      <section className="relative z-20 py-16 px-4">
+        <div className="max-w-md mx-auto bg-black/60 border border-[#D4AF37]/50 p-8 rounded-2xl backdrop-blur-md shadow-[0_0_30px_rgba(212,175,55,0.1)]">
+          <h2 className="text-[#D4AF37] text-2xl font-bold text-center mb-2">
+            DIRECT CONSULTATION
+          </h2>
+          <p className="text-zinc-500 text-sm text-center mb-8">
+            ¿Dudas sobre la Estrella de Gann? Escríbeme directamente.
+          </p>
+          
+          <form action="https://formspree.io/f/xreapnkb" method="POST" className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-[#D4AF37] text-xs uppercase tracking-widest ml-1">Your Email</label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                placeholder="email@example.com"
+                className="p-3 bg-zinc-900/80 border border-zinc-800 text-white rounded-lg focus:outline-none focus:border-[#D4AF37] transition-colors"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[#D4AF37] text-xs uppercase tracking-widest ml-1">Message</label>
+              <textarea 
+                name="message" 
+                rows={5} 
+                required 
+                placeholder="Escribe tu consulta aquí..."
+                className="p-3 bg-zinc-900/80 border border-zinc-800 text-white rounded-lg focus:outline-none focus:border-[#D4AF37] transition-colors resize-none"
+              ></textarea>
+            </div>
+
+            <button 
+              type="submit" 
+              className="mt-4 p-4 bg-[#D4AF37] text-black font-black rounded-lg hover:bg-[#b8962d] transition-all transform hover:scale-[1.02] active:scale-[0.98] uppercase tracking-tighter"
+            >
+              Send to the Mentor
+            </button>
           </form>
         </div>
       </section>
 
+      {/* Pie de página */}
+      <Footer />
+    </main>
+  );
+}
       <Footer />
     </main>
   );
