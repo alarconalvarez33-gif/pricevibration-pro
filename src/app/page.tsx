@@ -598,49 +598,53 @@ export default function Home() {
           </div>
         </div>
       import React from 'react';
+"use client";
 
-Code examples
-<!-- modify this form HTML and place wherever you want your form -->
-<form
-  action="https://formspree.io/f/xreapnkb"
-  method="POST"
->
-  <label>
-    Your email:
-    <input type="email" name="email">
-  </label>
-  <label>
-    Your message:
-    <textarea name="message"></textarea>
-  </label>
-  <!-- your other form fields go here -->
-  <button type="submit">Send</button>
-</form>
+export default function Home() {
+  return (
+    <main style={{ backgroundColor: '#0a0a0a', minHeight: '100vh', color: '#fff' }}>
+      {/* Tu contenido actual puede ir aquí arriba */}
+      
+      <section style={{ padding: '80px 20px', textAlign: 'center' }}>
+        <div style={{ 
+          maxWidth: '550px', 
+          margin: '0 auto', 
+          border: '1px solid #D4AF37', 
+          borderRadius: '15px', 
+          padding: '40px', 
+          backgroundColor: '#111',
+          boxShadow: '0 10px 30px rgba(212, 175, 55, 0.1)'
+        }}>
+          <h2 style={{ color: '#D4AF37', fontSize: '2rem', marginBottom: '10px' }}>DIRECT CONSULTATION</h2>
+          <p style={{ color: '#888', marginBottom: '30px' }}>¿Dudas sobre la Estrella de Gann? Escríbeme directamente.</p>
+          
+          <form action="https://formspree.io/f/xreapnkb" method="POST" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="Tu Correo Electrónico" 
+              required 
+              style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff' }} 
+            />
+            <textarea 
+              name="message" 
+              placeholder="Escribe tu consulta aquí..." 
+              rows={5} 
+              required 
+              style={{ padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', resize: 'none' }}
+            ></textarea>
+            <button 
+              type="submit" 
+              style={{ padding: '15px', backgroundColor: '#D4AF37', color: '#000', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '1.1rem' }}
+            >
+              ENVIAR CONSULTA AL MENTOR
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+  );
+}
       <Footer />
 
-      {/* Scroll animation keyframe for testimonials */}
-      <style jsx>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
-    </main>
-  )
-}Code examples
-<!-- modify this form HTML and place wherever you want your form -->
-<form
-  action="https://formspree.io/f/xreapnkb"
-  method="POST"
 >
-  <label>
-    Your email:
-    <input type="email" name="email">
-  </label>
-  <label>
-    Your message:
-    <textarea name="message"></textarea>
-  </label>
-  <!-- your other form fields go here -->
-  <button type="submit">Send</button>
-</form>
