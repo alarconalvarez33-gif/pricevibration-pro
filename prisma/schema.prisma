@@ -16,6 +16,8 @@ model User {
   premiumUntil  DateTime?
   plan          String    @default("free") // free, pro, whale
   role          String    @default("user") // user, admin
+  trialUses     Int       @default(0)      // Contador de usos de prueba (máximo 2)
+  trialExpired  Boolean   @default(false)  // Bandera de trial expirado
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   calculations  Calculation[]

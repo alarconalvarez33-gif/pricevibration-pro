@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Logo from './Logo'
+import ExnessBanner from './ExnessBanner'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Footer() {
@@ -87,12 +88,17 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="mailto:contact@pricevibration.com" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
-                  Contact
-                </a>
+                <Link href="/contact" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
+                  {t('nav.contact') || 'Contact'}
+                </Link>
               </li>
             </ul>
           </div>
+        </div>
+
+        {/* Exness Banner */}
+        <div className="mt-8">
+          <ExnessBanner />
         </div>
 
         {/* Legal Disclaimer */}

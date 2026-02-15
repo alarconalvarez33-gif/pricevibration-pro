@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import ExnessBanner from '@/components/ExnessBanner'
 import { useAstrology, ZODIAC_SIGNS, ASPECT_CONFIG } from '@/hooks/useAstrology'
 
 export default function AstrologyPage() {
@@ -279,10 +278,6 @@ export default function AstrologyPage() {
 
       <div className="pt-24 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
-          {/* Exness Partner Banner */}
-          <div className="mb-6">
-            <ExnessBanner />
-          </div>
 
           {/* Header */}
           <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -478,13 +473,11 @@ export default function AstrologyPage() {
               </div>
 
               {/* Exness Partner Banner */}
-              <ExnessBanner />
-            </div>
+              </div>
           </div>
 
           {/* Bottom Exness Banner */}
           <div className="mt-8">
-            <ExnessBanner />
           </div>
         </div>
       </div>

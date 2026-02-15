@@ -40,6 +40,8 @@ export const authOptions: NextAuthOptions = {
           premiumUntil: user.premiumUntil?.toISOString() || null,
           plan: user.plan,
           role: user.role,
+          trialUses: user.trialUses,
+          trialExpired: user.trialExpired,
         }
       }
     })
@@ -70,6 +72,8 @@ export const authOptions: NextAuthOptions = {
         token.premiumUntil = (user as any).premiumUntil
         token.plan = (user as any).plan
         token.role = (user as any).role
+        token.trialUses = (user as any).trialUses
+        token.trialExpired = (user as any).trialExpired
       }
       return token
     },
@@ -81,6 +85,8 @@ export const authOptions: NextAuthOptions = {
         user.premiumUntil = token.premiumUntil
         user.plan = token.plan
         user.role = token.role
+        user.trialUses = token.trialUses
+        user.trialExpired = token.trialExpired
       }
       return session
     }

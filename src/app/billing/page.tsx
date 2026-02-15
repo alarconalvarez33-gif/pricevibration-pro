@@ -8,28 +8,6 @@ import ExnessBanner from '@/components/ExnessBanner'
 
 const PLANS = [
   {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    yearlyPrice: 0,
-    period: 'forever',
-    description: 'Perfect for learning Gann basics',
-    icon: '🌱',
-    color: 'from-gray-500 to-gray-600',
-    borderColor: 'border-gray-500',
-    features: [
-      { text: 'Basic Gann Calculator', included: true },
-      { text: '3 calculations per day', included: true },
-      { text: 'Educational content', included: true },
-      { text: 'Community forum access', included: true },
-      { text: 'Astro-Gann Module', included: false },
-      { text: 'Real-time planetary data', included: false },
-      { text: 'Export calculations', included: false },
-      { text: 'Priority support', included: false },
-    ],
-    cta: 'Get Started',
-  },
-  {
     id: 'pro',
     name: 'Pro',
     priceUsd: 49,
@@ -87,11 +65,6 @@ export default function BillingPage() {
   const [isLoading, setIsLoading] = useState<string | null>(null)
 
   const handleSubscribe = async (planId: string) => {
-    if (planId === 'free') {
-      window.location.href = '/register'
-      return
-    }
-
     if (!session) {
       window.location.href = '/login?redirect=/billing'
       return
@@ -171,7 +144,7 @@ export default function BillingPage() {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
             {PLANS.map((plan) => {
               const displayPriceUsd = billingPeriod === 'yearly' ? (plan.yearlyPriceUsd || 0) : (plan.priceUsd || 0)
               const savingsText = billingPeriod === 'yearly' && plan.priceUsd ? ' (Save 20%)' : ''

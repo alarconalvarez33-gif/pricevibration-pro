@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react'
 
 type Language = 'en' | 'es'
 
@@ -20,6 +20,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.dashboard': 'Dashboard',
     'nav.pricing': 'Pricing',
     'nav.guide': 'Guide',
+    'nav.contact': 'Contact',
     'nav.login': 'Login',
     'nav.register': 'Sign Up',
     'nav.settings': 'Settings',
@@ -58,13 +59,58 @@ const translations: Record<Language, Record<string, string>> = {
     'calc.placeholder': 'Enter the price of a minimum or maximum',
     'calc.increment': 'Increment Level',
     'calc.calculate': 'Calculate Levels',
+    'calc.calculating': 'Calculating...',
     'calc.resistance': 'Resistance Levels',
     'calc.support': 'Support Levels',
     'calc.export': 'Download Excel',
+    'calc.legalWarning.title': 'Important Legal Warning',
+    'calc.legalWarning.personal': 'for personal and educational use only',
+    'calc.legalWarning.personalText': 'The levels calculated by this tool are for',
+    'calc.legalWarning.prohibited': '🚫 Strictly Prohibited:',
+    'calc.legalWarning.resell': 'Resell or commercialize calculated levels',
+    'calc.legalWarning.shareSignals': 'Share levels in trading signals groups',
+    'calc.legalWarning.distributeExports': 'Distribute Excel/PDF exports commercially',
+    'calc.legalWarning.derivedServices': 'Create derived services using these calculations',
+    'calc.legalWarning.protectionTitle': '✅ Legal Protection:',
+    'calc.legalWarning.watermark': 'All calculations include watermark with your email',
+    'calc.legalWarning.traceable': 'Exports are traceable to your account',
+    'calc.legalWarning.suspension': 'Violations may result in permanent suspension',
+    'calc.legalWarning.legalAction': 'We reserve the right to take legal action',
+    'calc.legalWarning.confirmText': 'By continuing, you confirm that you have read and accept these terms.',
+    'calc.legalWarning.accept': 'I Accept the Terms',
+
+    // Trial
+    'trial.remaining': 'Free trial:',
+    'trial.usesRemaining': 'uses remaining',
+    'trial.subscribe': 'Subscribe for unlimited calculations',
+    'trial.expired': 'Free Trial Ended',
+    'trial.expiredMessage': 'You\'ve used all your free trial calculations. Subscribe to continue using the Gann Calculator and unlock unlimited calculations.',
+    'trial.viewPlans': 'View Plans & Subscribe',
 
     // Footer
     'footer.legal': 'Important Legal Disclaimer',
     'footer.disclaimer': 'Sacred Levels is an educational tool for technical analysis purposes only. It does not constitute financial advice, trading signals, or investment recommendations. Trading financial instruments involves substantial risk of loss. Past performance does not guarantee future results. You are solely responsible for your trading decisions.',
+
+    // Contact
+    'contact.title': 'Contact Us',
+    'contact.subtitle': 'Have questions? We\'d love to hear from you. Send us a message and we\'ll respond as soon as possible.',
+    'contact.name': 'Name',
+    'contact.namePlaceholder': 'Your full name',
+    'contact.email': 'Email',
+    'contact.emailPlaceholder': 'your@email.com',
+    'contact.subject': 'Subject',
+    'contact.subjectPlaceholder': 'What is this about?',
+    'contact.message': 'Message',
+    'contact.messagePlaceholder': 'Write your message here...',
+    'contact.send': 'Send Message',
+    'contact.sending': 'Sending...',
+    'contact.successTitle': 'Message Sent!',
+    'contact.successMessage': 'Thank you for contacting us. We\'ll get back to you as soon as possible.',
+    'contact.sendAnother': 'Send Another Message',
+    'contact.error': 'Error sending message. Please try again.',
+    'contact.otherWays': 'Other Ways to Reach Us',
+    'contact.responseTime': 'Response Time',
+    'contact.responseTimeText': 'We typically respond within 24-48 hours',
 
     // Common
     'common.loading': 'Loading...',
@@ -80,6 +126,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.dashboard': 'Panel',
     'nav.pricing': 'Precios',
     'nav.guide': 'Guía',
+    'nav.contact': 'Contacto',
     'nav.login': 'Iniciar Sesión',
     'nav.register': 'Registrarse',
     'nav.settings': 'Configuración',
@@ -118,13 +165,58 @@ const translations: Record<Language, Record<string, string>> = {
     'calc.placeholder': 'Coloca aquí el precio de un mínimo o máximo',
     'calc.increment': 'Nivel de Incremento',
     'calc.calculate': 'Calcular Niveles',
+    'calc.calculating': 'Calculando...',
     'calc.resistance': 'Niveles de Resistencia',
     'calc.support': 'Niveles de Soporte',
     'calc.export': 'Descargar Excel',
+    'calc.legalWarning.title': 'Advertencia Legal Importante',
+    'calc.legalWarning.personal': 'para uso personal y educativo únicamente',
+    'calc.legalWarning.personalText': 'Los niveles calculados por esta herramienta son para',
+    'calc.legalWarning.prohibited': '🚫 Está Estrictamente Prohibido:',
+    'calc.legalWarning.resell': 'Revender o comercializar los niveles calculados',
+    'calc.legalWarning.shareSignals': 'Compartir los niveles en grupos de señales de trading',
+    'calc.legalWarning.distributeExports': 'Distribuir las exportaciones Excel/PDF comercialmente',
+    'calc.legalWarning.derivedServices': 'Crear servicios derivados usando estos cálculos',
+    'calc.legalWarning.protectionTitle': '✅ Protección Legal:',
+    'calc.legalWarning.watermark': 'Todos los cálculos incluyen marca de agua con tu email',
+    'calc.legalWarning.traceable': 'Las exportaciones son rastreables a tu cuenta',
+    'calc.legalWarning.suspension': 'Violaciones pueden resultar en suspensión permanente',
+    'calc.legalWarning.legalAction': 'Nos reservamos el derecho de tomar acciones legales',
+    'calc.legalWarning.confirmText': 'Al continuar, confirmas que has leído y aceptas estos términos.',
+    'calc.legalWarning.accept': 'Acepto los Términos',
+
+    // Trial
+    'trial.remaining': 'Prueba gratuita:',
+    'trial.usesRemaining': 'usos restantes',
+    'trial.subscribe': 'Suscríbete para cálculos ilimitados',
+    'trial.expired': 'Prueba Gratuita Finalizada',
+    'trial.expiredMessage': 'Has usado todos tus cálculos de prueba gratuitos. Suscríbete para continuar usando la Calculadora Gann y desbloquear cálculos ilimitados.',
+    'trial.viewPlans': 'Ver Planes y Suscribirse',
 
     // Footer
     'footer.legal': 'Advertencia Legal Importante',
     'footer.disclaimer': 'Sacred Levels es una herramienta educativa solo para análisis técnico. No constituye asesoramiento financiero, señales de trading ni recomendaciones de inversión. Operar instrumentos financieros implica un riesgo sustancial de pérdida. El rendimiento pasado no garantiza resultados futuros. Usted es el único responsable de sus decisiones de trading.',
+
+    // Contact
+    'contact.title': 'Contáctanos',
+    'contact.subtitle': '¿Tienes preguntas? Nos encantaría saber de ti. Envíanos un mensaje y te responderemos lo antes posible.',
+    'contact.name': 'Nombre',
+    'contact.namePlaceholder': 'Tu nombre completo',
+    'contact.email': 'Correo',
+    'contact.emailPlaceholder': 'tu@correo.com',
+    'contact.subject': 'Asunto',
+    'contact.subjectPlaceholder': '¿De qué se trata?',
+    'contact.message': 'Mensaje',
+    'contact.messagePlaceholder': 'Escribe tu mensaje aquí...',
+    'contact.send': 'Enviar Mensaje',
+    'contact.sending': 'Enviando...',
+    'contact.successTitle': '¡Mensaje Enviado!',
+    'contact.successMessage': 'Gracias por contactarnos. Te responderemos lo antes posible.',
+    'contact.sendAnother': 'Enviar Otro Mensaje',
+    'contact.error': 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.',
+    'contact.otherWays': 'Otras Formas de Contactarnos',
+    'contact.responseTime': 'Tiempo de Respuesta',
+    'contact.responseTimeText': 'Normalmente respondemos en 24-48 horas',
 
     // Common
     'common.loading': 'Cargando...',
@@ -158,19 +250,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang)
     if (typeof window !== 'undefined') {
       localStorage.setItem('language', lang)
     }
-  }
+  }, [])
 
-  const t = (key: string): string => {
+  const t = useCallback((key: string): string => {
     return translations[language][key] || key
-  }
+  }, [language])
+
+  const value = useMemo(() => ({
+    language,
+    setLanguage,
+    t
+  }), [language, setLanguage, t])
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   )

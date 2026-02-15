@@ -22,13 +22,26 @@ const config: Config = {
           800: '#6b5215',
           900: '#503d10',
         },
-        // Professional Dark Theme (GitHub style)
+        // Institutional Navy Palette
+        navy: {
+          50: '#e8eef5',
+          100: '#c8d6e8',
+          200: '#99b3d6',
+          300: '#6a90c4',
+          400: '#4e7ab8',
+          500: '#4778b4',
+          600: '#3a5f8f',
+          700: '#2d4a6e',
+          800: '#1e3a5f',  // PRIMARY navy institucional
+          900: '#142840',
+        },
+        // Professional Dark Theme (Institutional)
         terminal: {
-          bg: '#0d0d0d',      // Main background
-          card: '#161b22',    // Card background
-          border: '#30363d',  // Subtle border
-          text: '#e6edf3',    // Soft white text
-          muted: '#8b949e',   // Muted text
+          bg: '#0f1419',       // Slightly lighter for better visibility
+          card: '#2d3748',     // Institutional dark gray
+          border: '#4a5568',   // More visible gray border
+          text: '#ffffff',     // Pure white for maximum contrast
+          muted: '#a0aec0',    // Lighter muted text
         },
         // Trading Colors
         gann: {

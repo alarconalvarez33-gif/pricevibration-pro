@@ -5,6 +5,16 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'd3dpet1g0ty5ed.cloudfront.net',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig

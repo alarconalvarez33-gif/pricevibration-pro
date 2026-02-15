@@ -7,7 +7,6 @@ import Logo from '@/components/Logo'
 import ParticleBackground from '@/components/ParticleBackground'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import FAQAccordion from '@/components/FAQAccordion'
-import ExnessBanner from '@/components/ExnessBanner'
 import LiveNotification from '@/components/LiveNotification'
 import OnlineCounter from '@/components/OnlineCounter'
 import { TickerTape } from '@/components/TradingView'
@@ -185,19 +184,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ============================================
-          EXNESS PARTNER SECTION
-          ============================================ */}
-      <section className="py-12 px-4 relative z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-6">
-            <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Trade with Our Official Partner</h3>
-            <p className="text-terminal-muted">0% commission on Gold trading</p>
-          </div>
-          <ExnessBanner />
         </div>
       </section>
 

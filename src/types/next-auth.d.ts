@@ -10,6 +10,8 @@ declare module 'next-auth' {
       premiumUntil?: string | null
       plan: string
       role: string
+      trialUses: number
+      trialExpired: boolean
     }
   }
 
@@ -18,6 +20,8 @@ declare module 'next-auth' {
     premiumUntil?: string | null
     plan: string
     role: string
+    trialUses: number
+    trialExpired: boolean
   }
 }
 
@@ -27,5 +31,7 @@ declare module 'next-auth/jwt' {
     premiumUntil?: string | null
     plan: string
     role: string
+    trialUses: number
+    trialExpired: boolean
   }
 }

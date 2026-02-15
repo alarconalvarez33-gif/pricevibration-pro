@@ -8,7 +8,6 @@ import Footer from '@/components/Footer'
 import GannCalculator from '@/components/GannCalculator'
 import GannCosmogram from '@/components/GannCosmogram'
 import AstroGann from '@/components/AstroGann'
-import ExnessBanner from '@/components/ExnessBanner'
 import { TickerTape, AdvancedChart, MiniChart, EconomicCalendar } from '@/components/TradingView'
 import { GannLevels } from '@/lib/gann'
 import Link from 'next/link'
@@ -59,32 +58,42 @@ export default function DashboardPage() {
   const isWhale = plan === 'whale' || isAdmin
   const isPro = plan === 'pro' || isAdmin
   const tier = isWhale ? 'whale' : isPro ? 'pro' : 'free'
+  const trialUses = session.user.trialUses || 0
+  const trialExpired = session.user.trialExpired || false
 
+  // Trial system for non-premium users
   if (!isPremium) {
-    return (
-      <main className="min-h-screen bg-terminal-bg">
-        <Navbar />
-        <div className="pt-32 pb-20 px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="card-terminal">
-              <div className="w-20 h-20 bg-gold-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-10 h-10 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold text-white mb-4">Premium Access Required</h1>
-              <p className="text-terminal-muted mb-8">
-                The TMT Dashboard with Gann Calculator, Astro-Gann, and TradingView integration is available for PRO and WHALE members.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/billing" className="btn-gold">Upgrade Now</Link>
-                <Link href="/" className="btn-outline-gold">Back to Home</Link>
+    // If trial is expired, show upgrade prompt
+    if (trialExpired || trialUses >= 2) {
+      return (
+        <main className="min-h-screen bg-terminal-bg">
+          <Navbar />
+          <div className="pt-32 pb-20 px-4">
+            <div className="max-w-2xl mx-auto text-center">
+              <div className="card-terminal">
+                <div className="w-20 h-20 bg-gold-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-4">Free Trial Ended</h1>
+                <p className="text-terminal-muted mb-2">
+                  You&apos;ve used all {trialUses} of your free trial calculations.
+                </p>
+                <p className="text-terminal-muted mb-8">
+                  Subscribe to continue using the Gann Calculator and unlock premium features.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link href="/billing" className="btn-gold">View Plans & Subscribe</Link>
+                  <Link href="/" className="btn-outline-gold">Back to Home</Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    )
+        </main>
+      )
+    }
+    // If trial is still active, allow access with counter
   }
 
   const modules = [
@@ -153,7 +162,7 @@ export default function DashboardPage() {
 
           {/* Mini Charts Row */}
           {showMiniCharts && (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <MiniChart symbol="OANDA:XAUUSD" height={180} />
               <MiniChart symbol="OANDA:XAGUSD" height={180} />
               <MiniChart symbol="BITSTAMP:BTCUSD" height={180} />
@@ -212,7 +221,13 @@ export default function DashboardPage() {
           {activeModule === 'calculator' && (
             <div className="grid lg:grid-cols-2 gap-6">
               <div>
-                <GannCalculator onCalculate={setLevels} isPremium={isPro || isWhale} userEmail={email} />
+                <GannCalculator
+                  onCalculate={setLevels}
+                  isPremium={isPro || isWhale}
+                  userEmail={email}
+                  trialUses={trialUses}
+                  trialExpired={trialExpired}
+                />
               </div>
               <div>
                 <GannCosmogram levels={levels} />
@@ -295,11 +310,6 @@ export default function DashboardPage() {
               </p>
             </div>
           )}
-
-          {/* Exness Partner Banner */}
-          <div className="mt-8">
-            <ExnessBanner />
-          </div>
         </div>
       </div>
       <Footer />

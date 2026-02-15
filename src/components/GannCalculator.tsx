@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { calculateGannLevels, validatePrice, INCREMENT_OPTIONS, GannLevels } from '@/lib/gann'
+import { useLanguage } from '@/contexts/LanguageContext'
 import * as XLSX from 'xlsx'
 
 interface GannCalculatorProps {
@@ -9,20 +10,29 @@ interface GannCalculatorProps {
   showIncrementSelector?: boolean
   isPremium?: boolean
   userEmail?: string
+  trialUses?: number
+  trialExpired?: boolean
 }
 
 export default function GannCalculator({
   onCalculate,
   showIncrementSelector = true,
   isPremium = false,
-  userEmail = 'guest@user.com'
+  userEmail = 'guest@user.com',
+  trialUses = 0,
+  trialExpired = false
 }: GannCalculatorProps) {
+  const { t } = useLanguage()
   // Input state - completely controlled by user, no auto-updates
   const [inputValue, setInputValue] = useState('')
   const [increment, setIncrement] = useState(0.25)
   const [hasCalculated, setHasCalculated] = useState(false)
   const [showLegalWarning, setShowLegalWarning] = useState(false)
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
+  const [isCalculating, setIsCalculating] = useState(false)
+  const [remainingTrialUses, setRemainingTrialUses] = useState(2 - trialUses)
+  const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false)
+  const [termsCheckboxAccepted, setTermsCheckboxAccepted] = useState(false)
 
   // Check if user has accepted terms before
   useEffect(() => {
@@ -55,8 +65,8 @@ export default function GannCalculator({
   }, [])
 
   // Handle calculate button
-  const handleCalculate = useCallback(() => {
-    if (!validation.valid) return
+  const handleCalculate = useCallback(async () => {
+    if (!validation.valid || isCalculating) return
 
     // Show legal warning if not accepted yet
     if (!hasAcceptedTerms) {
@@ -64,10 +74,40 @@ export default function GannCalculator({
       return
     }
 
-    setHasCalculated(true)
-    const calculatedLevels = calculateGannLevels(validation.price, increment)
-    onCalculate?.(calculatedLevels)
-  }, [validation, increment, onCalculate, hasAcceptedTerms])
+    setIsCalculating(true)
+
+    try {
+      // For non-premium users, check trial usage
+      if (!isPremium && !trialExpired) {
+        const response = await fetch('/api/trial/use', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        })
+
+        const data = await response.json()
+
+        if (!response.ok || data.error) {
+          // Trial expired
+          setShowTrialExpiredModal(true)
+          return
+        }
+
+        // Update remaining uses
+        if (data.remainingUses !== undefined && data.remainingUses >= 0) {
+          setRemainingTrialUses(data.remainingUses)
+        }
+      }
+
+      setHasCalculated(true)
+      const calculatedLevels = calculateGannLevels(validation.price, increment)
+      onCalculate?.(calculatedLevels)
+    } catch (error) {
+      console.error('Error during calculation:', error)
+      alert('An error occurred. Please try again.')
+    } finally {
+      setIsCalculating(false)
+    }
+  }, [validation, increment, onCalculate, hasAcceptedTerms, isPremium, trialExpired, isCalculating])
 
   // Handle terms acceptance
   const handleAcceptTerms = useCallback(() => {
@@ -242,13 +282,35 @@ export default function GannCalculator({
             </div>
           )}
 
+          {/* Trial Counter - Only for non-premium users */}
+          {!isPremium && !trialExpired && (
+            <div className="mb-4 p-3 bg-gold-500/10 border border-gold-500/30 rounded-lg">
+              <p className="text-sm text-gold-500 text-center">
+                ⚡ <strong>{t('trial.remaining')} {remainingTrialUses}/2 {t('trial.usesRemaining')}</strong>
+              </p>
+              <p className="text-xs text-terminal-muted text-center mt-1">
+                {t('trial.subscribe')}
+              </p>
+            </div>
+          )}
+
           {/* Calculate Button */}
           <button
             onClick={handleCalculate}
-            disabled={!validation.valid}
-            className="w-full btn-gold py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!validation.valid || isCalculating}
+            className="w-full btn-gold py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Calculate Levels
+            {isCalculating ? (
+              <>
+                <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                {t('calc.calculating')}
+              </>
+            ) : (
+              t('calc.calculate')
+            )}
           </button>
         </div>
       </div>
@@ -385,8 +447,8 @@ export default function GannCalculator({
 
       {/* Legal Warning Modal */}
       {showLegalWarning && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-terminal-card border-2 border-gold-500 rounded-2xl max-w-2xl w-full p-8 shadow-2xl animate-scaleIn">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-terminal-card border-2 border-gold-500 rounded-xl sm:rounded-2xl max-w-2xl w-full p-4 sm:p-6 md:p-8 my-4 sm:my-8 shadow-2xl animate-scaleIn max-h-[95vh] overflow-y-auto">
             {/* Warning Icon */}
             <div className="flex justify-center mb-6">
               <div className="w-20 h-20 bg-gold-500/20 rounded-full flex items-center justify-center">
@@ -398,54 +460,106 @@ export default function GannCalculator({
 
             {/* Title */}
             <h2 className="text-2xl font-bold text-white text-center mb-4">
-              Advertencia Legal Importante
+              {t('calc.legalWarning.title')}
             </h2>
 
             {/* Content */}
             <div className="space-y-4 text-terminal-muted mb-8">
               <p className="leading-relaxed">
-                Los niveles calculados por esta herramienta son para <strong className="text-white">uso personal y educativo únicamente</strong>.
+                {t('calc.legalWarning.personalText')} <strong className="text-white">{t('calc.legalWarning.personal')}</strong>.
               </p>
 
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-                <p className="text-red-400 font-semibold mb-2">🚫 Está Estrictamente Prohibido:</p>
+                <p className="text-red-400 font-semibold mb-2">{t('calc.legalWarning.prohibited')}</p>
                 <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Revender o comercializar los niveles calculados</li>
-                  <li>Compartir los niveles en grupos de señales de trading</li>
-                  <li>Distribuir las exportaciones Excel/PDF comercialmente</li>
-                  <li>Crear servicios derivados usando estos cálculos</li>
+                  <li>{t('calc.legalWarning.resell')}</li>
+                  <li>{t('calc.legalWarning.shareSignals')}</li>
+                  <li>{t('calc.legalWarning.distributeExports')}</li>
+                  <li>{t('calc.legalWarning.derivedServices')}</li>
                 </ul>
               </div>
 
               <div className="bg-gold-500/10 border border-gold-500/30 rounded-lg p-4">
-                <p className="text-gold-500 font-semibold mb-2">✅ Protección Legal:</p>
+                <p className="text-gold-500 font-semibold mb-2">{t('calc.legalWarning.protectionTitle')}</p>
                 <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Todos los cálculos incluyen marca de agua con tu email</li>
-                  <li>Las exportaciones son rastreables a tu cuenta</li>
-                  <li>Violaciones pueden resultar en suspensión permanente</li>
-                  <li>Nos reservamos el derecho de tomar acciones legales</li>
+                  <li>{t('calc.legalWarning.watermark')}</li>
+                  <li>{t('calc.legalWarning.traceable')}</li>
+                  <li>{t('calc.legalWarning.suspension')}</li>
+                  <li>{t('calc.legalWarning.legalAction')}</li>
                 </ul>
               </div>
 
               <p className="text-sm text-center text-terminal-muted/70 mt-4">
-                Al continuar, confirmas que has leído y aceptas estos términos.
+                {t('calc.legalWarning.confirmText')}
               </p>
             </div>
 
+            {/* Checkbox de aceptación */}
+            <div className="mb-6 p-3 sm:p-4 border-2 border-terminal-border rounded-lg bg-terminal-bg/50">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={termsCheckboxAccepted}
+                  onChange={(e) => setTermsCheckboxAccepted(e.target.checked)}
+                  className="mt-1 w-5 h-5 min-w-[20px] rounded border-terminal-border text-gold-500 focus:ring-gold-500 focus:ring-offset-0 bg-terminal-bg cursor-pointer"
+                />
+                <span className="text-xs sm:text-sm text-terminal-muted flex-1 leading-relaxed">
+                  {t('calc.legalWarning.confirmText')}
+                </span>
+              </label>
+            </div>
+
             {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => setShowLegalWarning(false)}
-                className="flex-1 px-6 py-3 bg-terminal-bg border-2 border-terminal-border text-white rounded-xl font-semibold hover:border-red-500 hover:text-red-500 transition-all"
-              >
-                Cancelar
-              </button>
+            <div className="flex flex-col gap-3">
               <button
                 onClick={handleAcceptTerms}
-                className="flex-1 px-6 py-3 bg-gold-500 text-black rounded-xl font-semibold hover:bg-gold-400 transition-all"
+                disabled={!termsCheckboxAccepted}
+                className="w-full px-4 sm:px-6 py-3 bg-gold-500 text-black rounded-lg sm:rounded-xl font-semibold hover:bg-gold-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
-                Acepto los Términos
+                {t('calc.legalWarning.accept')}
               </button>
+              <button
+                onClick={() => setShowLegalWarning(false)}
+                className="w-full px-4 sm:px-6 py-3 bg-terminal-bg border-2 border-terminal-border text-white rounded-lg sm:rounded-xl font-semibold hover:border-red-500 hover:text-red-500 transition-all text-sm sm:text-base"
+              >
+                {t('common.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Trial Expired Modal */}
+      {showTrialExpiredModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-terminal-card border-2 border-gold-500 rounded-2xl max-w-md w-full p-8 shadow-2xl animate-scaleIn">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gold-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+
+              <h2 className="text-2xl font-bold text-white mb-3">{t('trial.expired')}</h2>
+
+              <p className="text-terminal-muted mb-6">
+                {t('trial.expiredMessage')}
+              </p>
+
+              <div className="flex flex-col gap-3">
+                <a
+                  href="/billing"
+                  className="w-full px-6 py-3 bg-gold-500 text-black rounded-xl font-semibold hover:bg-gold-400 transition-all text-center"
+                >
+                  {t('trial.viewPlans')}
+                </a>
+                <button
+                  onClick={() => setShowTrialExpiredModal(false)}
+                  className="w-full px-6 py-3 bg-terminal-bg border-2 border-terminal-border text-white rounded-xl font-semibold hover:border-gold-500 transition-all"
+                >
+                  {t('common.close')}
+                </button>
+              </div>
             </div>
           </div>
         </div>

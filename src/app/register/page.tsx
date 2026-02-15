@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -49,7 +50,21 @@ export default function RegisterPage() {
       if (!res.ok) {
         setError(data.error || 'Registration failed')
       } else {
-        router.push('/login?registered=true')
+        // Auto-login after successful registration
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        })
+
+        if (result?.error) {
+          // If auto-login fails, redirect to login page
+          router.push('/login?registered=true')
+        } else {
+          // Redirect new users to billing page
+          router.push('/billing')
+          router.refresh()
+        }
       }
     } catch (err) {
       setError('An unexpected error occurred')

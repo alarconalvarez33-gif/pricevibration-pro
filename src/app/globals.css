@@ -1,3 +1,4 @@
+/* Optimized font loading with display=swap to prevent blocking */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @tailwind base;
@@ -5,17 +6,21 @@
 @tailwind utilities;
 
 /* ============================================
-   CSS VARIABLES - Professional Theme
+   CSS VARIABLES - Institutional Theme
    ============================================ */
 :root {
+  --navy-primary: #1e3a5f;
+  --navy-dark: #142840;
+  --navy-medium: #4778b4;
+  --dark-gray: #2d3748;
   --gold-primary: #c9a227;
   --gold-secondary: #d4af37;
   --gold-dark: #a88820;
-  --terminal-bg: #0d0d0d;
-  --terminal-card: #161b22;
-  --terminal-border: #30363d;
-  --text-primary: #e6edf3;
-  --text-muted: #8b949e;
+  --terminal-bg: #0f1419;
+  --terminal-card: #2d3748;
+  --terminal-border: #4a5568;
+  --text-primary: #ffffff;
+  --text-muted: #a0aec0;
   --accent-blue: #1a73e8;
   --support-green: #10b981;
   --resistance-red: #ef4444;
@@ -190,6 +195,12 @@ h1, h2, h3, h4, h5, h6 {
 .btn-ghost {
   @apply text-terminal-muted hover:text-white hover:bg-white/5
          py-2 px-4 rounded-lg transition-all duration-200;
+}
+
+.btn-navy {
+  @apply bg-gradient-to-r from-navy-700 to-navy-800 text-white font-semibold py-3 px-6 rounded-lg
+         hover:from-navy-600 hover:to-navy-700 transition-all duration-300
+         shadow-lg hover:shadow-navy-500/30 active:scale-[0.98];
 }
 
 .btn-pulse {
