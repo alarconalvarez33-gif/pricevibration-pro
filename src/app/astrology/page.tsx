@@ -435,8 +435,7 @@ export default function AstrologyPage() {
                   ))}
                 </div>
               </div>
-
-              {/* Major Aspects */}
+ {/* Major Aspects */}
               <div className="card-terminal">
                 <h3 className="text-gold-500 font-semibold mb-4">Current Aspects</h3>
                 {majorAspects.length > 0 ? (
@@ -481,6 +480,7 @@ export default function AstrologyPage() {
           </div>
         </div>
       </div>
+             
 
       <Footer />
     </main>

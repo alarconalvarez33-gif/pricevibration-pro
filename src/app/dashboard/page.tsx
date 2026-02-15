@@ -239,7 +239,11 @@ export default function DashboardPage() {
           {activeModule === 'astro' && (
             <AstroGann gannLevels={levels} />
           )}
-
+<Link href="/analysis">
+  <button className="gold-button">
+    📊 Historical Analysis (Pro/Whale)
+  </button>
+</Link>
           {/* Live Chart Module */}
           {activeModule === 'chart' && (
             <div className="space-y-4">
