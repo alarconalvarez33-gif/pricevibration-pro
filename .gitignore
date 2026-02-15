@@ -42,3 +42,4 @@ prisma/dev.db-journal
 .idea
 .vscode
 .claude/
+dev.log
