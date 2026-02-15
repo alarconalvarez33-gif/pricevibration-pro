@@ -57,6 +57,9 @@ export default function Navbar() {
             <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors">
               {t('nav.pricing')}
             </Link>
+            <Link href="/contact" className="text-terminal-muted hover:text-gold-500 transition-colors">
+              {t('nav.contact')}
+            </Link>
 
             {/* Language Selector */}
             <LanguageSelector />
@@ -195,6 +198,9 @@ export default function Navbar() {
               )}
               <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Pricing
+              </Link>
+              <Link href="/contact" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                {t('nav.contact')}
               </Link>
               {session ? (
                 <>

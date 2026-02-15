@@ -143,6 +143,15 @@ export default function BillingPage() {
             </div>
           </div>
 
+          {/* International Payment Notice */}
+          <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 mb-8 text-center max-w-2xl mx-auto">
+            <p className="text-blue-400 font-medium mb-1">🌎 International Users</p>
+            <p className="text-gray-400 text-sm">
+              Prices shown in USD. Payment processed in Paraguayan Guaraníes (PYG) via Pagopar.
+              Your bank will convert automatically. Approximate rate: $49 USD ≈ Gs. 340,000 PYG
+            </p>
+          </div>
+
           {/* Pricing Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
             {PLANS.map((plan) => {
