@@ -440,7 +440,53 @@ export default function AstrologyPage() {
                   ))}
                 </div>
               </div>
+ {/* Major Aspects */}
+              <div className="card-terminal">
+                <h3 className="text-gold-500 font-semibold mb-4">Current Aspects</h3>
+                {majorAspects.length > 0 ? (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {majorAspects.slice(0, 10).map((aspect, i) => {
+                      const config = ASPECT_CONFIG[aspect.type]
+                      return (
+                        <div
+                          key={i}
+                          className={`p-2 rounded-lg border ${
+                            aspect.isExact ? 'border-gold-500 bg-gold-500/10' : 'border-terminal-border'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-white text-sm">
+                              {aspect.planet1} {config.symbol} {aspect.planet2}
+                            </span>
+                            <span className={`text-xs px-2 py-0.5 rounded ${
+                              aspect.isExact ? 'bg-gold-500 text-black' : 'bg-terminal-border text-terminal-muted'
+                            }`}>
+                              {aspect.orb.toFixed(1)}°
+                            </span>
+                          </div>
+                          <div className="text-terminal-muted text-xs mt-1 capitalize">
+                            {aspect.type} ({aspect.angle.toFixed(1)}°)
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-terminal-muted text-sm">No major aspects within orb</p>
+                )}
+              </div>
 
+              {/* Exness Partner Banner */}
+              <ExnessBanner />
+            </div>
+          </div>
+
+          {/* Bottom Exness Banner */}
+          <div className="mt-8">
+            <ExnessBanner />
+          </div>
+        </div>
+      </div>
              
 
       <Footer />
