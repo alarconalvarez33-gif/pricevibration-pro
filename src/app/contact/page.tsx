@@ -86,8 +86,8 @@ export default function ContactPage() {
                 onSubmit={handleSubmit}
                 className="space-y-6"
               >
-                {/* Hidden field for destination email */}
-                <input type="hidden" name="_subject" value="Sacred Levels - Contacto desde el sitio web" />
+                {/* Hidden field for email subject */}
+                <input type="hidden" name="_subject" value="Sacred Levels - New Contact Message" />
 
                 {/* Name Field */}
                 <div>
@@ -112,7 +112,7 @@ export default function ContactPage() {
                   <input
                     type="email"
                     id="email"
-                    name="email"
+                    name="_replyto"
                     required
                     className="input-terminal"
                     placeholder={t('contact.emailPlaceholder')}
