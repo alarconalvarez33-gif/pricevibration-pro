@@ -52,7 +52,6 @@ export default function BillingPage() {
       router.push('/login?redirect=/billing');
       return;
     }
-
     setIsLoading(planId);
 
     try {
