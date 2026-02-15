@@ -171,20 +171,11 @@ export default function ContactPage() {
             )}
           </div>
 
-          {/* Contact Info */}
-          <div className="mt-8 p-6 bg-terminal-card border border-terminal-border rounded-xl">
-            <h3 className="text-gold-500 font-semibold mb-4">{t('contact.otherWays')}</h3>
-            <div className="space-y-3 text-terminal-muted text-sm">
-              <p>
-                <strong className="text-white">{t('contact.email')}:</strong>{' '}
-                <a href="mailto:alarconalvarez33@gmail.com" className="text-gold-500 hover:text-gold-400 transition-colors">
-                  alarconalvarez33@gmail.com
-                </a>
-              </p>
-              <p>
-                <strong className="text-white">{t('contact.responseTime')}:</strong> {t('contact.responseTimeText')}
-              </p>
-            </div>
+          {/* Response Time Info */}
+          <div className="mt-8 p-4 bg-terminal-card border border-terminal-border rounded-xl text-center">
+            <p className="text-terminal-muted text-sm">
+              <strong className="text-white">{t('contact.responseTime')}:</strong> {t('contact.responseTimeText')}
+            </p>
           </div>
         </div>
       </div>
