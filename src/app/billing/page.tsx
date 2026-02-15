@@ -46,14 +46,12 @@ export default function BillingPage() {
       popular: false,
     },
   ];
-
   const handleSubscribe = async (planId: string, isYearly: boolean = false) => {
     if (!session) {
       router.push('/login?redirect=/billing');
       return;
     }
     setIsLoading(planId);
-
     try {
       const response = await fetch('/api/pagopar/create-order', {
         method: 'POST',
@@ -64,7 +62,6 @@ export default function BillingPage() {
           userId: session.user?.email,
         }),
       });
-
       const data = await response.json();
 
       if (data.success && data.redirectUrl) {
@@ -78,7 +75,6 @@ export default function BillingPage() {
       setIsLoading(null);
     }
   };
-
   return (
     <div className="min-h-screen bg-[#0a0a0a] py-12 px-4">
       <div className="max-w-5xl mx-auto">
@@ -104,7 +100,6 @@ export default function BillingPage() {
             </a>
           </div>
         )}
-
         {/* Plans Grid */}
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => (
@@ -123,7 +118,6 @@ export default function BillingPage() {
                   </span>
                 </div>
               )}
-
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-white mb-2">{plan.name}</h2>
                 <div className="text-4xl font-bold text-[#c9a227]">
@@ -156,7 +150,6 @@ export default function BillingPage() {
                   </li>
                 ))}
               </ul>
-
               <div className="space-y-3">
                 <button
                   onClick={() => handleSubscribe(plan.id, false)}
