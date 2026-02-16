@@ -228,33 +228,38 @@ export default function PaymentStatusPage() {
                     {paymentStatus?.orderId && (
                       <div className="flex justify-between">
                         <span className="text-gray-400">ID de Pedido:</span>
-                        <span className="text-white font-mono">{paymentStatus.orderId}</span>
+                        <span className="text-white font-mono">{String(paymentStatus.orderId)}</span>
                       </div>
                     )}
                     {paymentStatus?.planType && (
                       <div className="flex justify-between">
                         <span className="text-gray-400">Plan:</span>
-                        <span className="text-white capitalize">{paymentStatus.planType}</span>
+                        <span className="text-white capitalize">{String(paymentStatus.planType)}</span>
                       </div>
                     )}
                     {paymentStatus?.billingPeriod && (
                       <div className="flex justify-between">
                         <span className="text-gray-400">Período:</span>
-                        <span className="text-white capitalize">{paymentStatus.billingPeriod}</span>
+                        <span className="text-white capitalize">{String(paymentStatus.billingPeriod)}</span>
                       </div>
                     )}
-                    {paymentStatus?.amount && (
+                    {paymentStatus?.amount !== undefined && (
                       <div className="flex justify-between">
                         <span className="text-gray-400">Monto:</span>
                         <span className="text-white">
-                          {paymentStatus.currency} {paymentStatus.amount.toLocaleString()}
+                          {paymentStatus.currency || 'PYG'} {paymentStatus.amount?.toLocaleString() || '0'}
                         </span>
                       </div>
                     )}
                     {paymentStatus?.paidAt && (
                       <div className="flex justify-between">
                         <span className="text-gray-400">Fecha de Pago:</span>
-                        <span className="text-white">{new Date(paymentStatus.paidAt).toLocaleString()}</span>
+                        <span className="text-white">
+                          {new Date(paymentStatus.paidAt).toLocaleString('es-PY', {
+                            dateStyle: 'medium',
+                            timeStyle: 'short'
+                          })}
+                        </span>
                       </div>
                     )}
                     <div className="flex justify-between">
