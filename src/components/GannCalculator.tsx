@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { calculateGannLevels, validatePrice, INCREMENT_OPTIONS, GannLevels } from '@/lib/gann'
+import { calculateGannLevels, validatePrice, INCREMENT_OPTIONS, GannLevels, ASSET_FACTORS } from '@/lib/gann'
 import { useLanguage } from '@/contexts/LanguageContext'
 import * as XLSX from 'xlsx'
 
@@ -25,6 +25,7 @@ export default function GannCalculator({
   const { t } = useLanguage()
   // Input state - completely controlled by user, no auto-updates
   const [inputValue, setInputValue] = useState('')
+  const [selectedAsset, setSelectedAsset] = useState<string>('XAU/USD')
   const [increment, setIncrement] = useState(0.25)
   const [hasCalculated, setHasCalculated] = useState(false)
   const [showLegalWarning, setShowLegalWarning] = useState(false)
@@ -50,8 +51,13 @@ export default function GannCalculator({
   // Calculate levels instantly when we have valid input
   const levels = useMemo(() => {
     if (!validation.valid || !hasCalculated) return null
-    return calculateGannLevels(validation.price, increment)
-  }, [validation.valid, validation.price, increment, hasCalculated])
+    return calculateGannLevels(validation.price, increment, 8, selectedAsset)
+  }, [validation.valid, validation.price, increment, hasCalculated, selectedAsset])
+
+  // Get current asset config for formatting
+  const currentAssetConfig = useMemo(() => {
+    return ASSET_FACTORS[selectedAsset] || ASSET_FACTORS['XAU/USD']
+  }, [selectedAsset])
 
   // Handle input change - only allow valid characters
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,7 +105,7 @@ export default function GannCalculator({
       }
 
       setHasCalculated(true)
-      const calculatedLevels = calculateGannLevels(validation.price, increment)
+      const calculatedLevels = calculateGannLevels(validation.price, increment, 8, selectedAsset)
       onCalculate?.(calculatedLevels)
     } catch (error) {
       console.error('Error during calculation:', error)
@@ -107,7 +113,7 @@ export default function GannCalculator({
     } finally {
       setIsCalculating(false)
     }
-  }, [validation, increment, onCalculate, hasAcceptedTerms, isPremium, trialExpired, isCalculating])
+  }, [validation, increment, onCalculate, hasAcceptedTerms, isPremium, trialExpired, isCalculating, selectedAsset])
 
   // Handle terms acceptance
   const handleAcceptTerms = useCallback(() => {
@@ -120,23 +126,33 @@ export default function GannCalculator({
     // Now calculate
     if (validation.valid) {
       setHasCalculated(true)
-      const calculatedLevels = calculateGannLevels(validation.price, increment)
+      const calculatedLevels = calculateGannLevels(validation.price, increment, 8, selectedAsset)
       onCalculate?.(calculatedLevels)
     }
-  }, [validation, increment, onCalculate])
+  }, [validation, increment, onCalculate, selectedAsset])
 
   // Handle increment change
   const handleIncrementChange = useCallback((newIncrement: number) => {
     setIncrement(newIncrement)
     if (hasCalculated && validation.valid) {
-      const calculatedLevels = calculateGannLevels(validation.price, newIncrement)
+      const calculatedLevels = calculateGannLevels(validation.price, newIncrement, 8, selectedAsset)
       onCalculate?.(calculatedLevels)
     }
-  }, [hasCalculated, validation, onCalculate])
+  }, [hasCalculated, validation, onCalculate, selectedAsset])
+
+  // Handle asset change - clear results
+  const handleAssetChange = useCallback((newAsset: string) => {
+    setSelectedAsset(newAsset)
+    setHasCalculated(false) // Clear results when changing asset
+  }, [])
 
   // Export to Excel
   const exportToExcel = useCallback(() => {
     if (!levels) return
+
+    // Get asset info
+    const assetInfo = ASSET_FACTORS[selectedAsset]
+    const decimals = assetInfo.decimals
 
     // Create data for Excel
     const data = []
@@ -144,7 +160,8 @@ export default function GannCalculator({
     // Header
     data.push(['Sacred Levels - Gann Calculator Results'])
     data.push([])
-    data.push(['Center Price:', `$${levels.centerPrice.toFixed(2)}`])
+    data.push(['Asset:', `${selectedAsset} (${assetInfo.name})`])
+    data.push(['Center Price:', `$${levels.centerPrice.toFixed(decimals)}`])
     data.push(['Increment:', levels.increment])
     data.push([])
     // WATERMARK - User identification
@@ -159,8 +176,8 @@ export default function GannCalculator({
     levels.resistances.forEach((price, i) => {
       data.push([
         `R${i + 1}`,
-        price.toFixed(2),
-        `+${(price - levels.centerPrice).toFixed(2)}`
+        price.toFixed(decimals),
+        `+${(price - levels.centerPrice).toFixed(decimals)}`
       ])
     })
 
@@ -172,8 +189,8 @@ export default function GannCalculator({
     levels.supports.forEach((price, i) => {
       data.push([
         `S${i + 1}`,
-        price > 0 ? price.toFixed(2) : '-',
-        price > 0 ? (price - levels.centerPrice).toFixed(2) : '-'
+        price > 0 ? price.toFixed(decimals) : '-',
+        price > 0 ? (price - levels.centerPrice).toFixed(decimals) : '-'
       ])
     })
 
@@ -187,11 +204,11 @@ export default function GannCalculator({
 
     // Generate filename with timestamp
     const timestamp = new Date().toISOString().split('T')[0]
-    const filename = `sacred-levels-${levels.centerPrice}-${timestamp}.xlsx`
+    const filename = `sacred-levels-${selectedAsset.replace('/', '-')}-${levels.centerPrice}-${timestamp}.xlsx`
 
     // Download file
     XLSX.writeFile(wb, filename)
-  }, [levels, userEmail])
+  }, [levels, userEmail, selectedAsset])
 
   // Handle clear
   const handleClear = useCallback(() => {
@@ -216,8 +233,33 @@ export default function GannCalculator({
           Gann Square Calculator
         </h3>
 
-        {/* Price Input */}
+        {/* Asset Selector */}
         <div className="space-y-4">
+          <div>
+            <label className="block text-terminal-muted text-sm mb-2">
+              Select Asset
+            </label>
+            <div className="relative">
+              <select
+                value={selectedAsset}
+                onChange={(e) => handleAssetChange(e.target.value)}
+                className="w-full bg-terminal-bg border-2 border-terminal-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-gold-500 transition-colors appearance-none cursor-pointer pr-10"
+              >
+                {Object.entries(ASSET_FACTORS).map(([key, config]) => (
+                  <option key={key} value={key} className="bg-terminal-bg">
+                    {key} - {config.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                <svg className="w-5 h-5 text-terminal-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Price Input */}
           <div>
             <label className="block text-terminal-muted text-sm mb-2">
               Center Price
@@ -330,9 +372,10 @@ export default function GannCalculator({
 
           {/* Center Price Display */}
           <div className="text-center mb-4 p-3 bg-gold-500/10 border border-gold-500/30 rounded-lg">
+            <div className="text-terminal-muted text-xs mb-1">{selectedAsset} - {currentAssetConfig.name}</div>
             <span className="text-terminal-muted text-sm">Center Price</span>
             <div className="text-2xl font-bold text-gold-500 font-mono">
-              ${levels.centerPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ${levels.centerPrice.toLocaleString('en-US', { minimumFractionDigits: currentAssetConfig.decimals, maximumFractionDigits: currentAssetConfig.decimals })}
             </div>
           </div>
 
@@ -381,12 +424,12 @@ export default function GannCalculator({
                         </td>
                         <td className="py-2 pr-2 text-right">
                           <span className="font-mono text-white">
-                            ${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            ${price.toLocaleString('en-US', { minimumFractionDigits: currentAssetConfig.decimals, maximumFractionDigits: currentAssetConfig.decimals })}
                           </span>
                         </td>
                         <td className="py-2 text-right">
                           <span className="font-mono text-red-400/70 text-xs">
-                            +{(price - levels.centerPrice).toFixed(2)}
+                            +{(price - levels.centerPrice).toFixed(currentAssetConfig.decimals)}
                           </span>
                         </td>
                       </tr>
@@ -425,14 +468,14 @@ export default function GannCalculator({
                         <td className="py-2 pr-2 text-right">
                           <span className="font-mono text-white">
                             {price > 0
-                              ? `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                              ? `$${price.toLocaleString('en-US', { minimumFractionDigits: currentAssetConfig.decimals, maximumFractionDigits: currentAssetConfig.decimals })}`
                               : '-'
                             }
                           </span>
                         </td>
                         <td className="py-2 text-right">
                           <span className="font-mono text-green-400/70 text-xs">
-                            {price > 0 ? (price - levels.centerPrice).toFixed(2) : '-'}
+                            {price > 0 ? (price - levels.centerPrice).toFixed(currentAssetConfig.decimals) : '-'}
                           </span>
                         </td>
                       </tr>
