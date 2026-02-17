@@ -431,6 +431,42 @@ export default function Home() {
       </section>
 
       {/* ============================================
+          PAYMENT INSTALLMENTS PROMO
+          ============================================ */}
+      <section className="py-16 px-4 relative z-10">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">
+            💳 Paga en cuotas sin interés
+          </h2>
+          <p className="text-gray-400 text-lg md:text-xl mb-12">
+            Financiá tu suscripción con tarjetas de crédito
+          </p>
+
+          <div className="flex flex-col md:flex-row justify-center items-center gap-10">
+            {/* Banco Familiar */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/30 rounded-2xl p-8 w-full md:w-80 lg:w-96 hover:border-[#c9a227]/50 transition-all hover:scale-105">
+              <img src="/familiar.png" alt="Banco Familiar" className="h-20 md:h-24 object-contain mx-auto mb-6" />
+              <div className="bg-[#c9a227] text-black text-base md:text-lg font-bold px-4 py-2 rounded-full inline-block">
+                12 CUOTAS SIN INTERÉS
+              </div>
+            </div>
+
+            {/* Banco Ueno */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/30 rounded-2xl p-8 w-full md:w-80 lg:w-96 hover:border-[#c9a227]/50 transition-all hover:scale-105">
+              <img src="/ueno.jpeg" alt="Banco Ueno" className="h-20 md:h-24 object-contain mx-auto mb-6" />
+              <div className="bg-[#c9a227] text-black text-base md:text-lg font-bold px-4 py-2 rounded-full inline-block">
+                12 CUOTAS SIN INTERÉS
+              </div>
+            </div>
+          </div>
+
+          <p className="text-gray-500 text-base mt-8">
+            *Válido para tarjetas de crédito emitidas por estos bancos
+          </p>
+        </div>
+      </section>
+
+      {/* ============================================
           HOW IT WORKS
           ============================================ */}
       <section className="py-20 px-4 relative z-10">
@@ -553,42 +589,6 @@ export default function Home() {
             </h2>
           </div>
           <FAQAccordion items={faqItems} />
-        </div>
-      </section>
-
-      {/* ============================================
-          PAYMENT INSTALLMENTS PROMO
-          ============================================ */}
-      <section className="py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-            💳 Paga en cuotas sin interés
-          </h2>
-          <p className="text-gray-400 mb-8">
-            Financiá tu suscripción con tarjetas de crédito
-          </p>
-
-          <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-            {/* Banco Familiar */}
-            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-[#c9a227]/20 rounded-xl p-6 w-full md:w-64">
-              <img src="/familiar.png" alt="Banco Familiar" className="h-16 object-contain mx-auto mb-4" />
-              <div className="bg-[#c9a227] text-black text-sm font-bold px-3 py-1 rounded-full inline-block">
-                12 CUOTAS SIN INTERÉS
-              </div>
-            </div>
-
-            {/* Banco Ueno */}
-            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-[#c9a227]/20 rounded-xl p-6 w-full md:w-64">
-              <img src="/ueno.jpeg" alt="Banco Ueno" className="h-16 object-contain mx-auto mb-4" />
-              <div className="bg-[#c9a227] text-black text-sm font-bold px-3 py-1 rounded-full inline-block">
-                12 CUOTAS SIN INTERÉS
-              </div>
-            </div>
-          </div>
-
-          <p className="text-gray-500 text-sm mt-6">
-            *Válido para tarjetas de crédito emitidas por estos bancos
-          </p>
         </div>
       </section>
 
