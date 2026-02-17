@@ -8,6 +8,7 @@ import Footer from '@/components/Footer'
 import GannCalculator from '@/components/GannCalculator'
 import GannCosmogram from '@/components/GannCosmogram'
 import AstroGann from '@/components/AstroGann'
+import NewsWidget from '@/components/NewsWidget'
 import { TickerTape, AdvancedChart, MiniChart, EconomicCalendar } from '@/components/TradingView'
 import { GannLevels } from '@/lib/gann'
 import Link from 'next/link'
@@ -219,20 +220,29 @@ export default function DashboardPage() {
 
           {/* Calculator Module */}
           {activeModule === 'calculator' && (
-            <div className="grid lg:grid-cols-2 gap-6">
-              <div>
-                <GannCalculator
-                  onCalculate={setLevels}
-                  isPremium={isPro || isWhale}
-                  userEmail={email}
-                  trialUses={trialUses}
-                  trialExpired={trialExpired}
-                />
+            <>
+              <div className="grid lg:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <GannCalculator
+                    onCalculate={setLevels}
+                    isPremium={isPro || isWhale}
+                    userEmail={email}
+                    trialUses={trialUses}
+                    trialExpired={trialExpired}
+                  />
+                </div>
+                <div>
+                  <GannCosmogram levels={levels} />
+                </div>
               </div>
-              <div>
-                <GannCosmogram levels={levels} />
+
+              {/* Market News Section */}
+              <div className="mt-6">
+                <div className="h-[600px]">
+                  <NewsWidget />
+                </div>
               </div>
-            </div>
+            </>
           )}
 
           {/* Astro-Gann Module */}
