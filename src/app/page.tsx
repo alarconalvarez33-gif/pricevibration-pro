@@ -11,6 +11,8 @@ import LiveNotification from '@/components/LiveNotification'
 import OnlineCounter from '@/components/OnlineCounter'
 import { TickerTape } from '@/components/TradingView'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const testimonials = [
   { name: 'Marcus C.', country: '🇸🇬', text: 'The calculated levels provide valuable mathematical insights for my analysis.' },
@@ -49,6 +51,19 @@ const faqItems = [
 
 export default function Home() {
   const { t } = useLanguage()
+  const router = useRouter()
+  const { data: session } = useSession()
+
+  const handleBuyProduct = async (productId: string) => {
+    if (!session) { router.push('/login'); return }
+    const res = await fetch('/api/pagopar/create-product-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId }),
+    })
+    const data = await res.json()
+    if (data.paymentUrl) window.open(data.paymentUrl, '_blank')
+  }
 
   return (
     <main className="min-h-screen bg-terminal-bg overflow-hidden">
@@ -435,6 +450,107 @@ export default function Home() {
             <Link href="/register" className="btn-gold-large btn-pulse">
               🔓 Unlock the Formula
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================
+          MENTOR'S VAULT - PREMIUM COURSES
+          ============================================ */}
+      <section id="mentors-vault" className="py-20 px-4 relative z-10 bg-gradient-to-b from-terminal-card/20 to-transparent">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <span className="text-white">🎓 Mentor&apos;s Vault — </span>
+              <span className="text-gradient-gold-static">Premium Courses</span>
+            </h2>
+            <p className="text-terminal-muted text-lg max-w-2xl mx-auto">
+              Exclusive trading strategies from 15+ years of experience
+            </p>
+          </div>
+
+          {/* Product Card */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/40 rounded-2xl overflow-hidden w-full max-w-sm hover:border-[#c9a227]/70 transition-all hover:scale-[1.02] shadow-2xl shadow-[#c9a227]/10">
+              {/* Badge */}
+              <div className="bg-[#c9a227] text-black text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
+                VIDEO COURSE
+              </div>
+
+              {/* Cover image */}
+              <div className="relative aspect-video bg-terminal-bg overflow-hidden">
+                <img
+                  src="/canal1.png"
+                  alt="Canal Paralelo"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent"></div>
+              </div>
+
+              {/* Card body */}
+              <div className="p-6">
+                <h3 className="text-white text-xl font-bold mb-2">Canal Paralelo</h3>
+                <p className="text-gray-400 text-sm mb-5 leading-relaxed">
+                  Descubrí las estrategias de trading que usan los profesionales. Acceso de por vida al material exclusivo.
+                </p>
+
+                {/* Price */}
+                <div className="flex items-baseline gap-3 mb-6">
+                  <span className="text-[#c9a227] text-3xl font-bold">$49</span>
+                  <span className="text-gray-500 text-sm">USD</span>
+                  <span className="text-gray-600 text-sm">/ 343.000 PYG</span>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-2 mb-6 text-sm text-gray-300">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Acceso de por vida
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Estrategias exclusivas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    15+ años de experiencia condensados
+                  </li>
+                </ul>
+
+                {/* Buy button */}
+                <button
+                  onClick={() => handleBuyProduct('canal-paralelo')}
+                  className="w-full bg-[#c9a227] hover:bg-[#b8911f] text-black font-bold text-base py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  Comprar Ahora
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Installments within Mentor's Vault */}
+          <div className="text-center mb-8">
+            <p className="text-gray-400 text-base mb-8">💳 Pagá en cuotas sin interés con tu tarjeta de crédito</p>
+            <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+              <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-5 w-full md:w-56 hover:border-[#c9a227]/50 transition-all hover:scale-105">
+                <img src="/familiar.png" alt="Banco Familiar" className="h-14 object-contain mx-auto mb-3" />
+                <div className="bg-[#c9a227] text-black text-xs font-bold px-3 py-1 rounded-full inline-block">
+                  12 CUOTAS SIN INTERÉS
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-5 w-full md:w-56 hover:border-[#c9a227]/50 transition-all hover:scale-105">
+                <img src="/ueno.jpeg" alt="Banco Ueno" className="h-14 object-contain mx-auto mb-3" />
+                <div className="bg-[#c9a227] text-black text-xs font-bold px-3 py-1 rounded-full inline-block">
+                  12 CUOTAS SIN INTERÉS
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

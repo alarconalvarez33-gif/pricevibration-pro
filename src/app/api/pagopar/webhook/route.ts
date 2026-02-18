@@ -66,6 +66,45 @@ export async function POST(request: Request) {
       })
     }
 
+    // Bifurcación: producto vs suscripción
+    if (numero_pedido?.startsWith('PROD-')) {
+      const purchase = await prisma.productPurchase.findFirst({
+        where: {
+          OR: [
+            { orderId: numero_pedido },
+            { pagoparHash: hash_pedido },
+          ],
+        },
+      })
+
+      if (!purchase) {
+        console.error('ProductPurchase no encontrado:', numero_pedido, hash_pedido)
+        return new Response(JSON.stringify(arrayResultado), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+
+      if (pagado === true || pagado === 'true' || pagado === '1' || pagado === 1) {
+        await prisma.productPurchase.update({
+          where: { id: purchase.id },
+          data: { status: 'paid', paidAt: new Date() },
+        })
+        console.log(`✅ ProductPurchase ${numero_pedido} marcado como paid`)
+      } else {
+        await prisma.productPurchase.update({
+          where: { id: purchase.id },
+          data: { status: 'failed' },
+        })
+        console.log(`❌ ProductPurchase ${numero_pedido} marcado como failed`)
+      }
+
+      return new Response(JSON.stringify(arrayResultado), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
     // Buscar el pago en la base de datos
     const payment = await prisma.payment.findFirst({
       where: {
