@@ -77,7 +77,7 @@ export default async function CanalParaleloPage() {
           <div className="relative w-full rounded-2xl overflow-hidden border border-[#c9a227]/30 shadow-2xl shadow-[#c9a227]/10">
             <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
               <iframe
-                src="https://player.vimeo.com/video/1166149792?badge=0&autopause=0&player_id=0&app_id=58479"
+                src="https://player.vimeo.com/video/1166149792?badge=0&autopause=0&player_id=0&app_id=58479&sharing=0"
                 allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
                 style={{
                   position: 'absolute',
