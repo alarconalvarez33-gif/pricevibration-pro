@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import Logo from './Logo'
+import Image from 'next/image'
 import ExnessBanner from './ExnessBanner'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -13,7 +13,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <Logo size="sm" showText={true} className="mb-4" />
+            <Link href="/" className="inline-block mb-4">
+              <Image
+                src="/logomentor.png"
+                alt="The Mentor Trading"
+                width={160}
+                height={48}
+                className="h-10 w-auto object-contain hover:opacity-90 transition-opacity"
+              />
+            </Link>
             <p className="text-terminal-muted text-sm max-w-md mb-4">
               Professional trading tools combining W.D. Gann&apos;s Law of Vibration with
               heliocentric planetary cycles. Calculate precise support and resistance levels

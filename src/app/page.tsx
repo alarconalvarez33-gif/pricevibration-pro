@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import Logo from '@/components/Logo'
+import Image from 'next/image'
 import ParticleBackground from '@/components/ParticleBackground'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import FAQAccordion from '@/components/FAQAccordion'
@@ -71,7 +71,16 @@ export default function Home() {
           <div className="text-center">
             {/* Logo */}
             <div className="flex justify-center mb-6">
-              <Logo size="xl" showText={false} />
+              <Link href="/">
+                <Image
+                  src="/logomentor.png"
+                  alt="The Mentor Trading"
+                  width={280}
+                  height={140}
+                  className="w-auto h-28 md:h-36 object-contain cursor-pointer hover:opacity-90 transition-opacity"
+                  priority
+                />
+              </Link>
             </div>
 
             {/* Main Title */}
