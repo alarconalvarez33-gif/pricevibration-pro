@@ -235,13 +235,12 @@ export default function Home() {
               </div>
 
               {/* Cover image */}
-              <div className="relative aspect-video bg-terminal-bg overflow-hidden">
+              <div className="relative bg-black overflow-hidden">
                 <img
                   src="/canal1.png"
                   alt="Canal Paralelo"
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto block"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent"></div>
               </div>
 
               {/* Card body */}
@@ -260,12 +259,6 @@ export default function Home() {
 
                 {/* Features */}
                 <ul className="space-y-2 mb-6 text-sm text-gray-300">
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Acceso de por vida
-                  </li>
                   <li className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
