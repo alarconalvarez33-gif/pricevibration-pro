@@ -62,6 +62,17 @@ export default async function CanalParaleloPage() {
             </p>
           </div>
 
+          {/* Disclaimer */}
+          <div className="mb-6 p-5 rounded-xl border border-yellow-500/30 bg-yellow-500/5">
+            <p className="text-yellow-300 text-xs font-bold uppercase tracking-widest mb-3">⚠️ Aviso Legal / Legal Disclaimer</p>
+            <p className="text-gray-300 text-sm leading-relaxed mb-3">
+              <span className="text-white font-semibold">ES —</span> Este contenido es exclusivamente para uso educativo e informativo. El trading conlleva riesgos significativos de pérdida de capital. Las estrategias presentadas no garantizan resultados. No compartás este material ni tus credenciales de acceso con terceros. El uso no autorizado puede resultar en la cancelación inmediata de tu acceso.
+            </p>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              <span className="text-white font-semibold">EN —</span> This content is exclusively for educational and informational purposes. Trading involves significant risk of capital loss. The strategies presented do not guarantee results. Do not share this material or your access credentials with third parties. Unauthorized use may result in immediate cancellation of your access.
+            </p>
+          </div>
+
           {/* Vimeo Player */}
           <div className="relative w-full rounded-2xl overflow-hidden border border-[#c9a227]/30 shadow-2xl shadow-[#c9a227]/10">
             <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
