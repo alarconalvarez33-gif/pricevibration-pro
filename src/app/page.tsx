@@ -226,38 +226,27 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Product Card */}
-          <div className="flex justify-center mb-12">
-            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/40 rounded-2xl overflow-hidden w-full max-w-sm hover:border-[#c9a227]/70 transition-all hover:scale-[1.02] shadow-2xl shadow-[#c9a227]/10">
-              {/* Badge */}
+          {/* Product Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+            {/* Card 1 — Canal Paralelo */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/40 rounded-2xl overflow-hidden hover:border-[#c9a227]/70 transition-all hover:scale-[1.02] shadow-2xl shadow-[#c9a227]/10 flex flex-col">
               <div className="bg-[#c9a227] text-black text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
                 VIDEO COURSE
               </div>
-
-              {/* Cover image */}
               <div className="relative bg-black overflow-hidden">
-                <img
-                  src="/canal1.png"
-                  alt="Canal Paralelo"
-                  className="w-full h-auto block"
-                />
+                <img src="/canal1.png" alt="Canal Paralelo" className="w-full h-auto block" />
               </div>
-
-              {/* Card body */}
-              <div className="p-6">
+              <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-white text-xl font-bold mb-2">Canal Paralelo</h3>
                 <p className="text-gray-400 text-sm mb-5 leading-relaxed">
-                  Descubrí las estrategias de trading que usan los profesionales. Acceso de por vida al material exclusivo.
+                  Descubrí las estrategias de trading que usan los profesionales.
                 </p>
-
-                {/* Price */}
                 <div className="flex items-baseline gap-3 mb-6">
                   <span className="text-[#c9a227] text-3xl font-bold">$49</span>
                   <span className="text-gray-500 text-sm">USD</span>
                   <span className="text-gray-600 text-sm">/ 343.000 PYG</span>
                 </div>
-
-                {/* Features */}
                 <ul className="space-y-2 mb-6 text-sm text-gray-300">
                   <li className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -272,16 +261,47 @@ export default function Home() {
                     15+ años de experiencia condensados
                   </li>
                 </ul>
-
-                {/* Buy button */}
                 <button
                   onClick={() => handleBuyProduct('canal-paralelo')}
-                  className="w-full bg-[#c9a227] hover:bg-[#b8911f] text-black font-bold text-base py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
+                  className="mt-auto w-full bg-[#c9a227] hover:bg-[#b8911f] text-black font-bold text-base py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
                 >
                   Comprar Ahora
                 </button>
               </div>
             </div>
+
+            {/* Card 2 — Próximamente */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
+              <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
+                PRÓXIMAMENTE
+              </div>
+              <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
+                  <span className="text-3xl">🔒</span>
+                </div>
+                <h3 className="text-gray-400 text-lg font-bold mb-2">Nuevo Curso</h3>
+                <p className="text-gray-600 text-sm">
+                  Contenido exclusivo en preparación. Muy pronto.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3 — Próximamente */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
+              <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
+                PRÓXIMAMENTE
+              </div>
+              <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
+                  <span className="text-3xl">🔒</span>
+                </div>
+                <h3 className="text-gray-400 text-lg font-bold mb-2">Nuevo Curso</h3>
+                <p className="text-gray-600 text-sm">
+                  Contenido exclusivo en preparación. Muy pronto.
+                </p>
+              </div>
+            </div>
+
           </div>
 
           {/* Installments within Mentor's Vault */}
