@@ -2,22 +2,32 @@
 
 import { useState, useEffect } from 'react'
 
+// Base: 432 usuarios activos al 2026-02-19
+// Aumenta 2 cada 2 días
+const BASE_COUNT = 432
+const BASE_DATE = new Date('2026-02-19T00:00:00Z')
+
+function getCurrentBase() {
+  const msPerDay = 1000 * 60 * 60 * 24
+  const daysSinceBase = Math.floor((Date.now() - BASE_DATE.getTime()) / msPerDay)
+  return BASE_COUNT + Math.floor(daysSinceBase / 2) * 2
+}
+
 export default function OnlineCounter() {
-  const [count, setCount] = useState(89)
+  const [count, setCount] = useState(BASE_COUNT)
 
   useEffect(() => {
-    // Initial random count between 47-156
-    setCount(Math.floor(Math.random() * (156 - 47 + 1)) + 47)
+    const base = getCurrentBase()
+    // Fluctúa ±20 alrededor del base actual
+    setCount(Math.floor(Math.random() * 40) + base - 20)
 
-    // Update every 5-15 seconds
     const interval = setInterval(() => {
+      const b = getCurrentBase()
       setCount(prev => {
-        // Randomly increase or decrease by 1-5
         const change = Math.floor(Math.random() * 5) + 1
         const direction = Math.random() > 0.5 ? 1 : -1
-        const newCount = prev + (change * direction)
-        // Keep within bounds
-        return Math.max(47, Math.min(156, newCount))
+        const next = prev + change * direction
+        return Math.max(b - 20, Math.min(b + 20, next))
       })
     }, Math.random() * 10000 + 5000)
 
