@@ -108,7 +108,8 @@ export async function POST(request: Request) {
       fecha_maxima_pago: fechaMaximaStr,
       id_pedido_comercio: orderId,
       descripcion_resumen: product.name,
-      forma_pago: 9
+      forma_pago: 9,
+      url_retorno: `${process.env.NEXTAUTH_URL || 'https://sacredlevels.com'}/courses/canal-paralelo`
     }
 
     console.log('\n' + '='.repeat(80))

@@ -23,12 +23,22 @@ export default function DashboardPage() {
   const [activeModule, setActiveModule] = useState<ModuleType>('calculator')
   const [symbol, setSymbol] = useState('OANDA:XAUUSD')
   const [showMiniCharts, setShowMiniCharts] = useState(true)
+  const [myCourses, setMyCourses] = useState<{ productId: string; title: string; url: string; icon: string; paidAt: string | null }[]>([])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
     }
   }, [status, router])
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetch('/api/user/purchases')
+        .then((r) => r.json())
+        .then((data) => { if (data.courses) setMyCourses(data.courses) })
+        .catch(() => {})
+    }
+  }, [status])
 
   if (status === 'loading') {
     return (
@@ -160,6 +170,30 @@ export default function DashboardPage() {
               Not financial advice. Trading involves risk.
             </p>
           </div>
+
+          {/* Mis Cursos */}
+          {myCourses.length > 0 && (
+            <div className="mb-6 p-4 bg-terminal-card border border-[#c9a227]/30 rounded-xl">
+              <h2 className="text-white font-bold mb-3 flex items-center gap-2">
+                <span>🎓</span> Mis Cursos
+              </h2>
+              <div className="flex flex-wrap gap-3">
+                {myCourses.map((course) => (
+                  <Link
+                    key={course.productId}
+                    href={course.url}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg bg-terminal-bg border border-[#c9a227]/20 hover:border-[#c9a227]/60 hover:bg-[#c9a227]/5 transition-all"
+                  >
+                    <span className="text-2xl">{course.icon}</span>
+                    <div>
+                      <p className="text-white font-semibold text-sm">{course.title}</p>
+                      <p className="text-[#c9a227] text-xs">▶ Ver curso</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Mini Charts Row */}
           {showMiniCharts && (
