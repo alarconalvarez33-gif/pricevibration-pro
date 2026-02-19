@@ -267,6 +267,19 @@ export default function Home() {
                 >
                   Comprar Ahora
                 </button>
+
+                {/* Bank installments inside card */}
+                <div className="mt-4 pt-4 border-t border-gray-700/50">
+                  <p className="text-gray-500 text-xs text-center mb-3">💳 Pagá en 12 cuotas sin interés</p>
+                  <div className="flex justify-center gap-3">
+                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/20 rounded-lg p-2 flex items-center justify-center">
+                      <img src="/familiar.png" alt="Banco Familiar" className="h-10 object-contain" />
+                    </div>
+                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/20 rounded-lg p-2 flex items-center justify-center">
+                      <img src="/ueno.jpeg" alt="Banco Ueno" className="h-10 object-contain" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
