@@ -291,6 +291,20 @@ export default function Home() {
                   <span className="text-gray-400 text-2xl font-bold">499.000</span>
                   <span className="text-gray-500 text-sm">GS</span>
                 </div>
+                <ul className="space-y-2 mb-6 text-sm text-gray-500">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Estrategias exclusivas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    15+ años de experiencia condensados
+                  </li>
+                </ul>
                 <button
                   disabled
                   className="mt-auto w-full bg-gray-700 text-gray-500 font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed"
