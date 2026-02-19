@@ -209,8 +209,8 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">🎓 Bóveda del Mentor — </span>
-              <span className="text-gradient-gold-static">Cursos Premium</span>
+              <span className="text-white">🎓 Estrategias de </span>
+              <span className="text-gradient-gold-static">&quot;The Mentor&quot;</span>
             </h2>
             <p className="text-terminal-muted text-lg max-w-2xl mx-auto">
               Estrategias exclusivas de más de 15 años de experiencia
@@ -701,6 +701,36 @@ export default function Home() {
             <Link href="/register" className="btn-gold-large btn-pulse">
               🔓 Unlock the Formula
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================
+          EXNESS - SIMULA GRATIS
+          ============================================ */}
+      <section className="py-16 px-4 relative z-10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            📈 Simulá Gratis Operar en los Mercados Financieros
+          </h2>
+          <p className="text-gray-400 mb-8 text-lg">
+            Practicá con una cuenta demo sin riesgo — operá en tiempo real con dinero virtual
+          </p>
+          <div className="flex justify-center">
+            <a
+              href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:opacity-90 transition-opacity hover:scale-[1.01] transition-transform rounded-2xl overflow-hidden shadow-2xl shadow-black/50 max-w-sm w-full"
+            >
+              <img
+                src="https://d3dpet1g0ty5ed.cloudfront.net/ES_ES_GOOGLE_C1_PRODUCTSUP_C2_T1_INSTANTW_MONEYWHEN_T2_PERFORMANCE_D-3-13_STATIC_1200x1500.jpg"
+                width={1200}
+                height={1500}
+                alt="Exness - Simulá gratis en los mercados financieros"
+                className="w-full h-auto block"
+              />
+            </a>
           </div>
         </div>
       </section>
