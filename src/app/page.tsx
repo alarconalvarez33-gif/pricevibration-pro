@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -53,16 +54,28 @@ export default function Home() {
   const { t } = useLanguage()
   const router = useRouter()
   const { data: session } = useSession()
+  const [buyingProduct, setBuyingProduct] = useState<string | null>(null)
 
   const handleBuyProduct = async (productId: string) => {
     if (!session) { router.push('/login'); return }
-    const res = await fetch('/api/pagopar/create-product-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId }),
-    })
-    const data = await res.json()
-    if (data.paymentUrl) window.open(data.paymentUrl, '_blank')
+    setBuyingProduct(productId)
+    try {
+      const res = await fetch('/api/pagopar/create-product-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId }),
+      })
+      const data = await res.json()
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl
+      } else {
+        alert('Error al generar el pago: ' + (data.pagoparError || data.error || 'Intenta de nuevo'))
+      }
+    } catch (err) {
+      alert('Error de conexión. Por favor intentá de nuevo.')
+    } finally {
+      setBuyingProduct(null)
+    }
   }
 
   return (
@@ -254,9 +267,10 @@ export default function Home() {
                 </ul>
                 <button
                   onClick={() => handleBuyProduct('canal-paralelo')}
-                  className="mt-auto w-full bg-[#c9a227] hover:bg-[#b8911f] text-black font-bold text-base py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
+                  disabled={buyingProduct === 'canal-paralelo'}
+                  className="mt-auto w-full bg-[#c9a227] hover:bg-[#b8911f] disabled:opacity-70 disabled:cursor-wait text-black font-bold text-base py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
                 >
-                  Comprar Ahora
+                  {buyingProduct === 'canal-paralelo' ? '⏳ Procesando...' : 'Comprar Ahora'}
                 </button>
 
                 {/* Bank installments inside card */}
