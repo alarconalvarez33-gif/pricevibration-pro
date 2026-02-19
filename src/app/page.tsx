@@ -270,13 +270,15 @@ export default function Home() {
 
                 {/* Bank installments inside card */}
                 <div className="mt-4 pt-4 border-t border-gray-700/50">
-                  <p className="text-gray-500 text-xs text-center mb-3">💳 Pagá en 12 cuotas sin interés</p>
+                  <p className="text-gray-400 text-xs font-semibold text-center mb-3">💳 Pagá en 12 cuotas sin interés</p>
                   <div className="flex justify-center gap-3">
-                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/20 rounded-lg p-2 flex items-center justify-center">
-                      <img src="/familiar.png" alt="Banco Familiar" className="h-10 object-contain" />
+                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-3 flex flex-col items-center justify-center gap-1">
+                      <img src="/familiar.png" alt="Banco Familiar" className="h-16 object-contain" />
+                      <span className="text-[#c9a227] text-[10px] font-bold tracking-wide">12 CUOTAS</span>
                     </div>
-                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/20 rounded-lg p-2 flex items-center justify-center">
-                      <img src="/ueno.jpeg" alt="Banco Ueno" className="h-10 object-contain" />
+                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-3 flex flex-col items-center justify-center gap-1">
+                      <img src="/ueno.jpeg" alt="Banco Ueno" className="h-16 object-contain" />
+                      <span className="text-[#c9a227] text-[10px] font-bold tracking-wide">12 CUOTAS</span>
                     </div>
                   </div>
                 </div>
