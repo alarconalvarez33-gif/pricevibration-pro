@@ -84,20 +84,6 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center">
-            {/* Logo */}
-            <div className="flex justify-center mb-6">
-              <Link href="/">
-                <Image
-                  src="/logomentor.png"
-                  alt="The Mentor Trading"
-                  width={280}
-                  height={140}
-                  className="w-auto h-28 md:h-36 object-contain cursor-pointer hover:opacity-90 transition-opacity"
-                  priority
-                />
-              </Link>
-            </div>
-
             {/* Main Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               <span className="text-white">{t('hero.title1')}</span>
@@ -223,21 +209,21 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">🎓 Mentor&apos;s Vault — </span>
-              <span className="text-gradient-gold-static">Premium Courses</span>
+              <span className="text-white">🎓 Bóveda del Mentor — </span>
+              <span className="text-gradient-gold-static">Cursos Premium</span>
             </h2>
             <p className="text-terminal-muted text-lg max-w-2xl mx-auto">
-              Exclusive trading strategies from 15+ years of experience
+              Estrategias exclusivas de más de 15 años de experiencia
             </p>
           </div>
 
           {/* Product Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
 
             {/* Card 1 — Canal Paralelo */}
             <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/40 rounded-2xl overflow-hidden hover:border-[#c9a227]/70 transition-all hover:scale-[1.02] shadow-2xl shadow-[#c9a227]/10 flex flex-col">
               <div className="bg-[#c9a227] text-black text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
-                VIDEO COURSE
+                VIDEO CURSO
               </div>
               <div className="relative bg-black overflow-hidden">
                 <img src="/canal1.png" alt="Canal Paralelo" className="w-full h-auto block" />
@@ -275,7 +261,7 @@ export default function Home() {
 
                 {/* Bank installments inside card */}
                 <div className="mt-4 pt-4 border-t border-gray-700/50">
-                  <p className="text-gray-400 text-xs font-semibold text-center mb-3">💳 Pagá en 12 cuotas sin interés</p>
+                  <p className="text-gray-400 text-xs font-semibold text-center mb-3">💳 Pagá en 12 cuotas sin interés con:</p>
                   <div className="flex justify-center gap-3">
                     <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-3 flex flex-col items-center justify-center gap-1">
                       <img src="/familiar.png" alt="Banco Familiar" className="h-16 object-contain" />
@@ -378,9 +364,52 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Card 4 — Geo1 */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
+              <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
+                PRÓXIMAMENTE
+              </div>
+              <div className="relative bg-black overflow-hidden">
+                <img
+                  src="/geo1.png"
+                  alt="Próximo Curso"
+                  className="w-full h-auto block opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/60 to-transparent pointer-events-none" />
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                <p className="text-gray-300 text-sm italic mb-4 leading-relaxed">
+                  &ldquo;Contenido exclusivo en preparación. Muy pronto.&rdquo;
+                </p>
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-gray-400 text-2xl font-bold">—</span>
+                </div>
+                <ul className="space-y-2 mb-6 text-sm text-gray-500">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Estrategias exclusivas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    15+ años de experiencia condensados
+                  </li>
+                </ul>
+                <button
+                  disabled
+                  className="mt-auto w-full bg-gray-700 text-gray-500 font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed"
+                >
+                  🔒 Próximamente
+                </button>
+              </div>
+            </div>
+
           </div>
 
-          {/* Installments within Mentor's Vault */}
+          {/* Cuotas */}
           <div className="text-center mb-8">
             <p className="text-gray-400 text-base mb-8">💳 Pagá en cuotas sin interés con tu tarjeta de crédito</p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-6">
