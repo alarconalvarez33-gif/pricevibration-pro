@@ -270,19 +270,21 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Card 2 — Próximamente */}
+            {/* Card 2 — Desbloquea el Poder de Forex */}
             <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
               <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
                 PRÓXIMAMENTE
               </div>
-              <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
-                  <span className="text-3xl">🔒</span>
-                </div>
-                <h3 className="text-gray-400 text-lg font-bold mb-2">Nuevo Curso</h3>
-                <p className="text-gray-600 text-sm">
-                  Contenido exclusivo en preparación. Muy pronto.
-                </p>
+              <div className="relative bg-black overflow-hidden">
+                <img
+                  src="/desbloquea el poder de forex.png"
+                  alt="Desbloquea el Poder de Forex"
+                  className="w-full h-auto block opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/60 to-transparent pointer-events-none" />
+              </div>
+              <div className="p-4 text-center">
+                <p className="text-gray-400 text-sm font-semibold">Disponible muy pronto 🔒</p>
               </div>
             </div>
 
