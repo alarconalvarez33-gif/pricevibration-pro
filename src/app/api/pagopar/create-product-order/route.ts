@@ -39,22 +39,22 @@ export async function POST(request: Request) {
     }
 
     const product = products[productId]
-    const monto = product.pricePYG
+    // Igual que create-order: usar Math.floor para garantizar entero
+    const monto = Math.floor(product.pricePYG)
 
     const timestamp = Date.now()
-    const orderId = `PROD-CANALPARALELO-${user.id.slice(-6)}-${timestamp}`
-
-    console.log('💰 Monto calculado:', monto, 'PYG')
-    console.log('🆔 Order ID generado:', orderId)
+    const orderId = `PROD-${user.id.slice(-6)}-${timestamp}`
 
     // Token: sha1(PRIVATE_KEY + id_pedido_comercio + strval(floatval(monto_total)))
     const tokenString = privateKey + orderId + String(parseFloat(String(monto)))
     const token = crypto.createHash('sha1').update(tokenString).digest('hex')
 
+    console.log('💰 Monto:', monto)
+    console.log('🆔 OrderId:', orderId)
     console.log('🔐 Token string:', tokenString)
     console.log('🔐 Token SHA1:', token)
 
-    // Save product purchase record before calling Pagopar
+    // Guardar registro antes de llamar a Pagopar
     const purchase = await prisma.productPurchase.create({
       data: {
         orderId,
@@ -65,13 +65,14 @@ export async function POST(request: Request) {
       },
     })
 
-    // Fecha máxima de pago: 7 días desde ahora
+    // Fecha máxima: 7 días
     const fechaMaxima = new Date()
     fechaMaxima.setDate(fechaMaxima.getDate() + 7)
     const fechaMaximaStr = fechaMaxima.toISOString().slice(0, 19).replace('T', ' ')
 
+    // Mismo esquema exacto que create-order
     const pagoparBody = {
-      token: token,
+      token,
       comprador: {
         ruc: '',
         email: user.email,
@@ -83,7 +84,7 @@ export async function POST(request: Request) {
         coordenadas: '',
         razon_social: '',
         tipo_documento: 'CI',
-        direccion_referencia: ''
+        direccion_referencia: '',
       },
       public_key: publicKey,
       monto_total: monto,
@@ -102,21 +103,16 @@ export async function POST(request: Request) {
           vendedor_telefono: '',
           vendedor_direccion: '',
           vendedor_direccion_referencia: '',
-          vendedor_direccion_coordenadas: ''
-        }
+          vendedor_direccion_coordenadas: '',
+        },
       ],
       fecha_maxima_pago: fechaMaximaStr,
       id_pedido_comercio: orderId,
       descripcion_resumen: product.name,
       forma_pago: 9,
-      url_retorno: `${process.env.NEXTAUTH_URL || 'https://sacredlevels.com'}/courses/canal-paralelo`
     }
 
-    console.log('\n' + '='.repeat(80))
-    console.log('🔵 PAGOPAR API REQUEST (PRODUCT)')
-    console.log('='.repeat(80))
-    console.log(JSON.stringify(pagoparBody, null, 2))
-    console.log('='.repeat(80) + '\n')
+    console.log('📦 Pagopar body:', JSON.stringify(pagoparBody, null, 2))
 
     const response = await fetch('https://api.pagopar.com/api/comercios/2.0/iniciar-transaccion', {
       method: 'POST',
@@ -125,16 +121,12 @@ export async function POST(request: Request) {
     })
 
     const result = await response.json()
+    console.log('📥 Pagopar response:', JSON.stringify(result, null, 2))
 
-    console.log('\n' + '='.repeat(80))
-    console.log('📥 PAGOPAR API RESPONSE (PRODUCT)')
-    console.log('='.repeat(80))
-    console.log(JSON.stringify(result, null, 2))
-    console.log('='.repeat(80) + '\n')
-
+    // Extraer hash — mismo patrón que create-order
     let pagoparHash: string | null = null
 
-    if (result.respuesta === true && result.resultado && Array.isArray(result.resultado) && result.resultado[0]?.data) {
+    if (result.respuesta === true && Array.isArray(result.resultado) && result.resultado[0]?.data) {
       pagoparHash = result.resultado[0].data
     } else if (result.resultado?.data) {
       pagoparHash = result.resultado.data
@@ -142,9 +134,18 @@ export async function POST(request: Request) {
       pagoparHash = result.data
     }
 
+    // Extraer mensaje de error de Pagopar desde cualquier campo posible
+    const pagoparErrorMsg =
+      result.error ||
+      result.mensaje ||
+      result.message ||
+      (Array.isArray(result.resultado) && result.resultado[0]?.mensaje) ||
+      (Array.isArray(result.resultado) && result.resultado[0]?.error) ||
+      (typeof result.resultado === 'string' ? result.resultado : null) ||
+      JSON.stringify(result)
+
     if (!pagoparHash) {
-      console.error('❌ ERROR: No se pudo extraer el hash de Pagopar')
-      console.error('❌ Respuesta:', JSON.stringify(result, null, 2))
+      console.error('❌ No se pudo extraer hash. Respuesta completa:', JSON.stringify(result))
 
       await prisma.productPurchase.update({
         where: { id: purchase.id },
@@ -153,12 +154,11 @@ export async function POST(request: Request) {
 
       return NextResponse.json({
         error: 'No se pudo generar la sesión de pago',
-        pagoparError: result.error || result.mensaje || result.message || 'Error desconocido de Pagopar',
-        details: result,
+        pagoparError: pagoparErrorMsg,
+        fullResponse: result,
       }, { status: 500 })
     }
 
-    // Update purchase with Pagopar hash
     await prisma.productPurchase.update({
       where: { id: purchase.id },
       data: { pagoparHash },

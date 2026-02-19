@@ -69,7 +69,9 @@ export default function Home() {
       if (data.paymentUrl) {
         window.location.href = data.paymentUrl
       } else {
-        alert('Error al generar el pago: ' + (data.pagoparError || data.error || 'Intenta de nuevo'))
+        const msg = data.pagoparError || data.error || 'Error desconocido'
+        const detail = data.fullResponse ? '\n\nDetalle: ' + JSON.stringify(data.fullResponse) : ''
+        alert('Error Pagopar: ' + msg + detail)
       }
     } catch (err) {
       alert('Error de conexión. Por favor intentá de nuevo.')
