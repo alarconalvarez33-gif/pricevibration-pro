@@ -345,7 +345,8 @@ export default function Home() {
                   &ldquo;Contenido exclusivo en preparación. Muy pronto.&rdquo;
                 </p>
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-gray-400 text-2xl font-bold">—</span>
+                  <span className="text-gray-400 text-2xl font-bold">$49</span>
+                  <span className="text-gray-500 text-sm">USD</span>
                 </div>
                 <ul className="space-y-2 mb-6 text-sm text-gray-500">
                   <li className="flex items-center gap-2">
