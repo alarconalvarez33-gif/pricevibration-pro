@@ -283,8 +283,20 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/60 to-transparent pointer-events-none" />
               </div>
-              <div className="p-4 text-center">
-                <p className="text-gray-400 text-sm font-semibold">Disponible muy pronto 🔒</p>
+              <div className="p-6 flex flex-col flex-1">
+                <p className="text-gray-300 text-sm italic mb-4 leading-relaxed">
+                  &ldquo;Descubrí el potencial del fibonacci, por décadas oculto al público&rdquo;
+                </p>
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-gray-400 text-2xl font-bold">499.000</span>
+                  <span className="text-gray-500 text-sm">GS</span>
+                </div>
+                <button
+                  disabled
+                  className="mt-auto w-full bg-gray-700 text-gray-500 font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed"
+                >
+                  🔒 Próximamente
+                </button>
               </div>
             </div>
 
