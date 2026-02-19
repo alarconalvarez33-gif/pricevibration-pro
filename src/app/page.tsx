@@ -140,9 +140,9 @@ export default function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
-              <Link href="/register" className="btn-gold-large group">
+              <Link href={session ? '/dashboard' : '/register'} className="btn-gold-large group">
                 <span className="flex items-center gap-2">
-                  {t('hero.cta.start')}
+                  {session ? 'Ir al Dashboard' : t('hero.cta.start')}
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -714,8 +714,8 @@ export default function Home() {
 
           <div className="text-center">
             <p className="text-terminal-muted mb-6">Want to see how we calculated these levels?</p>
-            <Link href="/register" className="btn-gold-large btn-pulse">
-              🔓 Unlock the Formula
+            <Link href={session ? '/dashboard' : '/register'} className="btn-gold-large btn-pulse">
+              🔓 {session ? 'Ver mis herramientas' : 'Unlock the Formula'}
             </Link>
           </div>
         </div>
@@ -865,8 +865,8 @@ export default function Home() {
           most studied techniques in trading history. PriceVibration Pro brings his century-old analytical methods
           into the modern era for educational purposes.
         </p>
-        <Link href="/register" className="btn-gold inline-flex items-center gap-2">
-          Discover His Secrets
+        <Link href={session ? '/dashboard' : '/register'} className="btn-gold inline-flex items-center gap-2">
+          {session ? 'Ir al Dashboard' : 'Discover His Secrets'}
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
@@ -928,8 +928,8 @@ export default function Home() {
               No credit card required for free tier.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-              <Link href="/register" className="btn-gold-large">
-                Create Free Account
+              <Link href={session ? '/dashboard' : '/register'} className="btn-gold-large">
+                {session ? 'Ir al Dashboard' : 'Create Free Account'}
               </Link>
               <Link href="/billing" className="btn-outline-gold text-lg px-8 py-4">
                 Compare Plans
