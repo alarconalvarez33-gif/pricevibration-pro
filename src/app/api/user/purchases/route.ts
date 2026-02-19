@@ -26,6 +26,19 @@ export async function GET() {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
+    const isAdmin = user.email === 'raul@sacredlevels.com' || user.role === 'admin'
+
+    // Admins see all available courses without needing a purchase record
+    if (isAdmin) {
+      const courses = Object.entries(COURSE_META).map(([productId, meta]) => ({
+        productId,
+        orderId: null,
+        paidAt: null,
+        ...meta,
+      }))
+      return NextResponse.json({ courses })
+    }
+
     const purchases = await prisma.productPurchase.findMany({
       where: { userId: user.id, status: 'paid' },
       orderBy: { paidAt: 'desc' },

@@ -128,7 +128,7 @@ export default function Home() {
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span>52+ {t('hero.countries')}</span>
+                <span>8+ {t('hero.countries')}</span>
               </div>
             </div>
 
@@ -163,7 +163,7 @@ export default function Home() {
               </div>
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-gold-500">
-                  <AnimatedCounter end={52} suffix="+" />
+                  <AnimatedCounter end={8} suffix="+" />
                 </div>
                 <div className="text-terminal-muted text-sm mt-1">{t('stats.countries')}</div>
               </div>
@@ -753,7 +753,7 @@ export default function Home() {
               </Link>
             </div>
             <p className="text-terminal-muted/60 text-sm mt-6">
-              Join 12,500+ traders in 52 countries
+              Join traders in 8+ countries
             </p>
           </div>
         </div>
