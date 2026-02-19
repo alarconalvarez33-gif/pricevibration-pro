@@ -314,19 +314,46 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Card 3 — Próximamente */}
+            {/* Card 3 — What */}
             <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
               <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
                 PRÓXIMAMENTE
               </div>
-              <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
-                  <span className="text-3xl">🔒</span>
-                </div>
-                <h3 className="text-gray-400 text-lg font-bold mb-2">Nuevo Curso</h3>
-                <p className="text-gray-600 text-sm">
-                  Contenido exclusivo en preparación. Muy pronto.
+              <div className="relative bg-black overflow-hidden">
+                <img
+                  src="/what.png"
+                  alt="Próximo Curso"
+                  className="w-full h-auto block opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/60 to-transparent pointer-events-none" />
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                <p className="text-gray-300 text-sm italic mb-4 leading-relaxed">
+                  &ldquo;Contenido exclusivo en preparación. Muy pronto.&rdquo;
                 </p>
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-gray-400 text-2xl font-bold">—</span>
+                </div>
+                <ul className="space-y-2 mb-6 text-sm text-gray-500">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Estrategias exclusivas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    15+ años de experiencia condensados
+                  </li>
+                </ul>
+                <button
+                  disabled
+                  className="mt-auto w-full bg-gray-700 text-gray-500 font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed"
+                >
+                  🔒 Próximamente
+                </button>
               </div>
             </div>
 
