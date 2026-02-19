@@ -132,6 +132,11 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Online Counter */}
+            <div className="flex justify-center mb-6">
+              <OnlineCounter />
+            </div>
+
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
               <Link href="/register" className="btn-gold-large group">
