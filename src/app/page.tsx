@@ -14,6 +14,8 @@ import { TickerTape } from '@/components/TradingView'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import DailyLevels from '@/components/DailyLevels'
+import TradeSignals from '@/components/TradeSignals'
 
 const testimonials = [
   { name: 'Marcus C.', country: '🇸🇬', text: 'The calculated levels provide valuable mathematical insights for my analysis.' },
@@ -477,6 +479,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ============================================
+          DAILY LEVELS & TRADE SIGNALS
+          ============================================ */}
+      <DailyLevels />
+      <TradeSignals />
 
       {/* ============================================
           METHODOLOGY SECTION

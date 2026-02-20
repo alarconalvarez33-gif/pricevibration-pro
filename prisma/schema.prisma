@@ -87,3 +87,28 @@ model TrialUsage {
   @@unique([ipAddress, userId])
   @@index([ipAddress])
 }
+
+model PriceLevel {
+  id        String   @id @default(cuid())
+  asset     String
+  price     Float
+  type      String   // "strong_resistance", "resistance", "pivot", "support", "strong_support"
+  note      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TradeSignal {
+  id        String   @id @default(cuid())
+  asset     String
+  direction String   // "BUY", "SELL"
+  entry     Float
+  tp        Float
+  sl        Float
+  status    String   @default("active") // "active", "hit_tp", "hit_sl", "closed"
+  result    Float?
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
