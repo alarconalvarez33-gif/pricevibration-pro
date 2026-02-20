@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import DailyLevels from '@/components/DailyLevels'
 import TradeSignals from '@/components/TradeSignals'
+import ShareButtons from '@/components/ShareButtons'
 
 const testimonials = [
   { name: 'Marcus C.', country: '🇸🇬', text: 'The calculated levels provide valuable mathematical insights for my analysis.' },
@@ -297,6 +298,8 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
+                <ShareButtons url="/courses/canal-paralelo" title="Canal Paralelo — Estrategias de The Mentor 🎓" />
               </div>
             </div>
 
@@ -341,6 +344,7 @@ export default function Home() {
                 >
                   🔒 Próximamente
                 </button>
+                <ShareButtons url="/#mentors-vault" title="Desbloquea el Poder de Forex — Próximamente en sacredlevels.com 🔥" />
               </div>
             </div>
 
@@ -385,6 +389,7 @@ export default function Home() {
                 >
                   🔒 Próximamente
                 </button>
+                <ShareButtons url="/#mentors-vault" title="Nuevo curso próximamente en sacredlevels.com 🔥" />
               </div>
             </div>
 
@@ -423,6 +428,7 @@ export default function Home() {
                 >
                   🔒 Próximamente
                 </button>
+                <ShareButtons url="/#mentors-vault" title="El tiempo es más importante que el precio — Próximamente en sacredlevels.com 🔥" />
               </div>
             </div>
 
@@ -460,6 +466,7 @@ export default function Home() {
                 >
                   🔒 Próximamente
                 </button>
+                <ShareButtons url="/#mentors-vault" title="Trading Sicológico — Próximamente en sacredlevels.com 🔥" />
               </div>
             </div>
 
