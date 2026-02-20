@@ -303,7 +303,75 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Card 2 — Desbloquea el Poder de Forex */}
+            {/* Card 2 — Como Gestionar (PREMIUM) */}
+            <div className="relative bg-gradient-to-br from-[#1a1a2e] via-[#1a1020] to-[#0d0d0d] rounded-2xl overflow-hidden flex flex-col"
+              style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}>
+              {/* Gradient border effect */}
+              <div className="absolute inset-0 rounded-2xl pointer-events-none"
+                style={{ background: 'linear-gradient(135deg, #c9a227, #9b59b6, #c9a227)', opacity: 0.5, zIndex: 0, margin: '-2px', borderRadius: 'inherit' }} />
+              <div className="relative z-10 flex flex-col flex-1 bg-gradient-to-br from-[#1a1a2e] via-[#1a1020] to-[#0d0d0d] rounded-2xl overflow-hidden">
+                {/* Premium badge */}
+                <div className="bg-gradient-to-r from-[#c9a227] via-[#e8c84a] to-[#9b59b6] text-black text-xs font-black px-4 py-1.5 text-center tracking-widest uppercase">
+                  ⭐ CURSO PREMIUM — PRÓXIMAMENTE
+                </div>
+                <div className="relative bg-black overflow-hidden">
+                  <img
+                    src="/como gestionar.png"
+                    alt="Como Gestionar"
+                    className="w-full h-auto block"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/40 to-transparent pointer-events-none" />
+                  {/* Premium crown overlay */}
+                  <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-bold text-[#c9a227] border border-[#c9a227]/40">
+                    👑 PREMIUM
+                  </div>
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <p className="text-gray-200 text-sm italic mb-4 leading-relaxed">
+                    &ldquo;Técnicas nunca antes vistas, sumamente eficientes y demostrables&rdquo;
+                  </p>
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-[#c9a227] text-3xl font-bold">1.500.000</span>
+                    <span className="text-gray-400 text-sm">GS</span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-5">
+                    <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-[#c9a227] text-sm font-semibold">Acceso de por vida</span>
+                  </div>
+                  <ul className="space-y-2 mb-6 text-sm text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      Técnicas exclusivas y demostrables
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      Contenido 100% inédito
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      Curso Premium certificado
+                    </li>
+                  </ul>
+                  <button
+                    disabled
+                    className="mt-auto w-full bg-gradient-to-r from-[#c9a227]/30 to-[#9b59b6]/30 text-[#c9a227] font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed border border-[#c9a227]/30"
+                  >
+                    🔒 Disponible Muy Pronto
+                  </button>
+                  <ShareButtons url="/#mentors-vault" title="¡Nuevo curso Premium! Cómo gestionar — Técnicas nunca antes vistas 👑 sacredlevels.com" />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3 — Desbloquea el Poder de Forex */}
             <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
               <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
                 PRÓXIMAMENTE
