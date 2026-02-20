@@ -220,6 +220,12 @@ export default function Home() {
       </section>
 
       {/* ============================================
+          DAILY LEVELS & TRADE SIGNALS
+          ============================================ */}
+      <DailyLevels />
+      <TradeSignals />
+
+      {/* ============================================
           MENTOR'S VAULT - PREMIUM COURSES
           ============================================ */}
       <section id="mentors-vault" className="py-20 px-4 relative z-10 bg-gradient-to-b from-terminal-card/20 to-transparent">
@@ -479,12 +485,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* ============================================
-          DAILY LEVELS & TRADE SIGNALS
-          ============================================ */}
-      <DailyLevels />
-      <TradeSignals />
 
       {/* ============================================
           METHODOLOGY SECTION
