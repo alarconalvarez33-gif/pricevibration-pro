@@ -371,7 +371,66 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Card 3 — Desbloquea el Poder de Forex */}
+            {/* Card 3 — Curso Básico (GRATUITO para registrados) */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-green-700/50 rounded-2xl overflow-hidden flex flex-col hover:border-green-600/70 transition-all">
+              <div className="bg-gradient-to-r from-green-700 to-emerald-600 text-white text-xs font-black px-4 py-1.5 text-center tracking-widest uppercase">
+                🎁 GRATUITO — PRÓXIMAMENTE
+              </div>
+              <div className="relative bg-black overflow-hidden">
+                <img
+                  src="/cursobasico.png"
+                  alt="Curso Básico"
+                  className="w-full h-auto block opacity-90"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/50 to-transparent pointer-events-none" />
+                <div className="absolute top-3 right-3 bg-green-600/80 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-bold text-white">
+                  🆓 FREE
+                </div>
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                <p className="text-gray-200 text-sm mb-4 leading-relaxed">
+                  Sepa como gestionar sus emociones, evite vende humos y preserve su capital.
+                </p>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-green-400 text-3xl font-bold">GRATIS</span>
+                </div>
+                <div className="flex items-center gap-2 mb-5">
+                  <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-green-400 text-sm font-semibold">Para usuarios registrados</span>
+                </div>
+                <ul className="space-y-2 mb-6 text-sm text-gray-300">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Gestión emocional en el trading
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Cómo identificar y evitar vende humos
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Preservá tu capital desde el inicio
+                  </li>
+                </ul>
+                <button
+                  disabled
+                  className="mt-auto w-full bg-green-900/30 text-green-400 font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed border border-green-700/40"
+                >
+                  🔒 Disponible Muy Pronto
+                </button>
+                <ShareButtons url="/#mentors-vault" title="¡Curso GRATUITO! Trading Sicológico — Gestión emocional para traders 🎁 sacredlevels.com" />
+              </div>
+            </div>
+
+            {/* Card 4 — Desbloquea el Poder de Forex */}
             <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
               <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
                 PRÓXIMAMENTE
