@@ -507,7 +507,7 @@ export default function Home() {
               </div>
               <div className="relative bg-black overflow-hidden">
                 <img
-                  src="/trading.png"
+                  src="/TRADING.png"
                   alt="Trading"
                   className="w-full h-auto block opacity-80"
                 />
