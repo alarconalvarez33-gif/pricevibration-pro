@@ -507,8 +507,8 @@ export default function Home() {
               </div>
               <div className="relative bg-black overflow-hidden">
                 <img
-                  src="/trading sicológico.png"
-                  alt="Trading Sicológico"
+                  src="/trading.png"
+                  alt="Trading"
                   className="w-full h-auto block opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/60 to-transparent pointer-events-none" />
