@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
-import LanguageSelector from './LanguageSelector'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Navbar() {
@@ -39,11 +38,11 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/logomentor.png"
+              src="/logo2.png"
               alt="The Mentor Trading"
-              width={160}
-              height={48}
-              className="h-10 w-auto object-contain"
+              width={200}
+              height={60}
+              className="h-14 w-auto object-contain"
               priority
             />
           </Link>
@@ -54,11 +53,11 @@ export default function Navbar() {
               {t('nav.home')}
             </Link>
             <Link href="/astrology" className="text-terminal-muted hover:text-gold-500 transition-colors">
-              Astrology
+              Astrología
             </Link>
             {session && (isPro || isWhale) && (
               <Link href="/advanced" className="text-terminal-muted hover:text-gold-500 transition-colors">
-                Advanced
+                Avanzado
               </Link>
             )}
             <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors">
@@ -67,9 +66,6 @@ export default function Navbar() {
             <Link href="/contact" className="text-terminal-muted hover:text-gold-500 transition-colors">
               {t('nav.contact')}
             </Link>
-
-            {/* Language Selector */}
-            <LanguageSelector />
 
             {session ? (
               <>
@@ -118,7 +114,7 @@ export default function Navbar() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                           </svg>
-                          My Profile
+                          Mi Perfil
                         </Link>
                         <Link
                           href="/billing"
@@ -128,7 +124,7 @@ export default function Navbar() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                           </svg>
-                          My Subscription
+                          Mi Suscripción
                           <span className="ml-auto text-xs text-gold-500 capitalize">{plan}</span>
                         </Link>
 
@@ -142,7 +138,7 @@ export default function Navbar() {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            Cancel Subscription
+                            Cancelar Suscripción
                           </Link>
                         )}
                       </div>
@@ -154,7 +150,7 @@ export default function Navbar() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                           </svg>
-                          Sign Out
+                          Cerrar Sesión
                         </button>
                       </div>
                     </div>
@@ -196,11 +192,11 @@ export default function Navbar() {
                 Home
               </Link>
               <Link href="/astrology" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                Astrology
+                Astrología
               </Link>
               {session && (isPro || isWhale) && (
                 <Link href="/advanced" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  Advanced
+                  Avanzado
                 </Link>
               )}
               <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
@@ -212,7 +208,7 @@ export default function Navbar() {
               {session ? (
                 <>
                   <Link href="/dashboard" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                    Dashboard
+                    Panel
                   </Link>
                   <div className="pt-2 border-t border-gold-500/10">
                     <p className="text-white font-medium mb-1">Hola, {displayName}</p>
@@ -228,13 +224,13 @@ export default function Navbar() {
                     )}
                   </div>
                   <Link href="/settings" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                    My Profile
+                    Mi Perfil
                   </Link>
                   <button
                     onClick={() => { signOut({ callbackUrl: '/' }); setIsMenuOpen(false) }}
                     className="text-left text-red-400 hover:text-red-300 transition-colors"
                   >
-                    Sign Out
+                    Cerrar Sesión
                   </button>
                 </>
               ) : (
@@ -243,7 +239,7 @@ export default function Navbar() {
                     Login
                   </Link>
                   <Link href="/register" className="btn-gold text-center text-sm py-2 px-4" onClick={() => setIsMenuOpen(false)}>
-                    Get Started
+                    Comenzar
                   </Link>
                 </>
               )}

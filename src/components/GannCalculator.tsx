@@ -158,39 +158,39 @@ export default function GannCalculator({
     const data = []
 
     // Header
-    data.push(['Sacred Levels - Gann Calculator Results'])
+    data.push(['Sacred Levels - Resultados Calculadora Gann'])
     data.push([])
-    data.push(['Asset:', `${selectedAsset} (${assetInfo.name})`])
-    data.push(['Center Price:', `$${levels.centerPrice.toFixed(decimals)}`])
-    data.push(['Increment:', levels.increment])
+    data.push(['Activo:', `${selectedAsset} (${assetInfo.name})`])
+    data.push(['Precio Central:', `$${levels.centerPrice.toFixed(decimals)}`])
+    data.push(['Incremento:', levels.increment])
     data.push([])
     // WATERMARK - User identification
-    data.push(['Generated for:', userEmail])
-    data.push(['Date:', new Date().toLocaleString()])
-    data.push(['⚠️ FOR PERSONAL USE ONLY - Commercial sharing prohibited'])
+    data.push(['Generado para:', userEmail])
+    data.push(['Fecha:', new Date().toLocaleString()])
+    data.push(['⚠️ SOLO USO PERSONAL - Está prohibida la distribución comercial'])
     data.push([])
 
     // Resistance levels
-    data.push(['RESISTANCE LEVELS'])
-    data.push(['Level', 'Price', 'Distance'])
+    data.push(['NIVELES DE RESISTENCIA'])
+    data.push(['Nivel', 'Precio', '%'])
     levels.resistances.forEach((price, i) => {
       data.push([
         `R${i + 1}`,
         price.toFixed(decimals),
-        `+${(price - levels.centerPrice).toFixed(decimals)}`
+        `+${((price - levels.centerPrice) / levels.centerPrice * 100).toFixed(2)}%`
       ])
     })
 
     data.push([])
 
     // Support levels
-    data.push(['SUPPORT LEVELS'])
-    data.push(['Level', 'Price', 'Distance'])
+    data.push(['NIVELES DE SOPORTE'])
+    data.push(['Nivel', 'Precio', '%'])
     levels.supports.forEach((price, i) => {
       data.push([
         `S${i + 1}`,
         price > 0 ? price.toFixed(decimals) : '-',
-        price > 0 ? (price - levels.centerPrice).toFixed(decimals) : '-'
+        price > 0 ? `${((price - levels.centerPrice) / levels.centerPrice * 100).toFixed(2)}%` : '-'
       ])
     })
 
@@ -230,14 +230,14 @@ export default function GannCalculator({
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
           </svg>
-          Gann Square Calculator
+          Calculadora Cuadrado de Gann
         </h3>
 
         {/* Asset Selector */}
         <div className="space-y-4">
           <div>
             <label className="block text-terminal-muted text-sm mb-2">
-              Select Asset
+              Seleccionar Activo
             </label>
             <div className="relative">
               <select
@@ -262,7 +262,7 @@ export default function GannCalculator({
           {/* Price Input */}
           <div>
             <label className="block text-terminal-muted text-sm mb-2">
-              Center Price
+              Precio Central
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -363,17 +363,17 @@ export default function GannCalculator({
           {/* Watermark - User identification */}
           <div className="mb-4 p-2 bg-terminal-bg/50 border border-terminal-border/30 rounded text-center">
             <p className="text-terminal-muted/60 text-xs">
-              Generated for: <span className="text-gold-500/60 font-mono">{userEmail}</span>
+              Generado para: <span className="text-gold-500/60 font-mono">{userEmail}</span>
             </p>
             <p className="text-terminal-muted/40 text-xs mt-1">
-              ⚠️ For personal use only - Commercial sharing prohibited
+              ⚠️ Solo uso personal - Está prohibida la distribución comercial
             </p>
           </div>
 
           {/* Center Price Display */}
           <div className="text-center mb-4 p-3 bg-gold-500/10 border border-gold-500/30 rounded-lg">
             <div className="text-terminal-muted text-xs mb-1">{selectedAsset} - {currentAssetConfig.name}</div>
-            <span className="text-terminal-muted text-sm">Center Price</span>
+            <span className="text-terminal-muted text-sm">Precio Central</span>
             <div className="text-2xl font-bold text-gold-500 font-mono">
               ${levels.centerPrice.toLocaleString('en-US', { minimumFractionDigits: currentAssetConfig.decimals, maximumFractionDigits: currentAssetConfig.decimals })}
             </div>
@@ -389,7 +389,7 @@ export default function GannCalculator({
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Download Excel
+                Descargar Excel
               </button>
             </div>
           )}
@@ -402,15 +402,15 @@ export default function GannCalculator({
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
                 </svg>
-                Resistance Levels
+                Niveles de Resistencia
               </h4>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-terminal-muted text-xs">
-                      <th className="text-left py-1 pr-2">Level</th>
-                      <th className="text-right py-1 pr-2">Price</th>
-                      <th className="text-right py-1">Distance</th>
+                      <th className="text-left py-1 pr-2">Nivel</th>
+                      <th className="text-right py-1 pr-2">Precio</th>
+                      <th className="text-right py-1">%</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -429,7 +429,7 @@ export default function GannCalculator({
                         </td>
                         <td className="py-2 text-right">
                           <span className="font-mono text-red-400/70 text-xs">
-                            +{(price - levels.centerPrice).toFixed(currentAssetConfig.decimals)}
+                            +{((price - levels.centerPrice) / levels.centerPrice * 100).toFixed(2)}%
                           </span>
                         </td>
                       </tr>
@@ -445,15 +445,15 @@ export default function GannCalculator({
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
-                Support Levels
+                Niveles de Soporte
               </h4>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-terminal-muted text-xs">
-                      <th className="text-left py-1 pr-2">Level</th>
-                      <th className="text-right py-1 pr-2">Price</th>
-                      <th className="text-right py-1">Distance</th>
+                      <th className="text-left py-1 pr-2">Nivel</th>
+                      <th className="text-right py-1 pr-2">Precio</th>
+                      <th className="text-right py-1">%</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -475,7 +475,7 @@ export default function GannCalculator({
                         </td>
                         <td className="py-2 text-right">
                           <span className="font-mono text-green-400/70 text-xs">
-                            {price > 0 ? (price - levels.centerPrice).toFixed(currentAssetConfig.decimals) : '-'}
+                            {price > 0 ? ((price - levels.centerPrice) / levels.centerPrice * 100).toFixed(2) + '%' : '-'}
                           </span>
                         </td>
                       </tr>

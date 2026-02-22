@@ -5,7 +5,8 @@ import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
 const products: Record<string, { name: string; price: number; pricePYG: number }> = {
-  'canal-paralelo': { name: 'Canal Paralelo - Video Course', price: 49, pricePYG: 343000 },
+  'canal-paralelo': { name: 'Canal Paralelo - Video Curso', price: 32, pricePYG: 320000 },
+  'expansion-matematica': { name: 'Expansión Matemática - Curso Premium', price: 150, pricePYG: 1500000 },
 }
 
 export async function POST(request: Request) {

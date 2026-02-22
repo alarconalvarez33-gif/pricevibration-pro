@@ -19,37 +19,37 @@ import TradeSignals from '@/components/TradeSignals'
 import ShareButtons from '@/components/ShareButtons'
 
 const testimonials = [
-  { name: 'Marcus C.', country: '🇸🇬', text: 'The calculated levels provide valuable mathematical insights for my analysis.' },
-  { name: 'Elena R.', country: '🇪🇸', text: 'Finally a tool that combines Gann with planetary cycles. Game changer.' },
-  { name: 'James T.', country: '🇬🇧', text: 'Switched from traditional TA. Never looking back.' },
-  { name: 'Yuki M.', country: '🇯🇵', text: 'The precision on gold reversals is unmatched.' },
-  { name: 'Ahmed K.', country: '🇦🇪', text: 'Worth every dollar. The time cycles alone are invaluable.' },
+  { name: 'Marcus C.', country: '🇸🇬', text: 'Los niveles calculados brindan información matemática valiosa para mi análisis.' },
+  { name: 'Elena R.', country: '🇪🇸', text: 'Por fin una herramienta que combina Gann con ciclos planetarios. Un cambio total.' },
+  { name: 'James T.', country: '🇬🇧', text: 'Dejé el análisis técnico tradicional. No volvería atrás.' },
+  { name: 'Yuki M.', country: '🇯🇵', text: 'La precisión en los giros del oro no tiene comparación.' },
+  { name: 'Ahmed K.', country: '🇦🇪', text: 'Vale cada centavo. Los ciclos temporales por sí solos son invaluables.' },
 ]
 
 const faqItems = [
   {
-    question: "What is the Gann methodology?",
-    answer: "W.D. Gann developed trading techniques in the early 1900s based on natural law, geometry, and time cycles. His methods have been used by professional traders for over a century to identify key price levels and market turning points."
+    question: "¿Qué es la metodología de Gann?",
+    answer: "W.D. Gann desarrolló técnicas de trading a principios del siglo XX basadas en la ley natural, la geometría y los ciclos de tiempo. Sus métodos han sido utilizados por traders profesionales durante más de un siglo para identificar niveles clave de precio y puntos de inflexión del mercado."
   },
   {
-    question: "How accurate are the calculated levels?",
-    answer: "Our users report high accuracy on major reversals. The precision comes from mathematical principles that govern natural market movements. However, no system is 100% accurate - always use proper risk management."
+    question: "¿Qué tan precisos son los niveles calculados?",
+    answer: "Nuestros usuarios reportan alta precisión en los grandes giros del mercado. La precisión proviene de principios matemáticos que gobiernan los movimientos naturales del mercado. Sin embargo, ningún sistema es 100% preciso — utilizá siempre una gestión de riesgo adecuada."
   },
   {
-    question: "Do I need trading experience to use PriceVibration Pro?",
-    answer: "While the calculations are complex, our interface is simple. Enter a price, get your levels. However, understanding market basics will help you apply the levels more effectively."
+    question: "¿Necesito experiencia en trading para usar la plataforma?",
+    answer: "Aunque los cálculos son complejos, nuestra interfaz es simple. Ingresá un precio y obtené tus niveles. Sin embargo, entender los conceptos básicos del mercado te ayudará a aplicar los niveles de manera más efectiva."
   },
   {
-    question: "What markets does this work for?",
-    answer: "The Gann methodology works on any traded market: Gold (XAU/USD), Forex pairs, cryptocurrencies, stocks, indices, and commodities. The mathematical principles are universal."
+    question: "¿En qué mercados funciona?",
+    answer: "La metodología de Gann funciona en cualquier mercado: Oro (XAU/USD), pares de Forex, criptomonedas, acciones, índices y materias primas. Los principios matemáticos son universales."
   },
   {
-    question: "How do planetary cycles affect trading?",
-    answer: "Heliocentric planetary positions create geometric aspects that historically correlate with market turning points. Gann himself used astrological cycles in his trading. Our Astro-Gann module brings this to modern traders."
+    question: "¿Cómo afectan los ciclos planetarios al trading?",
+    answer: "Las posiciones planetarias heliocéntricas crean aspectos geométricos que históricamente se correlacionan con los puntos de inflexión del mercado. El propio Gann usaba ciclos astrológicos en su trading. Nuestro módulo Astro-Gann trae esto a los traders modernos."
   },
   {
-    question: "What's included in each plan?",
-    answer: "Free: Basic calculator. Pro: Full dashboard, TradingView integration, Astro-Gann module. Whale: Everything in Pro plus advanced tools like Wheel of 24, Square of 9, time cycles, and price-time squaring."
+    question: "¿Qué incluye cada plan?",
+    answer: "Gratis: Calculadora básica. Pro: Panel completo, integración con TradingView, módulo Astro-Gann. Whale: Todo en Pro más herramientas avanzadas como Rueda de 24, Cuadrado de 9, ciclos de tiempo y cuadratura precio-tiempo."
   }
 ]
 
@@ -180,7 +180,7 @@ export default function Home() {
 
             {/* Trust Badges */}
             <div className="border-t border-terminal-border pt-8">
-              <p className="text-terminal-muted/60 text-xs mb-4 uppercase tracking-wide">Trusted & Secure</p>
+              <p className="text-terminal-muted/60 text-xs mb-4 uppercase tracking-wide">Confianza y Seguridad</p>
               <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
                 {/* Stripe */}
                 <div className="flex items-center gap-2">
@@ -189,7 +189,7 @@ export default function Home() {
                   </svg>
                   <div className="text-left">
                     <div className="text-xs font-semibold text-white">Stripe</div>
-                    <div className="text-xs text-terminal-muted">Secure Payments</div>
+                    <div className="text-xs text-terminal-muted">Pagos Seguros</div>
                   </div>
                 </div>
 
@@ -199,8 +199,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                   <div className="text-left">
-                    <div className="text-xs font-semibold text-white">SSL Encrypted</div>
-                    <div className="text-xs text-terminal-muted">Bank-Level Security</div>
+                    <div className="text-xs font-semibold text-white">SSL Cifrado</div>
+                    <div className="text-xs text-terminal-muted">Seguridad Bancaria</div>
                   </div>
                 </div>
 
@@ -210,8 +210,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div className="text-left">
-                    <div className="text-xs font-semibold text-white">24/7 Access</div>
-                    <div className="text-xs text-terminal-muted">Always Available</div>
+                    <div className="text-xs font-semibold text-white">Acceso 24/7</div>
+                    <div className="text-xs text-terminal-muted">Siempre Disponible</div>
                   </div>
                 </div>
               </div>
@@ -258,9 +258,8 @@ export default function Home() {
                   Descubrí las estrategias de trading que usan los profesionales.
                 </p>
                 <div className="flex items-baseline gap-3 mb-6">
-                  <span className="text-[#c9a227] text-3xl font-bold">$49</span>
-                  <span className="text-gray-500 text-sm">USD</span>
-                  <span className="text-gray-600 text-sm">/ 343.000 PYG</span>
+                  <span className="text-[#c9a227] text-3xl font-bold">320.000</span>
+                  <span className="text-gray-500 text-sm">GS</span>
                 </div>
                 <ul className="space-y-2 mb-6 text-sm text-gray-300">
                   <li className="flex items-center gap-2">
@@ -303,7 +302,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Card 2 — Como Gestionar (PREMIUM) */}
+            {/* Card 2 — Expansión Matemática (PREMIUM) */}
             <div className="relative bg-gradient-to-br from-[#1a1a2e] via-[#1a1020] to-[#0d0d0d] rounded-2xl overflow-hidden flex flex-col"
               style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}>
               {/* Gradient border effect */}
@@ -316,8 +315,8 @@ export default function Home() {
                 </div>
                 <div className="relative bg-black overflow-hidden">
                   <img
-                    src="/como gestionar.png"
-                    alt="Como Gestionar"
+                    src="/expa.png"
+                    alt="Expansión Matemática"
                     className="w-full h-auto block"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/40 to-transparent pointer-events-none" />
@@ -493,8 +492,7 @@ export default function Home() {
                   &ldquo;Contenido exclusivo en preparación. Muy pronto.&rdquo;
                 </p>
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-gray-400 text-2xl font-bold">$49</span>
-                  <span className="text-gray-500 text-sm">USD</span>
+                  <span className="text-gray-400 text-2xl font-bold">—</span>
                 </div>
                 <ul className="space-y-2 mb-6 text-sm text-gray-500">
                   <li className="flex items-center gap-2">
@@ -626,12 +624,12 @@ export default function Home() {
       <section className="py-20 px-4 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="text-white">Advanced Mathematical </span>
-            <span className="text-gradient-gold-static">Price Analysis</span>
+            <span className="text-white">Análisis Matemático Avanzado de </span>
+            <span className="text-gradient-gold-static">Precios</span>
           </h2>
           <p className="text-terminal-muted text-lg mb-12 max-w-2xl mx-auto">
-            Institutional-grade calculations for identifying key support and resistance levels
-            using <span className="text-gold-500">W.D. Gann&apos;s proven methodology</span>.
+            Cálculos de nivel institucional para identificar soportes y resistencias clave
+            usando <span className="text-gold-500">la metodología probada de W.D. Gann</span>.
           </p>
 
           {/* Blurred Trading Chart with Levels */}
@@ -710,15 +708,15 @@ export default function Home() {
               <div className="absolute bottom-4 left-4 right-4 bg-terminal-bg/80 backdrop-blur-sm rounded-lg p-4 blur-[6px]">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-gann-resistance text-xs">Resistances</div>
+                    <div className="text-gann-resistance text-xs">Resistencias</div>
                     <div className="text-white font-mono text-sm">$X,XXX.XX</div>
                   </div>
                   <div>
-                    <div className="text-gold-500 text-xs">Center</div>
+                    <div className="text-gold-500 text-xs">Centro</div>
                     <div className="text-white font-mono text-sm">$X,XXX.XX</div>
                   </div>
                   <div>
-                    <div className="text-gann-support text-xs">Supports</div>
+                    <div className="text-gann-support text-xs">Soportes</div>
                     <div className="text-white font-mono text-sm">$X,XXX.XX</div>
                   </div>
                 </div>
@@ -731,19 +729,19 @@ export default function Home() {
                 <svg className="w-10 h-10 text-gold-500 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                 </svg>
-                <p className="text-white font-semibold text-lg">Subscribe to Unlock</p>
-                <p className="text-terminal-muted text-sm mt-1">See the exact levels</p>
+                <p className="text-white font-semibold text-lg">Suscribite para Desbloquear</p>
+                <p className="text-terminal-muted text-sm mt-1">Ver los niveles exactos</p>
               </div>
             </div>
           </div>
 
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-terminal-muted leading-relaxed">
-              Ancient mathematical principles. Planetary alignments. A formula hidden for over 100 years.
+              Principios matemáticos ancestrales. Alineaciones planetarias. Una fórmula oculta por más de 100 años.
               <br />
-              <span className="text-white font-medium">W.D. Gann developed these techniques based on natural law and geometry.</span>
+              <span className="text-white font-medium">W.D. Gann desarrolló estas técnicas basadas en la ley natural y la geometría.</span>
               <br />
-              <span className="text-gold-500">Now explore these time-tested methods.</span>
+              <span className="text-gold-500">Explorá ahora estos métodos probados a lo largo del tiempo.</span>
             </p>
           </div>
         </div>
@@ -756,11 +754,11 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">Analysis </span>
-              <span className="text-gradient-gold-static">Demonstrations</span>
+              <span className="text-white">Demostraciones de </span>
+              <span className="text-gradient-gold-static">Análisis</span>
             </h2>
             <p className="text-terminal-muted max-w-2xl mx-auto">
-              Historical market analysis examples using Gann methodology. For educational purposes only.
+              Ejemplos históricos de análisis de mercado usando la metodología Gann. Solo con fines educativos.
             </p>
           </div>
 
@@ -783,12 +781,12 @@ export default function Home() {
                   </svg>
                 </div>
               </div>
-              <h4 className="text-white font-semibold mb-2">XAU/USD Reversal</h4>
+              <h4 className="text-white font-semibold mb-2">Reversión XAU/USD</h4>
               <p className="text-terminal-muted text-sm mb-2">
-                Resistance level predicted with <span className="text-gold-500">0.15% accuracy</span>
+                Nivel de resistencia predicho con <span className="text-gold-500">0.15% de precisión</span>
               </p>
               <p className="text-gann-support text-sm font-medium">
-                Subscribers received the alert 48 hours early
+                Los suscriptores recibieron la alerta 48 horas antes
               </p>
             </div>
 
@@ -814,12 +812,12 @@ export default function Home() {
                   </svg>
                 </div>
               </div>
-              <h4 className="text-white font-semibold mb-2">BTC Support Bounce</h4>
+              <h4 className="text-white font-semibold mb-2">Rebote de Soporte BTC</h4>
               <p className="text-terminal-muted text-sm mb-2">
-                Key support zone identified <span className="text-gold-500">3 days before</span> the bounce
+                Zona de soporte identificada <span className="text-gold-500">3 días antes</span> del rebote
               </p>
               <p className="text-gann-support text-sm font-medium">
-                Members positioned early with calculated levels
+                Los miembros se posicionaron anticipadamente con los niveles calculados
               </p>
             </div>
 
@@ -844,20 +842,20 @@ export default function Home() {
                   </svg>
                 </div>
               </div>
-              <h4 className="text-white font-semibold mb-2">Planetary Alignment</h4>
+              <h4 className="text-white font-semibold mb-2">Alineación Planetaria</h4>
               <p className="text-terminal-muted text-sm mb-2">
-                Time cycle convergence signaled <span className="text-gold-500">major turning point</span>
+                Convergencia de ciclos temporales señaló un <span className="text-gold-500">punto de inflexión mayor</span>
               </p>
               <p className="text-terminal-muted text-sm font-medium">
-                The method? <span className="text-gold-500">Pro members have access.</span>
+                ¿El método? <span className="text-gold-500">Los miembros Pro tienen acceso.</span>
               </p>
             </div>
           </div>
 
           <div className="text-center">
-            <p className="text-terminal-muted mb-6">Want to see how we calculated these levels?</p>
+            <p className="text-terminal-muted mb-6">¿Querés ver cómo calculamos estos niveles?</p>
             <Link href={session ? '/dashboard' : '/register'} className="btn-gold-large btn-pulse">
-              🔓 {session ? 'Ver mis herramientas' : 'Unlock the Formula'}
+              🔓 {session ? 'Ver mis herramientas' : 'Desbloquear la Fórmula'}
             </Link>
           </div>
         </div>
@@ -936,11 +934,11 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">How It </span>
-              <span className="text-gradient-gold-static">Works</span>
+              <span className="text-white">Cómo </span>
+              <span className="text-gradient-gold-static">Funciona</span>
             </h2>
             <p className="text-terminal-muted">
-              Three steps to precision trading
+              Tres pasos hacia el trading de precisión
             </p>
           </div>
 
@@ -949,36 +947,36 @@ export default function Home() {
               <div className="w-16 h-16 bg-terminal-card border border-terminal-border rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:border-gold-500/50 transition-colors">
                 <span className="text-3xl">📍</span>
               </div>
-              <div className="text-gold-500 text-sm font-semibold mb-2">Step 1</div>
-              <h3 className="text-white font-semibold mb-2">Enter a Significant Price</h3>
-              <p className="text-terminal-muted text-sm">Input a key price level for your chosen market</p>
+              <div className="text-gold-500 text-sm font-semibold mb-2">Paso 1</div>
+              <h3 className="text-white font-semibold mb-2">Ingresá un Precio Significativo</h3>
+              <p className="text-terminal-muted text-sm">Ingresá un nivel de precio clave para el mercado que elijas</p>
             </div>
 
             <div className="text-center group">
               <div className="w-16 h-16 bg-terminal-card border border-terminal-border rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:border-gold-500/50 transition-colors">
                 <span className="text-3xl">🔮</span>
               </div>
-              <div className="text-gold-500 text-sm font-semibold mb-2">Step 2</div>
-              <h3 className="text-white font-semibold mb-2">Our Algorithm Reveals Hidden Zones</h3>
-              <p className="text-terminal-muted text-sm">Mathematical calculations identify key levels</p>
+              <div className="text-gold-500 text-sm font-semibold mb-2">Paso 2</div>
+              <h3 className="text-white font-semibold mb-2">Nuestro Algoritmo Revela Zonas Ocultas</h3>
+              <p className="text-terminal-muted text-sm">Los cálculos matemáticos identifican los niveles clave</p>
             </div>
 
             <div className="text-center group">
               <div className="w-16 h-16 bg-terminal-card border border-terminal-border rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:border-gold-500/50 transition-colors">
                 <span className="text-3xl">🎯</span>
               </div>
-              <div className="text-gold-500 text-sm font-semibold mb-2">Step 3</div>
-              <h3 className="text-white font-semibold mb-2">Execute with Precision</h3>
-              <p className="text-terminal-muted text-sm">Trade confidently at calculated levels</p>
+              <div className="text-gold-500 text-sm font-semibold mb-2">Paso 3</div>
+              <h3 className="text-white font-semibold mb-2">Ejecutá con Precisión</h3>
+              <p className="text-terminal-muted text-sm">Operá con confianza en los niveles calculados</p>
             </div>
           </div>
 
           <div className="text-center">
             <p className="text-terminal-muted italic">
-              The complete methodology is revealed inside.
+              La metodología completa se revela adentro.
             </p>
             <Link href="/billing" className="text-gold-500 hover:text-gold-400 font-semibold inline-flex items-center gap-1 mt-2">
-              View Plans
+              Ver Planes
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -995,20 +993,20 @@ export default function Home() {
     <div className="grid md:grid-cols-2 gap-12 items-center">
       <div>
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
-          <span className="text-white">The Legend Behind </span>
-          <span className="text-gradient-gold-static">the Method</span>
+          <span className="text-white">La Leyenda Detrás del </span>
+          <span className="text-gradient-gold-static">Método</span>
         </h2>
         <p className="text-terminal-muted leading-relaxed mb-6">
-          <span className="text-white font-semibold">William Delbert Gann (1878-1955)</span> was a legendary trader who
-          achieved remarkable results through disciplined application of mathematical principles.
+          <span className="text-white font-semibold">William Delbert Gann (1878-1955)</span> fue un legendario trader que
+          logró resultados extraordinarios mediante la aplicación disciplinada de principios matemáticos.
         </p>
         <p className="text-terminal-muted leading-relaxed mb-6">
-          His methods, based on natural law, geometry, and planetary cycles, remain some of the
-          most studied techniques in trading history. PriceVibration Pro brings his century-old analytical methods
-          into the modern era for educational purposes.
+          Sus métodos, basados en la ley natural, la geometría y los ciclos planetarios, siguen siendo algunas de las
+          técnicas más estudiadas en la historia del trading. Explorá sus métodos analíticos centenarios
+          aplicados al mercado actual con fines educativos.
         </p>
         <Link href={session ? '/dashboard' : '/register'} className="btn-gold inline-flex items-center gap-2">
-          {session ? 'Ir al Dashboard' : 'Discover His Secrets'}
+          {session ? 'Ir al Dashboard' : 'Descubrí Sus Secretos'}
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
@@ -1033,7 +1031,7 @@ export default function Home() {
         
         {/* Cita debajo de la imagen */}
         <div className="text-center mt-4">
-          <p className="text-terminal-muted text-sm italic">&ldquo;Time is the most important factor&rdquo;</p>
+          <p className="text-terminal-muted text-sm italic">&ldquo;El tiempo es el factor más importante&rdquo;</p>
           <p className="text-gold-500 font-cursive text-lg mt-1">— W.D. Gann</p>
         </div>
       </div>
@@ -1047,8 +1045,8 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">Frequently Asked </span>
-              <span className="text-gradient-gold-static">Questions</span>
+              <span className="text-white">Preguntas </span>
+              <span className="text-gradient-gold-static">Frecuentes</span>
             </h2>
           </div>
           <FAQAccordion items={faqItems} />
@@ -1062,23 +1060,23 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="card-premium p-12 rounded-3xl">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              <span className="text-white">Start Your </span>
-              <span className="text-gradient-gold-static">Free Trial Today</span>
+              <span className="text-white">Comenzá Tu </span>
+              <span className="text-gradient-gold-static">Prueba Gratuita Hoy</span>
             </h2>
             <p className="text-terminal-muted mb-8 max-w-2xl mx-auto">
-              Access professional-grade market analysis tools based on proven mathematical principles.
-              No credit card required for free tier.
+              Accedé a herramientas de análisis de mercado de nivel profesional basadas en principios matemáticos probados.
+              No se requiere tarjeta de crédito para el plan gratuito.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
               <Link href={session ? '/dashboard' : '/register'} className="btn-gold-large">
-                {session ? 'Ir al Dashboard' : 'Create Free Account'}
+                {session ? 'Ir al Dashboard' : 'Crear Cuenta Gratuita'}
               </Link>
               <Link href="/billing" className="btn-outline-gold text-lg px-8 py-4">
-                Compare Plans
+                Comparar Planes
               </Link>
             </div>
             <p className="text-terminal-muted/60 text-sm mt-6">
-              Join traders in 8+ countries
+              Únite a traders de más de 8 países
             </p>
           </div>
         </div>
