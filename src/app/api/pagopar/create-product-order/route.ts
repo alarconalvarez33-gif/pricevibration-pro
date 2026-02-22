@@ -4,9 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
-const products: Record<string, { name: string; price: number; pricePYG: number }> = {
-  'canal-paralelo': { name: 'Canal Paralelo - Video Curso', price: 32, pricePYG: 320000 },
-  'expansion-matematica': { name: 'Expansión Matemática - Curso Premium', price: 150, pricePYG: 1500000 },
+const products: Record<string, { name: string; price: number; pricePYG: number; courseUrl: string }> = {
+  'canal-paralelo': { name: 'Canal Paralelo - Video Curso', price: 32, pricePYG: 320000, courseUrl: '/courses/canal-paralelo' },
+  'expansion-matematica': { name: 'Expansión Matemática - Curso Premium', price: 150, pricePYG: 1500000, courseUrl: '/courses/expansion-matematica' },
 }
 
 export async function POST(request: Request) {
@@ -71,9 +71,14 @@ export async function POST(request: Request) {
     fechaMaxima.setDate(fechaMaxima.getDate() + 7)
     const fechaMaximaStr = fechaMaxima.toISOString().slice(0, 19).replace('T', ' ')
 
+    // URL base de la app (producción: https://sacredlevels.com, local: http://localhost:3000)
+    const baseUrl = (process.env.NEXTAUTH_URL || 'https://sacredlevels.com').replace(/\/$/, '')
+    const returnUrl = `${baseUrl}${product.courseUrl}`
+
     // Mismo esquema exacto que create-order
     const pagoparBody = {
       token,
+      url_retorno: returnUrl,
       comprador: {
         ruc: '',
         email: user.email,
@@ -170,6 +175,7 @@ export async function POST(request: Request) {
       hash: pagoparHash,
       paymentUrl: `https://www.pagopar.com/pagos/${pagoparHash}`,
       orderId,
+      courseUrl: product.courseUrl,
     })
   } catch (error) {
     console.error('Create product order error:', error)

@@ -121,7 +121,7 @@ export default async function CanalParaleloPage() {
           </p>
           <p className="text-gray-500 text-sm mb-8">
             <span className="text-[#c9a227] font-semibold">Canal Paralelo</span> — acceso único por{' '}
-            <span className="text-white font-bold">$49 USD / 343.000 GS</span>
+            <span className="text-white font-bold">320.000 GS</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

@@ -9,6 +9,11 @@ const COURSE_META: Record<string, { title: string; url: string; icon: string }> 
     url: '/courses/canal-paralelo',
     icon: '🎓',
   },
+  'expansion-matematica': {
+    title: 'Expansión Matemática',
+    url: '/courses/expansion-matematica',
+    icon: '👑',
+  },
 }
 
 export async function GET() {
