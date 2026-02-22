@@ -311,7 +311,7 @@ export default function Home() {
               <div className="relative z-10 flex flex-col flex-1 bg-gradient-to-br from-[#1a1a2e] via-[#1a1020] to-[#0d0d0d] rounded-2xl overflow-hidden">
                 {/* Premium badge */}
                 <div className="bg-gradient-to-r from-[#c9a227] via-[#e8c84a] to-[#9b59b6] text-black text-xs font-black px-4 py-1.5 text-center tracking-widest uppercase">
-                  ⭐ CURSO PREMIUM — PRÓXIMAMENTE
+                  ⭐ CURSO PREMIUM — DISPONIBLE AHORA
                 </div>
                 <div className="relative bg-black overflow-hidden">
                   <img
@@ -360,12 +360,29 @@ export default function Home() {
                     </li>
                   </ul>
                   <button
-                    disabled
-                    className="mt-auto w-full bg-gradient-to-r from-[#c9a227]/30 to-[#9b59b6]/30 text-[#c9a227] font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed border border-[#c9a227]/30"
+                    onClick={() => handleBuyProduct('expansion-matematica')}
+                    disabled={buyingProduct === 'expansion-matematica'}
+                    className="mt-auto w-full bg-gradient-to-r from-[#c9a227] to-[#9b59b6] hover:from-[#b8911f] hover:to-[#8e44ad] disabled:opacity-70 disabled:cursor-wait text-black font-bold text-base py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
                   >
-                    🔒 Disponible Muy Pronto
+                    {buyingProduct === 'expansion-matematica' ? '⏳ Procesando...' : '👑 Comprar Ahora'}
                   </button>
-                  <ShareButtons url="/#mentors-vault" title="¡Nuevo curso Premium! Cómo gestionar — Técnicas nunca antes vistas 👑 sacredlevels.com" />
+
+                  {/* Bank installments inside card */}
+                  <div className="mt-4 pt-4 border-t border-gray-700/50">
+                    <p className="text-gray-400 text-xs font-semibold text-center mb-3">💳 Pagá en 12 cuotas sin interés con:</p>
+                    <div className="flex justify-center gap-3">
+                      <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-3 flex flex-col items-center justify-center gap-1">
+                        <img src="/familiar.png" alt="Banco Familiar" className="h-16 object-contain" />
+                        <span className="text-[#c9a227] text-[10px] font-bold tracking-wide">12 CUOTAS</span>
+                      </div>
+                      <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-3 flex flex-col items-center justify-center gap-1">
+                        <img src="/ueno.jpeg" alt="Banco Ueno" className="h-16 object-contain" />
+                        <span className="text-[#c9a227] text-[10px] font-bold tracking-wide">12 CUOTAS</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ShareButtons url="/courses/expansion-matematica" title="Expansión Matemática — Técnicas nunca antes vistas 👑 sacredlevels.com" />
                 </div>
               </div>
             </div>
