@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react'
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react'
 
 type Language = 'en' | 'es'
 
@@ -230,25 +230,6 @@ const translations: Record<Language, Record<string, string>> = {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>('es')
-
-  // Initialize language from localStorage or browser
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Check localStorage first
-      const saved = localStorage.getItem('language') as Language
-      if (saved && (saved === 'en' || saved === 'es')) {
-        setLanguageState(saved)
-      } else {
-        // Auto-detect from browser
-        const browserLang = navigator.language.toLowerCase()
-        if (browserLang.startsWith('es')) {
-          setLanguageState('es')
-        } else {
-          setLanguageState('en')
-        }
-      }
-    }
-  }, [])
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang)
