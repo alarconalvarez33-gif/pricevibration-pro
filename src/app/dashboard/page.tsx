@@ -195,6 +195,20 @@ export default function DashboardPage() {
             </div>
           )}
 
+          {/* Quantum Levels — solo raul@sacredlevels.com */}
+          {session.user?.email === 'raul@sacredlevels.com' && (
+            <div className="mb-6">
+              <a
+                href="/quantum"
+                className="bg-purple-900/30 border border-purple-500/30 rounded-xl p-4 flex items-center gap-3 hover:bg-purple-900/50 transition-all hover:border-purple-500/60"
+              >
+                <span className="text-2xl">🔬</span>
+                <span className="text-white font-bold">Quantum Levels</span>
+                <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full ml-1">BETA</span>
+              </a>
+            </div>
+          )}
+
           {/* Mini Charts Row */}
           {showMiniCharts && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
