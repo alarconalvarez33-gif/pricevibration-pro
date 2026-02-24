@@ -11,27 +11,25 @@ interface QuantumLevel {
   type: 'resistance' | 'support' | 'pivot' | 'neutral'
 }
 
-const PROBABILITIES: { prob: number; label: string; type: QuantumLevel['type'] }[] = [
-  { prob: 100,  label: 'Maximum',             type: 'resistance' },
-  { prob: 93.3, label: 'Strong Resistance',   type: 'resistance' },
-  { prob: 84.1, label: 'Upper Node',          type: 'resistance' },
-  { prob: 75,   label: 'Upper Quarter',       type: 'resistance' },
-  { prob: 66.7, label: 'Upper Third',         type: 'neutral'    },
-  { prob: 50,   label: 'Pivot (Equilibrium)', type: 'pivot'      },
-  { prob: 33.3, label: 'Lower Third',         type: 'neutral'    },
-  { prob: 25,   label: 'Lower Quarter',       type: 'support'    },
-  { prob: 15.9, label: 'Lower Node',          type: 'support'    },
-  { prob: 6.7,  label: 'Strong Support',      type: 'support'    },
-  { prob: 0,    label: 'Minimum',             type: 'support'    },
+const QUANTUM_NODES: { factor: number; label: string; type: QuantumLevel['type'] }[] = [
+  { factor: 1.000, label: 'Maximum (Colapso)',        type: 'resistance' },
+  { factor: 0.933, label: 'Strong Resistance (Nodo 1)', type: 'resistance' },
+  { factor: 0.750, label: 'Upper Quarter',             type: 'resistance' },
+  { factor: 0.618, label: 'Golden Ratio Node',         type: 'neutral'    },
+  { factor: 0.500, label: 'Pivot (Equilibrium)',       type: 'pivot'      },
+  { factor: 0.382, label: 'Golden Ratio Support',      type: 'neutral'    },
+  { factor: 0.250, label: 'Lower Quarter',             type: 'support'    },
+  { factor: 0.067, label: 'Strong Support (Nodo 2)',   type: 'support'    },
+  { factor: 0.000, label: 'Minimum (Base)',             type: 'support'    },
 ]
 
 function calculateQuantumLevels(max: number, min: number): QuantumLevel[] {
   const range = max - min
-  return PROBABILITIES.map((p) => ({
-    price: min + (range * p.prob / 100),
-    probability: p.prob,
-    label: p.label,
-    type: p.type,
+  return QUANTUM_NODES.map((node) => ({
+    price: min + (range * node.factor),
+    probability: node.factor * 100,
+    label: node.label,
+    type: node.type,
   }))
 }
 
