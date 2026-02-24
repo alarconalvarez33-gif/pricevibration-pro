@@ -4,9 +4,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import ExnessBanner from './ExnessBanner'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useDomain } from '@/hooks/useDomain'
 
 export default function Footer() {
   const { t } = useLanguage()
+  const { logoSrc } = useDomain()
   return (
     <footer className="bg-terminal-card border-t border-terminal-border relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -15,7 +17,7 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="inline-block mb-4">
               <Image
-                src="/logomentor.png"
+                src={logoSrc}
                 alt="The Mentor Trading"
                 width={160}
                 height={48}

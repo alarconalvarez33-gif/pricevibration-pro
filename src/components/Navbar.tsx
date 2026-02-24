@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useDomain } from '@/hooks/useDomain'
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  const { logoSrc } = useDomain()
   const plan = session?.user?.plan || 'free'
   const role = session?.user?.role || 'user'
   const isAdmin = role === 'admin'
@@ -38,7 +40,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo2.png"
+              src={logoSrc}
               alt="The Mentor Trading"
               width={200}
               height={60}
