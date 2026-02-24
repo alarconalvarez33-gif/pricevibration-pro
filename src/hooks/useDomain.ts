@@ -12,7 +12,7 @@ export function useDomain() {
   }, [])
 
   return {
-    logoSrc: isTrading ? '/logotrading.png' : '/logo3.png',
+    logoSrc: isTrading ? '/logoreal2.png' : '/logosacred.png',
     siteTitle: isTrading
       ? 'Trading.com.py - Professional Trading Tools'
       : 'Sacred Levels - Gann Calculator',

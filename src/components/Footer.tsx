@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import ExnessBanner from './ExnessBanner'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useDomain } from '@/hooks/useDomain'
@@ -16,12 +15,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="inline-block mb-4">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={logoSrc}
-                alt="The Mentor Trading"
-                width={480}
-                height={144}
-                className="h-36 w-auto object-contain hover:opacity-90 transition-opacity"
+                alt="Logo"
+                className="h-8 w-auto object-contain hover:opacity-90 transition-opacity"
               />
             </Link>
             <p className="text-terminal-muted text-sm max-w-md mb-4">
