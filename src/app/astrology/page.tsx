@@ -276,7 +276,7 @@ export default function AstrologyPage() {
     <main className="min-h-screen bg-terminal-bg">
       <Navbar />
 
-      <div className="pt-36 pb-20 px-4">
+      <div className="pt-20 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
 
           {/* Header */}

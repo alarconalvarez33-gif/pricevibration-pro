@@ -195,7 +195,7 @@ export default function PaymentStatusPage() {
     return (
       <main className="min-h-screen bg-black">
         <Navbar />
-        <div className="pt-32 pb-20 px-4 flex items-center justify-center">
+        <div className="pt-20 pb-20 px-4 flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-white text-lg">Verificando estado del pago...</p>
@@ -210,7 +210,7 @@ export default function PaymentStatusPage() {
     <main className="min-h-screen bg-black">
       <Navbar />
 
-      <div className="pt-32 pb-20 px-4">
+      <div className="pt-20 pb-20 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="bg-zinc-900 rounded-2xl p-8 md:p-12 border border-zinc-800">
             <div className="flex flex-col items-center text-center">

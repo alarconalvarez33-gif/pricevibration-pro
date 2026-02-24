@@ -44,7 +44,7 @@ export default function DashboardPage() {
     return (
       <main className="min-h-screen bg-terminal-bg">
         <Navbar />
-        <div className="pt-32 flex items-center justify-center">
+        <div className="pt-20 flex items-center justify-center">
           <div className="text-center">
             <svg className="animate-spin h-12 w-12 text-gold-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -79,7 +79,7 @@ export default function DashboardPage() {
       return (
         <main className="min-h-screen bg-terminal-bg">
           <Navbar />
-          <div className="pt-32 pb-20 px-4">
+          <div className="pt-20 pb-20 px-4">
             <div className="max-w-2xl mx-auto text-center">
               <div className="card-terminal">
                 <div className="w-20 h-20 bg-gold-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -119,7 +119,7 @@ export default function DashboardPage() {
       <Navbar />
 
       {/* Ticker Tape */}
-      <div className="pt-36">
+      <div className="pt-20">
         <TickerTape colorTheme="dark" />
       </div>
 

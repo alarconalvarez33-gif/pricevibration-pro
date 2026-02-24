@@ -77,7 +77,7 @@ export default function RegisterPage() {
     <main className="min-h-screen">
       <Navbar />
 
-      <div className="pt-32 pb-20 px-4">
+      <div className="pt-20 pb-20 px-4">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>

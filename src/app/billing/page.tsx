@@ -101,7 +101,7 @@ export default function BillingPage() {
     <main className="min-h-screen bg-black">
       <Navbar />
 
-      <div className="pt-32 pb-20 px-4">
+      <div className="pt-20 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">

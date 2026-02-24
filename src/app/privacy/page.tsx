@@ -12,7 +12,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-terminal-bg">
       <Navbar />
 
-      <div className="pt-36 pb-20 px-4">
+      <div className="pt-20 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <Link href="/" className="text-gold-500 hover:text-gold-400 text-sm flex items-center gap-2">

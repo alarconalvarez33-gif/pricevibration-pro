@@ -114,7 +114,7 @@ export default function SettingsPage() {
     return (
       <main className="min-h-screen bg-terminal-bg">
         <Navbar />
-        <div className="pt-32 flex items-center justify-center">
+        <div className="pt-20 flex items-center justify-center">
           <div className="text-center">
             <svg className="animate-spin h-12 w-12 text-gold-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -143,7 +143,7 @@ export default function SettingsPage() {
     <main className="min-h-screen bg-terminal-bg">
       <Navbar />
 
-      <div className="pt-36 pb-20 px-4">
+      <div className="pt-20 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-8">
