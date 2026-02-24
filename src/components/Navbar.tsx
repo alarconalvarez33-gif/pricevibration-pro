@@ -36,15 +36,15 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-navy-800 to-terminal-bg backdrop-blur-md border-b border-terminal-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-32">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
               src={logoSrc}
               alt="The Mentor Trading"
-              width={3000}
-              height={900}
-              className="h-[800px] w-auto object-contain"
+              width={500}
+              height={150}
+              className="h-28 w-auto object-contain"
               priority
             />
           </Link>

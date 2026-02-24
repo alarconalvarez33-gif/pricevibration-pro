@@ -143,7 +143,7 @@ export default function SettingsPage() {
     <main className="min-h-screen bg-terminal-bg">
       <Navbar />
 
-      <div className="pt-24 pb-20 px-4">
+      <div className="pt-36 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-8">

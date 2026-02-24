@@ -76,7 +76,7 @@ export default function GuidePage() {
     <main className="min-h-screen bg-terminal-bg">
       <Navbar />
 
-      <div className="pt-24 pb-20 px-4">
+      <div className="pt-36 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
           {/* Header with Language Toggle */}
           <div className="flex justify-between items-center mb-8">

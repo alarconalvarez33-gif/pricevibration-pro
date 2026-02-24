@@ -89,7 +89,7 @@ export default function Home() {
       <Navbar />
 
       {/* Market Ticker Tape */}
-      <div className="pt-16">
+      <div className="pt-36">
         <TickerTape colorTheme="dark" />
       </div>
 

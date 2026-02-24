@@ -19,9 +19,9 @@ export default function Footer() {
               <Image
                 src={logoSrc}
                 alt="The Mentor Trading"
-                width={2400}
-                height={720}
-                className="h-[640px] w-auto object-contain hover:opacity-90 transition-opacity"
+                width={480}
+                height={144}
+                className="h-36 w-auto object-contain hover:opacity-90 transition-opacity"
               />
             </Link>
             <p className="text-terminal-muted text-sm max-w-md mb-4">
