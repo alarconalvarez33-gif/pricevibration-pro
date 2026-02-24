@@ -42,9 +42,9 @@ export default function Navbar() {
             <Image
               src={logoSrc}
               alt="The Mentor Trading"
-              width={300}
-              height={90}
-              className="h-20 w-auto object-contain"
+              width={3000}
+              height={900}
+              className="h-[800px] w-auto object-contain"
               priority
             />
           </Link>
