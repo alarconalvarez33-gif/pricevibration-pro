@@ -94,7 +94,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-terminal-bg overflow-hidden">
+    <main className="min-h-screen bg-[#0a0a0a]">
       <ParticleBackground particleCount={40} />
       <Navbar />
 
@@ -110,7 +110,7 @@ export default function Home() {
         {/* Fondo degradado azul oscuro → negro */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628] via-[#0d1f3c] to-[#0a0a0a]" />
         {/* Glow central */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[#c9a227]/8 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full blur-[120px] pointer-events-none" style={{background: 'rgba(201,162,39,0.07)'}} />
 
         <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20 pb-16">
           {/* Eyebrow */}
