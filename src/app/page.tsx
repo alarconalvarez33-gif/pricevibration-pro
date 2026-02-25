@@ -1,15 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import Image from 'next/image'
 import ParticleBackground from '@/components/ParticleBackground'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import FAQAccordion from '@/components/FAQAccordion'
 import LiveNotification from '@/components/LiveNotification'
-import OnlineCounter from '@/components/OnlineCounter'
 import { TickerTape } from '@/components/TradingView'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useSession } from 'next-auth/react'
@@ -58,6 +56,18 @@ export default function Home() {
   const router = useRouter()
   const { data: session } = useSession()
   const [buyingProduct, setBuyingProduct] = useState<string | null>(null)
+  const [siteName, setSiteName] = useState('Sacred Levels')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      const isTrading = hostname.includes('trading.com.py')
+      setSiteName(isTrading ? 'Trading.com.py' : 'Sacred Levels')
+      document.title = isTrading
+        ? 'Trading.com.py | La Evolución Matemática del Trading'
+        : 'Sacred Levels | La Evolución Matemática del Trading'
+    }
+  }, [])
 
   const handleBuyProduct = async (productId: string) => {
     if (!session) { router.push('/login'); return }
@@ -96,127 +106,165 @@ export default function Home() {
       {/* ============================================
           HERO SECTION
           ============================================ */}
-      <section className="relative pt-16 pb-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 grid-pattern opacity-20"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-[120px]"></div>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Fondo degradado azul oscuro → negro */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628] via-[#0d1f3c] to-[#0a0a0a]" />
+        {/* Glow central */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[#c9a227]/8 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center">
-            {/* Main Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-white">{t('hero.title1')}</span>
-              <br />
-              <span className="text-gradient-gold">{t('hero.title2')}</span>
-            </h1>
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20 pb-16">
+          {/* Eyebrow */}
+          <p className="text-[#c9a227] text-sm font-semibold tracking-widest uppercase mb-6 opacity-90">
+            {siteName}
+          </p>
 
-            {/* Subtitle */}
-            <p className="text-terminal-muted text-base md:text-lg max-w-3xl mx-auto mb-4 leading-relaxed">
-              {t('hero.subtitle')}
+          {/* Title */}
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            <span className="text-white">La Evolución Matemática</span>
+            <br />
+            <span className="text-[#c9a227]">del Trading</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+            De la geometría de Gann a la probabilidad cuántica.
+            <br className="hidden md:block" />
+            Herramientas avanzadas de análisis de ciclos para el trader profesional.
+          </p>
+
+          {/* Badges */}
+          <div className="flex flex-wrap justify-center gap-6 mb-10 text-gray-400 text-sm">
+            <span className="flex items-center gap-2">
+              <span className="text-green-500 text-base">✓</span> Pagos Seguros
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="text-green-500 text-base">✓</span> Plataforma Educativa
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="text-green-500 text-base">✓</span> 8+ Países
+            </span>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-14">
+            <Link
+              href={session ? '/dashboard' : '/register'}
+              className="bg-[#c9a227] hover:bg-[#d4af37] text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors shadow-lg shadow-[#c9a227]/20"
+            >
+              {session ? 'Ir al Dashboard' : 'Comenzar Ahora →'}
+            </Link>
+            <Link
+              href="#planes"
+              className="border border-[#c9a227] text-[#c9a227] hover:bg-[#c9a227]/10 font-bold px-8 py-4 rounded-lg text-lg transition-colors"
+            >
+              Ver Planes
+            </Link>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-[#c9a227]">
+                <AnimatedCounter end={89.7} suffix="%" decimals={1} />
+              </div>
+              <div className="text-gray-500 text-sm mt-1">{t('stats.accuracy')}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-[#c9a227]">
+                <AnimatedCounter end={12500} suffix="+" />
+              </div>
+              <div className="text-gray-500 text-sm mt-1">{t('stats.users')}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-[#c9a227]">
+                <AnimatedCounter end={8} suffix="+" />
+              </div>
+              <div className="text-gray-500 text-sm mt-1">{t('stats.countries')}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================
+          PLANES SECTION
+          ============================================ */}
+      <section id="planes" className="py-20 px-4 bg-[#0a0a0a]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Elegí Tu <span className="text-[#c9a227]">Plan</span>
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Accedé a herramientas de análisis profesional basadas en principios matemáticos probados.
             </p>
+          </div>
 
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-4 mb-10 text-sm text-terminal-muted">
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>{t('hero.secure')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>{t('hero.educational')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>8+ {t('hero.countries')}</span>
-              </div>
-            </div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
 
-            {/* Online Counter */}
-            <div className="flex justify-center mb-6">
-              <OnlineCounter />
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
-              <Link href={session ? '/dashboard' : '/register'} className="btn-gold-large group">
-                <span className="flex items-center gap-2">
-                  {session ? 'Ir al Dashboard' : t('hero.cta.start')}
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
+            {/* Plan PRO */}
+            <div className="relative bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-[#c9a227] rounded-2xl p-8 shadow-lg shadow-[#c9a227]/20">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <span className="bg-[#c9a227] text-black text-sm font-bold px-4 py-1 rounded-full">
+                  MÁS POPULAR
                 </span>
-              </Link>
-              <Link href="/billing" className="btn-outline-gold text-lg px-8 py-4">
-                {t('hero.cta.pricing')}
+              </div>
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-white mb-2">Pro</h3>
+                <div className="text-4xl font-bold text-[#c9a227]">
+                  320.000 <span className="text-lg text-gray-400">Gs/mes</span>
+                </div>
+                <div className="text-sm text-gray-500 mt-1">$49 USD para usuarios internacionales</div>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {['Calculadora Gann Avanzada', 'Cálculos ilimitados', 'Análisis Histórico', 'Exportar a Excel/CSV', 'Datos planetarios en tiempo real'].map(f => (
+                  <li key={f} className="flex items-center gap-3 text-gray-300">
+                    <span className="text-[#c9a227] font-bold">✓</span> {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/billing" className="block w-full bg-[#c9a227] hover:bg-[#d4af37] text-black font-bold py-3 rounded-lg text-center transition-colors">
+                Suscribirse Ahora
               </Link>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mb-12">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-gold-500">
-                  <AnimatedCounter end={89.7} suffix="%" decimals={1} />
+            {/* Plan WHALE */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-gray-700 rounded-2xl p-8 hover:border-purple-500/50 transition-colors">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-white mb-2">Whale 🐋</h3>
+                <div className="text-4xl font-bold text-[#c9a227]">
+                  660.000 <span className="text-lg text-gray-400">Gs/mes</span>
                 </div>
-                <div className="text-terminal-muted text-sm mt-1">{t('stats.accuracy')}</div>
+                <div className="text-sm text-gray-500 mt-1">$100 USD para usuarios internacionales</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-gold-500">
-                  <AnimatedCounter end={12500} suffix="+" />
-                </div>
-                <div className="text-terminal-muted text-sm mt-1">{t('stats.users')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-gold-500">
-                  <AnimatedCounter end={8} suffix="+" />
-                </div>
-                <div className="text-terminal-muted text-sm mt-1">{t('stats.countries')}</div>
-              </div>
+              <ul className="space-y-3 mb-8">
+                {['Todo lo del Plan Pro', 'Módulo Astro-Gann Completo', 'Cuadrado de 9 Completo', 'Hexágono de Gann', 'Análisis de Ciclos Temporales', 'Soporte prioritario'].map(f => (
+                  <li key={f} className="flex items-center gap-3 text-gray-300">
+                    <span className="text-[#c9a227] font-bold">✓</span> {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/billing" className="block w-full border border-[#c9a227] text-[#c9a227] hover:bg-[#c9a227]/10 font-bold py-3 rounded-lg text-center transition-colors">
+                Suscribirse Ahora
+              </Link>
             </div>
 
-            {/* Trust Badges */}
-            <div className="border-t border-terminal-border pt-8">
-              <p className="text-terminal-muted/60 text-xs mb-4 uppercase tracking-wide">Confianza y Seguridad</p>
-              <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
-                {/* Stripe */}
-                <div className="flex items-center gap-2">
-                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
-                  </svg>
-                  <div className="text-left">
-                    <div className="text-xs font-semibold text-white">Stripe</div>
-                    <div className="text-xs text-terminal-muted">Pagos Seguros</div>
-                  </div>
-                </div>
+          </div>
 
-                {/* SSL */}
-                <div className="flex items-center gap-2">
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  <div className="text-left">
-                    <div className="text-xs font-semibold text-white">SSL Cifrado</div>
-                    <div className="text-xs text-terminal-muted">Seguridad Bancaria</div>
-                  </div>
-                </div>
-
-                {/* 24/7 */}
-                <div className="flex items-center gap-2">
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div className="text-left">
-                    <div className="text-xs font-semibold text-white">Acceso 24/7</div>
-                    <div className="text-xs text-terminal-muted">Siempre Disponible</div>
-                  </div>
-                </div>
+          {/* Cuotas bancos */}
+          <div className="mt-12 text-center">
+            <p className="text-gray-400 mb-6">💳 Pagá en 12 cuotas sin interés</p>
+            <div className="flex justify-center items-center gap-8">
+              <div className="flex flex-col items-center">
+                <img src="/familiar.png" alt="Banco Familiar" className="h-12 object-contain mb-2" />
+                <span className="text-[#c9a227] text-xs font-bold tracking-widest">12 CUOTAS</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <img src="/ueno.jpeg" alt="Banco Ueno" className="h-12 object-contain mb-2" />
+                <span className="text-[#c9a227] text-xs font-bold tracking-widest">12 CUOTAS</span>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
