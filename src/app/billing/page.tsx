@@ -10,6 +10,7 @@ const PLANS = [
     id: 'pro',
     name: 'Plan Pro',
     pricePyg: 320000,
+    priceUsd: 49,
     image: '/planpro.png',
     description: 'Para traders serios que buscan dominar el mercado',
     color: 'from-yellow-500 to-amber-600',
@@ -38,6 +39,7 @@ const PLANS = [
     id: 'whale',
     name: 'Plan Whale',
     pricePyg: 660000,
+    priceUsd: 100,
     image: '/whale.png',
     description: 'Para traders profesionales que operan en serio',
     color: 'from-blue-500 to-purple-600',
@@ -135,13 +137,14 @@ export default function BillingPage() {
                   </div>
                 )}
 
-                {/* Plan image / flyer */}
-                <div className="w-full aspect-video bg-zinc-900 overflow-hidden">
+                {/* Plan image / flyer — completo sin recorte */}
+                <div className="w-full bg-zinc-950 flex items-center justify-center overflow-hidden" style={{minHeight: '220px'}}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={plan.image}
                     alt={plan.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
+                    style={{maxHeight: '320px'}}
                   />
                 </div>
 
@@ -158,6 +161,13 @@ export default function BillingPage() {
                         {formatGs(plan.pricePyg)}
                       </span>
                       <span className="text-gray-500 text-sm">/mes</span>
+                    </div>
+
+                    {/* Price in USD for international users */}
+                    <div className="flex items-center gap-2 mt-2 pl-0.5">
+                      <span className="text-gray-500 text-xs">🌎 Internacional:</span>
+                      <span className="text-gray-300 font-semibold text-sm">${plan.priceUsd} USD</span>
+                      <span className="text-gray-600 text-xs">/mes · pago único</span>
                     </div>
                   </div>
 
