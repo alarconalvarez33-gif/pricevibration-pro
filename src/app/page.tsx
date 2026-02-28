@@ -370,8 +370,10 @@ export default function Home() {
                 className="w-full font-bold text-lg py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70 text-white"
                 style={{background: 'linear-gradient(135deg, #7e22ce, #9333ea)', boxShadow: '0 8px 32px rgba(147,51,234,0.35)'}}
               >
-                {buyingProduct === 'fisica-cuantica' ? '⏳ Procesando...' : '🔬 Adquirir Física Cuántica'}
+                {buyingProduct === 'fisica-cuantica' ? '⏳ Procesando...' : '🔬 Adquirir Niveles Cuánticos'}
               </button>
+
+              <ShareButtons url="/#fisica-cuantica" title="Niveles Cuánticos de Probabilidad — Herramienta avanzada de trading 🔬 sacredlevels.com" />
             </div>
 
           </div>
