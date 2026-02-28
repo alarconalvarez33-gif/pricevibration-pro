@@ -76,6 +76,14 @@ model ProductPurchase {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model QuantumAccess {
+  id         String   @id @default(cuid())
+  visitorKey String   @unique
+  usesCount  Int      @default(0)
+  userId     String?
+  createdAt  DateTime @default(now())
+}
+
 model TrialUsage {
   id        String   @id @default(cuid())
   ipAddress String

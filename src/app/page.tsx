@@ -16,6 +16,12 @@ import DailyLevels from '@/components/DailyLevels'
 import TradeSignals from '@/components/TradeSignals'
 import ShareButtons from '@/components/ShareButtons'
 
+const SCROLLING_NAMES = [
+  'Micaela Gómez', 'Pedro Benítez', 'Rodrigo Torres', 'Victoria Pérez',
+  'Lucas Cáceres', 'Valentina Rodríguez', 'Matías Giménez', 'Camila Silva',
+  'Bruno Fernandes', 'Isabella González',
+]
+
 const testimonials = [
   { name: 'Marcus C.', country: '🇸🇬', text: 'Los niveles calculados brindan información matemática valiosa para mi análisis.' },
   { name: 'Elena R.', country: '🇪🇸', text: 'Por fin una herramienta que combina Gann con ciclos planetarios. Un cambio total.' },
@@ -57,6 +63,8 @@ export default function Home() {
   const { data: session } = useSession()
   const [buyingProduct, setBuyingProduct] = useState<string | null>(null)
   const [siteName, setSiteName] = useState('Sacred Levels')
+  const [nameIdx, setNameIdx] = useState(0)
+  const [quantumAutoRenew, setQuantumAutoRenew] = useState(true)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -67,6 +75,13 @@ export default function Home() {
         ? 'Trading.com.py | La Evolución Matemática del Trading'
         : 'Sacred Levels | La Evolución Matemática del Trading'
     }
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNameIdx((i) => (i + 1) % SCROLLING_NAMES.length)
+    }, 1800)
+    return () => clearInterval(timer)
   }, [])
 
   const handleBuyProduct = async (productId: string) => {
@@ -95,6 +110,12 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a]">
+      <style>{`
+        @keyframes scrollNameIn {
+          from { transform: translateY(60%); opacity: 0; }
+          to   { transform: translateY(0);   opacity: 1; }
+        }
+      `}</style>
       <ParticleBackground particleCount={40} />
       <Navbar />
 
@@ -170,8 +191,14 @@ export default function Home() {
               <div className="text-gray-500 text-sm mt-1">{t('stats.accuracy')}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-[#c9a227]">
-                <AnimatedCounter end={12500} suffix="+" />
+              <div className="h-10 flex items-center justify-center overflow-hidden">
+                <span
+                  key={nameIdx}
+                  className="text-lg md:text-xl font-bold text-[#c9a227] whitespace-nowrap"
+                  style={{ animation: 'scrollNameIn 0.5s ease' }}
+                >
+                  {SCROLLING_NAMES[nameIdx]}
+                </span>
               </div>
               <div className="text-gray-500 text-sm mt-1">{t('stats.users')}</div>
             </div>
@@ -265,6 +292,89 @@ export default function Home() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* ============================================
+          FÍSICA CUÁNTICA SECTION
+          ============================================ */}
+      <section id="fisica-cuantica" className="py-20 px-4" style={{background: 'linear-gradient(180deg, #0a0a0a 0%, #0d0a1a 50%, #0a0a0a 100%)'}}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-12 items-center">
+
+            {/* Flyer */}
+            <div className="w-full lg:w-1/2">
+              <img
+                src="/cuantico.png"
+                alt="Física Cuántica - Niveles de Probabilidad"
+                className="w-full rounded-2xl shadow-2xl"
+                style={{boxShadow: '0 0 60px rgba(147,51,234,0.25)'}}
+              />
+            </div>
+
+            {/* Content */}
+            <div className="w-full lg:w-1/2">
+              <p className="text-purple-400 text-sm font-semibold tracking-widest uppercase mb-3">
+                Herramienta Avanzada
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Física Cuántica<br />
+                <span className="text-purple-400">Niveles de Probabilidad</span>
+              </h2>
+
+              {/* Quote */}
+              <blockquote className="border-l-4 border-purple-500 pl-4 mb-6">
+                <p className="text-gray-300 italic text-base leading-relaxed">
+                  &ldquo;Si la inversión en educación te parece cara,<br className="hidden sm:block" />
+                  imagina el precio de la ignorancia&rdquo;
+                </p>
+              </blockquote>
+
+              <ul className="space-y-3 mb-6">
+                {[
+                  'Niveles de probabilidad cuántica de alta precisión',
+                  '2 usos gratuitos para usuarios registrados',
+                  'Algoritmos multi-dimensional de precios',
+                  'Acceso de por vida tras la compra',
+                ].map((f) => (
+                  <li key={f} className="flex items-center gap-3 text-gray-300 text-sm">
+                    <span className="text-purple-400 font-bold flex-shrink-0">✓</span> {f}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Price */}
+              <div className="mb-5">
+                <div className="text-4xl font-bold text-purple-400">
+                  650.000 <span className="text-lg text-gray-400">GS</span>
+                </div>
+                <div className="text-sm text-gray-500 mt-1">🌎 Internacional: $100 USD · acceso de por vida</div>
+                <div className="text-xs text-purple-400/70 mt-1">🎁 2 usos gratuitos para usuarios registrados</div>
+              </div>
+
+              {/* Auto-renewal */}
+              <label className="flex items-center gap-3 mb-5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={quantumAutoRenew}
+                  onChange={(e) => setQuantumAutoRenew(e.target.checked)}
+                  className="w-4 h-4 cursor-pointer"
+                  style={{accentColor: '#9333ea'}}
+                />
+                <span className="text-gray-400 text-sm">Renovación automática anual</span>
+              </label>
+
+              <button
+                onClick={() => handleBuyProduct('fisica-cuantica')}
+                disabled={buyingProduct === 'fisica-cuantica'}
+                className="w-full font-bold text-lg py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70 text-white"
+                style={{background: 'linear-gradient(135deg, #7e22ce, #9333ea)', boxShadow: '0 8px 32px rgba(147,51,234,0.35)'}}
+              >
+                {buyingProduct === 'fisica-cuantica' ? '⏳ Procesando...' : '🔬 Adquirir Física Cuántica'}
+              </button>
+            </div>
+
+          </div>
         </div>
       </section>
 

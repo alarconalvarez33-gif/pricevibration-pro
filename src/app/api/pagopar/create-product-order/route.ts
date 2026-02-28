@@ -7,6 +7,7 @@ import crypto from 'crypto'
 const products: Record<string, { name: string; price: number; pricePYG: number; courseUrl: string }> = {
   'canal-paralelo': { name: 'Canal Paralelo - Video Curso', price: 32, pricePYG: 320000, courseUrl: '/courses/canal-paralelo' },
   'expansion-matematica': { name: 'Expansión Matemática - Curso Premium', price: 150, pricePYG: 1500000, courseUrl: '/courses/expansion-matematica' },
+  'fisica-cuantica': { name: 'Física Cuántica - Niveles de Probabilidad', price: 100, pricePYG: 650000, courseUrl: '/quantum' },
 }
 
 export async function POST(request: Request) {

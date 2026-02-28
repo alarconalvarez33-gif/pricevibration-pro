@@ -75,6 +75,7 @@ function formatGs(amount: number) {
 export default function BillingPage() {
   const { data: session } = useSession()
   const [isLoading, setIsLoading] = useState<string | null>(null)
+  const [autoRenew, setAutoRenew] = useState<Record<string, boolean>>({ pro: true, whale: true })
 
   const handleSubscribe = async (planId: string) => {
     if (!session) {
@@ -216,6 +217,17 @@ export default function BillingPage() {
                     </div>
                     <p className="text-gray-500 text-xs mt-2 text-center">Visa · Mastercard · Bancard</p>
                   </div>
+
+                  {/* Auto-renewal */}
+                  <label className="flex items-center gap-3 mb-4 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={autoRenew[plan.id] ?? true}
+                      onChange={(e) => setAutoRenew(prev => ({ ...prev, [plan.id]: e.target.checked }))}
+                      className="w-4 h-4 cursor-pointer accent-yellow-500"
+                    />
+                    <span className="text-gray-400 text-sm">Renovación automática mensual</span>
+                  </label>
 
                   {/* CTA */}
                   <button
