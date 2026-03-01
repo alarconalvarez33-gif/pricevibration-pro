@@ -25,6 +25,12 @@ export async function GET(request: NextRequest) {
 
   // Check if user has a paid quantum subscription
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+
+  // Admin always has full access
+  if (user?.role === 'admin') {
+    return NextResponse.json({ allowed: true, paid: true, usesLeft: 999 })
+  }
+
   const hasPaid = await prisma.productPurchase.findFirst({
     where: { userId: user?.id, productId: 'fisica-cuantica', status: 'paid' },
   })
@@ -62,6 +68,12 @@ export async function POST(request: NextRequest) {
     .digest('hex')
 
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+
+  // Admin always has full access (no use consumption)
+  if (user?.role === 'admin') {
+    return NextResponse.json({ allowed: true, paid: true })
+  }
+
   const hasPaid = await prisma.productPurchase.findFirst({
     where: { userId: user?.id, productId: 'fisica-cuantica', status: 'paid' },
   })
