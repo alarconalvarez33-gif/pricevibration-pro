@@ -5,94 +5,193 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 interface QuantumLevel {
+  n: number
   price: number
   probability: number
-  label: string
-  type: 'resistance' | 'support' | 'pivot' | 'neutral'
+  type: 'accumulation' | 'distribution' | 'equilibrium'
+  strength: 'extreme' | 'strong' | 'moderate'
 }
 
-const QUANTUM_NODES: { factor: number; label: string; type: QuantumLevel['type'] }[] = [
-  { factor: 1.000, label: 'Maximum (Colapso)',        type: 'resistance' },
-  { factor: 0.933, label: 'Strong Resistance (Nodo 1)', type: 'resistance' },
-  { factor: 0.750, label: 'Upper Quarter',             type: 'resistance' },
-  { factor: 0.618, label: 'Golden Ratio Node',         type: 'neutral'    },
-  { factor: 0.500, label: 'Pivot (Equilibrium)',       type: 'pivot'      },
-  { factor: 0.382, label: 'Golden Ratio Support',      type: 'neutral'    },
-  { factor: 0.250, label: 'Lower Quarter',             type: 'support'    },
-  { factor: 0.067, label: 'Strong Support (Nodo 2)',   type: 'support'    },
-  { factor: 0.000, label: 'Minimum (Base)',             type: 'support'    },
-]
+interface AccessState {
+  loading: boolean
+  allowed: boolean
+  paid: boolean
+  usesLeft: number
+  usesCount: number
+  reason?: string
+}
+
+const N = 8
 
 function calculateQuantumLevels(max: number, min: number): QuantumLevel[] {
   const range = max - min
-  return QUANTUM_NODES.map((node) => ({
-    price: min + (range * node.factor),
-    probability: node.factor * 100,
-    label: node.label,
-    type: node.type,
-  }))
+  const levels: QuantumLevel[] = []
+
+  for (let n = 0; n <= N; n++) {
+    const position = Math.pow(n / N, 2)
+    const price = min + range * position
+    const probability = Math.pow(n / N, 2) * 100
+
+    // n=0,1,2,3 → acumulación | n=4,5 → equilibrio | n=6,7,8 → distribución
+    const type: QuantumLevel['type'] =
+      n <= 3 ? 'accumulation' : n <= 5 ? 'equilibrium' : 'distribution'
+    const strength: QuantumLevel['strength'] =
+      n === 0 || n === N ? 'extreme' : n <= 2 || n >= 6 ? 'strong' : 'moderate'
+
+    levels.push({
+      n,
+      price: Math.round(price * 100) / 100,
+      probability: Math.round(probability * 10) / 10,
+      type,
+      strength,
+    })
+  }
+  return levels
 }
 
 export default function QuantumPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
+  const [access, setAccess] = useState<AccessState>({
+    loading: true, allowed: false, paid: false, usesLeft: 0, usesCount: 0,
+  })
   const [maxVal, setMaxVal] = useState('')
   const [minVal, setMinVal] = useState('')
   const [levels, setLevels] = useState<QuantumLevel[]>([])
   const [error, setError] = useState('')
+  const [calculating, setCalculating] = useState(false)
 
   useEffect(() => {
     if (status === 'loading') return
-    if (!session || session.user?.email !== 'raul@sacredlevels.com') {
-      router.replace('/dashboard')
-    }
+    if (!session) { router.replace('/login'); return }
+
+    fetch('/api/quantum/check-access')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.reason === 'login_required') { router.replace('/login'); return }
+        setAccess({
+          loading: false,
+          allowed: data.allowed,
+          paid: data.paid ?? false,
+          usesLeft: data.usesLeft ?? 0,
+          usesCount: data.usesCount ?? 0,
+          reason: data.reason,
+        })
+      })
+      .catch(() => setAccess(prev => ({ ...prev, loading: false })))
   }, [session, status, router])
 
-  if (status === 'loading' || !session || session.user?.email !== 'raul@sacredlevels.com') {
-    return null
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     const max = parseFloat(maxVal)
     const min = parseFloat(minVal)
     if (isNaN(max) || isNaN(min)) { setError('Ingresá valores numéricos válidos.'); return }
     if (min >= max) { setError('El máximo debe ser mayor al mínimo.'); return }
+
+    if (!access.paid) {
+      setCalculating(true)
+      try {
+        const res = await fetch('/api/quantum/check-access', { method: 'POST' })
+        const data = await res.json()
+        if (res.status === 401) { router.replace('/login'); return }
+        const newUsesLeft = data.usesLeft ?? 0
+        setAccess(prev => ({
+          ...prev,
+          allowed: data.allowed,
+          usesLeft: newUsesLeft,
+          usesCount: data.usesCount ?? 0,
+        }))
+        if (!data.allowed) {
+          setError('No tenés más usos gratuitos disponibles.')
+          setCalculating(false)
+          return
+        }
+      } catch {
+        setError('Error de conexión. Intentá de nuevo.')
+        setCalculating(false)
+        return
+      }
+      setCalculating(false)
+    }
+
     setLevels(calculateQuantumLevels(max, min))
   }
 
-  const typeIcon = (type: QuantumLevel['type']) =>
-    type === 'resistance' ? '🔴' : type === 'support' ? '🟢' : type === 'pivot' ? '⚪' : '🟡'
+  /* ── Loading ── */
+  if (status === 'loading' || access.loading) {
+    return (
+      <main className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-purple-400 text-sm">Verificando acceso...</p>
+        </div>
+      </main>
+    )
+  }
 
-  const typeBorder = (type: QuantumLevel['type']) =>
-    type === 'resistance' ? 'bg-red-900/20 border-red-500/30' :
-    type === 'support'    ? 'bg-green-900/20 border-green-500/30' :
-    type === 'pivot'      ? 'bg-yellow-900/20 border-yellow-500/30' :
-                            'bg-gray-900/20 border-gray-500/30'
+  /* ── Paywall ── */
+  if (!access.allowed && access.usesLeft === 0 && !access.paid) {
+    return (
+      <main className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-gradient-to-br from-[#1a0a2e] to-[#0d0d0d] border border-purple-500/30 rounded-2xl p-8">
+            <span className="text-5xl mb-4 block">🔬</span>
+            <h2 className="text-2xl font-bold text-white mb-2">Niveles Cuánticos</h2>
+            <p className="text-gray-400 mb-2">Usaste tus 2 cálculos gratuitos.</p>
+            <p className="text-gray-500 text-sm mb-6 italic">
+              &ldquo;Si la inversión en educación te parece cara,<br />imagina el precio de la ignorancia&rdquo;
+            </p>
+            <div className="text-3xl font-bold text-purple-400 mb-1">
+              650.000 <span className="text-base text-gray-400">GS</span>
+            </div>
+            <div className="text-sm text-gray-500 mb-6">🌎 $100 USD · acceso de por vida</div>
+            <a
+              href="/#fisica-cuantica"
+              className="block w-full py-4 rounded-xl font-bold text-white text-lg mb-4 transition-all hover:scale-[1.02]"
+              style={{ background: 'linear-gradient(135deg, #7e22ce, #9333ea)' }}
+            >
+              🔬 Adquirir Acceso Completo
+            </a>
+            <a href="/dashboard" className="text-sm text-gray-500 hover:text-white transition-colors">
+              ← Volver al Dashboard
+            </a>
+          </div>
+        </div>
+      </main>
+    )
+  }
 
-  const probColor = (prob: number) =>
-    prob > 66 ? 'text-red-400' : prob < 33 ? 'text-green-400' : 'text-yellow-400'
-
+  /* ── Main Page ── */
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">
+
       {/* Header */}
-      <div className="border-b border-[#c9a227]/20 bg-[#0a0a0f]/95 backdrop-blur-sm">
+      <div className="border-b border-purple-500/20 bg-[#0a0a0f]/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🔬</span>
             <div>
-              <h1 className="text-lg font-bold text-white flex items-center gap-2">
-                Quantum Probability Levels
-                <span className="bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">BETA</span>
-              </h1>
-              <p className="text-xs text-purple-400">Based on Schrödinger wave function principles</p>
+              <h1 className="text-base font-bold text-white">Niveles Cuánticos de Probabilidad</h1>
+              <p className="text-xs text-purple-400">Distribución de energía E=n² aplicada al precio</p>
             </div>
           </div>
-          <a href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
-            ← Dashboard
-          </a>
+          <div className="flex items-center gap-3">
+            {!access.paid && (
+              <span className="text-xs text-purple-300 bg-purple-900/40 border border-purple-500/30 px-3 py-1 rounded-full">
+                {access.usesLeft} uso{access.usesLeft !== 1 ? 's' : ''} gratis restante{access.usesLeft !== 1 ? 's' : ''}
+              </span>
+            )}
+            {access.paid && (
+              <span className="text-xs text-green-400 bg-green-900/30 border border-green-500/30 px-3 py-1 rounded-full">
+                ✓ Acceso completo
+              </span>
+            )}
+            <a href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
+              ← Dashboard
+            </a>
+          </div>
         </div>
       </div>
 
@@ -100,75 +199,92 @@ export default function QuantumPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-6">
-            <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-purple-500/30 rounded-xl p-6 mb-6">
+            <h2 className="text-white font-bold text-lg mb-1">Ingresá el rango de precios</h2>
+            <p className="text-gray-500 text-sm mb-5">Los niveles se distribuyen con la función n² (más densos cerca del mínimo)</p>
+            <div className="grid grid-cols-2 gap-4 mb-5">
               <div>
-                <label className="text-gray-400 text-sm mb-2 block">Maximum (High)</label>
+                <label className="text-gray-400 text-sm mb-2 block">Máximo (High)</label>
                 <input
                   type="number"
                   value={maxVal}
                   onChange={(e) => setMaxVal(e.target.value)}
-                  placeholder="5217"
+                  placeholder="3100"
                   step="0.01"
-                  className="w-full bg-[#0d0d0d] border border-gray-700 rounded-lg px-4 py-3 text-white text-xl focus:outline-none focus:border-purple-500/60 transition-colors"
+                  className="w-full bg-[#0d0d0d] border border-gray-700 rounded-lg px-4 py-3 text-white text-xl focus:outline-none focus:border-purple-500 transition-colors"
                 />
               </div>
               <div>
-                <label className="text-gray-400 text-sm mb-2 block">Minimum (Low)</label>
+                <label className="text-gray-400 text-sm mb-2 block">Mínimo (Low)</label>
                 <input
                   type="number"
                   value={minVal}
                   onChange={(e) => setMinVal(e.target.value)}
-                  placeholder="5175"
+                  placeholder="2800"
                   step="0.01"
-                  className="w-full bg-[#0d0d0d] border border-gray-700 rounded-lg px-4 py-3 text-white text-xl focus:outline-none focus:border-purple-500/60 transition-colors"
+                  className="w-full bg-[#0d0d0d] border border-gray-700 rounded-lg px-4 py-3 text-white text-xl focus:outline-none focus:border-purple-500 transition-colors"
                 />
               </div>
             </div>
 
-            {error && (
-              <p className="text-red-400 text-sm mb-4">{error}</p>
-            )}
+            {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
             <button
               type="submit"
-              className="w-full bg-[#c9a227] hover:bg-[#d4af37] text-black font-bold py-4 rounded-lg text-lg transition-all hover:scale-[1.01] active:scale-95"
+              disabled={calculating}
+              className="w-full font-bold py-4 rounded-lg text-lg transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-70 text-white"
+              style={{ background: 'linear-gradient(135deg, #7e22ce, #9333ea)' }}
             >
-              🔬 Calculate Quantum Levels
+              {calculating ? '⏳ Calculando...' : '🔬 Calcular Niveles Cuánticos'}
             </button>
+
+            {!access.paid && (
+              <p className="text-center text-xs text-gray-600 mt-3">
+                Cada cálculo consume 1 uso gratuito · {access.usesLeft} restante{access.usesLeft !== 1 ? 's' : ''}
+              </p>
+            )}
           </div>
         </form>
 
         {/* Results */}
         {levels.length > 0 && (
           <>
-            {/* Wave visualization */}
-            <div className="mt-8 bg-[#0d0d0d] border border-purple-500/20 rounded-xl p-4 h-40 relative overflow-hidden">
-              <p className="text-purple-400 text-xs uppercase tracking-widest mb-2 absolute top-3 left-4">ψ(x)² — Probability Distribution</p>
+            {/* n² curve visualization */}
+            <div className="mb-6 bg-[#0d0d0d] border border-purple-500/20 rounded-xl p-4 h-44 relative overflow-hidden">
+              <p className="text-purple-400 text-xs uppercase tracking-widest absolute top-3 left-4">
+                ψ(x)² — Distribución cuántica de probabilidad E=n²
+              </p>
               <svg viewBox="0 0 100 40" className="w-full h-full" preserveAspectRatio="none">
-                {/* Grid lines */}
                 {[10, 20, 30].map((y) => (
                   <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#ffffff08" strokeWidth="0.5" />
                 ))}
-                {/* Wave */}
+                {/* Fibonacci reference (straight line) */}
+                <line x1="0" y1="38" x2="100" y2="4" stroke="#c9a227" strokeWidth="0.8" strokeDasharray="2,2" opacity="0.35" />
+                <text x="62" y="16" fontSize="3" fill="#c9a227" opacity="0.5">Fibonacci</text>
+                {/* n² curve (parabola) */}
                 <path
-                  d="M 0 20 Q 12 4, 25 20 Q 37 36, 50 20 Q 62 4, 75 20 Q 87 36, 100 20"
-                  stroke="#c9a227"
+                  d={`M 0 38 ${levels.map((lv) => `L ${lv.probability} ${38 - (lv.probability / 100) * 34}`).join(' ')}`}
+                  stroke="#9333ea"
                   strokeWidth="1.5"
                   fill="none"
-                  opacity="0.7"
                 />
+                {/* Shaded area */}
+                <path
+                  d={`M 0 38 ${levels.map((lv) => `L ${lv.probability} ${38 - (lv.probability / 100) * 34}`).join(' ')} L 100 38 Z`}
+                  fill="#9333ea"
+                  opacity="0.1"
+                />
+                <text x="30" y="20" fontSize="3" fill="#9333ea" opacity="0.7">n²</text>
                 {/* Level markers */}
-                {levels.map((level, i) => (
+                {levels.map((lv) => (
                   <circle
-                    key={i}
-                    cx={level.probability}
-                    cy={20 + Math.sin(level.probability * Math.PI / 50) * 14}
-                    r="1.8"
+                    key={lv.n}
+                    cx={lv.probability}
+                    cy={38 - (lv.probability / 100) * 34}
+                    r="1.6"
                     fill={
-                      level.type === 'resistance' ? '#ef4444' :
-                      level.type === 'support'    ? '#22c55e' :
-                      level.type === 'pivot'      ? '#c9a227' : '#a855f7'
+                      lv.type === 'distribution' ? '#ef4444' :
+                      lv.type === 'equilibrium'  ? '#eab308' : '#22c55e'
                     }
                   />
                 ))}
@@ -176,35 +292,149 @@ export default function QuantumPage() {
             </div>
 
             {/* Level cards */}
-            <div className="mt-6 space-y-3">
-              {levels.map((level, index) => (
+            <div className="space-y-3">
+              {levels.map((level) => (
                 <div
-                  key={index}
-                  className={`flex items-center justify-between p-4 rounded-lg border ${typeBorder(level.type)}`}
+                  key={level.n}
+                  className={`p-4 rounded-lg border ${
+                    level.type === 'accumulation'
+                      ? 'bg-green-900/20 border-green-500/30'
+                      : level.type === 'distribution'
+                      ? 'bg-red-900/20 border-red-500/30'
+                      : 'bg-yellow-900/20 border-yellow-500/30'
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{typeIcon(level.type)}</span>
-                    <span className="text-xl font-mono font-bold text-white">
-                      {level.price.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-gray-400 text-sm">{level.label}</div>
-                    <div className={`font-bold ${probColor(level.probability)}`}>
-                      {level.probability.toFixed(1)}%
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-2xl font-mono font-bold text-white">
+                        ${level.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                      <span className="ml-3 text-sm text-gray-400 font-mono">n={level.n}</span>
                     </div>
+                    <div className="text-right">
+                      <div className={`font-bold text-sm ${
+                        level.strength === 'extreme' ? 'text-purple-400' :
+                        level.strength === 'strong'  ? 'text-[#c9a227]'  : 'text-gray-400'
+                      }`}>
+                        {level.strength === 'extreme' ? '⚡ EXTREMO' :
+                         level.strength === 'strong'  ? '🔥 FUERTE'  : '📊 MODERADO'}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-0.5">{level.probability}% energía</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {level.type === 'accumulation' && (
+                      <>
+                        <span className="bg-green-600/30 text-green-400 text-xs px-2 py-1 rounded-full">
+                          🛡️ Zona de Rebote Alcista
+                        </span>
+                        <span className="bg-blue-600/30 text-blue-400 text-xs px-2 py-1 rounded-full">
+                          🔄 Si rompe → actúa como Resistencia
+                        </span>
+                        {level.n === 0 && (
+                          <span className="bg-purple-600/30 text-purple-400 text-xs px-2 py-1 rounded-full">
+                            ⚡ Base cuántica extrema
+                          </span>
+                        )}
+                        {(level.strength === 'strong' || level.strength === 'extreme') && (
+                          <span className="bg-orange-600/30 text-orange-400 text-xs px-2 py-1 rounded-full">
+                            🔄 Breakout Zone — pullback posible
+                          </span>
+                        )}
+                      </>
+                    )}
+                    {level.type === 'equilibrium' && (
+                      <>
+                        <span className="bg-yellow-600/30 text-yellow-400 text-xs px-2 py-1 rounded-full">
+                          ⚖️ Zona de Equilibrio
+                        </span>
+                        <span className="bg-purple-600/30 text-purple-400 text-xs px-2 py-1 rounded-full">
+                          ⚡ Flip Zone — Soporte ↔ Resistencia
+                        </span>
+                        <span className="bg-gray-600/30 text-gray-400 text-xs px-2 py-1 rounded-full">
+                          📊 Posible continuación o reversión
+                        </span>
+                      </>
+                    )}
+                    {level.type === 'distribution' && (
+                      <>
+                        <span className="bg-red-600/30 text-red-400 text-xs px-2 py-1 rounded-full">
+                          🛡️ Zona de Rebote Bajista
+                        </span>
+                        <span className="bg-blue-600/30 text-blue-400 text-xs px-2 py-1 rounded-full">
+                          🔄 Si rompe → actúa como Soporte
+                        </span>
+                        {level.n === N && (
+                          <span className="bg-purple-600/30 text-purple-400 text-xs px-2 py-1 rounded-full">
+                            ⚡ Techo cuántico extremo
+                          </span>
+                        )}
+                        {(level.strength === 'strong' || level.strength === 'extreme') && (
+                          <span className="bg-orange-600/30 text-orange-400 text-xs px-2 py-1 rounded-full">
+                            🔄 Breakout Zone — pullback posible
+                          </span>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
 
+            {/* Legend */}
+            <div className="mt-6 grid grid-cols-3 gap-3 text-center text-xs text-gray-400">
+              <div className="bg-green-900/20 border border-green-500/20 rounded-xl p-3">
+                <div className="text-green-400 font-bold mb-1">🟢 Acumulación</div>
+                <div>n=0,1,2,3<br />Alta prob. de rebote alcista</div>
+              </div>
+              <div className="bg-yellow-900/20 border border-yellow-500/20 rounded-xl p-3">
+                <div className="text-yellow-400 font-bold mb-1">⚖️ Equilibrio</div>
+                <div>n=4,5<br />Reversión o continuación</div>
+              </div>
+              <div className="bg-red-900/20 border border-red-500/20 rounded-xl p-3">
+                <div className="text-red-400 font-bold mb-1">🔴 Distribución</div>
+                <div>n=6,7,8<br />Alta prob. de rebote bajista</div>
+              </div>
+            </div>
+
+            {/* Breakout vs Rejection guide */}
+            <div className="mt-4 bg-[#0d0d1a] border border-blue-500/20 rounded-xl p-4">
+              <h4 className="text-blue-400 font-bold mb-3 text-sm">📖 Guía Breakout vs Rebote</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-400">
+                <div className="flex items-start gap-2">
+                  <span className="text-blue-400 text-base flex-shrink-0">🔄</span>
+                  <div><span className="text-blue-400 font-semibold">Breakout Zone</span><br />Si el precio rompe con volumen, esperar pullback para entrar en continuación</div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-400 text-base flex-shrink-0">🛡️</span>
+                  <div><span className="text-green-400 font-semibold">Rejection Zone</span><br />Alta probabilidad de rebote. Buscar señales de reversión en velas</div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-purple-400 text-base flex-shrink-0">⚡</span>
+                  <div><span className="text-purple-400 font-semibold">Flip Zone</span><br />El nivel cambia de rol: soporte roto se convierte en resistencia y viceversa</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Fibonacci comparison */}
+            <div className="bg-[#1a1a2e] border border-[#c9a227]/20 rounded-xl p-5 mt-4">
+              <h4 className="text-[#c9a227] font-bold mb-2">📐 ¿Por qué es diferente a Fibonacci?</h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Fibonacci distribuye niveles uniformemente (23.6%, 38.2%, 50%, 61.8%).<br />
+                Los niveles cuánticos siguen E=n² concentrando más niveles cerca del mínimo,
+                igual que los electrones en un átomo tienen más niveles de energía cerca del núcleo.
+                Esto genera zonas de alta densidad energética donde el precio tiende a reaccionar con mayor fuerza.
+              </p>
+            </div>
+
             {/* Disclaimer */}
-            <p className="text-gray-500 text-sm mt-6 text-center">
-              🔬 Experimental feature. Based on quantum probability theory adapted for price analysis.
-              This is for educational purposes only. Not financial advice.
+            <p className="text-gray-600 text-xs mt-6 text-center">
+              🔬 Herramienta experimental con fines educativos. No es asesoramiento financiero. No inviertas más de lo que estás dispuesto a perder.
             </p>
           </>
         )}
+
       </div>
     </main>
   )
