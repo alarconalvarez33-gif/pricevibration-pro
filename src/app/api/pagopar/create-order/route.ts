@@ -41,13 +41,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 })
     }
 
-    const privateKey = process.env.PAGOPAR_PRIVATE_KEY
-    const publicKey = process.env.PAGOPAR_PUBLIC_KEY
+    // Trim keys to avoid whitespace issues in env vars
+    const privateKey = (process.env.PAGOPAR_PRIVATE_KEY || '').trim()
+    const publicKey = (process.env.PAGOPAR_PUBLIC_KEY || '').trim()
 
     if (!privateKey || !publicKey) {
       console.error('Pagopar keys not configured')
       return NextResponse.json({ error: 'Pasarela de pago no configurada' }, { status: 500 })
     }
+
+    console.log('🔑 Private key (primeros 8):', privateKey.substring(0, 8) + '...')
+    console.log('🔑 Public key (primeros 8):', publicKey.substring(0, 8) + '...')
 
     const prices = PLAN_PRICES[planType][billingPeriod as 'monthly' | 'yearly']
     // Ensure monto is integer (Guaraníes, no decimals)
