@@ -4,128 +4,167 @@ import crypto from 'crypto'
 
 const PRIVATE_KEY = '85ece630fff92520e3943f1f2a8d3c60'
 
+/**
+ * Construye la respuesta exacta de 9 campos que Pagopar requiere del webhook.
+ * Sin estos 9 campos exactos, Pagopar responde con
+ * "No coinciden los campos o la cantidad no es 9".
+ */
+function buildRespuesta9(item: Record<string, unknown>, pagadoFinal: boolean): string {
+  const now = new Date()
+  const resultado = [
+    {
+      pagado: pagadoFinal,
+      numero_comprobante_interno:
+        (item.numero_comprobante as string) ||
+        (item.numero_comprobante_interno as string) ||
+        String(Date.now()),
+      id_pedido: (item.numero_pedido as string) || (item.id_pedido as string) || '',
+      monto: (item.monto as number) || 0,
+      fecha_pago: now.toISOString().split('T')[0],
+      hora_pago: now.toTimeString().split(' ')[0],
+      id_transaccion: (item.id_transaccion as string) || '',
+      medio_pago: (item.medio_pago as string) || '',
+      codigo_autorizacion: (item.codigo_autorizacion as string) || '',
+    },
+  ]
+
+  console.log('📤 Respuesta 9 campos a Pagopar:', JSON.stringify(resultado, null, 2))
+  return JSON.stringify(resultado)
+}
+
+/** Respuesta de emergencia cuando no tenemos datos del item (error en el catch). */
+const RESPUESTA_VACIA = JSON.stringify([
+  {
+    pagado: false,
+    numero_comprobante_interno: '',
+    id_pedido: '',
+    monto: 0,
+    fecha_pago: '',
+    hora_pago: '',
+    id_transaccion: '',
+    medio_pago: '',
+    codigo_autorizacion: '',
+  },
+])
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' } as const
+
 export async function POST(request: Request) {
+  let primerElemento: Record<string, unknown> = {}
+
   try {
     const body = await request.json()
     console.log('🔔 Webhook Pagopar recibido:', JSON.stringify(body, null, 2))
 
     // Pagopar envía: {"resultado":[{...}],"respuesta":true}
-    // Extraer SOLO el array resultado
-    const arrayResultado = body.resultado || (Array.isArray(body) ? body : [body])
-    const primerElemento = arrayResultado[0]
-    const { pagado, numero_pedido, hash_pedido, token } = primerElemento
+    const arrayResultado: Record<string, unknown>[] =
+      body.resultado || (Array.isArray(body) ? body : [body])
 
-    console.log('📋 Array resultado extraído:', JSON.stringify(arrayResultado, null, 2))
-    console.log('📋 Primer elemento:', {
-      pagado,
-      numero_pedido,
-      hash_pedido,
-      token_recibido: token,
-    })
+    primerElemento = (arrayResultado[0] as Record<string, unknown>) || {}
 
-    // Validar token del webhook según documentación de Pagopar
-    // Token = sha1(PRIVATE_KEY + hash_pedido)
-    const concatenacion = PRIVATE_KEY + hash_pedido
+    const { pagado, numero_pedido, hash_pedido, token } = primerElemento as {
+      pagado: unknown
+      numero_pedido: string
+      hash_pedido: string
+      token: string
+    }
+
+    console.log('📋 Datos del webhook:', { pagado, numero_pedido, hash_pedido, token_recibido: token })
+
+    // ── Validar token: sha1(PRIVATE_KEY + hash_pedido) ─────────────────────
     const expectedToken = crypto
       .createHash('sha1')
-      .update(concatenacion)
+      .update(PRIVATE_KEY + hash_pedido)
       .digest('hex')
 
-    console.log('🔐 Validación de token:', {
-      private_key: PRIVATE_KEY,
-      hash_pedido,
-      concatenacion_length: concatenacion.length,
-      token_calculado: expectedToken,
-      token_recibido: token,
-      coincide: token === expectedToken,
-    })
-
-    // Validar token pero siempre retornar 200 a Pagopar
     const tokenValido = token === expectedToken
 
+    console.log('🔐 Validación token:', {
+      hash_pedido,
+      token_calculado: expectedToken,
+      token_recibido: token,
+      valido: tokenValido,
+    })
+
     if (!tokenValido) {
-      console.error('❌ Token inválido - NO se procesará el pago (posible fraude)', {
-        received: token,
-        expected: expectedToken,
-        hash_pedido,
-      })
-      // IMPORTANTE: Retornar SOLO el array para que Pagopar no reintente
-      return new Response(JSON.stringify(arrayResultado), {
+      console.error('❌ Token inválido — NO se procesará el pago (posible fraude)')
+      // Responder siempre 200 con los 9 campos para que Pagopar no reintente
+      return new Response(buildRespuesta9(primerElemento, false), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: JSON_HEADERS,
       })
     }
 
-    console.log('✅ Token validado correctamente')
+    console.log('✅ Token válido')
 
     if (!hash_pedido || !numero_pedido) {
-      console.error('❌ Missing hash_pedido or numero_pedido')
-      return new Response(JSON.stringify(arrayResultado), {
+      console.error('❌ Faltan hash_pedido o numero_pedido')
+      return new Response(buildRespuesta9(primerElemento, false), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: JSON_HEADERS,
       })
     }
 
-    // Bifurcación: producto vs suscripción
+    const esPagado =
+      pagado === true || pagado === 'true' || pagado === '1' || pagado === 1
+
+    // ── Bifurcación: producto (PROD-) vs suscripción ────────────────────────
     if (numero_pedido?.startsWith('PROD-')) {
+      console.log('📦 Procesando pago de PRODUCTO:', numero_pedido)
+
       const purchase = await prisma.productPurchase.findFirst({
         where: {
-          OR: [
-            { orderId: numero_pedido },
-            { pagoparHash: hash_pedido },
-          ],
+          OR: [{ orderId: numero_pedido }, { pagoparHash: hash_pedido }],
         },
       })
 
       if (!purchase) {
-        console.error('ProductPurchase no encontrado:', numero_pedido, hash_pedido)
-        return new Response(JSON.stringify(arrayResultado), {
+        console.error('❌ ProductPurchase no encontrado:', numero_pedido, hash_pedido)
+        return new Response(buildRespuesta9(primerElemento, false), {
           status: 200,
-          headers: { 'Content-Type': 'application/json' },
+          headers: JSON_HEADERS,
         })
       }
 
-      if (pagado === true || pagado === 'true' || pagado === '1' || pagado === 1) {
+      if (esPagado) {
         await prisma.productPurchase.update({
           where: { id: purchase.id },
           data: { status: 'paid', paidAt: new Date() },
         })
-        console.log(`✅ ProductPurchase ${numero_pedido} marcado como paid`)
+        console.log(`✅ ProductPurchase ${numero_pedido} marcado como PAID`)
       } else {
         await prisma.productPurchase.update({
           where: { id: purchase.id },
           data: { status: 'failed' },
         })
-        console.log(`❌ ProductPurchase ${numero_pedido} marcado como failed`)
+        console.log(`❌ ProductPurchase ${numero_pedido} marcado como FAILED`)
       }
 
-      return new Response(JSON.stringify(arrayResultado), {
+      return new Response(buildRespuesta9(primerElemento, esPagado), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: JSON_HEADERS,
       })
     }
 
-    // Buscar el pago en la base de datos
+    // ── Suscripción ─────────────────────────────────────────────────────────
+    console.log('💳 Procesando pago de SUSCRIPCIÓN:', numero_pedido)
+
     const payment = await prisma.payment.findFirst({
       where: {
-        OR: [
-          { orderId: numero_pedido },
-          { pagoparHash: hash_pedido },
-        ],
+        OR: [{ orderId: numero_pedido }, { pagoparHash: hash_pedido }],
       },
       include: { user: true },
     })
 
     if (!payment) {
-      console.error('Pago no encontrado:', numero_pedido, hash_pedido)
-      return new Response(JSON.stringify(arrayResultado), {
+      console.error('❌ Payment no encontrado:', numero_pedido, hash_pedido)
+      return new Response(buildRespuesta9(primerElemento, false), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: JSON_HEADERS,
       })
     }
 
-    // Procesar resultado del pago
-    if (pagado === true || pagado === 'true' || pagado === '1' || pagado === 1) {
+    if (esPagado) {
       const premiumUntil = new Date()
       if (payment.billingPeriod === 'yearly') {
         premiumUntil.setFullYear(premiumUntil.getFullYear() + 1)
@@ -135,54 +174,44 @@ export async function POST(request: Request) {
 
       await prisma.payment.update({
         where: { id: payment.id },
-        data: {
-          status: 'paid',
-          paidAt: new Date(),
-        },
+        data: { status: 'paid', paidAt: new Date() },
       })
 
       await prisma.user.update({
         where: { id: payment.userId },
-        data: {
-          isPremium: true,
-          premiumUntil,
-          plan: payment.planType,
-        },
+        data: { isPremium: true, premiumUntil, plan: payment.planType },
       })
 
       console.log(
-        `✅ Usuario ${payment.user.email} actualizado a ${payment.planType} hasta ${premiumUntil.toISOString()}`
+        `✅ Usuario ${payment.user.email} activado → plan ${payment.planType} hasta ${premiumUntil.toISOString()}`
       )
     } else {
       await prisma.payment.update({
         where: { id: payment.id },
         data: { status: 'failed' },
       })
-
       console.log(`❌ Pago fallido para pedido ${numero_pedido}`)
     }
 
-    // Devolver SOLO el array (sin envoltura de "respuesta" y "resultado")
-    console.log('📤 Retornando a Pagopar:', JSON.stringify(arrayResultado, null, 2))
-    return new Response(JSON.stringify(arrayResultado), {
+    return new Response(buildRespuesta9(primerElemento, esPagado), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: JSON_HEADERS,
     })
   } catch (error) {
-    console.error('Webhook error:', error)
-    // En caso de error, retornar un array vacío
-    return new Response(JSON.stringify([]), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    console.error('❌ Webhook error:', error)
+    // Si tenemos datos del item, usar buildRespuesta9; si no, usar la vacía
+    const body =
+      Object.keys(primerElemento).length > 0
+        ? buildRespuesta9(primerElemento, false)
+        : RESPUESTA_VACIA
+    return new Response(body, { status: 200, headers: JSON_HEADERS })
   }
 }
 
-// GET para validación de URL
+// GET para validar que la URL del webhook está activa
 export async function GET() {
-  return NextResponse.json({
-    status: 'ok',
-    service: 'pagopar-webhook',
-    timestamp: new Date().toISOString()
-  }, { status: 200 })
+  return NextResponse.json(
+    { status: 'ok', service: 'pagopar-webhook', timestamp: new Date().toISOString() },
+    { status: 200 }
+  )
 }
