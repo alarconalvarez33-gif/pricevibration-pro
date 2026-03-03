@@ -81,6 +81,7 @@ model QuantumAccess {
   visitorKey String   @unique
   usesCount  Int      @default(0)
   userId     String?
+  isPaid     Boolean  @default(false)
   createdAt  DateTime @default(now())
 }
 

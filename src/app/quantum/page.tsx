@@ -197,6 +197,39 @@ export default function QuantumPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-10">
 
+        {/* Banner prueba gratis */}
+        {!access.paid && (
+          <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-xl p-6 mb-8 text-center">
+            <h3 className="text-xl font-bold text-white mb-2">🔬 Prueba Gratis</h3>
+            <p className="text-gray-300 mb-4">
+              Probá los Niveles Cuánticos{' '}
+              <span className="text-purple-400 font-bold">2 veces GRATIS</span> registrándote
+            </p>
+            {!session && (
+              <a
+                href="/register"
+                className="bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-3 rounded-lg inline-block transition-colors"
+              >
+                Registrarme Gratis →
+              </a>
+            )}
+            {session && access.usesLeft > 0 && (
+              <p className="text-purple-400">
+                Te quedan{' '}
+                <span className="font-bold">{access.usesLeft}/2</span> pruebas gratis
+              </p>
+            )}
+            {session && access.usesLeft <= 0 && (
+              <a
+                href="/#fisica-cuantica"
+                className="bg-[#c9a227] hover:bg-[#d4af37] text-black font-bold px-6 py-3 rounded-lg inline-block transition-colors"
+              >
+                Suscribirse — Gs. 650.000/mes
+              </a>
+            )}
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-purple-500/30 rounded-xl p-6 mb-6">

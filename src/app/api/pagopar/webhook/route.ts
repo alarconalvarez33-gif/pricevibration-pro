@@ -132,6 +132,15 @@ export async function POST(request: Request) {
           data: { status: 'paid', paidAt: new Date() },
         })
         console.log(`✅ ProductPurchase ${numero_pedido} marcado como PAID`)
+
+        // Si es fisica-cuantica → activar QuantumAccess para el usuario
+        if (purchase.productId === 'fisica-cuantica' && purchase.userId) {
+          await prisma.quantumAccess.updateMany({
+            where: { userId: purchase.userId },
+            data: { isPaid: true },
+          })
+          console.log(`✅ QuantumAccess activado para usuario ${purchase.userId}`)
+        }
       } else {
         await prisma.productPurchase.update({
           where: { id: purchase.id },

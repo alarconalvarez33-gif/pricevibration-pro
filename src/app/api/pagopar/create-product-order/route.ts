@@ -76,14 +76,9 @@ export async function POST(request: Request) {
     fechaMaxima.setDate(fechaMaxima.getDate() + 7)
     const fechaMaximaStr = fechaMaxima.toISOString().slice(0, 19).replace('T', ' ')
 
-    // URL base de la app (producción: https://sacredlevels.com, local: http://localhost:3000)
-    const baseUrl = (process.env.NEXTAUTH_URL || 'https://sacredlevels.com').replace(/\/$/, '')
-    const returnUrl = `${baseUrl}${product.courseUrl}`
-
-    // Mismo esquema exacto que create-order
+    // Igual que create-order: sin url_retorno (evita rechazo por URLs localhost en Vercel)
     const pagoparBody = {
       token,
-      url_retorno: returnUrl,
       comprador: {
         ruc: '',
         email: user.email,
