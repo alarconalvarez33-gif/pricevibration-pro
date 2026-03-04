@@ -221,6 +221,35 @@ export default function AnalysisPage() {
 
   if (!session) return null;
 
+  const userEmail = session.user?.email;
+  const userPlan = (session.user as any)?.plan || 'free';
+  const userRole = (session.user as any)?.role || 'user';
+  const vip = hasFullAccess(userEmail);
+  const hasPlanAccess = userPlan === 'pro' || userPlan === 'whale' || userRole === 'admin';
+
+  if (!vip && !hasPlanAccess) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-[#c9a227]/30 rounded-2xl p-8">
+            <span className="text-5xl mb-4 block">🔒</span>
+            <h2 className="text-2xl font-bold text-white mb-2">Acceso Restringido</h2>
+            <p className="text-gray-400 mb-6">El análisis histórico está disponible para suscriptores Pro y Whale.</p>
+            <a
+              href="/billing"
+              className="block w-full py-4 rounded-xl font-bold text-black text-lg mb-4 transition-all hover:scale-[1.02] bg-[#c9a227] hover:bg-[#d4af37]"
+            >
+              Ver planes
+            </a>
+            <a href="/dashboard" className="text-sm text-gray-500 hover:text-white transition-colors">
+              ← Volver al Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
