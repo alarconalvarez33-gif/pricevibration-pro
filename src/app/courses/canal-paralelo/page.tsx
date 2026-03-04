@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { hasFullAccess } from '@/lib/constants'
 
 export default async function CanalParaleloPage() {
   const session = await getServerSession(authOptions)
@@ -11,12 +12,12 @@ export default async function CanalParaleloPage() {
   }
 
   const user = session.user as any
-  const isAdmin = user.email === 'raul@sacredlevels.com' || user.role === 'admin'
+  const vip = hasFullAccess(user.email)
 
   let hasPurchased = false
   let hasPending = false
 
-  if (!isAdmin) {
+  if (!vip) {
     const paid = await prisma.productPurchase.findFirst({
       where: { userId: user.id, productId: 'canal-paralelo', status: 'paid' },
     })
@@ -31,7 +32,7 @@ export default async function CanalParaleloPage() {
     }
   }
 
-  const hasAccess = isAdmin || hasPurchased
+  const hasAccess = vip || hasPurchased
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">

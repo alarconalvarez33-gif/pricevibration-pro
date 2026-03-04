@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
+import { hasFullAccess } from '@/lib/constants'
 
 const FREE_USES = 2
 
@@ -26,8 +27,8 @@ export async function GET(request: NextRequest) {
   // Check if user has a paid quantum subscription
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
 
-  // Admin always has full access
-  if (user?.role === 'admin') {
+  // Admin and VIP always have full access
+  if (user?.role === 'admin' || hasFullAccess(session.user.email)) {
     return NextResponse.json({ allowed: true, paid: true, usesLeft: 999 })
   }
 
@@ -69,8 +70,8 @@ export async function POST(request: NextRequest) {
 
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
 
-  // Admin always has full access (no use consumption)
-  if (user?.role === 'admin') {
+  // Admin and VIP always have full access (no use consumption)
+  if (user?.role === 'admin' || hasFullAccess(session.user.email)) {
     return NextResponse.json({ allowed: true, paid: true })
   }
 

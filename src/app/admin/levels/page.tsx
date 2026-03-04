@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { isAdmin } from '@/lib/constants'
 
 const ASSETS = ['XAU/USD', 'BTC/USD', 'EUR/USD', 'GBP/USD', 'USD/JPY', 'XAG/USD', 'US30', 'NAS100']
 const ASSET_ICONS: Record<string, string> = {
@@ -48,12 +49,12 @@ export default function AdminLevelsPage() {
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null)
 
   const user = session?.user as any
-  const isAdmin = user?.email === 'raul@sacredlevels.com' || user?.role === 'admin'
+  const adminAccess = isAdmin(user?.email)
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/login')
-    if (status === 'authenticated' && !isAdmin) router.push('/')
-  }, [status, isAdmin, router])
+    if (status === 'authenticated' && !adminAccess) router.push('/')
+  }, [status, adminAccess, router])
 
   const fetchData = useCallback(async () => {
     const [l, s] = await Promise.all([
@@ -64,7 +65,7 @@ export default function AdminLevelsPage() {
     setSignals(Array.isArray(s) ? s : [])
   }, [])
 
-  useEffect(() => { if (isAdmin) fetchData() }, [isAdmin, fetchData])
+  useEffect(() => { if (adminAccess) fetchData() }, [adminAccess, fetchData])
 
   function flash(text: string, ok = true) {
     setMsg({ text, ok })
@@ -144,7 +145,7 @@ export default function AdminLevelsPage() {
     arr.sort((a, b) => TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type))
   )
 
-  if (status === 'loading' || !isAdmin) return null
+  if (status === 'loading' || !adminAccess) return null
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">

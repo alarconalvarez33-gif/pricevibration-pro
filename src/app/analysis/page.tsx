@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { hasFullAccess } from '@/lib/constants';
 
 interface HistoricalData {
   date: string;
@@ -20,6 +23,8 @@ interface LevelResult {
 }
 
 export default function AnalysisPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [historicalData, setHistoricalData] = useState<HistoricalData[]>([]);
   const [priceInput, setPriceInput] = useState('');
   const [levelResults, setLevelResults] = useState<LevelResult[]>([]);
@@ -201,13 +206,20 @@ export default function AnalysisPage() {
     ? ((bounceCount / levelResults.length) * 100).toFixed(1) 
     : '0';
 
-  if (isLoading) {
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') router.replace('/login');
+  }, [status, router]);
+
+  if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="text-gold-500 text-xl">Loading historical data...</div>
+        <div className="text-[#c9a227] text-xl">Loading historical data...</div>
       </div>
     );
   }
+
+  if (!session) return null;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-8">
