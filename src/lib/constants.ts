@@ -4,7 +4,8 @@ export const ADMIN_EMAILS = ['raul@sacredlevels.com']
 // VIP - full content access but NO admin permissions
 export const VIP_EMAILS = [
   'delcypp66@gmail.com',
-  'robertosanchezgill@gmail.com','wilfridoerwin32@gmail.com'
+  'robertosanchezgill@gmail.com',
+  'wilfridoerwin32@gmail.com',
 ]
 
 /** Returns true only for raul — can modify admin panels */
