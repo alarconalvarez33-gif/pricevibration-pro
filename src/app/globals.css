@@ -6,6 +6,43 @@
 @tailwind utilities;
 
 /* ============================================
+   SCROLLBAR HIDE
+   ============================================ */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   SUBMENU ANIMATION
+   ============================================ */
+@keyframes submenuIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+.animate-submenu {
+  animation: submenuIn 0.18s ease-out forwards;
+}
+
+/* Alias for components using animate-fadeIn */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* ============================================
    CSS VARIABLES - Institutional Theme
    ============================================ */
 :root {
