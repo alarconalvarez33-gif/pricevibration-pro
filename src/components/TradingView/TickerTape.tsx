@@ -19,17 +19,21 @@ interface TickerTapeProps {
 }
 
 function TickerTape({ symbols = DEFAULT_SYMBOLS, colorTheme = 'dark' }: TickerTapeProps) {
+  const scriptRef = useRef<HTMLScriptElement | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
-    containerRef.current.innerHTML = ''
+    // Remove previous script if any
+    if (scriptRef.current) {
+      scriptRef.current.remove()
+      scriptRef.current = null
+    }
 
-    const widget = document.createElement('div')
-    widget.className = 'tradingview-widget-container__widget'
-    containerRef.current.appendChild(widget)
+    const container = containerRef.current
+    if (!container) return
 
     const script = document.createElement('script')
+    script.type = 'text/javascript'
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js'
     script.async = true
     script.innerHTML = JSON.stringify({
@@ -40,16 +44,31 @@ function TickerTape({ symbols = DEFAULT_SYMBOLS, colorTheme = 'dark' }: TickerTa
       colorTheme,
       locale: 'es',
     })
-    containerRef.current.appendChild(script)
+
+    container.appendChild(script)
+    scriptRef.current = script
 
     return () => {
-      if (containerRef.current) containerRef.current.innerHTML = ''
+      script.remove()
+      scriptRef.current = null
     }
-  }, [symbols, colorTheme])
+  }, [colorTheme]) // only re-run if theme changes; symbols are stable
 
   return (
-    <div className="w-full bg-[#0a0a0a] border-b border-gray-800/50 overflow-hidden">
-      <div className="tradingview-widget-container" ref={containerRef} />
+    <div
+      className="w-full overflow-hidden border-b border-gray-800/50"
+      style={{ backgroundColor: '#0a0a0a', minHeight: '46px' }}
+    >
+      <div
+        className="tradingview-widget-container"
+        ref={containerRef}
+        style={{ width: '100%', height: '46px' }}
+      >
+        <div
+          className="tradingview-widget-container__widget"
+          style={{ width: '100%', height: '46px' }}
+        />
+      </div>
     </div>
   )
 }
