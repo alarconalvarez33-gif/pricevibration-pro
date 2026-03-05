@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useDomain } from '@/hooks/useDomain'
+import SubMenu from '@/components/SubMenu'
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -244,6 +245,7 @@ export default function Navbar() {
           </div>
         )}
       </div>
+      <SubMenu />
     </nav>
   )
 }
