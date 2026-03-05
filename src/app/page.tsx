@@ -14,6 +14,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import DailyLevels from '@/components/DailyLevels'
 import TradeSignals from '@/components/TradeSignals'
+import QuantumLiveWidget from '@/components/QuantumLiveWidget'
 import ShareButtons from '@/components/ShareButtons'
 
 const SCROLLING_NAMES = [
@@ -385,6 +386,7 @@ export default function Home() {
           ============================================ */}
       <DailyLevels />
       <TradeSignals />
+      <QuantumLiveWidget />
 
       {/* ============================================
           MENTOR'S VAULT - PREMIUM COURSES

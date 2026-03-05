@@ -121,3 +121,15 @@ model TradeSignal {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model QuantumLiveLevel {
+  id        String   @id @default(cuid())
+  asset     String
+  maxPrice  Float
+  minPrice  Float
+  levels    Json     // Array de los 9 niveles calculados
+  isActive  Boolean  @default(true)
+  touches   Json?    // Registro de toques [{level: "Q3", time: "...", type: "bounce", pips: 12}]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
