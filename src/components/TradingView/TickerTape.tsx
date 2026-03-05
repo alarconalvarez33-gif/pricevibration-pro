@@ -3,61 +3,62 @@
 import { useEffect, useRef, memo } from 'react'
 
 interface TickerTapeProps {
-  symbols?: Array<{
-    proName: string
-    title: string
-  }>
+  symbols?: Array<{ proName: string; title: string }>
   colorTheme?: 'dark' | 'light'
-  displayMode?: 'adaptive' | 'regular' | 'compact'
 }
 
+const DEFAULT_SYMBOLS = [
+  { proName: 'OANDA:XAUUSD',   title: 'Gold' },
+  { proName: 'OANDA:XAGUSD',   title: 'Silver' },
+  { proName: 'FX:EURUSD',      title: 'EUR/USD' },
+  { proName: 'FX:GBPUSD',      title: 'GBP/USD' },
+  { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' },
+  { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' },
+  { proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' },
+  { proName: 'FOREXCOM:DJI',   title: 'Dow Jones' },
+]
+
 function TickerTape({
-  symbols = [
-    { proName: 'OANDA:XAUUSD', title: 'Gold' },
-    { proName: 'OANDA:XAGUSD', title: 'Silver' },
-    { proName: 'FX:EURUSD', title: 'EUR/USD' },
-    { proName: 'FX:GBPUSD', title: 'GBP/USD' },
-    { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' },
-    { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' },
-    { proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' },
-    { proName: 'FOREXCOM:DJI', title: 'Dow Jones' },
-  ],
+  symbols = DEFAULT_SYMBOLS,
   colorTheme = 'dark',
-  displayMode = 'adaptive'
 }: TickerTapeProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const widgetRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
+    const container = widgetRef.current
+    if (!container) return
 
-    containerRef.current.innerHTML = ''
+    container.innerHTML = ''
 
     const script = document.createElement('script')
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js'
     script.type = 'text/javascript'
     script.async = true
-
     script.innerHTML = JSON.stringify({
       symbols,
-      showSymbolLogo: true,
-      colorTheme,
+      showSymbolLogo: false,
       isTransparent: true,
-      displayMode,
-      locale: 'en'
+      displayMode: 'compact',
+      colorTheme,
+      locale: 'en',
     })
 
-    containerRef.current.appendChild(script)
+    container.appendChild(script)
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = ''
-      }
+      if (container) container.innerHTML = ''
     }
-  }, [symbols, colorTheme, displayMode])
+  }, [symbols, colorTheme])
 
   return (
-    <div className="tradingview-widget-container border-b border-terminal-border bg-terminal-bg/50">
-      <div ref={containerRef} />
+    <div className="w-full bg-[#080c14] border-b border-white/5 overflow-hidden">
+      <div className="tradingview-widget-container" style={{ height: '46px' }}>
+        <div
+          ref={widgetRef}
+          className="tradingview-widget-container__widget"
+          style={{ height: '46px' }}
+        />
+      </div>
     </div>
   )
 }
