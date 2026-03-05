@@ -1,6 +1,6 @@
 'use client'
 
-import { memo } from 'react'
+import { useEffect, useRef, memo } from 'react'
 
 const DEFAULT_SYMBOLS = [
   { proName: 'OANDA:XAUUSD',    title: 'Gold' },
@@ -19,28 +19,37 @@ interface TickerTapeProps {
 }
 
 function TickerTape({ symbols = DEFAULT_SYMBOLS, colorTheme = 'dark' }: TickerTapeProps) {
-  // Build the TradingView embed URL with symbols
-  const symbolsParam = encodeURIComponent(
-    symbols.map(s => `${s.proName}|${s.title}`).join(',')
-  )
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const src =
-    `https://s.tradingview.com/embed-widget/ticker-tape/?locale=en` +
-    `#%7B%22symbols%22%3A%5B` +
-    symbols
-      .map(s => `%7B%22proName%22%3A%22${encodeURIComponent(s.proName)}%22%2C%22title%22%3A%22${encodeURIComponent(s.title)}%22%7D`)
-      .join('%2C') +
-    `%5D%2C%22showSymbolLogo%22%3Atrue%2C%22isTransparent%22%3Atrue%2C%22displayMode%22%3A%22compact%22%2C%22colorTheme%22%3A%22${colorTheme}%22%2C%22locale%22%3A%22en%22%7D`
+  useEffect(() => {
+    if (!containerRef.current) return
+    containerRef.current.innerHTML = ''
+
+    const widget = document.createElement('div')
+    widget.className = 'tradingview-widget-container__widget'
+    containerRef.current.appendChild(widget)
+
+    const script = document.createElement('script')
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js'
+    script.async = true
+    script.innerHTML = JSON.stringify({
+      symbols,
+      showSymbolLogo: true,
+      isTransparent: true,
+      displayMode: 'adaptive',
+      colorTheme,
+      locale: 'es',
+    })
+    containerRef.current.appendChild(script)
+
+    return () => {
+      if (containerRef.current) containerRef.current.innerHTML = ''
+    }
+  }, [symbols, colorTheme])
 
   return (
-    <div className="w-full bg-[#0a0a0a] border-b border-gray-800/60 overflow-hidden">
-      <iframe
-        src={src}
-        style={{ width: '100%', height: '46px', border: 'none', display: 'block' }}
-        scrolling="no"
-        allowTransparency={true}
-        title="TradingView Ticker Tape"
-      />
+    <div className="w-full bg-[#0a0a0a] border-b border-gray-800/50 overflow-hidden">
+      <div className="tradingview-widget-container" ref={containerRef} />
     </div>
   )
 }
