@@ -120,7 +120,7 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-terminal-bg">
       <Navbar />
 
-      <div className="pt-[160px] pb-20 px-4">
+      <div className="pt-[178px] pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="py-6">
