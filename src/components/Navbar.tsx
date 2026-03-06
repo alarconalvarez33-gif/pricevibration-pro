@@ -5,7 +5,6 @@ import { useSession, signOut } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useDomain } from '@/hooks/useDomain'
-import SubMenu from '@/components/SubMenu'
 import PriceTicker from '@/components/PriceTicker'
 
 export default function Navbar() {
@@ -247,9 +246,8 @@ export default function Navbar() {
           </div>
         )}
       </div>
-      <SubMenu />
     </nav>
-    <div className="fixed left-0 right-0 z-40" style={{ top: '110px' }}>
+    <div className="fixed left-0 right-0 z-40" style={{ top: '64px' }}>
       <PriceTicker />
     </div>
   </>

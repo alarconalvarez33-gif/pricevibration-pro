@@ -9,6 +9,7 @@ import AnimatedCounter from '@/components/AnimatedCounter'
 import FAQAccordion from '@/components/FAQAccordion'
 import LiveNotification from '@/components/LiveNotification'
 import PriceTicker from '@/components/PriceTicker'
+import SubMenu from '@/components/SubMenu'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -120,10 +121,15 @@ export default function Home() {
       <ParticleBackground particleCount={40} />
       <Navbar />
 
+      {/* SubMenu estático — justo encima del hero, debajo del ticker */}
+      <div className="pt-[110px]">
+        <SubMenu />
+      </div>
+
       {/* ============================================
           HERO SECTION
           ============================================ */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-[178px]">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Fondo degradado azul oscuro → negro */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628] via-[#0d1f3c] to-[#0a0a0a]" />
         {/* Glow central */}
