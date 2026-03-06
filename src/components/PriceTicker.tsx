@@ -1,14 +1,47 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
+
 const PriceTicker = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const loaded = useRef(false);
+
+  useEffect(() => {
+    if (loaded.current || !containerRef.current) return;
+    loaded.current = true;
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      symbols: [
+        { proName: 'FX:EURUSD',        title: 'EUR/USD' },
+        { proName: 'FX:GBPUSD',        title: 'GBP/USD' },
+        { proName: 'FX:USDJPY',        title: 'USD/JPY' },
+        { proName: 'OANDA:XAUUSD',     title: 'ORO' },
+        { proName: 'OANDA:XAGUSD',     title: 'PLATA' },
+        { proName: 'COINBASE:BTCUSD',  title: 'BTC' },
+        { proName: 'COINBASE:ETHUSD',  title: 'ETH' },
+        { proName: 'FOREXCOM:SPXUSD',  title: 'S&P 500' },
+        { proName: 'FOREXCOM:NSXUSD',  title: 'NASDAQ' },
+      ],
+      showSymbolLogo: true,
+      colorTheme: 'dark',
+      isTransparent: false,
+      displayMode: 'adaptive',
+      locale: 'es',
+    });
+
+    containerRef.current.appendChild(script);
+  }, []);
+
   return (
-    <div style={{ width: '100%', height: '68px', backgroundColor: '#0a0a0a' }}>
-      <iframe
-        src="https://s.tradingview.com/embed-widget/ticker-tape/?locale=es#%7B%22symbols%22%3A%5B%7B%22proName%22%3A%22FX%3AEURUSD%22%2C%22title%22%3A%22EUR%2FUSD%22%7D%2C%7B%22proName%22%3A%22FX%3AGBPUSD%22%2C%22title%22%3A%22GBP%2FUSD%22%7D%2C%7B%22proName%22%3A%22OANDA%3AXAUUSD%22%2C%22title%22%3A%22Gold%22%7D%2C%7B%22proName%22%3A%22OANDA%3AXAGUSD%22%2C%22title%22%3A%22Silver%22%7D%2C%7B%22proName%22%3A%22INDEX%3ASPX%22%2C%22title%22%3A%22S%26P%20500%22%7D%2C%7B%22proName%22%3A%22NASDAQ%3ANDX%22%2C%22title%22%3A%22NASDAQ%22%7D%2C%7B%22proName%22%3A%22COINBASE%3ABTCUSD%22%2C%22title%22%3A%22Bitcoin%22%7D%2C%7B%22proName%22%3A%22COINBASE%3AETHUSD%22%2C%22title%22%3A%22Ethereum%22%7D%2C%7B%22proName%22%3A%22COINBASE%3ASOLUSD%22%2C%22title%22%3A%22Solana%22%7D%5D%2C%22showSymbolLogo%22%3Atrue%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22displayMode%22%3A%22compact%22%2C%22locale%22%3A%22es%22%7D"
-        style={{ width: '100%', height: '68px', border: 'none', display: 'block' }}
-        scrolling="no"
-        title="TradingView Price Ticker"
-      />
+    <div
+      className="tradingview-widget-container"
+      ref={containerRef}
+      style={{ width: '100%', minHeight: '46px' }}
+    >
+      <div className="tradingview-widget-container__widget" style={{ width: '100%' }} />
     </div>
   );
 };
