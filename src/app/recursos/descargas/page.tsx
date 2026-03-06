@@ -9,10 +9,15 @@ export const metadata: Metadata = {
 }
 
 export default async function DescargasPage() {
-  const resources = await prisma.resource.findMany({
-    where: { category: 'downloads', isActive: true },
-    orderBy: { order: 'asc' },
-  })
+  let resources: Awaited<ReturnType<typeof prisma.resource.findMany>> = []
+  try {
+    resources = await prisma.resource.findMany({
+      where: { category: 'downloads', isActive: true },
+      orderBy: { order: 'asc' },
+    })
+  } catch (e) {
+    console.error('recursos/descargas: DB error', e)
+  }
 
   return (
     <main className="min-h-screen bg-[#0a0a0a]">
