@@ -120,21 +120,16 @@ export default function Home() {
       <ParticleBackground particleCount={40} />
       <Navbar />
 
-      {/* Market Ticker Tape */}
-      <div className="pt-20">
-        <PriceTicker />
-      </div>
-
       {/* ============================================
           HERO SECTION
           ============================================ */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-[154px]">
         {/* Fondo degradado azul oscuro → negro */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628] via-[#0d1f3c] to-[#0a0a0a]" />
         {/* Glow central */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full blur-[120px] pointer-events-none" style={{background: 'rgba(201,162,39,0.07)'}} />
 
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20 pb-16">
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pb-16">
           {/* Eyebrow */}
           <p className="text-[#c9a227] text-sm font-semibold tracking-widest uppercase mb-6 opacity-90">
             {siteName}

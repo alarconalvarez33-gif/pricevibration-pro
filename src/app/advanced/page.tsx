@@ -107,12 +107,7 @@ export default function AdvancedPage() {
     <main className="min-h-screen bg-terminal-bg">
       <Navbar />
 
-      {/* Ticker Tape */}
-      <div className="pt-20">
-        <PriceTicker />
-      </div>
-
-      <div className="pb-20 px-4">
+      <div className="pt-[154px] pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="py-6">
