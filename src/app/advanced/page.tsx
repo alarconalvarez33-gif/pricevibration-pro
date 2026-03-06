@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, useMemo } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { TickerTape } from '@/components/TradingView'
+import PriceTicker from '@/components/PriceTicker'
 import Link from 'next/link'
 import useGannAdvanced from '@/hooks/useGannAdvanced'
 import useTimeCycles from '@/hooks/useTimeCycles'
@@ -109,7 +109,7 @@ export default function AdvancedPage() {
 
       {/* Ticker Tape */}
       <div className="pt-20">
-        <TickerTape colorTheme="dark" />
+        <PriceTicker />
       </div>
 
       <div className="pb-20 px-4">

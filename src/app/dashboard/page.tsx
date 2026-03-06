@@ -9,7 +9,8 @@ import GannCalculator from '@/components/GannCalculator'
 import GannCosmogram from '@/components/GannCosmogram'
 import AstroGann from '@/components/AstroGann'
 import NewsWidget from '@/components/NewsWidget'
-import { TickerTape, AdvancedChart, MiniChart, EconomicCalendar } from '@/components/TradingView'
+import { AdvancedChart, MiniChart, EconomicCalendar } from '@/components/TradingView'
+import PriceTicker from '@/components/PriceTicker'
 import { GannLevels } from '@/lib/gann'
 import Link from 'next/link'
 import PersonalizedGreeting from '@/components/PersonalizedGreeting'
@@ -121,7 +122,7 @@ export default function DashboardPage() {
 
       {/* Ticker Tape */}
       <div className="pt-20">
-        <TickerTape colorTheme="dark" />
+        <PriceTicker />
       </div>
 
       <div className="pb-20 px-4">

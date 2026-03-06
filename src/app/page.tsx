@@ -8,7 +8,7 @@ import ParticleBackground from '@/components/ParticleBackground'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import FAQAccordion from '@/components/FAQAccordion'
 import LiveNotification from '@/components/LiveNotification'
-import { TickerTape } from '@/components/TradingView'
+import PriceTicker from '@/components/PriceTicker'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -122,7 +122,7 @@ export default function Home() {
 
       {/* Market Ticker Tape */}
       <div className="pt-20">
-        <TickerTape colorTheme="dark" />
+        <PriceTicker />
       </div>
 
       {/* ============================================
