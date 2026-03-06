@@ -1,112 +1,16 @@
-'use client'
+'use client';
 
-import { useEffect, useState, useRef } from 'react'
-
-const ITEMS = [
-  { symbol: 'BTC/USD',  binance: 'BTCUSDT',  flag: '₿',  color: '#f7931a' },
-  { symbol: 'ETH/USD',  binance: 'ETHUSDT',  flag: 'Ξ',  color: '#627eea' },
-  { symbol: 'EUR/USD',  binance: null,        flag: '🇪🇺', color: '#4a90e2' },
-  { symbol: 'GBP/USD',  binance: null,        flag: '🇬🇧', color: '#cf142b' },
-  { symbol: 'USD/JPY',  binance: null,        flag: '🇯🇵', color: '#bc002d' },
-  { symbol: 'XAU/USD',  binance: null,        flag: '🥇', color: '#c9a227' },
-  { symbol: 'XAG/USD',  binance: null,        flag: '🥈', color: '#aaaaaa' },
-  { symbol: 'S&P 500',  binance: null,        flag: '📊', color: '#26a69a' },
-  { symbol: 'NASDAQ',   binance: null,        flag: '🖥️', color: '#7e57c2' },
-  { symbol: 'SOL/USD',  binance: 'SOLUSDT',  flag: '◎',  color: '#9945ff' },
-]
-
-type PriceMap = Record<string, { price: string; change: number }>
-
-export default function PriceTicker() {
-  const [prices, setPrices] = useState<PriceMap>({})
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
-
-  useEffect(() => {
-    async function fetchPrices() {
-      try {
-        const binanceSymbols = ITEMS.filter(i => i.binance).map(i => i.binance as string)
-        const qs = encodeURIComponent(JSON.stringify(binanceSymbols))
-        const res = await fetch(
-          `https://api.binance.com/api/v3/ticker/24hr?symbols=${qs}`,
-          { cache: 'no-store' }
-        )
-        if (!res.ok) return
-        const data: { symbol: string; lastPrice: string; priceChangePercent: string }[] = await res.json()
-        const map: PriceMap = {}
-        for (const d of data) {
-          const item = ITEMS.find(i => i.binance === d.symbol)
-          if (!item) continue
-          const price = parseFloat(d.lastPrice)
-          const formatted = price > 1000
-            ? price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            : price.toFixed(4)
-          map[item.symbol] = {
-            price: formatted,
-            change: parseFloat(d.priceChangePercent),
-          }
-        }
-        setPrices(prev => ({ ...prev, ...map }))
-      } catch {}
-    }
-
-    fetchPrices()
-    intervalRef.current = setInterval(fetchPrices, 15000)
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [])
-
-  const items = ITEMS.map(item => ({
-    ...item,
-    priceStr: prices[item.symbol]?.price ?? '···',
-    change:   prices[item.symbol]?.change ?? null,
-  }))
-
-  // Duplicate for seamless loop
-  const row = [...items, ...items]
-
+const PriceTicker = () => {
   return (
-    <div
-      className="w-full overflow-hidden border-b border-gray-800/60"
-      style={{ backgroundColor: '#080808', height: '44px' }}
-    >
-      <div className="flex items-center h-full" style={{ position: 'relative' }}>
-        {/* Fade edges */}
-        <div
-          className="pointer-events-none absolute left-0 top-0 h-full w-16 z-10"
-          style={{ background: 'linear-gradient(to right, #080808, transparent)' }}
-        />
-        <div
-          className="pointer-events-none absolute right-0 top-0 h-full w-16 z-10"
-          style={{ background: 'linear-gradient(to left, #080808, transparent)' }}
-        />
-
-        {/* Scrolling track */}
-        <div className="flex animate-ticker whitespace-nowrap">
-          {row.map((item, idx) => (
-            <div
-              key={idx}
-              className="inline-flex items-center gap-1.5 px-5 shrink-0"
-              style={{ borderRight: '1px solid rgba(255,255,255,0.06)' }}
-            >
-              <span className="text-base leading-none">{item.flag}</span>
-              <span className="text-gray-400 text-xs font-medium tracking-wide">{item.symbol}</span>
-              <span
-                className="text-xs font-mono font-semibold"
-                style={{ color: item.color }}
-              >
-                {item.priceStr}
-              </span>
-              {item.change !== null && (
-                <span
-                  className="text-xs font-medium"
-                  style={{ color: item.change >= 0 ? '#26a69a' : '#ef5350' }}
-                >
-                  {item.change >= 0 ? '▲' : '▼'} {Math.abs(item.change).toFixed(2)}%
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="w-full" style={{ height: '46px', overflow: 'hidden', backgroundColor: '#0a0a0a' }}>
+      <iframe
+        src="https://s.tradingview.com/embed-widget/ticker-tape/?locale=es#%7B%22symbols%22%3A%5B%7B%22proName%22%3A%22FX%3AEURUSD%22%2C%22title%22%3A%22EUR%2FUSD%22%7D%2C%7B%22proName%22%3A%22FX%3AGBPUSD%22%2C%22title%22%3A%22GBP%2FUSD%22%7D%2C%7B%22proName%22%3A%22OANDA%3AXAUUSD%22%2C%22title%22%3A%22Gold%22%7D%2C%7B%22proName%22%3A%22OANDA%3AXAGUSD%22%2C%22title%22%3A%22Silver%22%7D%2C%7B%22proName%22%3A%22INDEX%3ASPX%22%2C%22title%22%3A%22S%26P%20500%22%7D%2C%7B%22proName%22%3A%22NASDAQ%3ANDX%22%2C%22title%22%3A%22NASDAQ%22%7D%2C%7B%22proName%22%3A%22COINBASE%3ABTCUSD%22%2C%22title%22%3A%22Bitcoin%22%7D%2C%7B%22proName%22%3A%22COINBASE%3AETHUSD%22%2C%22title%22%3A%22Ethereum%22%7D%2C%7B%22proName%22%3A%22COINBASE%3ASOLUSD%22%2C%22title%22%3A%22Solana%22%7D%5D%2C%22showSymbolLogo%22%3Atrue%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Afalse%2C%22displayMode%22%3A%22regular%22%2C%22locale%22%3A%22es%22%7D"
+        style={{ width: '100%', height: '46px', border: 'none', display: 'block' }}
+        scrolling="no"
+        title="TradingView Price Ticker"
+      />
     </div>
-  )
-}
+  );
+};
+
+export default PriceTicker;

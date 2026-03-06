@@ -123,7 +123,7 @@ export default function Home() {
       {/* ============================================
           HERO SECTION
           ============================================ */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-[154px]">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-[160px]">
         {/* Fondo degradado azul oscuro → negro */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628] via-[#0d1f3c] to-[#0a0a0a]" />
         {/* Glow central */}
