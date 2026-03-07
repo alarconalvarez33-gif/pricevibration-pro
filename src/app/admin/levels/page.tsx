@@ -159,7 +159,12 @@ export default function AdminLevelsPage() {
               <p className="text-xs text-[#c9a227]">Price Levels & Trade Signals</p>
             </div>
           </div>
-          <a href="/" className="text-sm text-gray-400 hover:text-white transition-colors">← Home</a>
+          <div className="flex items-center gap-3 text-sm">
+            <a href="/admin/courses" className="text-gray-400 hover:text-[#c9a227] transition-colors">🎬 Cursos</a>
+            <a href="/admin/gallery" className="text-gray-400 hover:text-[#c9a227] transition-colors">📊 Galería</a>
+            <a href="/admin/recursos" className="text-gray-400 hover:text-[#c9a227] transition-colors">📦 Recursos</a>
+            <a href="/" className="text-gray-400 hover:text-white transition-colors">← Home</a>
+          </div>
         </div>
       </div>
 

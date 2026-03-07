@@ -14,6 +14,11 @@ const COURSE_META: Record<string, { title: string; url: string; icon: string }> 
     url: '/courses/expansion-matematica',
     icon: '👑',
   },
+  'fibonacci': {
+    title: 'Curso de Fibonacci',
+    url: '/courses/fibonacci',
+    icon: '📊',
+  },
 }
 
 export async function GET() {
