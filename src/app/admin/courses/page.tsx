@@ -12,7 +12,7 @@ const COURSES = [
     icon: '📊',
     price: '499.000 GS',
     url: '/courses/fibonacci',
-    vimeoSrc: 'https://player.vimeo.com/video/1171349347?badge=0&autopause=0&player_id=0&app_id=58479&fl=sv&fe=ci',
+    vimeoSrc: 'https://player.vimeo.com/video/1171349347?h=a8a0610c95&badge=0&autopause=0&player_id=0&app_id=58479&fl=sv&fe=ci',
   },
   {
     id: 'canal-paralelo',
