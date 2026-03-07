@@ -407,6 +407,65 @@ export default function Home() {
           {/* Product Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
 
+            {/* Card — Fibonacci (NUEVO) */}
+            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/40 rounded-2xl overflow-hidden hover:border-[#c9a227]/70 transition-all hover:scale-[1.02] shadow-2xl shadow-[#c9a227]/10 flex flex-col">
+              <div className="bg-[#c9a227] text-black text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
+                NUEVO CURSO
+              </div>
+              <div className="relative bg-black overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/desbloquea el poder de forex.png" alt="Curso Fibonacci" className="w-full h-auto block" />
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                <h3 className="text-white text-xl font-bold mb-2">Curso de Fibonacci</h3>
+                <p className="text-gray-400 text-sm mb-5 leading-relaxed">
+                  Descubrí el potencial del Fibonacci, por décadas oculto al público.
+                </p>
+                <div className="flex items-baseline gap-3 mb-1">
+                  <span className="text-[#c9a227] text-3xl font-bold">499.000</span>
+                  <span className="text-gray-500 text-sm">GS</span>
+                </div>
+                <p className="text-gray-400 text-sm mb-5">🌎 $75 USD · lifetime access</p>
+                <ul className="space-y-2 mb-6 text-sm text-gray-300">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Estrategias exclusivas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#c9a227] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    15+ años de experiencia condensados
+                  </li>
+                </ul>
+                <button
+                  onClick={() => handleBuyProduct('fibonacci')}
+                  disabled={buyingProduct === 'fibonacci'}
+                  className="mt-auto w-full bg-[#c9a227] hover:bg-[#b8911f] disabled:opacity-70 disabled:cursor-wait text-black font-bold text-base py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  {buyingProduct === 'fibonacci' ? '⏳ Procesando...' : 'Comprar Ahora'}
+                </button>
+                <div className="mt-4 pt-4 border-t border-gray-700/50">
+                  <p className="text-gray-400 text-xs font-semibold text-center mb-3">💳 Pagá en 12 cuotas sin interés con:</p>
+                  <div className="flex justify-center gap-3">
+                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-3 flex flex-col items-center justify-center gap-1">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/familiar.png" alt="Banco Familiar" className="h-16 object-contain" />
+                      <span className="text-[#c9a227] text-[10px] font-bold tracking-wide">12 CUOTAS</span>
+                    </div>
+                    <div className="flex-1 bg-[#0d0d0d] border border-[#c9a227]/30 rounded-xl p-3 flex flex-col items-center justify-center gap-1">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/ueno.jpeg" alt="Banco Ueno" className="h-16 object-contain" />
+                      <span className="text-[#c9a227] text-[10px] font-bold tracking-wide">12 CUOTAS</span>
+                    </div>
+                  </div>
+                </div>
+                <ShareButtons url="/courses/fibonacci" title="Curso de Fibonacci — Descubrí el potencial oculto del Fibonacci 📊 sacredlevels.com" />
+              </div>
+            </div>
+
             {/* Card 1 — Canal Paralelo */}
             <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-[#c9a227]/40 rounded-2xl overflow-hidden hover:border-[#c9a227]/70 transition-all hover:scale-[1.02] shadow-2xl shadow-[#c9a227]/10 flex flex-col">
               <div className="bg-[#c9a227] text-black text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
@@ -611,50 +670,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Card 4 — Desbloquea el Poder de Forex */}
-            <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
-              <div className="bg-gray-700 text-gray-300 text-xs font-bold px-4 py-1.5 text-center tracking-widest uppercase">
-                PRÓXIMAMENTE
-              </div>
-              <div className="relative bg-black overflow-hidden">
-                <img
-                  src="/desbloquea el poder de forex.png"
-                  alt="Desbloquea el Poder de Forex"
-                  className="w-full h-auto block opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d]/60 to-transparent pointer-events-none" />
-              </div>
-              <div className="p-6 flex flex-col flex-1">
-                <p className="text-gray-300 text-sm italic mb-4 leading-relaxed">
-                  &ldquo;Descubrí el potencial del fibonacci, por décadas oculto al público&rdquo;
-                </p>
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-gray-400 text-2xl font-bold">499.000</span>
-                  <span className="text-gray-500 text-sm">GS</span>
-                </div>
-                <ul className="space-y-2 mb-6 text-sm text-gray-500">
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Estrategias exclusivas
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    15+ años de experiencia condensados
-                  </li>
-                </ul>
-                <button
-                  disabled
-                  className="mt-auto w-full bg-gray-700 text-gray-500 font-bold text-base py-3 px-6 rounded-xl cursor-not-allowed"
-                >
-                  🔒 Próximamente
-                </button>
-                <ShareButtons url="/#mentors-vault" title="Desbloquea el Poder de Forex — Próximamente en sacredlevels.com 🔥" />
-              </div>
-            </div>
 
             {/* Card 3 — What */}
             <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border-2 border-gray-700/50 rounded-2xl overflow-hidden flex flex-col">
