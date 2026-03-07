@@ -148,3 +148,16 @@ model QuantumLiveLevel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model GalleryResult {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String
+  tool        String   // "hexagono", "serie144", "cuadrado9", "quantum", "gann"
+  asset       String   // "XAU/USD", "BTC/USD", etc.
+  date        DateTime
+  accuracy    String?  // "Rebote exacto", "+85 pips", etc.
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}

@@ -57,11 +57,9 @@ export default function Navbar() {
             <Link href="/astrology" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
               Astrología
             </Link>
-            {session && (isPro || isWhale) && (
-              <Link href="/advanced" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
-                Avanzado
-              </Link>
-            )}
+            <Link href="/advanced" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
+              Galería
+            </Link>
             <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
               {t('nav.pricing')}
             </Link>
@@ -193,11 +191,9 @@ export default function Navbar() {
               <Link href="/astrology" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Astrología
               </Link>
-              {session && (isPro || isWhale) && (
-                <Link href="/advanced" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  Avanzado
-                </Link>
-              )}
+              <Link href="/advanced" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                Galería
+              </Link>
               <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Pricing
               </Link>
