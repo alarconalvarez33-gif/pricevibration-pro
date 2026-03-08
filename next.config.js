@@ -2,21 +2,28 @@
 const nextConfig = {
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb',
+      bodySizeLimit: '10mb',
     },
   },
   images: {
+    domains: ['localhost', 'sacredlevels.com', 'trading.com.py'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'd3dpet1g0ty5ed.cloudfront.net',
-        port: '',
-        pathname: '/**',
+        hostname: '**',
       },
     ],
   },
   async headers() {
     return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [

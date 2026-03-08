@@ -153,7 +153,7 @@ model GalleryResult {
   id          String   @id @default(cuid())
   title       String
   description String?
-  imageUrl    String
+  imageUrl    String   @db.Text  // Text para soportar base64
   tool        String   // "hexagono", "serie144", "cuadrado9", "quantum", "gann"
   asset       String   // "XAU/USD", "BTC/USD", etc.
   date        DateTime
