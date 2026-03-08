@@ -43,3 +43,7 @@ prisma/dev.db-journal
 .vscode
 .claude/
 dev.log
+
+# Uploads (keep folder, ignore files)
+public/uploads/gallery/*
+!public/uploads/gallery/.gitkeep
