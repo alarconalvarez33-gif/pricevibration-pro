@@ -66,6 +66,15 @@ export const authOptions: NextAuthOptions = {
     error: '/login'
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // After login/register always go to dashboard
+      if (url.includes('/login') || url.includes('/register') || url.includes('/api/auth')) {
+        return `${baseUrl}/dashboard`
+      }
+      if (url.startsWith('/')) return `${baseUrl}${url}`
+      if (url.startsWith(baseUrl)) return url
+      return `${baseUrl}/dashboard`
+    },
     async jwt({ token, user }) {
       if (user) {
         token.isPremium = (user as any).isPremium

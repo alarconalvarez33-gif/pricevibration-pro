@@ -1,14 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export default function RegisterPage() {
-  const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -22,195 +20,138 @@ export default function RegisterPage() {
     setError('')
 
     if (!acceptedTerms) {
-      setError('You must accept the Terms & Conditions and Risk Disclaimer')
+      setError('Debés aceptar los Términos y Condiciones')
       return
     }
-
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('Las contraseñas no coinciden')
       return
     }
-
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError('La contraseña debe tener al menos 6 caracteres')
       return
     }
 
     setIsLoading(true)
 
     try {
+      // 1. Register
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
       })
-
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || 'Registration failed')
-      } else {
-        // Auto-login after successful registration
-        const result = await signIn('credentials', {
-          email,
-          password,
-          redirect: false,
-        })
-
-        if (result?.error) {
-          // If auto-login fails, redirect to login page
-          router.push('/login?registered=true')
-        } else {
-          // Redirect new users to billing page
-          router.push('/billing')
-          router.refresh()
-        }
+        setError(data.error || 'Error al registrar')
+        setIsLoading(false)
+        return
       }
-    } catch (err) {
-      setError('An unexpected error occurred')
-    } finally {
+
+      // 2. Auto-login
+      const loginResult = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (loginResult?.error) {
+        window.location.href = '/login?registered=true'
+        return
+      }
+
+      // 3. Full reload so session is available server-side
+      window.location.href = '/dashboard'
+    } catch {
+      setError('Error inesperado. Intentá de nuevo.')
       setIsLoading(false)
     }
   }
 
-  return (
-    <main className="min-h-screen">
-      <Navbar />
+  const inputCls = 'w-full bg-[#0a0a0a] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:border-[#c9a227] focus:outline-none'
 
-      <div className="pt-20 pb-20 px-4">
+  return (
+    <main className="min-h-screen bg-[#0a0a0a]">
+      <Navbar />
+      <div className="pt-24 pb-20 px-4">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
-            <p className="text-terminal-muted">Start your trading journey with PriceVibration Pro</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Crear Cuenta</h1>
+            <p className="text-gray-400">Unite a Sacred Levels</p>
           </div>
 
-          <div className="card-terminal">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-[#1a1a2e] rounded-xl p-8 border border-gray-800">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-lg text-sm">
+                <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg text-sm">
                   {error}
                 </div>
               )}
 
               <div>
-                <label className="block text-terminal-muted text-sm mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="input-terminal"
-                  placeholder="John Trader"
-                  required
-                />
+                <label className="block text-gray-400 text-sm mb-2">Nombre completo</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} className={inputCls} placeholder="Tu nombre" required />
               </div>
 
               <div>
-                <label className="block text-terminal-muted text-sm mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="input-terminal"
-                  placeholder="trader@example.com"
-                  required
-                />
+                <label className="block text-gray-400 text-sm mb-2">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className={inputCls} placeholder="tu@email.com" required />
               </div>
 
               <div>
-                <label className="block text-terminal-muted text-sm mb-2">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input-terminal"
-                  placeholder="••••••••"
-                  required
-                  minLength={6}
-                />
+                <label className="block text-gray-400 text-sm mb-2">Contraseña</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className={inputCls} placeholder="Mínimo 6 caracteres" required minLength={6} />
               </div>
 
               <div>
-                <label className="block text-terminal-muted text-sm mb-2">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="input-terminal"
-                  placeholder="••••••••"
-                  required
-                />
+                <label className="block text-gray-400 text-sm mb-2">Confirmar contraseña</label>
+                <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className={inputCls} placeholder="Repetir contraseña" required />
               </div>
 
-              {/* Terms and Conditions Checkbox */}
               <div className="flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="terms"
                   checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded border-terminal-border bg-terminal-bg text-gold-500 focus:ring-gold-500 focus:ring-2 cursor-pointer"
+                  onChange={e => setAcceptedTerms(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-gray-700 bg-[#0a0a0a] text-[#c9a227] focus:ring-[#c9a227] cursor-pointer"
                   required
                 />
-                <label htmlFor="terms" className="text-terminal-muted text-sm cursor-pointer">
-                  I accept the{' '}
-                  <Link
-                    href="/terms"
-                    target="_blank"
-                    className="text-gold-500 hover:text-gold-400 underline"
-                  >
-                    Terms & Conditions
-                  </Link>
-                  {' '}and{' '}
-                  <Link
-                    href="/disclaimer"
-                    target="_blank"
-                    className="text-gold-500 hover:text-gold-400 underline"
-                  >
-                    Risk Disclaimer
-                  </Link>
+                <label htmlFor="terms" className="text-gray-400 text-sm cursor-pointer">
+                  Acepto los{' '}
+                  <Link href="/terms" target="_blank" className="text-[#c9a227] hover:underline">Términos y Condiciones</Link>
+                  {' '}y el{' '}
+                  <Link href="/disclaimer" target="_blank" className="text-[#c9a227] hover:underline">Aviso de Riesgo</Link>
                 </label>
               </div>
 
               <button
                 type="submit"
                 disabled={isLoading || !acceptedTerms}
-                className="btn-gold w-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#c9a227] hover:bg-[#d4af37] disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    Creating account...
+                    Creando cuenta...
                   </>
                 ) : (
-                  'Create Account'
+                  'Crear Cuenta'
                 )}
               </button>
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-terminal-muted text-sm">
-                Already have an account?{' '}
-                <Link href="/login" className="text-gold-500 hover:text-gold-400 transition-colors">
-                  Sign in
-                </Link>
+              <p className="text-gray-400 text-sm">
+                ¿Ya tenés cuenta?{' '}
+                <Link href="/login" className="text-[#c9a227] hover:underline">Iniciar Sesión</Link>
               </p>
             </div>
           </div>
-
-          <p className="mt-6 text-center text-terminal-muted text-xs">
-            By creating an account, you agree to our Terms of Service and Privacy Policy.
-          </p>
         </div>
       </div>
       <Footer />
