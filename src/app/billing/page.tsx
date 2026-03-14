@@ -26,12 +26,10 @@ const PLANS = [
       { n: 12, monto: 26667  },
     ],
     features: [
-      'Calculadora Gann Avanzada',
       'Cálculos ilimitados',
-      'Módulo Astro-Gann completo',
-      'Datos planetarios en tiempo real',
-      'Exportar a CSV/PDF',
-      'Alertas de precio',
+      'Subarmónicos incluidos',
+      'Zonas Entelechy',
+      'Soporte prioritario',
     ],
     cta: 'Suscribirme al Pro',
   },
@@ -55,14 +53,10 @@ const PLANS = [
       { n: 12, monto: 55000  },
     ],
     features: [
-      'Todo lo del Plan Pro',
-      'Rueda de 24 Calculadora',
-      'Cuadrado de 9 Completo',
-      'Herramienta Hexágono Gann',
-      'Series 144 y Tiempo Maestro',
-      'Análisis de Ciclos de Tiempo',
-      'Cuadratura Precio-Tiempo',
-      'Soporte Prioritario',
+      'Todo de Pro incluido',
+      'Curso Canal Paralelo',
+      'Curso Fibonacci',
+      'Comunidad VIP',
     ],
     cta: 'Convertirme en Whale',
   },
@@ -119,7 +113,7 @@ export default function BillingPage() {
               <span className="text-yellow-500">dominá el mercado</span>
             </h1>
             <p className="text-gray-400 text-lg max-w-xl mx-auto">
-              Herramientas profesionales basadas en la Ley de Vibración de Gann y ciclos planetarios
+              Herramientas profesionales de niveles cuánticos para Forex, Oro y Crypto
             </p>
           </div>
 
