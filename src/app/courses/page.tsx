@@ -16,26 +16,19 @@ export default function CoursesPage() {
 
           {/* Header */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Cursos de Trading
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Cursos de Trading</h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Aprende técnicas profesionales de análisis técnico con nuestros cursos en video
             </p>
           </div>
 
-          {/* Courses Grid */}
+          {/* Courses Grid - FLYERS COMPLETOS */}
           <div className="grid md:grid-cols-2 gap-8">
 
             {/* Física Cuántica */}
             <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-purple-500/30 hover:border-purple-500/60 transition-all">
-              <div className="relative aspect-video overflow-hidden">
-                <Image
-                  src="/cuantico.png"
-                  alt="Física Cuántica - Niveles Cuánticos"
-                  fill
-                  className="object-contain bg-black"
-                />
+              <div className="relative h-80 bg-[#0a0a0a] overflow-hidden">
+                <Image src="/cuantico.png" alt="Física Cuántica" fill className="object-contain p-4" />
                 <div className="absolute top-4 left-4">
                   <span className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Especial</span>
                 </div>
@@ -51,10 +44,7 @@ export default function CoursesPage() {
                     <span className="text-2xl font-bold text-white">Gs. 650.000</span>
                     <p className="text-gray-500 text-sm">Pago único - 2 meses de acceso</p>
                   </div>
-                  <Link
-                    href="/billing"
-                    className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-xl font-bold transition-all"
-                  >
+                  <Link href="/billing" className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-xl font-bold transition-all">
                     Acceder Ahora
                   </Link>
                 </div>
@@ -63,13 +53,8 @@ export default function CoursesPage() {
 
             {/* Canal Paralelo */}
             <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-gray-800 hover:border-[#c9a227]/50 transition-all">
-              <div className="relative aspect-video overflow-hidden">
-                <Image
-                  src="/canal1.png"
-                  alt="Curso Canal Paralelo"
-                  fill
-                  className="object-contain bg-black"
-                />
+              <div className="relative h-80 bg-[#0a0a0a] overflow-hidden">
+                <Image src="/canal1.png" alt="Canal Paralelo" fill className="object-contain p-4" />
                 <div className="absolute top-4 left-4 flex gap-2">
                   <span className="bg-[#c9a227] text-black px-4 py-2 rounded-lg text-sm font-bold">Popular</span>
                   <span className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Incluido en Whale</span>
@@ -86,10 +71,7 @@ export default function CoursesPage() {
                     <span className="text-2xl font-bold text-white">Gs. 320.000</span>
                     <p className="text-green-400 text-sm">O gratis con plan Whale</p>
                   </div>
-                  <Link
-                    href="/courses/canal-paralelo"
-                    className="bg-[#c9a227] hover:bg-[#d4af37] text-black px-6 py-3 rounded-xl font-bold transition-all"
-                  >
+                  <Link href="/courses/canal-paralelo" className="bg-[#c9a227] hover:bg-[#d4af37] text-black px-6 py-3 rounded-xl font-bold transition-all">
                     Ver Curso
                   </Link>
                 </div>
@@ -98,13 +80,8 @@ export default function CoursesPage() {
 
             {/* Fibonacci */}
             <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-gray-800 hover:border-green-500/50 transition-all">
-              <div className="relative aspect-video overflow-hidden">
-                <Image
-                  src="/desbloquea el poder de forex.png"
-                  alt="Curso Fibonacci Avanzado"
-                  fill
-                  className="object-contain bg-black"
-                />
+              <div className="relative h-80 bg-[#0a0a0a] overflow-hidden">
+                <Image src="/desbloquea el poder de forex.png" alt="Fibonacci Avanzado" fill className="object-contain p-4" />
                 <div className="absolute top-4 left-4 flex gap-2">
                   <span className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Nuevo</span>
                   <span className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Incluido en Whale</span>
@@ -121,10 +98,7 @@ export default function CoursesPage() {
                     <span className="text-2xl font-bold text-white">Gs. 320.000</span>
                     <p className="text-green-400 text-sm">O gratis con plan Whale</p>
                   </div>
-                  <Link
-                    href="/courses/fibonacci"
-                    className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-bold transition-all"
-                  >
+                  <Link href="/courses/fibonacci" className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-bold transition-all">
                     Ver Curso
                   </Link>
                 </div>
@@ -133,13 +107,8 @@ export default function CoursesPage() {
 
             {/* Expansión Matemática */}
             <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-rose-500/30 hover:border-rose-500/60 transition-all">
-              <div className="relative aspect-video overflow-hidden">
-                <Image
-                  src="/expa.png"
-                  alt="Curso Expansión Matemática"
-                  fill
-                  className="object-contain bg-black"
-                />
+              <div className="relative h-80 bg-[#0a0a0a] overflow-hidden">
+                <Image src="/expa.png" alt="Expansión Matemática" fill className="object-contain p-4" />
                 <div className="absolute top-4 left-4">
                   <span className="bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Premium</span>
                 </div>
@@ -155,10 +124,7 @@ export default function CoursesPage() {
                     <span className="text-2xl font-bold text-white">Gs. 1.500.000</span>
                     <p className="text-gray-500 text-sm">Curso premium exclusivo</p>
                   </div>
-                  <Link
-                    href="/courses/expansion-matematica"
-                    className="bg-rose-600 hover:bg-rose-500 text-white px-6 py-3 rounded-xl font-bold transition-all"
-                  >
+                  <Link href="/courses/expansion-matematica" className="bg-rose-600 hover:bg-rose-500 text-white px-6 py-3 rounded-xl font-bold transition-all">
                     Ver Curso
                   </Link>
                 </div>
@@ -166,7 +132,7 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          {/* Whale CTA */}
+          {/* Whale CTA con imagen PLAN.png */}
           <div className="mt-16 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-2xl p-8 md:p-12">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
@@ -177,26 +143,18 @@ export default function CoursesPage() {
                   Con el plan Whale obtienes acceso a ambos cursos más todas las funciones Pro por solo $99/mes
                 </p>
                 <ul className="space-y-2 mb-6">
-                  {[
-                    'Calculadora ilimitada',
-                    'Curso Canal Paralelo incluido',
-                    'Curso Fibonacci incluido',
-                    'Comunidad VIP',
-                  ].map((item) => (
+                  {['Calculadora ilimitada', 'Curso Canal Paralelo incluido', 'Curso Fibonacci incluido', 'Comunidad VIP'].map((item) => (
                     <li key={item} className="flex items-center gap-2 text-gray-300">
                       <span className="text-purple-400">✓</span>{item}
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href="/billing"
-                  className="inline-block bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all"
-                >
+                <Link href="/billing" className="inline-block bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all">
                   Ver Plan Whale
                 </Link>
               </div>
-              <div className="relative aspect-video">
-                <Image src="/whale.png" alt="Plan Whale" fill className="object-contain" />
+              <div className="relative h-72 bg-[#0a0a0a] rounded-xl overflow-hidden">
+                <Image src="/PLAN.png" alt="Plan Whale" fill className="object-contain p-4" />
               </div>
             </div>
           </div>

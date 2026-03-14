@@ -45,16 +45,8 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3">
-              <Image
-                src="/logosacred.png"
-                alt="Sacred Levels"
-                width={42}
-                height={42}
-                className="rounded-xl"
-              />
-              <span className="text-white font-bold text-lg hidden sm:block">
-                Sacred Levels
-              </span>
+              <Image src="/logosacred.png" alt="Sacred Levels" width={42} height={42} className="rounded-xl" />
+              <span className="text-white font-bold text-lg hidden sm:block">Sacred Levels</span>
             </Link>
 
             {/* Desktop Menu */}
@@ -79,40 +71,24 @@ export default function Navbar() {
               {session ? (
                 <>
                   {isWhale && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                      WHALE
-                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white">WHALE</span>
                   )}
                   {isPro && !isWhale && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#c9a227]/20 text-[#c9a227]">
-                      PRO
-                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#c9a227]/20 text-[#c9a227]">PRO</span>
                   )}
-                  <Link
-                    href="/dashboard"
-                    className="text-gray-300 hover:text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/5 transition-all"
-                  >
+                  <Link href="/dashboard" className="text-gray-300 hover:text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/5 transition-all">
                     Dashboard
                   </Link>
-                  <button
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    className="text-gray-400 hover:text-white text-sm px-3 py-2"
-                  >
+                  <button onClick={() => signOut({ callbackUrl: '/' })} className="text-gray-400 hover:text-white text-sm px-3 py-2">
                     Salir
                   </button>
                 </>
               ) : (
                 <>
-                  <Link
-                    href="/login"
-                    className="text-gray-300 hover:text-white text-sm font-medium px-4 py-2"
-                  >
+                  <Link href="/login" className="text-gray-300 hover:text-white text-sm font-medium px-4 py-2">
                     Iniciar Sesión
                   </Link>
-                  <Link
-                    href="/register"
-                    className="bg-[#c9a227] hover:bg-[#d4af37] text-black px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
-                  >
+                  <Link href="/register" className="bg-[#c9a227] hover:bg-[#d4af37] text-black px-5 py-2.5 rounded-xl text-sm font-bold transition-all">
                     Registrarse
                   </Link>
                 </>
@@ -163,30 +139,14 @@ export default function Navbar() {
                     <>
                       {(isWhale || isPro) && (
                         <div className="px-4 pb-2">
-                          {isWhale && (
-                            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                              WHALE
-                            </span>
-                          )}
-                          {isPro && !isWhale && (
-                            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#c9a227]/20 text-[#c9a227]">
-                              PRO
-                            </span>
-                          )}
+                          {isWhale && <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white">WHALE</span>}
+                          {isPro && !isWhale && <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#c9a227]/20 text-[#c9a227]">PRO</span>}
                         </div>
                       )}
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm"
-                      >
+                      <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm">
                         Dashboard
                       </Link>
-                      <Link
-                        href="/settings"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm"
-                      >
+                      <Link href="/settings" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm">
                         Mi Perfil
                       </Link>
                       <button
@@ -198,18 +158,10 @@ export default function Navbar() {
                     </>
                   ) : (
                     <>
-                      <Link
-                        href="/login"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm"
-                      >
+                      <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm">
                         Iniciar Sesión
                       </Link>
-                      <Link
-                        href="/register"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block mx-4 mt-2 bg-[#c9a227] hover:bg-[#d4af37] text-black px-4 py-3.5 rounded-xl text-sm font-bold text-center"
-                      >
+                      <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="block mx-4 mt-2 bg-[#c9a227] hover:bg-[#d4af37] text-black px-4 py-3.5 rounded-xl text-sm font-bold text-center">
                         Crear Cuenta Gratis
                       </Link>
                     </>
