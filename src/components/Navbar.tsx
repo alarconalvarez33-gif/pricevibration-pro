@@ -38,23 +38,21 @@ export default function Navbar() {
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-[#0a0a0a]/98 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-[#0a0a0a]/90 backdrop-blur-sm'
+        scrolled ? 'bg-[#0a0a0a]/98 backdrop-blur-md shadow-lg' : 'bg-[#0a0a0a]/95 backdrop-blur-sm'
       } border-b border-gray-800/50`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
+
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="absolute inset-0 bg-[#c9a227]/20 rounded-xl blur-md group-hover:bg-[#c9a227]/30 transition-all" />
-                <Image
-                  src="/logosacred.png"
-                  alt="Sacred Levels"
-                  width={42}
-                  height={42}
-                  className="relative rounded-xl"
-                />
-              </div>
-              <span className="text-white font-bold text-lg hidden sm:block group-hover:text-[#c9a227] transition-colors">
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/logosacred.png"
+                alt="Sacred Levels"
+                width={42}
+                height={42}
+                className="rounded-xl"
+              />
+              <span className="text-white font-bold text-lg hidden sm:block">
                 Sacred Levels
               </span>
             </Link>
@@ -113,7 +111,7 @@ export default function Navbar() {
                   </Link>
                   <Link
                     href="/register"
-                    className="bg-gradient-to-r from-[#c9a227] to-[#d4af37] hover:from-[#d4af37] hover:to-[#e5c349] text-black px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-[#c9a227]/20"
+                    className="bg-[#c9a227] hover:bg-[#d4af37] text-black px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
                   >
                     Registrarse
                   </Link>
@@ -139,7 +137,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Mobile Menu - animated slide */}
+          {/* Mobile Menu */}
           <div className={`md:hidden overflow-hidden transition-all duration-300 ${
             mobileMenuOpen ? 'max-h-[520px] opacity-100' : 'max-h-0 opacity-0'
           }`}>
@@ -152,7 +150,7 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                       isActive(link.href)
-                        ? 'bg-gradient-to-r from-[#c9a227]/20 to-transparent text-[#c9a227] border-l-4 border-[#c9a227]'
+                        ? 'bg-[#c9a227]/20 text-[#c9a227] border-l-4 border-[#c9a227]'
                         : 'text-gray-300 hover:bg-white/5 hover:text-white'
                     }`}
                   >
@@ -182,9 +180,6 @@ export default function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
                         Dashboard
                       </Link>
                       <Link
@@ -192,18 +187,12 @@ export default function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
                         Mi Perfil
                       </Link>
                       <button
                         onClick={() => { signOut({ callbackUrl: '/' }); setMobileMenuOpen(false); }}
                         className="flex items-center gap-3 w-full text-left px-4 py-3 text-red-400 hover:bg-white/5 rounded-xl text-sm"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
                         Cerrar Sesión
                       </button>
                     </>
@@ -214,15 +203,12 @@ export default function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/5 rounded-xl text-sm"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                        </svg>
                         Iniciar Sesión
                       </Link>
                       <Link
                         href="/register"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="mx-4 mt-2 bg-gradient-to-r from-[#c9a227] to-[#d4af37] text-black px-4 py-3.5 rounded-xl text-sm font-bold text-center block shadow-lg shadow-[#c9a227]/20"
+                        className="block mx-4 mt-2 bg-[#c9a227] hover:bg-[#d4af37] text-black px-4 py-3.5 rounded-xl text-sm font-bold text-center"
                       >
                         Crear Cuenta Gratis
                       </Link>
