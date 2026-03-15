@@ -246,10 +246,8 @@ export default function BillingPage() {
 
           {/* Payment methods footer note */}
           <div className="mt-10 text-center">
-            <p className="text-gray-600 text-sm">
-              Pagos procesados de forma segura a través de{' '}
-              <span className="text-gray-400 font-medium">Pagopar</span>.
-              Aceptamos Visa, Mastercard y Bancard.
+            <p className="text-gray-400 text-sm">
+              Los cursos podes pagar a cuotas con tus tarjetas:
             </p>
           </div>
 
