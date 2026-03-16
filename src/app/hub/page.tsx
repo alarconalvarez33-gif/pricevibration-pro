@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
@@ -23,6 +23,7 @@ interface MarketData {
   levels: QuantumLevel[];
   signal: 'BUY' | 'SELL' | 'WAIT';
   aiAnalysis: string;
+  source?: 'live' | 'fallback' | 'simulated';
 }
 
 interface Signal {
@@ -43,7 +44,8 @@ interface SignalAccess {
   reason?: string;
 }
 
-// Calculate Quantum Levels
+// ── Quantum helpers ─────────────────────────────────────────────────────────
+
 function calculateQuantumLevels(high: number, low: number): QuantumLevel[] {
   const range = high - low;
   const levels: QuantumLevel[] = [];
@@ -53,7 +55,7 @@ function calculateQuantumLevels(high: number, low: number): QuantumLevel[] {
     const price = low + range * position;
     levels.push({
       level: `Q${n}`,
-      price: Math.round(price * 100) / 100,
+      price: Math.round(price * 10000) / 10000,
       type: n <= 3 ? 'buy' : n >= 6 ? 'sell' : 'neutral',
       strength: n === 0 || n === 8 ? 100 : n === 4 ? 80 : 60,
     });
@@ -62,42 +64,48 @@ function calculateQuantumLevels(high: number, low: number): QuantumLevel[] {
   return levels;
 }
 
-// Generate AI Analysis
-function generateAIAnalysis(symbol: string, price: number, levels: QuantumLevel[]): string {
-  const nearestLevel = levels.reduce((prev, curr) =>
+function deriveSignal(price: number, levels: QuantumLevel[]): 'BUY' | 'SELL' | 'WAIT' {
+  const nearest = levels.reduce((prev, curr) =>
     Math.abs(curr.price - price) < Math.abs(prev.price - price) ? curr : prev
   );
+  if (nearest.type === 'buy') return 'BUY';
+  if (nearest.type === 'sell') return 'SELL';
+  return 'WAIT';
+}
 
-  const distance = ((price - nearestLevel.price) / price * 100).toFixed(2);
-  const zone =
-    nearestLevel.type === 'buy'
-      ? 'accumulation'
-      : nearestLevel.type === 'sell'
-      ? 'distribution'
-      : 'equilibrium';
+function generateAIAnalysis(symbol: string, price: number, levels: QuantumLevel[]): string {
+  const nearest = levels.reduce((prev, curr) =>
+    Math.abs(curr.price - price) < Math.abs(prev.price - price) ? curr : prev
+  );
+  const distance = ((price - nearest.price) / price * 100).toFixed(2);
+  const zone = nearest.type === 'buy' ? 'accumulation' : nearest.type === 'sell' ? 'distribution' : 'equilibrium';
 
   const analyses = [
-    `${symbol} is currently trading near ${nearestLevel.level} (${nearestLevel.price}), a key ${zone} zone. Price is ${Math.abs(parseFloat(distance))}% ${parseFloat(distance) > 0 ? 'above' : 'below'} this level. Watch for potential reversal signals.`,
-    `Quantum analysis shows ${symbol} approaching critical ${nearestLevel.level} level. The ${zone} zone suggests ${nearestLevel.type === 'buy' ? 'bullish accumulation' : nearestLevel.type === 'sell' ? 'bearish distribution' : 'consolidation'} in progress.`,
-    `${symbol} at ${price} is testing the ${nearestLevel.level} quantum level. Historical data suggests high probability reversals at this ${zone} zone. Confidence: ${nearestLevel.strength}%.`,
+    `${symbol} is currently trading near ${nearest.level} (${nearest.price}), a key ${zone} zone. Price is ${Math.abs(parseFloat(distance))}% ${parseFloat(distance) > 0 ? 'above' : 'below'} this level. Watch for potential reversal signals.`,
+    `Quantum analysis shows ${symbol} approaching critical ${nearest.level} level. The ${zone} zone suggests ${nearest.type === 'buy' ? 'bullish accumulation' : nearest.type === 'sell' ? 'bearish distribution' : 'consolidation'} in progress.`,
+    `${symbol} at ${price.toFixed(nearest.price < 10 ? 4 : 2)} is testing the ${nearest.level} quantum level. Historical data suggests high probability reversals at this ${zone} zone. Confidence: ${nearest.strength}%.`,
   ];
 
   return analyses[Math.floor(Math.random() * analyses.length)];
 }
 
-// Mock Market Data
-const initialMarkets: MarketData[] = [
-  { symbol: 'XAU/USD', name: 'Gold', price: 2645.50, change: 12.30, changePercent: 0.47, high: 2700, low: 2500, levels: [], signal: 'BUY', aiAnalysis: '' },
-  { symbol: 'EUR/USD', name: 'Euro/Dollar', price: 1.0875, change: -0.0023, changePercent: -0.21, high: 1.1200, low: 1.0500, levels: [], signal: 'WAIT', aiAnalysis: '' },
-  { symbol: 'BTC/USD', name: 'Bitcoin', price: 67450, change: 1250, changePercent: 1.89, high: 73000, low: 58000, levels: [], signal: 'BUY', aiAnalysis: '' },
-  { symbol: 'ETH/USD', name: 'Ethereum', price: 3520, change: -45, changePercent: -1.26, high: 4000, low: 3000, levels: [], signal: 'SELL', aiAnalysis: '' },
-  { symbol: 'SPX500', name: 'S&P 500', price: 5234.50, change: 28.75, changePercent: 0.55, high: 5400, low: 4800, levels: [], signal: 'BUY', aiAnalysis: '' },
-  { symbol: 'NAS100', name: 'NASDAQ 100', price: 18456, change: -124, changePercent: -0.67, high: 19500, low: 17000, levels: [], signal: 'WAIT', aiAnalysis: '' },
-  { symbol: 'GBP/USD', name: 'Pound/Dollar', price: 1.2715, change: 0.0045, changePercent: 0.35, high: 1.3100, low: 1.2300, levels: [], signal: 'BUY', aiAnalysis: '' },
-  { symbol: 'USD/JPY', name: 'Dollar/Yen', price: 154.25, change: -0.85, changePercent: -0.55, high: 160, low: 145, levels: [], signal: 'SELL', aiAnalysis: '' },
+// ── Static mock for markets not covered by free APIs ────────────────────────
+
+const SIMULATED_EXTRA: Omit<MarketData, 'levels' | 'signal' | 'aiAnalysis'>[] = [
+  { symbol: 'SPX500', name: 'S&P 500', price: 5234.50, change: 28.75, changePercent: 0.55, high: 5400, low: 4800, source: 'simulated' },
+  { symbol: 'NAS100', name: 'NASDAQ 100', price: 18456, change: -124, changePercent: -0.67, high: 19500, low: 17000, source: 'simulated' },
+  { symbol: 'USD/JPY', name: 'Dollar/Yen', price: 154.25, change: -0.85, changePercent: -0.55, high: 160, low: 145, source: 'simulated' },
 ];
 
-// Recent Signals
+function buildMarket(raw: Omit<MarketData, 'levels' | 'signal' | 'aiAnalysis'>): MarketData {
+  const levels = calculateQuantumLevels(raw.high, raw.low);
+  const signal = deriveSignal(raw.price, levels);
+  const aiAnalysis = generateAIAnalysis(raw.symbol, raw.price, levels);
+  return { ...raw, levels, signal, aiAnalysis };
+}
+
+// ── Recent Signals (static demo) ────────────────────────────────────────────
+
 const recentSignals: Signal[] = [
   { id: '1', symbol: 'XAU/USD', type: 'BUY', price: 2632.50, level: 'Q3', time: '2 min ago', confidence: 87 },
   { id: '2', symbol: 'BTC/USD', type: 'BUY', price: 66800, level: 'Q2', time: '15 min ago', confidence: 92 },
@@ -106,20 +114,20 @@ const recentSignals: Signal[] = [
   { id: '5', symbol: 'ETH/USD', type: 'SELL', price: 3580, level: 'Q7', time: '2 hr ago', confidence: 73 },
 ];
 
+// ── Price formatter ──────────────────────────────────────────────────────────
+
 function formatPrice(market: MarketData, price: number): string {
   if (market.symbol.includes('JPY')) return price.toFixed(2);
   if (market.symbol.includes('BTC') || market.symbol.includes('SPX') || market.symbol.includes('NAS')) return price.toFixed(0);
   return price.toFixed(price < 10 ? 4 : 2);
 }
 
-// Paywall overlay shown when free user has exhausted their 3 free views
+// ── Paywall overlay ──────────────────────────────────────────────────────────
+
 function SignalPaywall({ viewed, limit }: { viewed: number; limit: number }) {
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl">
-      {/* Blur layer */}
       <div className="absolute inset-0 backdrop-blur-md bg-[#0a0a0a]/70 rounded-xl" />
-
-      {/* Content */}
       <div className="relative z-10 text-center px-6 py-8 max-w-xs mx-auto">
         <div className="text-5xl mb-4">🔒</div>
         <h3 className="text-white text-xl font-bold mb-2">
@@ -128,29 +136,23 @@ function SignalPaywall({ viewed, limit }: { viewed: number; limit: number }) {
         <p className="text-gray-400 text-sm mb-6 leading-relaxed">
           Upgrade to Signal Hub Pro for unlimited access to all markets and AI analysis.
         </p>
-
         <div className="bg-white/5 border border-emerald-500/30 rounded-xl p-4 mb-6">
           <p className="text-emerald-400 font-bold text-lg">Signal Hub Pro</p>
           <p className="text-white font-extrabold text-2xl mt-1">Gs. 750.000</p>
           <p className="text-gray-400 text-xs mt-1">$120 USD / month</p>
         </div>
-
         <Link
           href="/billing"
           className="block w-full bg-gradient-to-r from-emerald-400 to-cyan-500 text-black font-bold py-3 rounded-xl hover:from-emerald-300 hover:to-cyan-400 transition-all"
         >
           Unlock Now
         </Link>
-
-        <p className="text-gray-600 text-xs mt-4">
-          {viewed}/{limit} free signals used
-        </p>
+        <p className="text-gray-600 text-xs mt-4">{viewed}/{limit} free signals used</p>
       </div>
     </div>
   );
 }
 
-// Gate shown when user is not logged in
 function LoginGate() {
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl">
@@ -178,84 +180,108 @@ function LoginGate() {
   );
 }
 
+// ── Main component ───────────────────────────────────────────────────────────
+
 export default function QuantumSignalHub() {
   const { data: session, status: authStatus } = useSession();
-  const [markets, setMarkets] = useState<MarketData[]>([]);
+  const [markets, setMarkets] = useState<MarketData[]>(() =>
+    SIMULATED_EXTRA.map(buildMarket)
+  );
   const [selectedMarket, setSelectedMarket] = useState<MarketData | null>(null);
   const [filter, setFilter] = useState<'all' | 'forex' | 'crypto' | 'indices'>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<number | null>(null);
+  const [secondsAgo, setSecondsAgo] = useState(0);
+  const [fetchError, setFetchError] = useState(false);
   const [signalAccess, setSignalAccess] = useState<SignalAccess | null>(null);
   const incrementedRef = useRef(false);
 
-  // Initialize markets
-  useEffect(() => {
-    const marketsWithLevels = initialMarkets.map(market => {
-      const levels = calculateQuantumLevels(market.high, market.low);
-      const aiAnalysis = generateAIAnalysis(market.symbol, market.price, levels);
-      return { ...market, levels, aiAnalysis };
-    });
+  // ── Fetch real market data ─────────────────────────────────────────────────
+  const fetchMarkets = useCallback(async () => {
+    try {
+      const res = await fetch('/api/markets');
+      const data = await res.json();
 
-    setMarkets(marketsWithLevels);
-    setSelectedMarket(marketsWithLevels[0]);
-    setIsLoading(false);
+      if (!data.markets) throw new Error('No markets in response');
 
-    const interval = setInterval(() => {
-      setMarkets(prev =>
-        prev.map(market => {
-          const fluctuation = (Math.random() - 0.5) * 0.002;
-          const newPrice = market.price * (1 + fluctuation);
-          const newChange = newPrice - (market.price - market.change);
-          return {
-            ...market,
-            price: Math.round(newPrice * 100) / 100,
-            change: Math.round(newChange * 100) / 100,
-            changePercent: Math.round((newChange / (market.price - market.change)) * 10000) / 100,
-          };
-        })
-      );
-    }, 3000);
+      setMarkets(prev => {
+        const apiBySymbol = new Map(
+          (data.markets as Omit<MarketData, 'levels' | 'signal' | 'aiAnalysis'>[]).map(m => [m.symbol, m])
+        );
 
-    return () => clearInterval(interval);
+        // Build the ordered list: API markets first, then simulated extras
+        const apiMarkets = data.markets.map((raw: Omit<MarketData, 'levels' | 'signal' | 'aiAnalysis'>) =>
+          buildMarket(raw)
+        );
+
+        const simulated = SIMULATED_EXTRA
+          .filter(m => !apiBySymbol.has(m.symbol))
+          .map(raw => {
+            // Try to preserve existing price if we already had it
+            const existing = prev.find(p => p.symbol === raw.symbol);
+            return buildMarket(existing ? { ...raw, price: existing.price, change: existing.change, changePercent: existing.changePercent } : raw);
+          });
+
+        return [...apiMarkets, ...simulated];
+      });
+
+      setLastUpdated(Date.now());
+      setSecondsAgo(0);
+      setFetchError(false);
+    } catch (err) {
+      console.error('Failed to fetch markets:', err);
+      setFetchError(true);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // Keep selectedMarket in sync with price updates
+  // Initial fetch + 30s polling
   useEffect(() => {
-    if (selectedMarket) {
-      const updated = markets.find(m => m.symbol === selectedMarket.symbol);
-      if (updated) setSelectedMarket(updated);
+    fetchMarkets();
+    const interval = setInterval(fetchMarkets, 30_000);
+    return () => clearInterval(interval);
+  }, [fetchMarkets]);
+
+  // "X seconds ago" counter
+  useEffect(() => {
+    if (!lastUpdated) return;
+    const tick = setInterval(() => {
+      setSecondsAgo(Math.floor((Date.now() - lastUpdated) / 1000));
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [lastUpdated]);
+
+  // Keep selectedMarket in sync after market updates
+  useEffect(() => {
+    if (!selectedMarket) {
+      if (markets.length > 0) setSelectedMarket(markets[0]);
+      return;
     }
+    const updated = markets.find(m => m.symbol === selectedMarket.symbol);
+    if (updated) setSelectedMarket(updated);
   }, [markets]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Check signal access once auth is resolved
   useEffect(() => {
     if (authStatus === 'loading') return;
-
     if (!session) {
       setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3, reason: 'unauthenticated' });
       return;
     }
-
     fetch('/api/signals/check-limit')
       .then(r => r.json())
-      .then((data: SignalAccess) => {
-        setSignalAccess(data);
-      })
-      .catch(() => {
-        setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3 });
-      });
+      .then((data: SignalAccess) => setSignalAccess(data))
+      .catch(() => setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3 }));
   }, [authStatus, session]);
 
-  // Increment view once per session when user can view signals
+  // Increment view once per page load when user can view signals
   useEffect(() => {
     if (!signalAccess?.canView || signalAccess.isPro || incrementedRef.current) return;
-
     incrementedRef.current = true;
     fetch('/api/signals/increment-view', { method: 'POST' })
       .then(r => r.json())
-      .then(data => {
-        // Update viewed count locally so the badge reflects the new count
-        setSignalAccess(prev => prev ? { ...prev, viewed: data.viewed } : prev);
-      })
+      .then(data => setSignalAccess(prev => prev ? { ...prev, viewed: data.viewed } : prev))
       .catch(() => {});
   }, [signalAccess]);
 
@@ -298,16 +324,38 @@ export default function QuantumSignalHub() {
             </Link>
 
             <div className="flex items-center gap-4">
+              {/* Live indicator / last updated */}
               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-full">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span className="text-green-400 text-sm font-medium">Live</span>
+                <span className="text-green-400 text-sm font-medium">
+                  {lastUpdated
+                    ? secondsAgo < 5
+                      ? 'Just updated'
+                      : `${secondsAgo}s ago`
+                    : 'Live'}
+                </span>
               </div>
+
+              {/* Refresh button */}
+              <button
+                onClick={fetchMarkets}
+                title="Refresh prices"
+                className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
 
               {/* Free signals badge */}
               {signalAccess && !signalAccess.isPro && session && (
                 <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e] border border-gray-700 rounded-full">
                   <span className="text-gray-400 text-xs">
-                    Free signals: <span className={`font-bold ${signalAccess.viewed >= signalAccess.limit ? 'text-red-400' : 'text-[#c9a227]'}`}>{signalAccess.limit - signalAccess.viewed}</span> left
+                    Free signals:{' '}
+                    <span className={`font-bold ${signalAccess.viewed >= signalAccess.limit ? 'text-red-400' : 'text-[#c9a227]'}`}>
+                      {signalAccess.limit - signalAccess.viewed}
+                    </span>{' '}
+                    left
                   </span>
                 </div>
               )}
@@ -332,6 +380,15 @@ export default function QuantumSignalHub() {
       </header>
 
       <main className="max-w-[1800px] mx-auto p-4">
+        {/* Error banner */}
+        {fetchError && (
+          <div className="mb-4 px-4 py-3 bg-red-900/30 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-center gap-2">
+            <span>⚠️</span>
+            <span>Could not reach market data APIs. Showing last known prices.</span>
+            <button onClick={fetchMarkets} className="ml-auto underline hover:no-underline">Retry</button>
+          </div>
+        )}
+
         {/* Stats Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-[#1a1a2e] rounded-xl p-4 border border-gray-800">
@@ -347,7 +404,9 @@ export default function QuantumSignalHub() {
           <div className="bg-[#1a1a2e] rounded-xl p-4 border border-gray-800">
             <p className="text-gray-400 text-sm">Markets Tracked</p>
             <p className="text-2xl font-bold text-white">{markets.length}</p>
-            <p className="text-gray-500 text-xs">Real-time</p>
+            <p className="text-gray-500 text-xs">
+              {markets.filter(m => m.source === 'live').length} live · {markets.filter(m => m.source !== 'live').length} simulated
+            </p>
           </div>
           <div className="bg-[#1a1a2e] rounded-xl p-4 border border-gray-800">
             <p className="text-gray-400 text-sm">AI Confidence</p>
@@ -389,9 +448,15 @@ export default function QuantumSignalHub() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <div>
+                    <div className="flex items-center gap-2">
                       <span className="font-bold text-white">{market.symbol}</span>
-                      <span className="text-gray-500 text-sm ml-2">{market.name}</span>
+                      <span className="text-gray-500 text-sm">{market.name}</span>
+                      {market.source === 'live' && (
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full" title="Live price" />
+                      )}
+                      {market.source === 'simulated' && (
+                        <span className="w-1.5 h-1.5 bg-yellow-500/60 rounded-full" title="Simulated price" />
+                      )}
                     </div>
                     <span
                       className={`px-2 py-1 rounded text-xs font-bold ${
@@ -414,17 +479,30 @@ export default function QuantumSignalHub() {
                 </div>
               ))}
             </div>
+
+            {/* Last updated footer */}
+            {lastUpdated && (
+              <p className="text-center text-gray-600 text-xs mt-3">
+                Last updated: {secondsAgo}s ago · refreshes every 30s
+              </p>
+            )}
           </div>
 
           {/* Center Column - Selected Market & Levels */}
           <div className="lg:col-span-1">
             {selectedMarket && (
               <>
-                {/* Selected Market Header */}
                 <div className="bg-[#1a1a2e] rounded-xl p-6 border border-gray-800 mb-4">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h2 className="text-2xl font-bold text-white">{selectedMarket.symbol}</h2>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-2xl font-bold text-white">{selectedMarket.symbol}</h2>
+                        {selectedMarket.source === 'live' ? (
+                          <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full font-medium">Live</span>
+                        ) : (
+                          <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-xs rounded-full font-medium">Simulated</span>
+                        )}
+                      </div>
                       <p className="text-gray-400">{selectedMarket.name}</p>
                     </div>
                     <div className="text-right">
@@ -452,11 +530,11 @@ export default function QuantumSignalHub() {
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                     <span className="text-[#c9a227]">⚡</span>
                     Quantum Levels
+                    <span className="text-gray-600 text-xs font-normal ml-1">H: {formatPrice(selectedMarket, selectedMarket.high)} / L: {formatPrice(selectedMarket, selectedMarket.low)}</span>
                   </h3>
                   <div className="space-y-2">
                     {[...selectedMarket.levels].reverse().map(level => {
-                      const isNearPrice =
-                        Math.abs(level.price - selectedMarket.price) / selectedMarket.price < 0.01;
+                      const isNearPrice = Math.abs(level.price - selectedMarket.price) / selectedMarket.price < 0.01;
                       return (
                         <div
                           key={level.level}
@@ -471,15 +549,7 @@ export default function QuantumSignalHub() {
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <span
-                              className={`font-bold ${
-                                level.type === 'buy'
-                                  ? 'text-green-400'
-                                  : level.type === 'sell'
-                                  ? 'text-red-400'
-                                  : 'text-yellow-400'
-                              }`}
-                            >
+                            <span className={`font-bold ${level.type === 'buy' ? 'text-green-400' : level.type === 'sell' ? 'text-red-400' : 'text-yellow-400'}`}>
                               {level.level}
                             </span>
                             {isNearPrice && (
@@ -491,22 +561,12 @@ export default function QuantumSignalHub() {
                           <div className="flex items-center gap-4">
                             <div className="w-20 bg-gray-800 rounded-full h-2">
                               <div
-                                className={`h-2 rounded-full ${
-                                  level.type === 'buy'
-                                    ? 'bg-green-500'
-                                    : level.type === 'sell'
-                                    ? 'bg-red-500'
-                                    : 'bg-yellow-500'
-                                }`}
+                                className={`h-2 rounded-full ${level.type === 'buy' ? 'bg-green-500' : level.type === 'sell' ? 'bg-red-500' : 'bg-yellow-500'}`}
                                 style={{ width: `${level.strength}%` }}
-                              ></div>
+                              />
                             </div>
                             <span className="font-mono text-white w-24 text-right">
-                              {selectedMarket.symbol.includes('BTC')
-                                ? level.price.toFixed(0)
-                                : selectedMarket.symbol.includes('JPY')
-                                ? level.price.toFixed(2)
-                                : level.price.toFixed(level.price < 10 ? 4 : 2)}
+                              {formatPrice(selectedMarket, level.price)}
                             </span>
                           </div>
                         </div>
@@ -520,7 +580,6 @@ export default function QuantumSignalHub() {
 
           {/* Right Column - Signals Feed (gated) */}
           <div className="lg:col-span-1">
-            {/* Live Signals — with paywall overlay */}
             <div className="relative bg-[#1a1a2e] rounded-xl p-6 border border-gray-800 mb-4 overflow-hidden">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <span>📡</span>
@@ -536,16 +595,10 @@ export default function QuantumSignalHub() {
                   <div key={signal.id} className="p-4 bg-[#0a0a0a] rounded-xl border border-gray-800">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`w-3 h-3 rounded-full ${signal.type === 'BUY' ? 'bg-green-500' : 'bg-red-500'}`}
-                        ></span>
+                        <span className={`w-3 h-3 rounded-full ${signal.type === 'BUY' ? 'bg-green-500' : 'bg-red-500'}`} />
                         <span className="font-bold text-white">{signal.symbol}</span>
                       </div>
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-bold ${
-                          signal.type === 'BUY' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                        }`}
-                      >
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${signal.type === 'BUY' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                         {signal.type}
                       </span>
                     </div>
@@ -557,15 +610,9 @@ export default function QuantumSignalHub() {
                       <span className="text-xs text-gray-500">Confidence:</span>
                       <div className="flex-1 bg-gray-800 rounded-full h-1.5">
                         <div
-                          className={`h-1.5 rounded-full ${
-                            signal.confidence >= 80
-                              ? 'bg-green-500'
-                              : signal.confidence >= 60
-                              ? 'bg-yellow-500'
-                              : 'bg-red-500'
-                          }`}
+                          className={`h-1.5 rounded-full ${signal.confidence >= 80 ? 'bg-green-500' : signal.confidence >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
                           style={{ width: `${signal.confidence}%` }}
-                        ></div>
+                        />
                       </div>
                       <span className="text-xs text-white font-medium">{signal.confidence}%</span>
                     </div>
@@ -573,7 +620,6 @@ export default function QuantumSignalHub() {
                 ))}
               </div>
 
-              {/* Overlay gates */}
               {showGate && isUnauthenticated && <LoginGate />}
               {showGate && isLimitReached && (
                 <SignalPaywall viewed={signalAccess!.viewed} limit={signalAccess!.limit} />
@@ -607,10 +653,9 @@ export default function QuantumSignalHub() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-gray-800 mt-12 py-6">
         <div className="max-w-[1800px] mx-auto px-4 text-center text-gray-500 text-sm">
-          <p>Quantum Signal Hub by Sacred Levels © 2026 | Data is simulated for demonstration</p>
+          <p>Quantum Signal Hub by Sacred Levels © 2026 | Crypto: Binance · Forex/Gold: Finnhub · Indices: Simulated</p>
         </div>
       </footer>
     </div>
