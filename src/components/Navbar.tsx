@@ -27,6 +27,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/', label: 'Inicio' },
+    { href: '/hub', label: '🚀 Signal Hub' },
     { href: '/quantum', label: 'Calculadora' },
     { href: '/courses', label: 'Cursos' },
     { href: '/billing', label: 'Planes' },
