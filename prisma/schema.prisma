@@ -18,6 +18,7 @@ model User {
   role          String    @default("user") // user, admin
   trialUses     Int       @default(0)      // Contador de usos de prueba (máximo 2)
   trialExpired  Boolean   @default(false)  // Bandera de trial expirado
+  signalsViewed Int       @default(0)      // Señales vistas en Signal Hub (máx 3 gratis)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   calculations  Calculation[]

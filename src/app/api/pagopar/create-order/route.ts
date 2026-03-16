@@ -13,6 +13,10 @@ const PLAN_PRICES: Record<string, { monthly: { pyg: number; usd: number }; yearl
     monthly: { pyg: 693900, usd: 100 },
     yearly: { pyg: 6660000, usd: 960 },  // $100 x 12 = $1200, 20% off = $960
   },
+  signal_hub: {
+    monthly: { pyg: 750000, usd: 120 },
+    yearly: { pyg: 7500000, usd: 1200 },
+  },
 }
 
 export async function POST(request: Request) {
@@ -25,7 +29,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { planType, billingPeriod = 'monthly' } = body
 
-    if (!planType || !['pro', 'whale'].includes(planType)) {
+    if (!planType || !['pro', 'whale', 'signal_hub'].includes(planType)) {
       return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
     }
 

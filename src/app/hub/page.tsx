@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 // Types
 interface QuantumLevel {
@@ -32,6 +33,14 @@ interface Signal {
   level: string;
   time: string;
   confidence: number;
+}
+
+interface SignalAccess {
+  canView: boolean;
+  isPro: boolean;
+  viewed: number;
+  limit: number;
+  reason?: string;
 }
 
 // Calculate Quantum Levels
@@ -103,12 +112,82 @@ function formatPrice(market: MarketData, price: number): string {
   return price.toFixed(price < 10 ? 4 : 2);
 }
 
+// Paywall overlay shown when free user has exhausted their 3 free views
+function SignalPaywall({ viewed, limit }: { viewed: number; limit: number }) {
+  return (
+    <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl">
+      {/* Blur layer */}
+      <div className="absolute inset-0 backdrop-blur-md bg-[#0a0a0a]/70 rounded-xl" />
+
+      {/* Content */}
+      <div className="relative z-10 text-center px-6 py-8 max-w-xs mx-auto">
+        <div className="text-5xl mb-4">🔒</div>
+        <h3 className="text-white text-xl font-bold mb-2">
+          You&apos;ve used all {limit} free signals
+        </h3>
+        <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+          Upgrade to Signal Hub Pro for unlimited access to all markets and AI analysis.
+        </p>
+
+        <div className="bg-white/5 border border-emerald-500/30 rounded-xl p-4 mb-6">
+          <p className="text-emerald-400 font-bold text-lg">Signal Hub Pro</p>
+          <p className="text-white font-extrabold text-2xl mt-1">Gs. 750.000</p>
+          <p className="text-gray-400 text-xs mt-1">$120 USD / month</p>
+        </div>
+
+        <Link
+          href="/billing"
+          className="block w-full bg-gradient-to-r from-emerald-400 to-cyan-500 text-black font-bold py-3 rounded-xl hover:from-emerald-300 hover:to-cyan-400 transition-all"
+        >
+          Unlock Now
+        </Link>
+
+        <p className="text-gray-600 text-xs mt-4">
+          {viewed}/{limit} free signals used
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Gate shown when user is not logged in
+function LoginGate() {
+  return (
+    <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl">
+      <div className="absolute inset-0 backdrop-blur-md bg-[#0a0a0a]/70 rounded-xl" />
+      <div className="relative z-10 text-center px-6 py-8 max-w-xs mx-auto">
+        <div className="text-5xl mb-4">🔐</div>
+        <h3 className="text-white text-xl font-bold mb-2">Login to view signals</h3>
+        <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+          Create a free account to get 3 free signals. No credit card required.
+        </p>
+        <Link
+          href="/login?redirect=/hub"
+          className="block w-full bg-[#c9a227] hover:bg-[#d4af37] text-black font-bold py-3 rounded-xl transition-all mb-3"
+        >
+          Login
+        </Link>
+        <Link
+          href="/register"
+          className="block w-full border border-gray-700 hover:border-gray-500 text-white font-bold py-3 rounded-xl transition-all"
+        >
+          Create Free Account
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function QuantumSignalHub() {
+  const { data: session, status: authStatus } = useSession();
   const [markets, setMarkets] = useState<MarketData[]>([]);
   const [selectedMarket, setSelectedMarket] = useState<MarketData | null>(null);
   const [filter, setFilter] = useState<'all' | 'forex' | 'crypto' | 'indices'>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [signalAccess, setSignalAccess] = useState<SignalAccess | null>(null);
+  const incrementedRef = useRef(false);
 
+  // Initialize markets
   useEffect(() => {
     const marketsWithLevels = initialMarkets.map(market => {
       const levels = calculateQuantumLevels(market.high, market.low);
@@ -120,7 +199,6 @@ export default function QuantumSignalHub() {
     setSelectedMarket(marketsWithLevels[0]);
     setIsLoading(false);
 
-    // Simulate real-time price updates
     const interval = setInterval(() => {
       setMarkets(prev =>
         prev.map(market => {
@@ -140,13 +218,46 @@ export default function QuantumSignalHub() {
     return () => clearInterval(interval);
   }, []);
 
-  // Keep selectedMarket in sync with markets updates
+  // Keep selectedMarket in sync with price updates
   useEffect(() => {
     if (selectedMarket) {
       const updated = markets.find(m => m.symbol === selectedMarket.symbol);
       if (updated) setSelectedMarket(updated);
     }
   }, [markets]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Check signal access once auth is resolved
+  useEffect(() => {
+    if (authStatus === 'loading') return;
+
+    if (!session) {
+      setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3, reason: 'unauthenticated' });
+      return;
+    }
+
+    fetch('/api/signals/check-limit')
+      .then(r => r.json())
+      .then((data: SignalAccess) => {
+        setSignalAccess(data);
+      })
+      .catch(() => {
+        setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3 });
+      });
+  }, [authStatus, session]);
+
+  // Increment view once per session when user can view signals
+  useEffect(() => {
+    if (!signalAccess?.canView || signalAccess.isPro || incrementedRef.current) return;
+
+    incrementedRef.current = true;
+    fetch('/api/signals/increment-view', { method: 'POST' })
+      .then(r => r.json())
+      .then(data => {
+        // Update viewed count locally so the badge reflects the new count
+        setSignalAccess(prev => prev ? { ...prev, viewed: data.viewed } : prev);
+      })
+      .catch(() => {});
+  }, [signalAccess]);
 
   const filteredMarkets = markets.filter(market => {
     if (filter === 'forex') return ['EUR/USD', 'GBP/USD', 'USD/JPY'].includes(market.symbol);
@@ -155,7 +266,11 @@ export default function QuantumSignalHub() {
     return true;
   });
 
-  if (isLoading) {
+  const showGate = signalAccess !== null && !signalAccess.canView;
+  const isUnauthenticated = signalAccess?.reason === 'unauthenticated';
+  const isLimitReached = signalAccess?.reason === 'limit_reached';
+
+  if (isLoading || authStatus === 'loading') {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-center">
@@ -187,6 +302,21 @@ export default function QuantumSignalHub() {
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 <span className="text-green-400 text-sm font-medium">Live</span>
               </div>
+
+              {/* Free signals badge */}
+              {signalAccess && !signalAccess.isPro && session && (
+                <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e] border border-gray-700 rounded-full">
+                  <span className="text-gray-400 text-xs">
+                    Free signals: <span className={`font-bold ${signalAccess.viewed >= signalAccess.limit ? 'text-red-400' : 'text-[#c9a227]'}`}>{signalAccess.limit - signalAccess.viewed}</span> left
+                  </span>
+                </div>
+              )}
+              {signalAccess?.isPro && (
+                <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full">
+                  <span className="text-emerald-400 text-xs font-bold">✦ Signal Hub Pro</span>
+                </div>
+              )}
+
               <Link href="/quantum" className="text-gray-400 hover:text-white text-sm">
                 Calculator
               </Link>
@@ -388,13 +518,18 @@ export default function QuantumSignalHub() {
             )}
           </div>
 
-          {/* Right Column - Signals Feed */}
+          {/* Right Column - Signals Feed (gated) */}
           <div className="lg:col-span-1">
-            {/* Live Signals */}
-            <div className="bg-[#1a1a2e] rounded-xl p-6 border border-gray-800 mb-4">
+            {/* Live Signals — with paywall overlay */}
+            <div className="relative bg-[#1a1a2e] rounded-xl p-6 border border-gray-800 mb-4 overflow-hidden">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <span>📡</span>
                 Live Signals
+                {signalAccess && !signalAccess.isPro && session && !showGate && (
+                  <span className="ml-auto text-xs text-gray-500 font-normal">
+                    {signalAccess.limit - signalAccess.viewed} free left
+                  </span>
+                )}
               </h3>
               <div className="space-y-3">
                 {recentSignals.map(signal => (
@@ -415,9 +550,7 @@ export default function QuantumSignalHub() {
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-400">
-                        @ {signal.price} ({signal.level})
-                      </span>
+                      <span className="text-gray-400">@ {signal.price} ({signal.level})</span>
                       <span className="text-gray-500">{signal.time}</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2">
@@ -439,6 +572,12 @@ export default function QuantumSignalHub() {
                   </div>
                 ))}
               </div>
+
+              {/* Overlay gates */}
+              {showGate && isUnauthenticated && <LoginGate />}
+              {showGate && isLimitReached && (
+                <SignalPaywall viewed={signalAccess!.viewed} limit={signalAccess!.limit} />
+              )}
             </div>
 
             {/* Quick Actions */}
@@ -451,9 +590,14 @@ export default function QuantumSignalHub() {
                 >
                   Open Calculator
                 </Link>
-                <button className="w-full bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold transition-all">
-                  🤖 Get AI Analysis
-                </button>
+                {!signalAccess?.isPro && (
+                  <Link
+                    href="/billing"
+                    className="block w-full bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-300 hover:to-cyan-400 text-black py-3 rounded-xl font-bold text-center transition-all"
+                  >
+                    🚀 Unlock Signal Hub Pro
+                  </Link>
+                )}
                 <button className="w-full border border-gray-700 hover:border-gray-600 text-white py-3 rounded-xl font-bold transition-all">
                   🔔 Set Alert
                 </button>

@@ -7,6 +7,33 @@ import Footer from '@/components/Footer'
 
 const PLANS = [
   {
+    id: 'signal_hub',
+    name: 'Signal Hub Pro',
+    pricePyg: 750000,
+    priceUsd: 120,
+    image: null,
+    description: 'Dashboard de señales cuánticas en tiempo real con análisis IA',
+    color: 'from-emerald-400 to-cyan-500',
+    borderColor: 'border-emerald-500',
+    glowColor: 'shadow-emerald-500/20',
+    badgeColor: 'bg-gradient-to-r from-emerald-400 to-cyan-500 text-black',
+    btnClass: 'bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-300 hover:to-cyan-400 text-black',
+    popular: false,
+    cuotas: [
+      { n: 1,  monto: 750000 },
+      { n: 3,  monto: 250000 },
+      { n: 6,  monto: 125000 },
+      { n: 12, monto: 62500  },
+    ],
+    features: [
+      'Señales ilimitadas en todos los mercados',
+      'Análisis IA completo en tiempo real',
+      'Forex, Oro, Crypto e Índices',
+      'Niveles cuánticos automáticos',
+    ],
+    cta: 'Acceder al Signal Hub',
+  },
+  {
     id: 'pro',
     name: 'Plan Pro',
     pricePyg: 320000,
@@ -133,15 +160,25 @@ export default function BillingPage() {
                 )}
 
                 {/* Plan image / flyer — completo sin recorte */}
-                <div className="w-full bg-zinc-950 flex items-center justify-center overflow-hidden" style={{minHeight: '220px'}}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={plan.image}
-                    alt={plan.name}
-                    className="w-full h-full object-contain"
-                    style={{maxHeight: '320px'}}
-                  />
-                </div>
+                {plan.image ? (
+                  <div className="w-full bg-zinc-950 flex items-center justify-center overflow-hidden" style={{minHeight: '220px'}}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={plan.image}
+                      alt={plan.name}
+                      className="w-full h-full object-contain"
+                      style={{maxHeight: '320px'}}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-900/40 to-cyan-900/40" style={{minHeight: '220px'}}>
+                    <div className="text-center py-10">
+                      <div className="text-7xl mb-4">📡</div>
+                      <p className="text-emerald-400 font-bold text-lg">Quantum Signal Hub</p>
+                      <p className="text-gray-400 text-sm mt-1">Real-time AI Trading Signals</p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex flex-col flex-1 p-7">
 
