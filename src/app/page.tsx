@@ -292,10 +292,10 @@ export default function HomePage() {
                   <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
                   <p className="text-[#8a9bb3] text-xs mb-4 uppercase tracking-wide">Para traders activos</p>
                   <div className="mb-1">
-                    <span className="text-3xl font-mono font-bold text-white">$49</span>
+                    <span className="text-3xl font-mono font-bold text-white">$84</span>
                     <span className="text-[#8a9bb3] text-sm">/mes</span>
                   </div>
-                  <p className="text-[#8a9bb3] text-xs mb-6 font-mono">Gs. 340.000</p>
+                  <p className="text-[#8a9bb3] text-xs mb-6 font-mono">Gs. 550.000</p>
                   <ul className="space-y-2.5 mb-8">
                     <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
                       <svg className="w-3.5 h-3.5 text-[#c9a227] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>

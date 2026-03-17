@@ -6,8 +6,8 @@ import crypto from 'crypto'
 
 const PLAN_PRICES: Record<string, { monthly: { pyg: number; usd: number }; yearly: { pyg: number; usd: number } }> = {
   pro: {
-    monthly: { pyg: 340000, usd: 49 },
-    yearly: { pyg: 3145000, usd: 470 },  // $49 x 12 = $588, 20% off = $470
+    monthly: { pyg: 550000, usd: 84 },
+    yearly: { pyg: 5040000, usd: 806 },  // $84 x 12 = $1008, 20% off = $806
   },
   whale: {
     monthly: { pyg: 693900, usd: 100 },

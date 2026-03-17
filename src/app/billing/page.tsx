@@ -35,8 +35,8 @@ const PLANS = [
   {
     id: 'pro',
     name: 'Plan Pro',
-    pricePyg: 320000,
-    priceUsd: 49,
+    pricePyg: 550000,
+    priceUsd: 84,
     image: '/planpro.png',
     description: 'Para traders serios que buscan dominar el mercado',
     color: 'from-yellow-500 to-amber-600',
@@ -45,10 +45,10 @@ const PLANS = [
     badgeText: 'Más popular',
     popular: true,
     cuotas: [
-      { n: 1,  monto: 320000 },
-      { n: 3,  monto: 106667 },
-      { n: 6,  monto: 53333  },
-      { n: 12, monto: 26667  },
+      { n: 1,  monto: 550000 },
+      { n: 3,  monto: 183334 },
+      { n: 6,  monto: 91667  },
+      { n: 12, monto: 45834  },
     ],
     features: [
       'Cálculos ilimitados',
