@@ -24,14 +24,15 @@ interface MarketData {
   levels: QuantumLevel[];
   signal: 'BUY' | 'SELL' | 'WAIT';
   aiAnalysis: string;
-  source?: 'live' | 'simulated';
+  source?: 'live' | 'simulated' | 'offline';
+  offline?: boolean;
 }
 
 interface Signal {
   id: string;
   symbol: string;
   type: 'BUY' | 'SELL';
-  price: number;
+  price?: number;
   level: string;
   time: string;
   confidence: number;
@@ -84,18 +85,21 @@ function generateAIAnalysis(symbol: string, price: number, levels: QuantumLevel[
 }
 
 function buildMarket(raw: Omit<MarketData, 'levels' | 'signal' | 'aiAnalysis'>): MarketData {
+  if (raw.offline) {
+    return { ...raw, levels: [], signal: 'WAIT', aiAnalysis: 'Market data temporarily unavailable.' };
+  }
   const levels = calculateQuantumLevels(raw.high, raw.low);
   return { ...raw, levels, signal: deriveSignal(raw.price, levels), aiAnalysis: generateAIAnalysis(raw.symbol, raw.price, levels) };
 }
 
 // ── Static signals (demo) ────────────────────────────────────────────────────
 
-const DEMO_SIGNALS: Signal[] = [
-  { id: '1', symbol: 'XAU/USD', type: 'BUY',  price: 2632.50, level: 'Q3', time: '02:14',  confidence: 87 },
-  { id: '2', symbol: 'BTC/USD', type: 'BUY',  price: 66800,   level: 'Q2', time: '14:52',  confidence: 92 },
-  { id: '3', symbol: 'EUR/USD', type: 'SELL', price: 1.0920,  level: 'Q6', time: '32:07',  confidence: 78 },
-  { id: '4', symbol: 'SPX500',  type: 'BUY',  price: 5198,    level: 'Q4', time: '01:14h', confidence: 85 },
-  { id: '5', symbol: 'ETH/USD', type: 'SELL', price: 3580,    level: 'Q7', time: '02:03h', confidence: 73 },
+const DEMO_SIGNALS_BASE = [
+  { id: '1', symbol: 'XAU/USD', type: 'BUY'  as const, level: 'Q3', time: '02:14',  confidence: 87 },
+  { id: '2', symbol: 'BTC/USD', type: 'BUY'  as const, level: 'Q2', time: '14:52',  confidence: 92 },
+  { id: '3', symbol: 'EUR/USD', type: 'SELL' as const, level: 'Q6', time: '32:07',  confidence: 78 },
+  { id: '4', symbol: 'SPX500',  type: 'BUY'  as const, level: 'Q4', time: '01:14h', confidence: 85 },
+  { id: '5', symbol: 'ETH/USD', type: 'SELL' as const, level: 'Q7', time: '02:03h', confidence: 73 },
 ];
 
 // ── Formatters ───────────────────────────────────────────────────────────────
@@ -376,7 +380,7 @@ export default function QuantumSignalHub() {
           {[
             { label: 'ACTIVE SIGNALS', value: '24', sub: '+5 TODAY',     subColor: '#00d26a', accent: '#c9a227' },
             { label: 'WIN RATE',       value: '78.5%', sub: 'LAST 30D',  subColor: '#8a9bb3', accent: '#00d26a' },
-            { label: 'MARKETS',        value: String(markets.length), sub: `${markets.filter(m => m.source === 'live').length} TWELVE DATA LIVE`, subColor: '#4a9eff', accent: '#4a9eff' },
+            { label: 'MARKETS',        value: String(markets.length), sub: `${markets.filter(m => !m.offline).length} LIVE`, subColor: '#4a9eff', accent: '#4a9eff' },
             { label: 'AVG CONFIDENCE', value: '85%',  sub: 'AI MODEL',   subColor: '#8a9bb3', accent: '#c9a227' },
           ].map(s => (
             <div key={s.label} className="bg-[#131c2e] p-4" style={{ borderLeft: `2px solid ${s.accent}` }}>
@@ -435,7 +439,11 @@ export default function QuantumSignalHub() {
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-white text-xs font-semibold">{m.symbol}</span>
-                        {m.source === 'live' && <span className="w-1 h-1 bg-[#00d26a] rounded-full" />}
+                        {m.offline ? (
+                          <span className="text-[8px] font-bold text-[#ff4757] tracking-widest">OFFLINE</span>
+                        ) : (
+                          <span className="w-1 h-1 bg-[#00d26a] rounded-full" />
+                        )}
                       </div>
                       <span className="text-[#8a9bb3] text-[10px]">{m.name}</span>
                     </div>
@@ -475,11 +483,13 @@ export default function QuantumSignalHub() {
                       <div className="flex items-center gap-2 mb-0.5">
                         <h2 className="text-white text-xl font-semibold tracking-tight">{selected.symbol}</h2>
                         <span className={`text-[9px] font-semibold tracking-widest px-1.5 py-0.5 ${
-                          selected.source === 'live'
+                          selected.offline
+                            ? 'bg-[#ff4757]/10 text-[#ff4757]'
+                            : selected.source === 'live'
                             ? 'bg-[#00d26a]/10 text-[#00d26a]'
                             : 'bg-[#c9a227]/10 text-[#c9a227]'
                         }`}>
-                          {selected.source === 'live' ? 'LIVE' : 'SIM'}
+                          {selected.offline ? 'OFFLINE' : selected.source === 'live' ? 'LIVE' : 'SIM'}
                         </span>
                       </div>
                       <p className="text-[#8a9bb3] text-xs">{selected.name}</p>
@@ -585,8 +595,11 @@ export default function QuantumSignalHub() {
               </div>
 
               <div>
-                {DEMO_SIGNALS.map((sig, i) => (
-                  <div key={sig.id} className={`px-4 py-3 ${i < DEMO_SIGNALS.length - 1 ? 'border-b border-[#1e2a3a]' : ''}`}>
+                {DEMO_SIGNALS_BASE.map((sig, i) => {
+                  const mkt = markets.find(m => m.symbol === sig.symbol);
+                  const livePrice = mkt && !mkt.offline ? mkt.price : null;
+                  return (
+                  <div key={sig.id} className={`px-4 py-3 ${i < DEMO_SIGNALS_BASE.length - 1 ? 'border-b border-[#1e2a3a]' : ''}`}>
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-2">
                         <span className={`text-[9px] font-bold tracking-widest px-1.5 py-0.5 ${
@@ -602,7 +615,10 @@ export default function QuantumSignalHub() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-[#8a9bb3] text-[10px] font-mono">
-                        @ {sig.price} <span className="text-[#4a9eff]">{sig.level}</span>
+                        {livePrice !== null
+                          ? <>@ {mkt ? fmt(mkt, livePrice) : livePrice} <span className="text-[#4a9eff]">{sig.level}</span></>
+                          : <span className="text-[#ff4757]">OFFLINE</span>
+                        }
                       </span>
                       <div className="flex items-center gap-1.5">
                         <div className="w-12 h-0.5 bg-[#1e2a3a] rounded-full overflow-hidden">
@@ -618,7 +634,8 @@ export default function QuantumSignalHub() {
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               {showGate && isUnauthed   && <LoginGate />}
