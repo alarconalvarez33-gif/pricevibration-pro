@@ -376,7 +376,7 @@ export default function QuantumSignalHub() {
           {[
             { label: 'ACTIVE SIGNALS', value: '24', sub: '+5 TODAY',     subColor: '#00d26a', accent: '#c9a227' },
             { label: 'WIN RATE',       value: '78.5%', sub: 'LAST 30D',  subColor: '#8a9bb3', accent: '#00d26a' },
-            { label: 'MARKETS',        value: String(markets.length), sub: `${markets.filter(m => m.source === 'live').length} LIVE`, subColor: '#4a9eff', accent: '#4a9eff' },
+            { label: 'MARKETS',        value: String(markets.length), sub: `${markets.filter(m => m.source === 'live').length} TWELVE DATA LIVE`, subColor: '#4a9eff', accent: '#4a9eff' },
             { label: 'AVG CONFIDENCE', value: '85%',  sub: 'AI MODEL',   subColor: '#8a9bb3', accent: '#c9a227' },
           ].map(s => (
             <div key={s.label} className="bg-[#131c2e] p-4" style={{ borderLeft: `2px solid ${s.accent}` }}>
@@ -658,7 +658,7 @@ export default function QuantumSignalHub() {
             QUANTUM SIGNAL HUB · SACRED LEVELS © 2026
           </p>
           <p className="text-[#8a9bb3] text-[10px] tracking-wide">
-            CRYPTO: BINANCE · FX/GOLD/INDICES: YAHOO FINANCE
+            CRYPTO: BINANCE · FX/GOLD/INDICES: TWELVE DATA
           </p>
         </div>
       </footer>
