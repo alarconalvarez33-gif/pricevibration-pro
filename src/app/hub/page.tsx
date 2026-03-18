@@ -668,14 +668,29 @@ export default function QuantumSignalHub() {
         </div>
       </main>
 
+      {/* ── Disclaimer ── */}
+      <div className="border-t border-[#1e2a3a] mt-4 bg-[#0d1421]">
+        <div className="max-w-[1800px] mx-auto px-4 py-4">
+          <p className="text-[#8a9bb3] text-[9px] uppercase tracking-widest mb-1 font-semibold">
+            Aviso Legal / Legal Disclaimer
+          </p>
+          <p className="text-[#4a5a6a] text-[10px] leading-relaxed">
+            <span className="text-[#8a9bb3] font-medium">ES:</span> El contenido de este sitio es exclusivamente de carácter educativo e informativo. Las señales, análisis y niveles cuánticos presentados NO constituyen asesoría de inversión, recomendación financiera ni oferta de compra o venta de ningún activo. Operar en mercados financieros conlleva un riesgo elevado de pérdida de capital. El usuario es el único responsable de sus decisiones de inversión y del uso que haga de esta información. Sacred Levels no se hace responsable por pérdidas o daños derivados del uso de esta plataforma.
+          </p>
+          <p className="text-[#4a5a6a] text-[10px] leading-relaxed mt-1.5">
+            <span className="text-[#8a9bb3] font-medium">EN:</span> All content on this platform is provided for educational and informational purposes only. The signals, analysis, and quantum levels displayed do NOT constitute investment advice, financial recommendations, or an offer to buy or sell any asset. Trading financial markets involves substantial risk of capital loss. The user is solely responsible for their investment decisions and for the use of this information. Sacred Levels shall not be liable for any losses or damages arising from the use of this platform.
+          </p>
+        </div>
+      </div>
+
       {/* ── Footer ── */}
-      <footer className="border-t border-[#1e2a3a] mt-4 py-3">
+      <footer className="border-t border-[#1e2a3a] py-3">
         <div className="max-w-[1800px] mx-auto px-4 flex items-center justify-between">
           <p className="text-[#8a9bb3] text-[10px] tracking-wide">
             QUANTUM SIGNAL HUB · SACRED LEVELS © 2026
           </p>
           <p className="text-[#8a9bb3] text-[10px] tracking-wide">
-            CRYPTO: BINANCE · FX/GOLD/INDICES: TWELVE DATA
+            CRYPTO: BINANCE/COINGECKO · FX/GOLD/INDICES: YAHOO FINANCE
           </p>
         </div>
       </footer>
