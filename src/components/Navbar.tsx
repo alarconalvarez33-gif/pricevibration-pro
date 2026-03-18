@@ -19,6 +19,19 @@ export default function Navbar() {
   const isWhale = plan === 'whale' || isAdmin;
   const isPro = plan === 'pro' || isAdmin;
 
+  const subscriptionStatus = (session?.user as any)?.subscriptionStatus as string | undefined;
+  const premiumUntil = (session?.user as any)?.premiumUntil
+    ? new Date((session?.user as any).premiumUntil as string)
+    : null;
+  const daysLeft = premiumUntil
+    ? Math.ceil((premiumUntil.getTime() - Date.now()) / 86400000)
+    : null;
+
+  const showCancelledBanner = subscriptionStatus === 'cancelled' && daysLeft !== null && daysLeft > 0;
+  const showExpiringBanner  = subscriptionStatus === 'active' && daysLeft !== null && daysLeft <= 3 && daysLeft > 0;
+  const showExpiredBanner   = subscriptionStatus === 'expired';
+  const hasBanner = showCancelledBanner || showExpiringBanner || showExpiredBanner;
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
@@ -79,6 +92,9 @@ export default function Navbar() {
                   )}
                   <Link href="/dashboard" className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest font-semibold px-3 py-2 hover:bg-white/5 transition-colors">
                     Dashboard
+                  </Link>
+                  <Link href="/account" className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest font-semibold px-3 py-2 hover:bg-white/5 transition-colors">
+                    Mi Cuenta
                   </Link>
                   <button onClick={() => signOut({ callbackUrl: '/' })} className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest px-3 py-2 transition-colors">
                     Salir
@@ -172,8 +188,42 @@ export default function Navbar() {
             </div>
           </div>
         </div>
+
+        {/* ── Subscription status banner ── */}
+        {showCancelledBanner && (
+          <div className="border-t border-[#c9a227]/30 bg-[#c9a227]/10 px-4 py-1.5 flex items-center justify-between gap-3">
+            <p className="text-[#c9a227] text-[10px] font-medium">
+              Tu suscripción fue cancelada · Acceso hasta{' '}
+              <span className="font-bold">{premiumUntil?.toLocaleDateString('es-PY')}</span>
+            </p>
+            <Link href="/account/subscription" className="text-[10px] font-bold text-[#c9a227] underline whitespace-nowrap">
+              Reactivar
+            </Link>
+          </div>
+        )}
+        {showExpiringBanner && (
+          <div className="border-t border-[#ff4757]/30 bg-[#ff4757]/10 px-4 py-1.5 flex items-center justify-between gap-3">
+            <p className="text-[#ff4757] text-[10px] font-medium">
+              Tu suscripción vence en{' '}
+              <span className="font-bold">{daysLeft} día{daysLeft !== 1 ? 's' : ''}</span>
+            </p>
+            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline whitespace-nowrap">
+              Renovar
+            </Link>
+          </div>
+        )}
+        {showExpiredBanner && (
+          <div className="border-t border-[#ff4757]/30 bg-[#ff4757]/10 px-4 py-1.5 flex items-center justify-between gap-3">
+            <p className="text-[#ff4757] text-[10px] font-medium">
+              Tu suscripción expiró · Ahora estás en plan gratuito
+            </p>
+            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline whitespace-nowrap">
+              Suscribirme
+            </Link>
+          </div>
+        )}
       </nav>
-      <div className="fixed left-0 right-0 z-40" style={{ top: '64px' }}>
+      <div className="fixed left-0 right-0 z-40" style={{ top: hasBanner ? '96px' : '64px' }}>
         <PriceTicker />
       </div>
     </>

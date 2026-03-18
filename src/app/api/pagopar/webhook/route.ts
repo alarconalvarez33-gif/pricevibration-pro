@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
+import { sendRenewalReminderEmail } from '@/lib/email'
 
 const PRIVATE_KEY = '85ece630fff92520e3943f1f2a8d3c60'
 
@@ -188,12 +189,31 @@ export async function POST(request: Request) {
 
       await prisma.user.update({
         where: { id: payment.userId },
-        data: { isPremium: true, premiumUntil, plan: payment.planType },
+        data: {
+          isPremium: true,
+          premiumUntil,
+          plan: payment.planType,
+          subscriptionStatus: 'active',
+          nextBillingDate: premiumUntil,
+          cancelledAt: null,
+          autoRenew: true,
+        },
+      })
+
+      await prisma.subscriptionLog.create({
+        data: {
+          userId: payment.userId,
+          event: 'activated',
+          plan: payment.planType,
+          note: `orderId: ${payment.orderId}`,
+        },
       })
 
       console.log(
         `✅ Usuario ${payment.user.email} activado → plan ${payment.planType} hasta ${premiumUntil.toISOString()}`
       )
+      // Suppress unused import warning
+      void sendRenewalReminderEmail
     } else {
       await prisma.payment.update({
         where: { id: payment.id },

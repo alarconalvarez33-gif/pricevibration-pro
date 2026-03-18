@@ -8,22 +8,37 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  password      String
-  isPremium     Boolean   @default(false)
-  premiumUntil  DateTime?
-  plan          String    @default("free") // free, pro, whale
-  role          String    @default("user") // user, admin
-  trialUses     Int       @default(0)      // Contador de usos de prueba (máximo 2)
-  trialExpired  Boolean   @default(false)  // Bandera de trial expirado
-  signalsViewed Int       @default(0)      // Señales vistas en Signal Hub (máx 3 gratis)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  calculations  Calculation[]
-  payments      Payment[]
-  purchases     ProductPurchase[]
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String?
+  password           String
+  isPremium          Boolean   @default(false)
+  premiumUntil       DateTime?
+  plan               String    @default("free") // free, pro, whale, signal_hub
+  role               String    @default("user") // user, admin
+  trialUses          Int       @default(0)
+  trialExpired       Boolean   @default(false)
+  signalsViewed      Int       @default(0)
+  subscriptionStatus String    @default("inactive") // inactive, active, cancelled, expired
+  autoRenew          Boolean   @default(true)
+  cancelledAt        DateTime?
+  nextBillingDate    DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  calculations       Calculation[]
+  payments           Payment[]
+  purchases          ProductPurchase[]
+  subscriptionLogs   SubscriptionLog[]
+}
+
+model SubscriptionLog {
+  id        String   @id @default(cuid())
+  userId    String
+  event     String   // activated, cancelled, reactivated, expired, reminder_sent
+  plan      String?
+  note      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Calculation {
