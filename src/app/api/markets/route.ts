@@ -4,7 +4,7 @@ const CACHE_TTL = 62_000;
 
 let cache: { markets: object[]; timestamp: number } | null = null;
 
-// ── Binance — crypto (free, no key, no rate limit) ────────────────────────────
+// ── Binance — crypto (free, no key) ──────────────────────────────────────────
 async function fetchBinance(symbol: string) {
   const res = await fetch(
     `https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`,
@@ -12,6 +12,18 @@ async function fetchBinance(symbol: string) {
   );
   if (!res.ok) throw new Error(`Binance ${res.status}`);
   return res.json();
+}
+
+// ── CoinGecko — crypto fallback (free, no key, global) ───────────────────────
+async function fetchCoinGecko(ids: string) {
+  const res = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&sparkline=false`,
+    { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
+  );
+  if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
+  const data = await res.json();
+  if (!Array.isArray(data) || data.length === 0) throw new Error('CoinGecko empty');
+  return data as { id: string; current_price: number; price_change_24h: number; price_change_percentage_24h: number; high_24h: number; low_24h: number }[];
 }
 
 // ── Yahoo Finance — forex, gold, indices (free, no key) ───────────────────────
@@ -61,40 +73,61 @@ export async function GET() {
 
   const markets: object[] = [];
 
-  // ── 1. Crypto — Binance ──────────────────────────────────────────────────────
+  // ── 1. Crypto — Binance primary, CoinGecko fallback ─────────────────────────
+  const cryptoDefs = [
+    { binance: 'BTCUSDT', gecko: 'bitcoin',  symbol: 'BTC/USD', name: 'Bitcoin'  },
+    { binance: 'ETHUSDT', gecko: 'ethereum', symbol: 'ETH/USD', name: 'Ethereum' },
+  ];
+
   const [btcRes, ethRes] = await Promise.allSettled([
     fetchBinance('BTCUSDT'),
     fetchBinance('ETHUSDT'),
   ]);
 
-  if (btcRes.status === 'fulfilled') {
-    const b = btcRes.value;
-    markets.push({
-      symbol: 'BTC/USD', name: 'Bitcoin',
-      price: parseFloat(b.lastPrice),
-      change: parseFloat(b.priceChange),
-      changePercent: parseFloat(b.priceChangePercent),
-      high: parseFloat(b.highPrice), low: parseFloat(b.lowPrice),
-      source: 'live', offline: false,
-    });
-  } else {
-    console.error('Binance BTC:', btcRes.reason?.message);
-    markets.push({ symbol: 'BTC/USD', name: 'Bitcoin', price: 0, change: 0, changePercent: 0, high: 0, low: 0, source: 'offline', offline: true });
+  const binanceResults = [btcRes, ethRes];
+  const binanceFailed = binanceResults.some(r => r.status === 'rejected');
+
+  // Try CoinGecko if either Binance call failed
+  let geckoData: Awaited<ReturnType<typeof fetchCoinGecko>> = [];
+  if (binanceFailed) {
+    const geckoRes = await Promise.allSettled([fetchCoinGecko('bitcoin,ethereum')]);
+    if (geckoRes[0].status === 'fulfilled') {
+      geckoData = geckoRes[0].value;
+    } else {
+      console.error('CoinGecko fallback failed:', geckoRes[0].reason?.message);
+    }
   }
 
-  if (ethRes.status === 'fulfilled') {
-    const b = ethRes.value;
-    markets.push({
-      symbol: 'ETH/USD', name: 'Ethereum',
-      price: parseFloat(b.lastPrice),
-      change: parseFloat(b.priceChange),
-      changePercent: parseFloat(b.priceChangePercent),
-      high: parseFloat(b.highPrice), low: parseFloat(b.lowPrice),
-      source: 'live', offline: false,
-    });
-  } else {
-    console.error('Binance ETH:', ethRes.reason?.message);
-    markets.push({ symbol: 'ETH/USD', name: 'Ethereum', price: 0, change: 0, changePercent: 0, high: 0, low: 0, source: 'offline', offline: true });
+  for (let i = 0; i < cryptoDefs.length; i++) {
+    const def = cryptoDefs[i];
+    const binanceRes = binanceResults[i];
+
+    if (binanceRes.status === 'fulfilled') {
+      const b = binanceRes.value;
+      markets.push({
+        symbol: def.symbol, name: def.name,
+        price: parseFloat(b.lastPrice),
+        change: parseFloat(b.priceChange),
+        changePercent: parseFloat(b.priceChangePercent),
+        high: parseFloat(b.highPrice), low: parseFloat(b.lowPrice),
+        source: 'live', offline: false,
+      });
+    } else {
+      const g = geckoData.find(d => d.id === def.gecko);
+      if (g) {
+        markets.push({
+          symbol: def.symbol, name: def.name,
+          price: g.current_price,
+          change: g.price_change_24h,
+          changePercent: Math.round(g.price_change_percentage_24h * 100) / 100,
+          high: g.high_24h, low: g.low_24h,
+          source: 'live', offline: false,
+        });
+      } else {
+        console.error(`${def.symbol} failed (Binance + CoinGecko)`);
+        markets.push({ symbol: def.symbol, name: def.name, price: 0, change: 0, changePercent: 0, high: 0, low: 0, source: 'offline', offline: true });
+      }
+    }
   }
 
   // ── 2. Forex + Gold — Yahoo Finance (primary) ────────────────────────────────
