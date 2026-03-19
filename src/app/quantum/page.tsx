@@ -1,7 +1,6 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 interface QuantumLevel {
@@ -50,8 +49,7 @@ function calculateQuantumLevels(max: number, min: number): QuantumLevel[] {
 }
 
 export default function QuantumPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  const { status } = useSession()
 
   const [access, setAccess] = useState<AccessState>({
     loading: true, allowed: false, paid: false, usesLeft: 0, usesCount: 0,
@@ -64,12 +62,10 @@ export default function QuantumPage() {
 
   useEffect(() => {
     if (status === 'loading') return
-    if (!session) { router.replace('/login'); return }
 
     fetch('/api/quantum/check-access')
       .then((r) => r.json())
       .then((data) => {
-        if (data.reason === 'login_required') { router.replace('/login'); return }
         setAccess({
           loading: false,
           allowed: data.allowed,
@@ -80,7 +76,7 @@ export default function QuantumPage() {
         })
       })
       .catch(() => setAccess(prev => ({ ...prev, loading: false })))
-  }, [session, status, router])
+  }, [status])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,7 +91,7 @@ export default function QuantumPage() {
       try {
         const res = await fetch('/api/quantum/check-access', { method: 'POST' })
         const data = await res.json()
-        if (res.status === 401) { router.replace('/login'); return }
+        if (!data.allowed && data.usesLeft === undefined) { return }
         const newUsesLeft = data.usesLeft ?? 0
         setAccess(prev => ({
           ...prev,
@@ -120,7 +116,7 @@ export default function QuantumPage() {
   }
 
   /* ── Loading ── */
-  if (status === 'loading' || access.loading) {
+  if (access.loading) {
     return (
       <main className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
         <div className="text-center">
@@ -139,20 +135,20 @@ export default function QuantumPage() {
           <div className="bg-gradient-to-br from-[#1a0a2e] to-[#0d0d0d] border border-purple-500/30 rounded-2xl p-8">
             <span className="text-5xl mb-4 block">🔬</span>
             <h2 className="text-2xl font-bold text-white mb-2">Niveles Cuánticos</h2>
-            <p className="text-gray-400 mb-2">Usaste tus 2 cálculos gratuitos.</p>
+            <p className="text-gray-400 mb-2">Usaste tus 3 cálculos gratuitos.</p>
             <p className="text-gray-500 text-sm mb-6 italic">
               &ldquo;Si la inversión en educación te parece cara,<br />imagina el precio de la ignorancia&rdquo;
             </p>
             <div className="text-3xl font-bold text-purple-400 mb-1">
-              650.000 <span className="text-base text-gray-400">GS</span>
+              350.000 <span className="text-base text-gray-400">GS</span>
             </div>
-            <div className="text-sm text-gray-500 mb-6">🌎 $100 USD · acceso de por vida</div>
+            <div className="text-sm text-gray-500 mb-6">🌎 $50 USD · mensual · incluye todo</div>
             <a
-              href="/#fisica-cuantica"
+              href="/billing"
               className="block w-full py-4 rounded-xl font-bold text-white text-lg mb-4 transition-all hover:scale-[1.02]"
               style={{ background: 'linear-gradient(135deg, #7e22ce, #9333ea)' }}
             >
-              🔬 Adquirir Acceso Completo
+              ⚡ Suscribirse a Quantum Access
             </a>
             <a href="/dashboard" className="text-sm text-gray-500 hover:text-white transition-colors">
               ← Volver al Dashboard
@@ -203,28 +199,20 @@ export default function QuantumPage() {
             <h3 className="text-xl font-bold text-white mb-2">🔬 Prueba Gratis</h3>
             <p className="text-gray-300 mb-4">
               Probá los Niveles Cuánticos{' '}
-              <span className="text-purple-400 font-bold">2 veces GRATIS</span> registrándote
+              <span className="text-purple-400 font-bold">3 veces GRATIS</span> sin registrarte
             </p>
-            {!session && (
-              <a
-                href="/register"
-                className="bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-3 rounded-lg inline-block transition-colors"
-              >
-                Registrarme Gratis →
-              </a>
-            )}
-            {session && access.usesLeft > 0 && (
+            {access.usesLeft > 0 && (
               <p className="text-purple-400">
                 Te quedan{' '}
-                <span className="font-bold">{access.usesLeft}/2</span> pruebas gratis
+                <span className="font-bold">{access.usesLeft}/3</span> pruebas gratis
               </p>
             )}
-            {session && access.usesLeft <= 0 && (
+            {access.usesLeft <= 0 && (
               <a
-                href="/#fisica-cuantica"
+                href="/billing"
                 className="bg-[#c9a227] hover:bg-[#d4af37] text-black font-bold px-6 py-3 rounded-lg inline-block transition-colors"
               >
-                Suscribirse — Gs. 650.000/mes
+                Suscribirse — Gs. 350.000/mes
               </a>
             )}
           </div>
@@ -273,7 +261,7 @@ export default function QuantumPage() {
 
             {!access.paid && (
               <p className="text-center text-xs text-gray-600 mt-3">
-                Cada cálculo consume 1 uso gratuito · {access.usesLeft} restante{access.usesLeft !== 1 ? 's' : ''}
+                Cada cálculo consume 1 uso gratuito · quedan {access.usesLeft}/3
               </p>
             )}
           </div>

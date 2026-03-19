@@ -14,7 +14,7 @@ model User {
   password           String
   isPremium          Boolean   @default(false)
   premiumUntil       DateTime?
-  plan               String    @default("free") // free, pro, whale, signal_hub
+  plan               String    @default("free") // free, quantum
   role               String    @default("user") // user, admin
   trialUses          Int       @default(0)
   trialExpired       Boolean   @default(false)

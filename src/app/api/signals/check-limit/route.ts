@@ -21,7 +21,7 @@ export async function GET() {
     return NextResponse.json({ canView: false, reason: 'unauthenticated', viewed: 0, limit: SIGNAL_LIMIT })
   }
 
-  const isPro = user.plan === 'signal_hub' || user.role === 'admin'
+  const isPro = user.plan === 'quantum' || user.plan === 'signal_hub' || user.plan === 'pro' || user.plan === 'whale' || user.role === 'admin'
 
   if (isPro) {
     return NextResponse.json({ canView: true, isPro: true, viewed: user.signalsViewed, limit: SIGNAL_LIMIT })

@@ -68,9 +68,10 @@ export default function DashboardPage() {
   const plan = session.user.plan || 'free'
   const role = session.user.role || 'user'
   const isAdmin = role === 'admin'
+  const isQuantum = plan === 'quantum' || isAdmin
   const isWhale = plan === 'whale' || isAdmin
   const isPro = plan === 'pro' || isAdmin
-  const tier = isWhale ? 'whale' : isPro ? 'pro' : 'free'
+  const tier = isQuantum ? 'quantum' : isWhale ? 'whale' : isPro ? 'pro' : 'free'
   const trialUses = session.user.trialUses || 0
   const trialExpired = session.user.trialExpired || false
 
@@ -132,8 +133,8 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                {/* User Guide Button - Only for Pro and Whale */}
-                {(tier === 'pro' || tier === 'whale') && (
+                {/* User Guide Button - Only for Pro, Whale and Quantum */}
+                {(tier === 'pro' || tier === 'whale' || tier === 'quantum') && (
                   <Link
                     href="/guide"
                     className="px-4 py-2 rounded-lg bg-terminal-card border border-gold-500/30 hover:border-gold-500 text-gold-500 hover:bg-gold-500/10 transition-all flex items-center gap-2 text-sm font-medium"
@@ -144,7 +145,11 @@ export default function DashboardPage() {
                   </Link>
                 )}
 
-                {tier === 'whale' ? (
+                {tier === 'quantum' ? (
+                  <span className="px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-purple-600 to-purple-400 text-white flex items-center gap-2">
+                    <span>⚡</span> QUANTUM ACCESS
+                  </span>
+                ) : tier === 'whale' ? (
                   <span className="px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center gap-2">
                     <span>🐋</span> WHALE ACCESS
                   </span>
@@ -192,15 +197,63 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Quantum Levels */}
-          <div className="mb-6">
-            <a
-              href="/quantum"
-              className="bg-purple-900/30 border border-purple-500/30 rounded-xl p-4 flex items-center gap-3 hover:bg-purple-900/50 transition-all hover:border-purple-500/60"
-            >
-              <span className="text-2xl">🔬</span>
-              <span className="text-white font-bold">Niveles Cuánticos</span>
-            </a>
+          {/* ⚡ Quantum Levels Section */}
+          <div className="mb-6 bg-gradient-to-br from-purple-950/50 to-[#0d1421] border border-purple-500/30 rounded-xl p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xl">⚡</span>
+              <h2 className="text-white font-bold text-lg tracking-wide">QUANTUM LEVELS</h2>
+              <div className="h-px flex-1 bg-purple-500/20" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <Link
+                href="/quantum"
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-purple-900/30 border border-purple-500/20 rounded-xl hover:bg-purple-900/50 hover:border-purple-500/50 transition-all group"
+              >
+                <span className="text-2xl group-hover:scale-110 transition-transform">🔬</span>
+                <span className="text-white text-xs font-semibold text-center">Calculator</span>
+                <span className="text-purple-400 text-[10px] text-center">Quantum Levels</span>
+              </Link>
+              <Link
+                href="/hub"
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-[#c9a227]/10 border border-[#c9a227]/20 rounded-xl hover:bg-[#c9a227]/20 hover:border-[#c9a227]/40 transition-all group"
+              >
+                <span className="text-2xl group-hover:scale-110 transition-transform">📡</span>
+                <span className="text-white text-xs font-semibold text-center">Signal Hub</span>
+                <span className="text-[#c9a227] text-[10px] text-center">Live Signals</span>
+              </Link>
+              <Link
+                href="/hub?filter=INDEX"
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-blue-900/20 border border-blue-500/20 rounded-xl hover:bg-blue-900/40 hover:border-blue-500/40 transition-all group"
+              >
+                <span className="text-2xl group-hover:scale-110 transition-transform">💵</span>
+                <span className="text-white text-xs font-semibold text-center">DXY Index</span>
+                <span className="text-blue-400 text-[10px] text-center">Dollar Index</span>
+              </Link>
+              <Link
+                href="/hub?filter=ALL"
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-emerald-900/20 border border-emerald-500/20 rounded-xl hover:bg-emerald-900/40 hover:border-emerald-500/40 transition-all group"
+              >
+                <span className="text-2xl group-hover:scale-110 transition-transform">🌐</span>
+                <span className="text-white text-xs font-semibold text-center">All Markets</span>
+                <span className="text-emerald-400 text-[10px] text-center">Forex · Crypto · Gold</span>
+              </Link>
+              <Link
+                href="/hub"
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-[#131c2e] border border-[#1e2a3a] rounded-xl hover:border-[#8a9bb3] transition-all group"
+              >
+                <span className="text-2xl group-hover:scale-110 transition-transform">🤖</span>
+                <span className="text-white text-xs font-semibold text-center">AI Analysis</span>
+                <span className="text-[#8a9bb3] text-[10px] text-center">Quantum AI</span>
+              </Link>
+              <Link
+                href="/account"
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-[#131c2e] border border-[#1e2a3a] rounded-xl hover:border-[#8a9bb3] transition-all group"
+              >
+                <span className="text-2xl group-hover:scale-110 transition-transform">👤</span>
+                <span className="text-white text-xs font-semibold text-center">My Account</span>
+                <span className="text-[#8a9bb3] text-[10px] text-center">Settings</span>
+              </Link>
+            </div>
           </div>
 
           {/* Mini Charts Row */}
@@ -267,7 +320,7 @@ export default function DashboardPage() {
                 <div>
                   <GannCalculator
                     onCalculate={setLevels}
-                    isPremium={isPro || isWhale}
+                    isPremium={isPro || isWhale || isQuantum}
                     userEmail={email}
                     trialUses={trialUses}
                     trialExpired={trialExpired}

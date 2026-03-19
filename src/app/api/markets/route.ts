@@ -49,6 +49,25 @@ async function fetchYahoo(yf: string) {
   return { price, prevClose, high, low };
 }
 
+// ── Twelve Data — DXY ────────────────────────────────────────────────────────
+async function fetchTwelveDataDXY() {
+  const res = await fetch(
+    'https://api.twelvedata.com/quote?symbol=DXY&apikey=0bb783745d264d9e8967a477e213ba1e',
+    { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
+  );
+  if (!res.ok) throw new Error(`TwelveData DXY ${res.status}`);
+  const data = await res.json();
+  if (data.status === 'error') throw new Error(`TwelveData: ${data.message}`);
+  const price = parseFloat(data.close);
+  const prevClose = parseFloat(data.previous_close);
+  const high = parseFloat(data.high);
+  const low = parseFloat(data.low);
+  const change = parseFloat(data.change);
+  const changePercent = parseFloat(data.percent_change);
+  if (isNaN(price)) throw new Error('TwelveData DXY no price');
+  return { price, prevClose, high, low, change, changePercent };
+}
+
 // ── Market definitions ────────────────────────────────────────────────────────
 const FOREX_GOLD = [
   { symbol: 'XAU/USD', name: 'Gold',          yf: 'GC%3DF'      },
@@ -171,6 +190,21 @@ export async function GET() {
       markets.push({ symbol: cfg.symbol, name: cfg.name, price: 0, change: 0, changePercent: 0, high: 0, low: 0, source: 'offline', offline: true });
     }
   });
+
+  // ── 4. DXY — Twelve Data ──────────────────────────────────────────────────────
+  const dxyResult = await Promise.allSettled([fetchTwelveDataDXY()]);
+  if (dxyResult[0].status === 'fulfilled') {
+    const { price, high, low, change, changePercent } = dxyResult[0].value;
+    markets.push({
+      symbol: 'DXY', name: 'Dollar Index',
+      price, change: Math.round(change * 1000) / 1000,
+      changePercent: Math.round(changePercent * 100) / 100,
+      high, low, source: 'live', offline: false,
+    });
+  } else {
+    console.error('TwelveData DXY failed:', dxyResult[0].reason?.message);
+    markets.push({ symbol: 'DXY', name: 'Dollar Index', price: 0, change: 0, changePercent: 0, high: 0, low: 0, source: 'offline', offline: true });
+  }
 
   const liveCount = (markets as { offline: boolean }[]).filter(m => !m.offline).length;
   if (liveCount === 0) {

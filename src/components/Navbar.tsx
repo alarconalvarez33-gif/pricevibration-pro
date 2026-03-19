@@ -16,6 +16,7 @@ export default function Navbar() {
   const plan = session?.user?.plan || 'free';
   const role = session?.user?.role || 'user';
   const isAdmin = role === 'admin';
+  const isQuantum = plan === 'quantum' || isAdmin;
   const isWhale = plan === 'whale' || isAdmin;
   const isPro = plan === 'pro' || isAdmin;
 
@@ -43,7 +44,9 @@ export default function Navbar() {
     { href: '/hub', label: 'Signal Hub' },
     { href: '/quantum', label: 'Calculadora' },
     { href: '/courses', label: 'Cursos' },
-    { href: '/billing', label: 'Planes' },
+    ...(isQuantum
+      ? [{ href: '/dashboard', label: 'Dashboard' }]
+      : [{ href: '/billing', label: 'Planes' }]),
     { href: '/advanced', label: 'Resultados' },
   ];
 
@@ -84,10 +87,13 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               {session ? (
                 <>
-                  {isWhale && (
+                  {isQuantum && (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30 uppercase tracking-widest">⚡ Quantum</span>
+                  )}
+                  {isWhale && !isQuantum && (
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#4a9eff]/20 text-[#4a9eff] border border-[#4a9eff]/30 uppercase tracking-widest">Whale</span>
                   )}
-                  {isPro && !isWhale && (
+                  {isPro && !isWhale && !isQuantum && (
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#c9a227]/15 text-[#c9a227] border border-[#c9a227]/30 uppercase tracking-widest">Pro</span>
                   )}
                   <Link href="/dashboard" className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest font-semibold px-3 py-2 hover:bg-white/5 transition-colors">
@@ -154,10 +160,11 @@ export default function Navbar() {
                 <div className="border-t border-[#1e2a3a] pt-4 mt-3 space-y-1">
                   {session ? (
                     <>
-                      {(isWhale || isPro) && (
+                      {(isQuantum || isWhale || isPro) && (
                         <div className="px-4 pb-2">
-                          {isWhale && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#4a9eff]/15 text-[#4a9eff] border border-[#4a9eff]/30 uppercase tracking-widest">Whale</span>}
-                          {isPro && !isWhale && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#c9a227]/15 text-[#c9a227] border border-[#c9a227]/30 uppercase tracking-widest">Pro</span>}
+                          {isQuantum && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30 uppercase tracking-widest">⚡ Quantum</span>}
+                          {isWhale && !isQuantum && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#4a9eff]/15 text-[#4a9eff] border border-[#4a9eff]/30 uppercase tracking-widest">Whale</span>}
+                          {isPro && !isWhale && !isQuantum && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#c9a227]/15 text-[#c9a227] border border-[#c9a227]/30 uppercase tracking-widest">Pro</span>}
                         </div>
                       )}
                       <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[#8a9bb3] hover:bg-white/5 text-[10px] uppercase tracking-widest transition-colors">

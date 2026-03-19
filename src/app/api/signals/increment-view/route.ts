@@ -19,8 +19,8 @@ export async function POST() {
     return NextResponse.json({ error: 'User not found' }, { status: 404 })
   }
 
-  // Don't increment for Signal Hub Pro users or admins
-  if (user.plan === 'signal_hub' || user.role === 'admin') {
+  // Don't increment for Quantum, Signal Hub Pro users or admins
+  if (user.plan === 'quantum' || user.plan === 'signal_hub' || user.plan === 'pro' || user.plan === 'whale' || user.role === 'admin') {
     return NextResponse.json({ success: true, viewed: user.signalsViewed })
   }
 

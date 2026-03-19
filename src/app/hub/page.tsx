@@ -107,6 +107,7 @@ const DEMO_SIGNALS_BASE = [
 function fmt(market: Pick<MarketData, 'symbol'>, price: number): string {
   if (market.symbol === 'USD/JPY') return price.toFixed(2);
   if (market.symbol === 'BTC/USD' || market.symbol === 'SPX500' || market.symbol === 'NAS100') return price.toFixed(0);
+  if (market.symbol === 'DXY') return price.toFixed(3);
   return price.toFixed(price < 10 ? 4 : 2);
 }
 
@@ -144,19 +145,19 @@ function SignalPaywall({ viewed, limit }: { viewed: number; limit: number }) {
           </div>
           <div className="border-t border-[#1e2a3a] pt-4 mb-4">
             <p className="text-[#8a9bb3] text-xs leading-relaxed mb-3">
-              Upgrade to Signal Hub Pro for unlimited real-time access to all markets and quantum analysis.
+              Subscribe to Quantum Access for unlimited real-time signals, all markets, DXY and quantum analysis.
             </p>
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="text-[#c9a227] font-mono text-lg font-semibold">Gs. 750.000</span>
+              <span className="text-[#c9a227] font-mono text-lg font-semibold">Gs. 350.000</span>
               <span className="text-[#8a9bb3] text-xs">/ month</span>
             </div>
-            <p className="text-[#8a9bb3] text-xs">$120 USD equivalent</p>
+            <p className="text-[#8a9bb3] text-xs">$50 USD equivalent</p>
           </div>
           <Link
             href="/billing"
             className="block w-full bg-[#c9a227] hover:bg-[#d4af37] text-black text-sm font-semibold py-2.5 px-4 rounded text-center transition-colors"
           >
-            Upgrade to Pro
+            Subscribe to Quantum Access
           </Link>
           <p className="text-[#8a9bb3] text-xs text-center mt-3">{viewed} / {limit} free signals used</p>
         </div>
@@ -279,7 +280,7 @@ export default function QuantumSignalHub() {
   const filtered = markets.filter(m => {
     if (filter === 'FX')     return ['EUR/USD', 'GBP/USD', 'USD/JPY'].includes(m.symbol);
     if (filter === 'CRYPTO') return ['BTC/USD', 'ETH/USD'].includes(m.symbol);
-    if (filter === 'INDEX')  return ['SPX500', 'NAS100'].includes(m.symbol);
+    if (filter === 'INDEX')  return ['SPX500', 'NAS100', 'DXY'].includes(m.symbol);
     return true;
   });
 
@@ -659,8 +660,8 @@ export default function QuantumSignalHub() {
                   href="/billing"
                   className="flex items-center justify-between w-full px-3 py-2.5 bg-[#c9a227] hover:bg-[#d4af37] text-black text-xs font-semibold transition-colors"
                 >
-                  <span>Unlock Signal Hub Pro</span>
-                  <span className="text-[9px] font-mono">Gs. 750.000</span>
+                  <span>Quantum Access</span>
+                  <span className="text-[9px] font-mono">Gs. 350.000</span>
                 </Link>
               )}
             </div>
@@ -690,7 +691,7 @@ export default function QuantumSignalHub() {
             QUANTUM SIGNAL HUB · SACRED LEVELS © 2026
           </p>
           <p className="text-[#8a9bb3] text-[10px] tracking-wide">
-            CRYPTO: BINANCE/COINGECKO · FX/GOLD/INDICES: YAHOO FINANCE
+            CRYPTO: BINANCE/COINGECKO · FX/GOLD/INDICES: YAHOO FINANCE · DXY: TWELVE DATA
           </p>
         </div>
       </footer>
