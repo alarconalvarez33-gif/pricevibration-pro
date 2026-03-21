@@ -32,7 +32,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="flex flex-wrap justify-center gap-8 text-[#8a9bb3] text-sm">
-              {['2 cálculos gratis', 'Sin tarjeta de crédito', 'Resultados instantáneos'].map((t) => (
+              {['3 usos gratis sin registrarse', 'Sin tarjeta de crédito', 'Resultados instantáneos'].map((t) => (
                 <span key={t} className="flex items-center gap-2">
                   <svg className="w-3.5 h-3.5 text-[#00d26a] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -159,9 +159,6 @@ export default function HomePage() {
                   <div className="absolute top-3 left-3">
                     <span className="bg-[#c9a227] text-black px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Popular</span>
                   </div>
-                  <div className="absolute top-3 right-3">
-                    <span className="bg-[#131c2e] border border-[#1e2a3a] text-[#8a9bb3] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Whale</span>
-                  </div>
                 </div>
                 <div className="p-5">
                   <h3 className="text-sm font-bold text-white mb-1 uppercase tracking-wide">Canal Paralelo</h3>
@@ -181,9 +178,6 @@ export default function HomePage() {
                   <Image src="/desbloquea el poder de forex.png" alt="Fibonacci Avanzado" fill className="object-contain p-2 group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute top-3 left-3">
                     <span className="bg-[#00d26a] text-black px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Nuevo</span>
-                  </div>
-                  <div className="absolute top-3 right-3">
-                    <span className="bg-[#131c2e] border border-[#1e2a3a] text-[#8a9bb3] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Whale</span>
                   </div>
                 </div>
                 <div className="p-5">
@@ -221,9 +215,8 @@ export default function HomePage() {
 
             <div className="text-center mt-10">
               <p className="text-[#8a9bb3] mb-3 text-xs">
-                <span className="text-[#c9a227]">Canal Paralelo</span> y{' '}
-                <span className="text-[#c9a227]">Fibonacci</span> están incluidos en el plan{' '}
-                <span className="text-[#4a9eff]">Whale</span>
+                Los cursos se compran por separado. La suscripción{' '}
+                <span className="text-purple-400 font-bold">Quantum Access</span> incluye Calculadora, Signal Hub, DXY y análisis IA.
               </p>
               <Link href="/courses" className="text-[#c9a227] hover:text-[#d4af37] text-sm font-bold transition-colors">
                 Ver todos los cursos →
@@ -234,155 +227,102 @@ export default function HomePage() {
 
         {/* ── PRICING ───────────────────────────────────────────── */}
         <section className="py-20 px-4">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <p className="text-[#c9a227] text-[10px] uppercase tracking-widest mb-3">Suscripciones</p>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Planes Simples</h2>
-              <p className="text-[#8a9bb3] text-sm">Empieza gratis, mejora cuando quieras</p>
+              <p className="text-purple-400 text-[10px] uppercase tracking-widest mb-3">Suscripción</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Un solo plan. Todo incluido.</h2>
+              <p className="text-[#8a9bb3] text-sm">Sin confusión, sin niveles. Acceso completo desde el primer día.</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-5">
-              {/* Free */}
-              <div className="bg-[#131c2e] rounded-lg overflow-hidden border border-[#1e2a3a]">
-                <div className="h-48 bg-[#0d1421] border-b border-[#1e2a3a] flex flex-col items-center justify-center gap-2">
-                  <div className="w-12 h-12 border border-[#1e2a3a] rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6 text-[#8a9bb3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <span className="text-[#8a9bb3] font-bold text-sm uppercase tracking-widest">Plan Gratuito</span>
-                </div>
-                <div className="p-7 pt-5">
-                  <h3 className="text-xl font-bold text-white mb-1">Gratis</h3>
-                  <p className="text-[#8a9bb3] text-xs mb-4 uppercase tracking-wide">Para probar la herramienta</p>
-                  <div className="text-3xl font-mono font-bold text-white mb-6">$0</div>
-                  <ul className="space-y-2.5 mb-8">
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#00d26a] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      2 cálculos por día
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#00d26a] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      9 niveles cuánticos
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3]/50 text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#1e2a3a] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                      Sin subarmónicos
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3]/50 text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#1e2a3a] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                      Sin cursos
-                    </li>
-                  </ul>
-                  <Link href="/quantum" className="block w-full text-center border border-[#1e2a3a] hover:border-[#8a9bb3] text-white py-3 rounded-lg font-bold text-sm hover:bg-white/5 transition-colors">
-                    Empezar Gratis
-                  </Link>
-                </div>
-              </div>
+            {/* Quantum Access card */}
+            <div className="relative rounded-2xl overflow-hidden border border-purple-500/50 bg-[#131c2e]">
+              {/* Glow top */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
 
-              {/* Pro */}
-              <div className="bg-[#131c2e] rounded-lg overflow-hidden border border-[#c9a227] relative">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-                  <span className="bg-[#c9a227] text-black px-4 py-1 rounded text-xs font-bold uppercase tracking-widest">Popular</span>
-                </div>
-                <div className="relative h-48 bg-[#0d1421] border-b border-[#1e2a3a] overflow-hidden">
-                  <Image src="/planpro.png" alt="Plan Pro" fill className="object-contain p-2" />
-                </div>
-                <div className="p-7 pt-5">
-                  <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
-                  <p className="text-[#8a9bb3] text-xs mb-4 uppercase tracking-wide">Para traders activos</p>
-                  <div className="mb-1">
-                    <span className="text-3xl font-mono font-bold text-white">$84</span>
-                    <span className="text-[#8a9bb3] text-sm">/mes</span>
-                  </div>
-                  <p className="text-[#8a9bb3] text-xs mb-6 font-mono">Gs. 550.000</p>
-                  <ul className="space-y-2.5 mb-8">
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#c9a227] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      Cálculos ilimitados
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#c9a227] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      Subarmónicos incluidos
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#c9a227] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      Zonas Entelechy
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3]/50 text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#1e2a3a] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                      Sin cursos incluidos
-                    </li>
-                  </ul>
-                  <Link href="/billing" className="block w-full text-center bg-[#c9a227] hover:bg-[#d4af37] text-black py-3 rounded-lg font-bold text-sm transition-colors">
-                    Comenzar Ahora
-                  </Link>
-                </div>
-              </div>
+              <div className="grid md:grid-cols-2 gap-0">
 
-              {/* Whale */}
-              <div className="bg-[#131c2e] rounded-lg overflow-hidden border border-[#1e2a3a] hover:border-[#4a9eff] transition-colors">
-                <div className="relative h-48 bg-[#0d1421] border-b border-[#1e2a3a] overflow-hidden">
-                  <Image src="/PLAN.png" alt="Plan Whale" fill className="object-contain p-2" />
-                </div>
-                <div className="p-7 pt-5">
-                  <h3 className="text-xl font-bold text-white mb-1">Whale</h3>
-                  <p className="text-[#8a9bb3] text-xs mb-4 uppercase tracking-wide">Todo incluido</p>
-                  <div className="mb-1">
-                    <span className="text-3xl font-mono font-bold text-white">$99</span>
-                    <span className="text-[#8a9bb3] text-sm">/mes</span>
+                {/* Left: image + price */}
+                <div className="bg-[#0d1421] border-b md:border-b-0 md:border-r border-purple-500/20 flex flex-col items-center justify-center p-8 gap-6">
+                  <div className="relative w-full max-w-xs aspect-square">
+                    <Image src="/signal.png" alt="Quantum Access" fill className="object-contain" />
                   </div>
-                  <p className="text-[#8a9bb3] text-xs mb-6 font-mono">Gs. 693.900</p>
-                  <ul className="space-y-2.5 mb-8">
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#4a9eff] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      Todo de Pro incluido
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#4a9eff] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      Curso Canal Paralelo
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#4a9eff] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      Curso Fibonacci
-                    </li>
-                    <li className="flex items-center gap-3 text-[#8a9bb3] text-sm">
-                      <svg className="w-3.5 h-3.5 text-[#4a9eff] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                      Comunidad VIP
-                    </li>
+                  <div className="text-center">
+                    <div className="inline-flex items-center gap-2 bg-purple-600/20 border border-purple-500/30 rounded-full px-4 py-1 mb-4">
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                      <span className="text-purple-300 text-xs font-semibold tracking-widest uppercase">Plan Único</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">QUANTUM ACCESS</h3>
+                    <div className="flex items-baseline justify-center gap-2 mt-3">
+                      <span className="text-4xl font-mono font-extrabold text-purple-400">Gs. 350.000</span>
+                    </div>
+                    <p className="text-[#8a9bb3] text-sm mt-1">$50 USD / mes</p>
+                    <Link
+                      href="/billing"
+                      className="mt-6 block w-full py-3.5 rounded-xl font-bold text-base text-white text-center transition-all hover:opacity-90"
+                      style={{ background: 'linear-gradient(135deg, #7e22ce, #9333ea)' }}
+                    >
+                      ⚡ Suscribirme Ahora
+                    </Link>
+                    <p className="text-[#8a9bb3] text-xs mt-3">✨ 3 usos gratis sin registrarse</p>
+                  </div>
+                </div>
+
+                {/* Right: features */}
+                <div className="p-8 flex flex-col justify-center">
+                  <p className="text-purple-400 text-[10px] uppercase tracking-widest mb-5 font-semibold">Todo lo que incluye</p>
+                  <ul className="space-y-3.5">
+                    {[
+                      { icon: '🔬', text: 'Calculadora Cuántica ilimitada', sub: 'Niveles n² en cualquier mercado' },
+                      { icon: '📡', text: 'Signal Hub completo', sub: 'Todas las señales en tiempo real' },
+                      { icon: '💵', text: 'DXY Dollar Index', sub: 'Índice del dólar en vivo' },
+                      { icon: '🌐', text: 'Todos los mercados', sub: 'Forex · Crypto · Oro · Índices' },
+                      { icon: '🤖', text: 'Análisis IA cuántico', sub: 'Interpretación automática por zona' },
+                      { icon: '⚡', text: 'Dashboard Quantum Levels', sub: 'Panel exclusivo de acceso rápido' },
+                      { icon: '🕐', text: 'Acceso 24/7', sub: 'Sin restricciones de horario' },
+                    ].map((f, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="text-lg leading-none mt-0.5 shrink-0">{f.icon}</span>
+                        <div>
+                          <p className="text-white text-sm font-semibold">{f.text}</p>
+                          <p className="text-[#8a9bb3] text-xs">{f.sub}</p>
+                        </div>
+                      </li>
+                    ))}
                   </ul>
-                  <Link href="/billing" className="block w-full text-center border border-[#4a9eff] hover:bg-[#4a9eff] text-[#4a9eff] hover:text-black py-3 rounded-lg font-bold text-sm transition-colors">
-                    Ser Whale
-                  </Link>
+
+                  {/* Cuotas */}
+                  <div className="mt-6 pt-5 border-t border-[#1e2a3a]">
+                    <p className="text-[#8a9bb3] text-[10px] uppercase tracking-widest mb-3">Pagá en cuotas</p>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[
+                        { n: '1x', monto: '350.000' },
+                        { n: '3x', monto: '116.667' },
+                        { n: '6x', monto: '58.334' },
+                        { n: '12x', monto: '29.167' },
+                      ].map((c) => (
+                        <div key={c.n} className="bg-[#0d1421] border border-[#1e2a3a] rounded-lg p-2 text-center">
+                          <p className="text-[#8a9bb3] text-[10px]">{c.n}</p>
+                          <p className="text-white text-[10px] font-mono font-bold">Gs. {c.monto}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[#8a9bb3] text-[10px] mt-2 text-center uppercase tracking-widest">Visa · Mastercard · Bancard</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Payment Methods */}
-            <div className="mt-10 bg-[#131c2e] rounded-lg p-7 border border-[#1e2a3a]">
-              <p className="text-[#8a9bb3] text-[10px] uppercase tracking-widest text-center mb-6">Métodos de Pago</p>
-              <div className="flex flex-wrap items-center justify-center gap-8 mb-6">
+            <div className="mt-8 bg-[#131c2e] rounded-xl p-6 border border-[#1e2a3a]">
+              <p className="text-[#8a9bb3] text-[10px] uppercase tracking-widest text-center mb-5">Métodos de Pago</p>
+              <div className="flex flex-wrap items-center justify-center gap-8 mb-5">
                 <Image src="/familiar.png" alt="Banco Familiar" width={120} height={60} className="rounded-lg" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/ueno.jpeg" alt="Ueno" width={120} height={60} className="rounded-lg object-contain" />
               </div>
-              <div className="text-center mb-5">
+              <div className="text-center">
                 <p className="text-[#c9a227] font-bold text-sm">Hasta 12 cuotas sin interés</p>
                 <p className="text-[#8a9bb3] text-xs mt-1">Tarjetas de crédito y débito aceptadas</p>
-              </div>
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="bg-[#0d1421] rounded-lg p-4 border border-[#1e2a3a]">
-                  <p className="text-white font-mono font-bold text-sm">3 cuotas</p>
-                  <p className="text-[#00d26a] text-xs mt-1">Sin interés</p>
-                </div>
-                <div className="bg-[#0d1421] rounded-lg p-4 border border-[#1e2a3a]">
-                  <p className="text-white font-mono font-bold text-sm">6 cuotas</p>
-                  <p className="text-[#00d26a] text-xs mt-1">Sin interés</p>
-                </div>
-                <div className="bg-[#0d1421] rounded-lg p-4 border border-[#c9a227]">
-                  <p className="text-white font-mono font-bold text-sm">12 cuotas</p>
-                  <p className="text-[#c9a227] text-xs mt-1">Sin interés</p>
-                </div>
               </div>
             </div>
           </div>
@@ -391,16 +331,29 @@ export default function HomePage() {
         {/* ── FINAL CTA ─────────────────────────────────────────── */}
         <section className="py-20 px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <p className="text-[#c9a227] text-[10px] uppercase tracking-widest mb-4">Acceso Inmediato</p>
+            <p className="text-purple-400 text-[10px] uppercase tracking-widest mb-4">Acceso Inmediato</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Listo para operar con niveles cuánticos
+              Gs. 350.000 al mes.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">Todo incluido.</span>
             </h2>
-            <p className="text-[#8a9bb3] text-base mb-10">
-              Únete a traders que ya usan física cuántica para encontrar puntos de giro
+            <p className="text-[#8a9bb3] text-base mb-4">
+              Calculadora cuántica, Signal Hub, DXY, todos los mercados y análisis IA en un solo plan.
             </p>
-            <Link href="/quantum" className="inline-block bg-[#c9a227] hover:bg-[#d4af37] text-black px-10 py-4 rounded-lg text-base font-bold transition-colors">
-              Probar Calculadora Gratis
-            </Link>
+            <p className="text-[#8a9bb3] text-sm mb-10">
+              Probá <span className="text-purple-400 font-semibold">3 veces gratis</span> sin registrarte. Sin tarjeta.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/billing"
+                className="inline-block px-10 py-4 rounded-xl text-base font-bold text-white transition-all hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #7e22ce, #9333ea)' }}
+              >
+                ⚡ Suscribirme — Gs. 350.000
+              </Link>
+              <Link href="/quantum" className="inline-block border border-[#1e2a3a] hover:border-purple-500/50 text-white px-10 py-4 rounded-xl text-base font-bold transition-colors hover:bg-purple-900/10">
+                Probar Gratis
+              </Link>
+            </div>
           </div>
         </section>
 
