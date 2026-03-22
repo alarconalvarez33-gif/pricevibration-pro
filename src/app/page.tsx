@@ -18,27 +18,33 @@ const C = {
 } as const;
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
   const [formError, setFormError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
     setFormError('');
-    const form = e.target as HTMLFormElement;
-    const data = Object.fromEntries(new FormData(form).entries());
+    setFormSuccess(false);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
     try {
-      const res = await fetch('https://formspree.io/f/xreapnkb', {
+      const response = await fetch('https://formspree.io/f/xreapnkb', {
         method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: formData,
+        headers: { 'Accept': 'application/json' },
       });
-      const json = await res.json();
-      if (res.ok) { setSuccess(true); form.reset(); }
-      else setFormError(json?.errors?.map((err: { message: string }) => err.message).join(', ') || 'Error al enviar. Intenta de nuevo.');
-    } catch { setFormError('Error al enviar. Intenta de nuevo.'); }
-    setLoading(false);
+      if (response.ok) {
+        setFormSuccess(true);
+        form.reset();
+      } else {
+        setFormError('Error al enviar. Intenta de nuevo.');
+      }
+    } catch {
+      setFormError('Error de conexión. Verifica tu internet.');
+    }
+    setFormLoading(false);
   };
 
   return (
@@ -564,7 +570,7 @@ export default function HomePage() {
               </h2>
             </div>
 
-            {success ? (
+            {formSuccess ? (
               <div
                 className="border p-10 text-center"
                 style={{ backgroundColor: C.card, borderColor: `${C.green}30` }}
@@ -581,64 +587,78 @@ export default function HomePage() {
                   className="text-white font-semibold mb-1"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  Mensaje enviado
+                  ¡Mensaje enviado correctamente!
                 </p>
-                <p className="text-[#444] text-sm">Te responderemos a la brevedad.</p>
+                <p className="text-[#444] text-sm">Te contactaremos pronto.</p>
               </div>
             ) : (
               <form
-                onSubmit={handleSubmit}
+                onSubmit={handleContactSubmit}
                 className="border space-y-5 p-8"
                 style={{ backgroundColor: C.card, borderColor: C.border }}
               >
-                {(['Nombre', 'Email'] as const).map((label) => (
-                  <div key={label}>
-                    <label
-                      className="block text-[10px] uppercase tracking-[0.2em] mb-2"
-                      style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      {label}
-                    </label>
-                    <input
-                      type={label === 'Email' ? 'email' : 'text'}
-                      name={label.toLowerCase()}
-                      required
-                      className="w-full border px-4 py-3 text-white text-sm focus:outline-none transition-colors duration-200 focus:border-[#00E5FF]/40"
-                      style={{
-                        backgroundColor: '#0d0d0e',
-                        borderColor: C.border,
-                        fontFamily: "'Inter', sans-serif",
-                      }}
-                    />
-                  </div>
-                ))}
                 <div>
                   <label
+                    htmlFor="name"
+                    className="block text-[10px] uppercase tracking-[0.2em] mb-2"
+                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    className="w-full border px-4 py-3 text-white text-sm focus:outline-none transition-colors duration-200 focus:border-[#00E5FF]/40"
+                    style={{ backgroundColor: '#0d0d0e', borderColor: C.border, fontFamily: "'Inter', sans-serif" }}
+                    placeholder="Tu nombre"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-[10px] uppercase tracking-[0.2em] mb-2"
+                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    className="w-full border px-4 py-3 text-white text-sm focus:outline-none transition-colors duration-200 focus:border-[#00E5FF]/40"
+                    style={{ backgroundColor: '#0d0d0e', borderColor: C.border, fontFamily: "'Inter', sans-serif" }}
+                    placeholder="tu@email.com"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="message"
                     className="block text-[10px] uppercase tracking-[0.2em] mb-2"
                     style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
                     Mensaje
                   </label>
                   <textarea
+                    id="message"
                     name="message"
                     required
-                    rows={4}
+                    rows={5}
                     className="w-full border px-4 py-3 text-white text-sm focus:outline-none transition-colors duration-200 focus:border-[#00E5FF]/40 resize-none"
-                    style={{
-                      backgroundColor: '#0d0d0e',
-                      borderColor: C.border,
-                      fontFamily: "'Inter', sans-serif",
-                    }}
+                    style={{ backgroundColor: '#0d0d0e', borderColor: C.border, fontFamily: "'Inter', sans-serif" }}
+                    placeholder="¿En qué podemos ayudarte?"
                   />
                 </div>
                 {formError && <p className="text-[#FF4757] text-xs">{formError}</p>}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={formLoading}
                   className="w-full py-3.5 text-sm font-bold uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
                   style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  {loading ? 'Enviando...' : 'Enviar Mensaje'}
+                  {formLoading ? 'Enviando...' : 'Enviar Mensaje'}
                 </button>
               </form>
             )}
