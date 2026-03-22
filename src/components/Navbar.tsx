@@ -42,40 +42,48 @@ export default function Navbar() {
   const navLinks = [
     { href: '/', label: 'Inicio' },
     { href: '/hub', label: 'Signal Hub' },
-    { href: '/quantum', label: 'Calculadora' },
+    { href: '/quantum', label: 'Calculadora Cuadrática' },
     { href: '/courses', label: 'Cursos' },
     ...(isQuantum
       ? [{ href: '/dashboard', label: 'Dashboard' }]
       : [{ href: '/billing', label: 'Planes' }]),
-    { href: '/advanced', label: 'Resultados' },
   ];
 
   const isActive = (href: string) => pathname === href;
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-[#0d1421]/98 backdrop-blur-md' : 'bg-[#0d1421]/95 backdrop-blur-sm'
-      } border-b border-[#1e2a3a]`}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
+        scrolled ? 'shadow-sm' : ''
+      } border-b border-[#E8E8E8]`}>
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex items-center justify-between h-20">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <Image src="/logosacred.png" alt="Sacred Levels" width={36} height={36} className="rounded-lg" />
-              <span className="text-white font-bold text-sm hidden sm:block tracking-wide">Sacred Levels</span>
+            <Link href="/" className="flex items-center gap-4 shrink-0">
+              <Image
+                src="/logosacred.png"
+                alt="Sacred Levels"
+                width={52}
+                height={52}
+                className="rounded-lg"
+                priority
+              />
+              <span className="text-[#111111] font-semibold text-base hidden sm:block tracking-tight font-['Inter',sans-serif]">
+                Sacred Levels
+              </span>
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-0.5">
+            <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-2 text-[10px] font-semibold uppercase tracking-widest transition-colors ${
+                  className={`px-4 py-2 text-xs font-medium tracking-wide transition-colors rounded-lg ${
                     isActive(link.href)
-                      ? 'text-[#c9a227] border-b border-[#c9a227]'
-                      : 'text-[#8a9bb3] hover:text-white'
+                      ? 'text-[#C4A77D] bg-[#C4A77D]/8'
+                      : 'text-[#666666] hover:text-[#111111] hover:bg-gray-100'
                   }`}
                 >
                   {link.label}
@@ -88,30 +96,42 @@ export default function Navbar() {
               {session ? (
                 <>
                   {isQuantum && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30 uppercase tracking-widest">⚡ Quantum</span>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#C4A77D]/12 text-[#B8953C] border border-[#C4A77D]/30 uppercase tracking-widest">
+                      Quantum
+                    </span>
                   )}
                   {isWhale && !isQuantum && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#4a9eff]/20 text-[#4a9eff] border border-[#4a9eff]/30 uppercase tracking-widest">Whale</span>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600 border border-blue-200 uppercase tracking-widest">
+                      Whale
+                    </span>
                   )}
                   {isPro && !isWhale && !isQuantum && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#c9a227]/15 text-[#c9a227] border border-[#c9a227]/30 uppercase tracking-widest">Pro</span>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#C4A77D]/12 text-[#B8953C] border border-[#C4A77D]/30 uppercase tracking-widest">
+                      Pro
+                    </span>
                   )}
-                  <Link href="/dashboard" className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest font-semibold px-3 py-2 hover:bg-white/5 transition-colors">
+                  <Link href="/dashboard" className="text-[#666666] hover:text-[#111111] text-xs font-medium px-3 py-2 transition-colors">
                     Dashboard
                   </Link>
-                  <Link href="/account" className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest font-semibold px-3 py-2 hover:bg-white/5 transition-colors">
+                  <Link href="/account" className="text-[#666666] hover:text-[#111111] text-xs font-medium px-3 py-2 transition-colors">
                     Mi Cuenta
                   </Link>
-                  <button onClick={() => signOut({ callbackUrl: '/' })} className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest px-3 py-2 transition-colors">
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="text-[#666666] hover:text-[#111111] text-xs font-medium px-3 py-2 transition-colors"
+                  >
                     Salir
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="text-[#8a9bb3] hover:text-white text-[10px] uppercase tracking-widest font-semibold px-3 py-2 transition-colors">
+                  <Link href="/login" className="text-[#666666] hover:text-[#111111] text-xs font-medium px-3 py-2 transition-colors">
                     Iniciar Sesión
                   </Link>
-                  <Link href="/register" className="bg-[#c9a227] hover:bg-[#d4af37] text-black px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-colors">
+                  <Link
+                    href="/register"
+                    className="bg-[#111111] hover:bg-[#333333] text-white px-5 py-2.5 rounded-lg text-xs font-semibold tracking-wide transition-colors"
+                  >
                     Registrarse
                   </Link>
                 </>
@@ -121,16 +141,16 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 text-[#8a9bb3] hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+              className="md:hidden p-2.5 text-[#666666] hover:text-[#111111] hover:bg-gray-100 rounded-lg transition-colors"
               aria-label="Menu"
             >
               {mobileMenuOpen ? (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
@@ -140,52 +160,54 @@ export default function Navbar() {
           <div className={`md:hidden overflow-hidden transition-all duration-300 ${
             mobileMenuOpen ? 'max-h-[520px] opacity-100' : 'max-h-0 opacity-0'
           }`}>
-            <div className="py-4 border-t border-[#1e2a3a]">
+            <div className="py-4 border-t border-[#E8E8E8]">
               <div className="flex flex-col gap-0.5">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`px-4 py-3 text-[10px] font-semibold uppercase tracking-widest transition-colors ${
+                    className={`px-4 py-3 text-sm font-medium transition-colors rounded-lg ${
                       isActive(link.href)
-                        ? 'bg-[#c9a227]/10 text-[#c9a227] border-l-2 border-[#c9a227]'
-                        : 'text-[#8a9bb3] hover:bg-white/5 hover:text-white border-l-2 border-transparent'
+                        ? 'bg-[#C4A77D]/8 text-[#C4A77D] border-l-2 border-[#C4A77D]'
+                        : 'text-[#666666] hover:bg-gray-50 hover:text-[#111111] border-l-2 border-transparent'
                     }`}
                   >
                     {link.label}
                   </Link>
                 ))}
 
-                <div className="border-t border-[#1e2a3a] pt-4 mt-3 space-y-1">
+                <div className="border-t border-[#E8E8E8] pt-4 mt-3 space-y-1">
                   {session ? (
                     <>
                       {(isQuantum || isWhale || isPro) && (
                         <div className="px-4 pb-2">
-                          {isQuantum && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30 uppercase tracking-widest">⚡ Quantum</span>}
-                          {isWhale && !isQuantum && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#4a9eff]/15 text-[#4a9eff] border border-[#4a9eff]/30 uppercase tracking-widest">Whale</span>}
-                          {isPro && !isWhale && !isQuantum && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#c9a227]/15 text-[#c9a227] border border-[#c9a227]/30 uppercase tracking-widest">Pro</span>}
+                          {isQuantum && (
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#C4A77D]/12 text-[#B8953C] border border-[#C4A77D]/30 uppercase tracking-widest">
+                              Quantum
+                            </span>
+                          )}
                         </div>
                       )}
-                      <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[#8a9bb3] hover:bg-white/5 text-[10px] uppercase tracking-widest transition-colors">
+                      <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[#666666] hover:text-[#111111] hover:bg-gray-50 text-sm font-medium transition-colors">
                         Dashboard
                       </Link>
-                      <Link href="/settings" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[#8a9bb3] hover:bg-white/5 text-[10px] uppercase tracking-widest transition-colors">
+                      <Link href="/settings" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[#666666] hover:text-[#111111] hover:bg-gray-50 text-sm font-medium transition-colors">
                         Mi Perfil
                       </Link>
                       <button
                         onClick={() => { signOut({ callbackUrl: '/' }); setMobileMenuOpen(false); }}
-                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-[#ff4757] hover:bg-white/5 text-[10px] uppercase tracking-widest transition-colors"
+                        className="flex items-center gap-3 w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 text-sm font-medium transition-colors"
                       >
                         Cerrar Sesión
                       </button>
                     </>
                   ) : (
                     <>
-                      <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[#8a9bb3] hover:bg-white/5 text-[10px] uppercase tracking-widest transition-colors">
+                      <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[#666666] hover:text-[#111111] hover:bg-gray-50 text-sm font-medium transition-colors">
                         Iniciar Sesión
                       </Link>
-                      <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="block mx-4 mt-2 bg-[#c9a227] hover:bg-[#d4af37] text-black px-4 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest text-center transition-colors">
+                      <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="block mx-4 mt-2 bg-[#111111] hover:bg-[#333333] text-white px-4 py-3 rounded-lg text-sm font-semibold text-center transition-colors">
                         Crear Cuenta Gratis
                       </Link>
                     </>
@@ -196,41 +218,41 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* ── Subscription status banner ── */}
+        {/* Subscription status banners */}
         {showCancelledBanner && (
-          <div className="border-t border-[#c9a227]/30 bg-[#c9a227]/10 px-4 py-1.5 flex items-center justify-between gap-3">
-            <p className="text-[#c9a227] text-[10px] font-medium">
-              Tu suscripción fue cancelada · Acceso hasta{' '}
-              <span className="font-bold">{premiumUntil?.toLocaleDateString('es-PY')}</span>
+          <div className="border-t border-[#C4A77D]/30 bg-[#C4A77D]/8 px-6 py-2 flex items-center justify-between gap-3">
+            <p className="text-[#B8953C] text-xs font-medium">
+              Suscripción cancelada · Acceso hasta{' '}
+              <span className="font-semibold">{premiumUntil?.toLocaleDateString('es-PY')}</span>
             </p>
-            <Link href="/account/subscription" className="text-[10px] font-bold text-[#c9a227] underline whitespace-nowrap">
+            <Link href="/account/subscription" className="text-xs font-semibold text-[#B8953C] underline whitespace-nowrap">
               Reactivar
             </Link>
           </div>
         )}
         {showExpiringBanner && (
-          <div className="border-t border-[#ff4757]/30 bg-[#ff4757]/10 px-4 py-1.5 flex items-center justify-between gap-3">
-            <p className="text-[#ff4757] text-[10px] font-medium">
+          <div className="border-t border-red-200 bg-red-50 px-6 py-2 flex items-center justify-between gap-3">
+            <p className="text-red-600 text-xs font-medium">
               Tu suscripción vence en{' '}
-              <span className="font-bold">{daysLeft} día{daysLeft !== 1 ? 's' : ''}</span>
+              <span className="font-semibold">{daysLeft} día{daysLeft !== 1 ? 's' : ''}</span>
             </p>
-            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline whitespace-nowrap">
+            <Link href="/billing" className="text-xs font-semibold text-red-600 underline whitespace-nowrap">
               Renovar
             </Link>
           </div>
         )}
         {showExpiredBanner && (
-          <div className="border-t border-[#ff4757]/30 bg-[#ff4757]/10 px-4 py-1.5 flex items-center justify-between gap-3">
-            <p className="text-[#ff4757] text-[10px] font-medium">
-              Tu suscripción expiró · Ahora estás en plan gratuito
+          <div className="border-t border-red-200 bg-red-50 px-6 py-2 flex items-center justify-between gap-3">
+            <p className="text-red-600 text-xs font-medium">
+              Tu suscripción expiró · Plan gratuito activo
             </p>
-            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline whitespace-nowrap">
+            <Link href="/billing" className="text-xs font-semibold text-red-600 underline whitespace-nowrap">
               Suscribirme
             </Link>
           </div>
         )}
       </nav>
-      <div className="fixed left-0 right-0 z-40" style={{ top: hasBanner ? '96px' : '64px' }}>
+      <div className="fixed left-0 right-0 z-40" style={{ top: hasBanner ? '96px' : '80px' }}>
         <PriceTicker />
       </div>
     </>

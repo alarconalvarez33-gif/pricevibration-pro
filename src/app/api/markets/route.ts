@@ -52,7 +52,7 @@ async function fetchYahoo(yf: string) {
 // ── Twelve Data — DXY ────────────────────────────────────────────────────────
 async function fetchTwelveDataDXY() {
   const res = await fetch(
-    'https://api.twelvedata.com/quote?symbol=DXY&apikey=0bb783745d264d9e8967a477e213ba1e',
+    'https://api.twelvedata.com/quote?symbol=DX-Y.NYB&apikey=0bb783745d264d9e8967a477e213ba1e',
     { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
   );
   if (!res.ok) throw new Error(`TwelveData DXY ${res.status}`);
@@ -66,6 +66,29 @@ async function fetchTwelveDataDXY() {
   const changePercent = parseFloat(data.percent_change);
   if (isNaN(price)) throw new Error('TwelveData DXY no price');
   return { price, prevClose, high, low, change, changePercent };
+}
+
+// ── Finnhub — DXY fallback ────────────────────────────────────────────────────
+async function fetchFinnhubDXY() {
+  const res = await fetch(
+    'https://finnhub.io/api/v1/quote?symbol=DX-Y.NYB&token=d6a4dj9r01qsjlb9mppgd6a4dj9r01qsjlb9mpq0',
+    { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
+  );
+  if (!res.ok) throw new Error(`Finnhub DXY ${res.status}`);
+  const data = await res.json();
+  const price = data.c;
+  const prevClose = data.pc;
+  if (!price || isNaN(price)) throw new Error('Finnhub DXY no price');
+  const change = price - prevClose;
+  const changePercent = prevClose > 0 ? (change / prevClose) * 100 : 0;
+  return {
+    price,
+    prevClose,
+    high: data.h ?? price * 1.003,
+    low: data.l ?? price * 0.997,
+    change: Math.round(change * 1000) / 1000,
+    changePercent: Math.round(changePercent * 100) / 100,
+  };
 }
 
 // ── Market definitions ────────────────────────────────────────────────────────
@@ -191,10 +214,20 @@ export async function GET() {
     }
   });
 
-  // ── 4. DXY — Twelve Data ──────────────────────────────────────────────────────
-  const dxyResult = await Promise.allSettled([fetchTwelveDataDXY()]);
-  if (dxyResult[0].status === 'fulfilled') {
-    const { price, high, low, change, changePercent } = dxyResult[0].value;
+  // ── 4. DXY — Twelve Data primary, Finnhub fallback ───────────────────────────
+  let dxyData: Awaited<ReturnType<typeof fetchTwelveDataDXY>> | null = null;
+  try {
+    dxyData = await fetchTwelveDataDXY();
+  } catch (e) {
+    console.error('TwelveData DXY failed:', (e as Error).message, '— trying Finnhub');
+    try {
+      dxyData = await fetchFinnhubDXY();
+    } catch (e2) {
+      console.error('Finnhub DXY failed:', (e2 as Error).message);
+    }
+  }
+  if (dxyData) {
+    const { price, high, low, change, changePercent } = dxyData;
     markets.push({
       symbol: 'DXY', name: 'Dollar Index',
       price, change: Math.round(change * 1000) / 1000,
@@ -202,7 +235,6 @@ export async function GET() {
       high, low, source: 'live', offline: false,
     });
   } else {
-    console.error('TwelveData DXY failed:', dxyResult[0].reason?.message);
     markets.push({ symbol: 'DXY', name: 'Dollar Index', price: 0, change: 0, changePercent: 0, high: 0, low: 0, source: 'offline', offline: true });
   }
 

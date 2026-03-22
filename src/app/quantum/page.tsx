@@ -31,7 +31,6 @@ function calculateQuantumLevels(max: number, min: number): QuantumLevel[] {
     const price = min + range * position
     const probability = Math.pow(n / N, 2) * 100
 
-    // n=0,1,2,3 → acumulación | n=4,5 → equilibrio | n=6,7,8 → distribución
     const type: QuantumLevel['type'] =
       n <= 3 ? 'accumulation' : n <= 5 ? 'equilibrium' : 'distribution'
     const strength: QuantumLevel['strength'] =
@@ -118,10 +117,13 @@ export default function QuantumPage() {
   /* ── Loading ── */
   if (access.loading) {
     return (
-      <main className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+      <main
+        className="min-h-screen bg-white flex items-center justify-center"
+        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+      >
         <div className="text-center">
-          <div className="w-12 h-12 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-purple-400 text-sm">Verificando acceso...</p>
+          <div className="w-10 h-10 border-2 border-[#C4A77D] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#888888] text-sm">Verificando acceso...</p>
         </div>
       </main>
     )
@@ -130,27 +132,39 @@ export default function QuantumPage() {
   /* ── Paywall ── */
   if (!access.allowed && access.usesLeft === 0 && !access.paid) {
     return (
-      <main className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
+      <main
+        className="min-h-screen bg-[#F7F8F9] flex items-center justify-center px-6"
+        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+      >
         <div className="max-w-md w-full text-center">
-          <div className="bg-gradient-to-br from-[#1a0a2e] to-[#0d0d0d] border border-purple-500/30 rounded-2xl p-8">
-            <span className="text-5xl mb-4 block">🔬</span>
-            <h2 className="text-2xl font-bold text-white mb-2">Niveles Cuánticos</h2>
-            <p className="text-gray-400 mb-2">Usaste tus 3 cálculos gratuitos.</p>
-            <p className="text-gray-500 text-sm mb-6 italic">
-              &ldquo;Si la inversión en educación te parece cara,<br />imagina el precio de la ignorancia&rdquo;
-            </p>
-            <div className="text-3xl font-bold text-purple-400 mb-1">
-              350.000 <span className="text-base text-gray-400">GS</span>
+          <div className="bg-white border border-[#E8E8E8] rounded-lg p-10">
+            <div className="w-14 h-14 bg-[#C4A77D]/12 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-7 h-7 text-[#C4A77D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
             </div>
-            <div className="text-sm text-gray-500 mb-6">🌎 $50 USD · mensual · incluye todo</div>
+            <h2
+              className="text-2xl text-[#111111] mb-3"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 500 }}
+            >
+              Calculadora Cuadrática
+            </h2>
+            <p className="text-[#666666] text-sm mb-2">Usaste tus 3 cálculos gratuitos.</p>
+            <p className="text-[#888888] text-sm mb-8 italic leading-relaxed">
+              &ldquo;Si la inversión en educación te parece cara,
+              <br />imagina el precio de la ignorancia&rdquo;
+            </p>
+            <div className="text-4xl font-mono font-bold text-[#111111] mb-1">
+              Gs. 350.000
+            </div>
+            <div className="text-sm text-[#888888] mb-8">$50 USD · mensual · incluye todo</div>
             <a
               href="/billing"
-              className="block w-full py-4 rounded-xl font-bold text-white text-lg mb-4 transition-all hover:scale-[1.02]"
-              style={{ background: 'linear-gradient(135deg, #7e22ce, #9333ea)' }}
+              className="block w-full py-4 rounded-lg font-semibold text-white text-base mb-4 transition-colors bg-[#111111] hover:bg-[#333333]"
             >
-              ⚡ Suscribirse a Quantum Access
+              Suscribirse a Quantum Access
             </a>
-            <a href="/dashboard" className="text-sm text-gray-500 hover:text-white transition-colors">
+            <a href="/dashboard" className="text-sm text-[#888888] hover:text-[#111111] transition-colors">
               ← Volver al Dashboard
             </a>
           </div>
@@ -161,48 +175,58 @@ export default function QuantumPage() {
 
   /* ── Main Page ── */
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-white">
+    <main
+      className="min-h-screen bg-white text-[#111111]"
+      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+    >
 
       {/* Header */}
-      <div className="border-b border-purple-500/20 bg-[#0a0a0f]/95 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🔬</span>
-            <div>
-              <h1 className="text-base font-bold text-white">Niveles Cuánticos de Probabilidad</h1>
-              <p className="text-xs text-purple-400">Distribución de energía E=n² aplicada al precio</p>
-            </div>
+      <div className="border-b border-[#E8E8E8] bg-white sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div>
+            <h1
+              className="text-base font-semibold text-[#111111]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              Calculadora Cuadrática
+            </h1>
+            <p className="text-xs text-[#C4A77D]">Distribución de energía E=n² aplicada al precio</p>
           </div>
           <div className="flex items-center gap-3">
             {!access.paid && (
-              <span className="text-xs text-purple-300 bg-purple-900/40 border border-purple-500/30 px-3 py-1 rounded-full">
+              <span className="text-xs text-[#B8953C] bg-[#C4A77D]/10 border border-[#C4A77D]/30 px-3 py-1 rounded-full">
                 {access.usesLeft} uso{access.usesLeft !== 1 ? 's' : ''} gratis restante{access.usesLeft !== 1 ? 's' : ''}
               </span>
             )}
             {access.paid && (
-              <span className="text-xs text-green-400 bg-green-900/30 border border-green-500/30 px-3 py-1 rounded-full">
-                ✓ Acceso completo
+              <span className="text-xs text-green-600 bg-green-50 border border-green-200 px-3 py-1 rounded-full">
+                Acceso completo
               </span>
             )}
-            <a href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
+            <a href="/dashboard" className="text-sm text-[#888888] hover:text-[#111111] transition-colors">
               ← Dashboard
             </a>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-10">
+      <div className="max-w-4xl mx-auto px-6 py-12">
 
-        {/* Banner prueba gratis */}
+        {/* Free trial banner */}
         {!access.paid && (
-          <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-xl p-6 mb-8 text-center">
-            <h3 className="text-xl font-bold text-white mb-2">🔬 Prueba Gratis</h3>
-            <p className="text-gray-300 mb-4">
-              Probá los Niveles Cuánticos{' '}
-              <span className="text-purple-400 font-bold">3 veces GRATIS</span> sin registrarte
+          <div className="bg-[#C4A77D]/8 border border-[#C4A77D]/20 rounded-lg p-6 mb-10 text-center">
+            <h3
+              className="text-xl text-[#111111] mb-2"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 500 }}
+            >
+              Prueba Gratuita
+            </h3>
+            <p className="text-[#666666] mb-4 text-sm">
+              Prueba los Niveles Cuadráticos{' '}
+              <span className="text-[#B8953C] font-semibold">3 veces GRATIS</span> sin registrarte
             </p>
             {access.usesLeft > 0 && (
-              <p className="text-purple-400">
+              <p className="text-[#B8953C] text-sm">
                 Te quedan{' '}
                 <span className="font-bold">{access.usesLeft}/3</span> pruebas gratis
               </p>
@@ -210,7 +234,7 @@ export default function QuantumPage() {
             {access.usesLeft <= 0 && (
               <a
                 href="/billing"
-                className="bg-[#c9a227] hover:bg-[#d4af37] text-black font-bold px-6 py-3 rounded-lg inline-block transition-colors"
+                className="inline-block bg-[#111111] hover:bg-[#333333] text-white font-semibold px-6 py-3 rounded-lg transition-colors text-sm"
               >
                 Suscribirse — Gs. 350.000/mes
               </a>
@@ -220,47 +244,53 @@ export default function QuantumPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d0d] border border-purple-500/30 rounded-xl p-6 mb-6">
-            <h2 className="text-white font-bold text-lg mb-1">Ingresá el rango de precios</h2>
-            <p className="text-gray-500 text-sm mb-5">Los niveles se distribuyen con la función n² (más densos cerca del mínimo)</p>
-            <div className="grid grid-cols-2 gap-4 mb-5">
+          <div className="bg-[#F7F8F9] border border-[#E8E8E8] rounded-lg p-8 mb-6">
+            <h2
+              className="text-[#111111] text-xl mb-2"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 500 }}
+            >
+              Ingresá el rango de precios
+            </h2>
+            <p className="text-[#666666] text-sm mb-7">
+              Los niveles se distribuyen con la función n² (más densos cerca del mínimo)
+            </p>
+            <div className="grid grid-cols-2 gap-5 mb-6">
               <div>
-                <label className="text-gray-400 text-sm mb-2 block">Máximo (High)</label>
+                <label className="text-[#666666] text-sm mb-2 block font-medium">Máximo (High)</label>
                 <input
                   type="number"
                   value={maxVal}
                   onChange={(e) => setMaxVal(e.target.value)}
                   placeholder="3100"
                   step="0.01"
-                  className="w-full bg-[#0d0d0d] border border-gray-700 rounded-lg px-4 py-3 text-white text-xl focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full bg-white border border-[#E8E8E8] rounded-lg px-4 py-3 text-[#111111] text-xl focus:outline-none focus:border-[#C4A77D] transition-colors"
                 />
               </div>
               <div>
-                <label className="text-gray-400 text-sm mb-2 block">Mínimo (Low)</label>
+                <label className="text-[#666666] text-sm mb-2 block font-medium">Mínimo (Low)</label>
                 <input
                   type="number"
                   value={minVal}
                   onChange={(e) => setMinVal(e.target.value)}
                   placeholder="2800"
                   step="0.01"
-                  className="w-full bg-[#0d0d0d] border border-gray-700 rounded-lg px-4 py-3 text-white text-xl focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full bg-white border border-[#E8E8E8] rounded-lg px-4 py-3 text-[#111111] text-xl focus:outline-none focus:border-[#C4A77D] transition-colors"
                 />
               </div>
             </div>
 
-            {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
             <button
               type="submit"
               disabled={calculating}
-              className="w-full font-bold py-4 rounded-lg text-lg transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-70 text-white"
-              style={{ background: 'linear-gradient(135deg, #7e22ce, #9333ea)' }}
+              className="w-full font-semibold py-4 rounded-lg text-base transition-all hover:bg-[#333333] active:scale-95 disabled:opacity-70 text-white bg-[#111111]"
             >
-              {calculating ? '⏳ Calculando...' : '🔬 Calcular Niveles Cuánticos'}
+              {calculating ? 'Calculando...' : 'Calcular Niveles Cuadráticos'}
             </button>
 
             {!access.paid && (
-              <p className="text-center text-xs text-gray-600 mt-3">
+              <p className="text-center text-xs text-[#888888] mt-3">
                 Cada cálculo consume 1 uso gratuito · quedan {access.usesLeft}/3
               </p>
             )}
@@ -271,32 +301,28 @@ export default function QuantumPage() {
         {levels.length > 0 && (
           <>
             {/* n² curve visualization */}
-            <div className="mb-6 bg-[#0d0d0d] border border-purple-500/20 rounded-xl p-4 h-44 relative overflow-hidden">
-              <p className="text-purple-400 text-xs uppercase tracking-widest absolute top-3 left-4">
-                ψ(x)² — Distribución cuántica de probabilidad E=n²
+            <div className="mb-6 bg-[#F7F8F9] border border-[#E8E8E8] rounded-lg p-5 h-44 relative overflow-hidden">
+              <p className="text-[#C4A77D] text-xs uppercase tracking-widest absolute top-4 left-5">
+                ψ(x)² — Distribución cuántica E=n²
               </p>
               <svg viewBox="0 0 100 40" className="w-full h-full" preserveAspectRatio="none">
                 {[10, 20, 30].map((y) => (
-                  <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#ffffff08" strokeWidth="0.5" />
+                  <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#E8E8E8" strokeWidth="0.5" />
                 ))}
-                {/* Fibonacci reference (straight line) */}
-                <line x1="0" y1="38" x2="100" y2="4" stroke="#c9a227" strokeWidth="0.8" strokeDasharray="2,2" opacity="0.35" />
-                <text x="62" y="16" fontSize="3" fill="#c9a227" opacity="0.5">Fibonacci</text>
-                {/* n² curve (parabola) */}
+                <line x1="0" y1="38" x2="100" y2="4" stroke="#C4A77D" strokeWidth="0.8" strokeDasharray="2,2" opacity="0.5" />
+                <text x="62" y="16" fontSize="3" fill="#C4A77D" opacity="0.7">Fibonacci</text>
                 <path
                   d={`M 0 38 ${levels.map((lv) => `L ${lv.probability} ${38 - (lv.probability / 100) * 34}`).join(' ')}`}
-                  stroke="#9333ea"
+                  stroke="#111111"
                   strokeWidth="1.5"
                   fill="none"
                 />
-                {/* Shaded area */}
                 <path
                   d={`M 0 38 ${levels.map((lv) => `L ${lv.probability} ${38 - (lv.probability / 100) * 34}`).join(' ')} L 100 38 Z`}
-                  fill="#9333ea"
-                  opacity="0.1"
+                  fill="#111111"
+                  opacity="0.05"
                 />
-                <text x="30" y="20" fontSize="3" fill="#9333ea" opacity="0.7">n²</text>
-                {/* Level markers */}
+                <text x="30" y="20" fontSize="3" fill="#111111" opacity="0.5">n²</text>
                 {levels.map((lv) => (
                   <circle
                     key={lv.n}
@@ -304,8 +330,8 @@ export default function QuantumPage() {
                     cy={38 - (lv.probability / 100) * 34}
                     r="1.6"
                     fill={
-                      lv.type === 'distribution' ? '#ef4444' :
-                      lv.type === 'equilibrium'  ? '#eab308' : '#22c55e'
+                      lv.type === 'distribution' ? '#EF4444' :
+                      lv.type === 'equilibrium'  ? '#C4A77D' : '#22C55E'
                     }
                   />
                 ))}
@@ -317,83 +343,83 @@ export default function QuantumPage() {
               {levels.map((level) => (
                 <div
                   key={level.n}
-                  className={`p-4 rounded-lg border ${
+                  className={`p-5 rounded-lg border ${
                     level.type === 'accumulation'
-                      ? 'bg-green-900/20 border-green-500/30'
+                      ? 'bg-green-50 border-green-200'
                       : level.type === 'distribution'
-                      ? 'bg-red-900/20 border-red-500/30'
-                      : 'bg-yellow-900/20 border-yellow-500/30'
+                      ? 'bg-red-50 border-red-200'
+                      : 'bg-[#C4A77D]/5 border-[#C4A77D]/20'
                   }`}
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="text-2xl font-mono font-bold text-white">
+                      <span className="text-2xl font-mono font-bold text-[#111111]">
                         ${level.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
-                      <span className="ml-3 text-sm text-gray-400 font-mono">n={level.n}</span>
+                      <span className="ml-3 text-sm text-[#888888] font-mono">n={level.n}</span>
                     </div>
                     <div className="text-right">
-                      <div className={`font-bold text-sm ${
-                        level.strength === 'extreme' ? 'text-purple-400' :
-                        level.strength === 'strong'  ? 'text-[#c9a227]'  : 'text-gray-400'
+                      <div className={`font-semibold text-sm ${
+                        level.strength === 'extreme' ? 'text-[#C4A77D]' :
+                        level.strength === 'strong'  ? 'text-[#B8953C]' : 'text-[#888888]'
                       }`}>
-                        {level.strength === 'extreme' ? '⚡ EXTREMO' :
-                         level.strength === 'strong'  ? '🔥 FUERTE'  : '📊 MODERADO'}
+                        {level.strength === 'extreme' ? 'EXTREMO' :
+                         level.strength === 'strong'  ? 'FUERTE'  : 'MODERADO'}
                       </div>
-                      <div className="text-xs text-gray-500 mt-0.5">{level.probability}% energía</div>
+                      <div className="text-xs text-[#888888] mt-0.5">{level.probability}% energía</div>
                     </div>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-2">
                     {level.type === 'accumulation' && (
                       <>
-                        <span className="bg-green-600/30 text-green-400 text-xs px-2 py-1 rounded-full">
-                          🛡️ Zona de Rebote Alcista
+                        <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full border border-green-200">
+                          Zona de Rebote Alcista
                         </span>
-                        <span className="bg-blue-600/30 text-blue-400 text-xs px-2 py-1 rounded-full">
-                          🔄 Si rompe → actúa como Resistencia
+                        <span className="bg-blue-50 text-blue-600 text-xs px-3 py-1 rounded-full border border-blue-200">
+                          Si rompe actúa como Resistencia
                         </span>
                         {level.n === 0 && (
-                          <span className="bg-purple-600/30 text-purple-400 text-xs px-2 py-1 rounded-full">
-                            ⚡ Base cuántica extrema
+                          <span className="bg-[#C4A77D]/10 text-[#B8953C] text-xs px-3 py-1 rounded-full border border-[#C4A77D]/20">
+                            Base cuántica extrema
                           </span>
                         )}
                         {(level.strength === 'strong' || level.strength === 'extreme') && (
-                          <span className="bg-orange-600/30 text-orange-400 text-xs px-2 py-1 rounded-full">
-                            🔄 Breakout Zone — pullback posible
+                          <span className="bg-orange-50 text-orange-600 text-xs px-3 py-1 rounded-full border border-orange-200">
+                            Breakout Zone — pullback posible
                           </span>
                         )}
                       </>
                     )}
                     {level.type === 'equilibrium' && (
                       <>
-                        <span className="bg-yellow-600/30 text-yellow-400 text-xs px-2 py-1 rounded-full">
-                          ⚖️ Zona de Equilibrio
+                        <span className="bg-[#C4A77D]/8 text-[#B8953C] text-xs px-3 py-1 rounded-full border border-[#C4A77D]/20">
+                          Zona de Equilibrio
                         </span>
-                        <span className="bg-purple-600/30 text-purple-400 text-xs px-2 py-1 rounded-full">
-                          ⚡ Flip Zone — Soporte ↔ Resistencia
+                        <span className="bg-purple-50 text-purple-600 text-xs px-3 py-1 rounded-full border border-purple-200">
+                          Flip Zone — Soporte / Resistencia
                         </span>
-                        <span className="bg-gray-600/30 text-gray-400 text-xs px-2 py-1 rounded-full">
-                          📊 Posible continuación o reversión
+                        <span className="bg-gray-100 text-[#666666] text-xs px-3 py-1 rounded-full border border-gray-200">
+                          Posible continuación o reversión
                         </span>
                       </>
                     )}
                     {level.type === 'distribution' && (
                       <>
-                        <span className="bg-red-600/30 text-red-400 text-xs px-2 py-1 rounded-full">
-                          🛡️ Zona de Rebote Bajista
+                        <span className="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full border border-red-200">
+                          Zona de Rebote Bajista
                         </span>
-                        <span className="bg-blue-600/30 text-blue-400 text-xs px-2 py-1 rounded-full">
-                          🔄 Si rompe → actúa como Soporte
+                        <span className="bg-blue-50 text-blue-600 text-xs px-3 py-1 rounded-full border border-blue-200">
+                          Si rompe actúa como Soporte
                         </span>
                         {level.n === N && (
-                          <span className="bg-purple-600/30 text-purple-400 text-xs px-2 py-1 rounded-full">
-                            ⚡ Techo cuántico extremo
+                          <span className="bg-[#C4A77D]/10 text-[#B8953C] text-xs px-3 py-1 rounded-full border border-[#C4A77D]/20">
+                            Techo cuántico extremo
                           </span>
                         )}
                         {(level.strength === 'strong' || level.strength === 'extreme') && (
-                          <span className="bg-orange-600/30 text-orange-400 text-xs px-2 py-1 rounded-full">
-                            🔄 Breakout Zone — pullback posible
+                          <span className="bg-orange-50 text-orange-600 text-xs px-3 py-1 rounded-full border border-orange-200">
+                            Breakout Zone — pullback posible
                           </span>
                         )}
                       </>
@@ -404,54 +430,63 @@ export default function QuantumPage() {
             </div>
 
             {/* Legend */}
-            <div className="mt-6 grid grid-cols-3 gap-3 text-center text-xs text-gray-400">
-              <div className="bg-green-900/20 border border-green-500/20 rounded-xl p-3">
-                <div className="text-green-400 font-bold mb-1">🟢 Acumulación</div>
-                <div>n=0,1,2,3<br />Alta prob. de rebote alcista</div>
+            <div className="mt-8 grid grid-cols-3 gap-4 text-center text-xs text-[#666666]">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="text-green-600 font-semibold mb-2 uppercase tracking-wide">Acumulación</div>
+                <div className="text-[#888888]">n=0,1,2,3<br />Alta prob. de rebote alcista</div>
               </div>
-              <div className="bg-yellow-900/20 border border-yellow-500/20 rounded-xl p-3">
-                <div className="text-yellow-400 font-bold mb-1">⚖️ Equilibrio</div>
-                <div>n=4,5<br />Reversión o continuación</div>
+              <div className="bg-[#C4A77D]/8 border border-[#C4A77D]/20 rounded-lg p-4">
+                <div className="text-[#B8953C] font-semibold mb-2 uppercase tracking-wide">Equilibrio</div>
+                <div className="text-[#888888]">n=4,5<br />Reversión o continuación</div>
               </div>
-              <div className="bg-red-900/20 border border-red-500/20 rounded-xl p-3">
-                <div className="text-red-400 font-bold mb-1">🔴 Distribución</div>
-                <div>n=6,7,8<br />Alta prob. de rebote bajista</div>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="text-red-500 font-semibold mb-2 uppercase tracking-wide">Distribución</div>
+                <div className="text-[#888888]">n=6,7,8<br />Alta prob. de rebote bajista</div>
               </div>
             </div>
 
             {/* Breakout vs Rejection guide */}
-            <div className="mt-4 bg-[#0d0d1a] border border-blue-500/20 rounded-xl p-4">
-              <h4 className="text-blue-400 font-bold mb-3 text-sm">📖 Guía Breakout vs Rebote</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-400">
-                <div className="flex items-start gap-2">
-                  <span className="text-blue-400 text-base flex-shrink-0">🔄</span>
-                  <div><span className="text-blue-400 font-semibold">Breakout Zone</span><br />Si el precio rompe con volumen, esperar pullback para entrar en continuación</div>
+            <div className="mt-6 bg-[#F7F8F9] border border-[#E8E8E8] rounded-lg p-6">
+              <h4 className="text-[#111111] font-semibold mb-4 text-sm">Guía Breakout vs Rebote</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-[#666666]">
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1 shrink-0" />
+                  <div>
+                    <span className="text-[#111111] font-semibold block mb-1">Breakout Zone</span>
+                    Si el precio rompe con volumen, esperar pullback para entrar en continuación
+                  </div>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400 text-base flex-shrink-0">🛡️</span>
-                  <div><span className="text-green-400 font-semibold">Rejection Zone</span><br />Alta probabilidad de rebote. Buscar señales de reversión en velas</div>
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1 shrink-0" />
+                  <div>
+                    <span className="text-[#111111] font-semibold block mb-1">Rejection Zone</span>
+                    Alta probabilidad de rebote. Buscar señales de reversión en velas
+                  </div>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-purple-400 text-base flex-shrink-0">⚡</span>
-                  <div><span className="text-purple-400 font-semibold">Flip Zone</span><br />El nivel cambia de rol: soporte roto se convierte en resistencia y viceversa</div>
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#C4A77D] mt-1 shrink-0" />
+                  <div>
+                    <span className="text-[#111111] font-semibold block mb-1">Flip Zone</span>
+                    El nivel cambia de rol: soporte roto se convierte en resistencia y viceversa
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Fibonacci comparison */}
-            <div className="bg-[#1a1a2e] border border-[#c9a227]/20 rounded-xl p-5 mt-4">
-              <h4 className="text-[#c9a227] font-bold mb-2">📐 ¿Por qué es diferente a Fibonacci?</h4>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Fibonacci distribuye niveles uniformemente (23.6%, 38.2%, 50%, 61.8%).<br />
-                Los niveles cuánticos siguen E=n² concentrando más niveles cerca del mínimo,
+            <div className="bg-white border border-[#E8E8E8] rounded-lg p-6 mt-5">
+              <h4 className="text-[#111111] font-semibold mb-3 text-sm">Por qué es diferente a Fibonacci</h4>
+              <p className="text-[#666666] text-sm leading-relaxed">
+                Fibonacci distribuye niveles uniformemente (23.6%, 38.2%, 50%, 61.8%).
+                Los niveles cuadráticos siguen E=n² concentrando más niveles cerca del mínimo,
                 igual que los electrones en un átomo tienen más niveles de energía cerca del núcleo.
                 Esto genera zonas de alta densidad energética donde el precio tiende a reaccionar con mayor fuerza.
               </p>
             </div>
 
             {/* Disclaimer */}
-            <p className="text-gray-600 text-xs mt-6 text-center">
-              🔬 Herramienta experimental con fines educativos. No es asesoramiento financiero. No inviertas más de lo que estás dispuesto a perder.
+            <p className="text-[#BBBBBB] text-xs mt-8 text-center">
+              Herramienta con fines educativos. No constituye asesoramiento financiero.
             </p>
           </>
         )}
