@@ -29,7 +29,7 @@ export default function HomePage() {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     try {
-      const res = await fetch('https://formspree.io/f/xpwzgkpr', {
+      const res = await fetch('https://formspree.io/f/xreapnkb', {
         method: 'POST',
         body: formData,
         headers: { 'Accept': 'application/json' },
