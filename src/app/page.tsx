@@ -27,16 +27,17 @@ export default function HomePage() {
     setLoading(true);
     setFormError('');
     const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
+    const data = Object.fromEntries(new FormData(form).entries());
     try {
       const res = await fetch('https://formspree.io/f/xreapnkb', {
         method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' },
+        body: JSON.stringify(data),
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       });
+      const json = await res.json();
       if (res.ok) { setSuccess(true); form.reset(); }
-      else setFormError('Error al enviar. Intenta de nuevo.');
-    } catch { setFormError('Error de conexión.'); }
+      else setFormError(json?.errors?.map((err: { message: string }) => err.message).join(', ') || 'Error al enviar. Intenta de nuevo.');
+    } catch { setFormError('Error al enviar. Intenta de nuevo.'); }
     setLoading(false);
   };
 
