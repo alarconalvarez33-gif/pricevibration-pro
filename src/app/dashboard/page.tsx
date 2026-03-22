@@ -9,21 +9,17 @@ import GannCalculator from '@/components/GannCalculator'
 import GannCosmogram from '@/components/GannCosmogram'
 import AstroGann from '@/components/AstroGann'
 import NewsWidget from '@/components/NewsWidget'
-import { AdvancedChart, MiniChart, EconomicCalendar } from '@/components/TradingView'
-import PriceTicker from '@/components/PriceTicker'
 import { GannLevels } from '@/lib/gann'
 import Link from 'next/link'
 import PersonalizedGreeting from '@/components/PersonalizedGreeting'
 
-type ModuleType = 'calculator' | 'astro' | 'chart' | 'calendar'
+type ModuleType = 'calculator' | 'astro'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [levels, setLevels] = useState<GannLevels | null>(null)
   const [activeModule, setActiveModule] = useState<ModuleType>('calculator')
-  const [symbol, setSymbol] = useState('OANDA:XAUUSD')
-  const [showMiniCharts, setShowMiniCharts] = useState(true)
   const [myCourses, setMyCourses] = useState<{ productId: string; title: string; url: string; icon: string; paidAt: string | null }[]>([])
 
   useEffect(() => {
@@ -113,8 +109,6 @@ export default function DashboardPage() {
   const modules = [
     { id: 'calculator' as ModuleType, label: 'Gann Calculator', icon: '📊' },
     { id: 'astro' as ModuleType, label: 'Astro-Gann', icon: '☿' },
-    { id: 'chart' as ModuleType, label: 'Live Chart', icon: '📈' },
-    { id: 'calendar' as ModuleType, label: 'Calendar', icon: '📅' },
   ]
 
   return (
@@ -256,24 +250,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Mini Charts Row */}
-          {showMiniCharts && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <MiniChart symbol="OANDA:XAUUSD" height={180} />
-              <MiniChart symbol="OANDA:XAGUSD" height={180} />
-              <MiniChart symbol="BITSTAMP:BTCUSD" height={180} />
-              <MiniChart symbol="FX:EURUSD" height={180} />
-            </div>
-          )}
-
-          {/* Toggle Mini Charts */}
-          <button
-            onClick={() => setShowMiniCharts(!showMiniCharts)}
-            className="mb-4 text-sm text-terminal-muted hover:text-gold-500 transition-colors"
-          >
-            {showMiniCharts ? '▲ Hide Mini Charts' : '▼ Show Mini Charts'}
-          </button>
-
           {/* Module Tabs */}
           <div className="flex flex-wrap gap-2 mb-6">
             {modules.map((mod) => (
@@ -291,27 +267,6 @@ export default function DashboardPage() {
               </button>
             ))}
           </div>
-
-          {/* Symbol Selector for Chart */}
-          {activeModule === 'chart' && (
-            <div className="mb-4">
-              <label className="block text-terminal-muted text-sm mb-2">Select Symbol</label>
-              <select
-                value={symbol}
-                onChange={(e) => setSymbol(e.target.value)}
-                className="bg-terminal-card border border-terminal-border rounded-lg px-4 py-2 text-white focus:border-gold-500 focus:outline-none"
-              >
-                <option value="OANDA:XAUUSD">XAU/USD (Gold)</option>
-                <option value="OANDA:XAGUSD">XAG/USD (Silver)</option>
-                <option value="FX:EURUSD">EUR/USD</option>
-                <option value="FX:GBPUSD">GBP/USD</option>
-                <option value="BITSTAMP:BTCUSD">BTC/USD</option>
-                <option value="BITSTAMP:ETHUSD">ETH/USD</option>
-                <option value="FOREXCOM:SPXUSD">S&P 500</option>
-                <option value="TVC:DXY">US Dollar Index</option>
-              </select>
-            </div>
-          )}
 
           {/* Calculator Module */}
           {activeModule === 'calculator' && (
@@ -349,27 +304,6 @@ export default function DashboardPage() {
     📊 Historical Analysis (Pro/Whale)
   </button>
 </Link>
-          {/* Live Chart Module */}
-          {activeModule === 'chart' && (
-            <div className="space-y-4">
-              <AdvancedChart symbol={symbol} height={600} />
-            </div>
-          )}
-
-          {/* Economic Calendar Module */}
-          {activeModule === 'calendar' && (
-            <div className="grid lg:grid-cols-2 gap-6">
-              <EconomicCalendar height={500} />
-              <div className="card-terminal">
-                <h3 className="text-lg font-bold text-white mb-4">Trading Notes</h3>
-                <textarea
-                  placeholder="Write your trading notes here..."
-                  className="w-full h-96 bg-terminal-bg border border-terminal-border rounded-lg p-4 text-white placeholder-terminal-muted focus:border-gold-500 focus:outline-none resize-none"
-                />
-              </div>
-            </div>
-          )}
-
           {/* Quick Stats (when calculator has results) */}
           {levels && activeModule === 'calculator' && (
             <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">

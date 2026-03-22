@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import PriceTicker from '@/components/PriceTicker';
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -42,7 +41,6 @@ export default function Navbar() {
   const navLinks = [
     { href: '/', label: 'Inicio' },
     { href: '/hub', label: 'Signal Hub' },
-    { href: '/quantum', label: 'Calculadora' },
     { href: '/courses', label: 'Cursos' },
     ...(isQuantum
       ? [{ href: '/dashboard', label: 'Dashboard' }]
@@ -248,9 +246,6 @@ export default function Navbar() {
         )}
       </nav>
 
-      <div className="fixed left-0 right-0 z-40" style={{ top: hasBanner ? '96px' : '80px' }}>
-        <PriceTicker />
-      </div>
     </>
   );
 }
