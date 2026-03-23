@@ -21,7 +21,7 @@ export async function POST(request: Request) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Sacred Levels <noreply@sacredlevels.com>',
+          from: 'Sacred Levels <onboarding@resend.dev>',
           to: ADMIN_EMAIL,
           reply_to: email,
           subject: `Contacto: ${name} — Sacred Levels`,
