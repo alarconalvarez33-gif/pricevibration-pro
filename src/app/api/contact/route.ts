@@ -50,11 +50,15 @@ export async function POST(request: Request) {
       if (!res.ok) {
         const err = await res.text()
         console.error('Resend error:', err)
-        // Aún así retornamos success para no bloquear al usuario
+        return NextResponse.json({ error: `Resend: ${err}` }, { status: 500 })
       }
+
+      return NextResponse.json({ success: true })
     }
 
-    return NextResponse.json({ success: true })
+    // Sin API key configurada
+    console.error('RESEND_API_KEY no configurada')
+    return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
   } catch (error) {
     console.error('Contact API error:', error)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
