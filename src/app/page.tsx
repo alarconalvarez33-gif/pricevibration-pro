@@ -28,21 +28,22 @@ export default function HomePage() {
     setFormError('');
     setFormSuccess(false);
     const form = e.currentTarget;
-    const formData = new FormData(form);
+    const data = Object.fromEntries(new FormData(form).entries());
     try {
-      const response = await fetch('https://formspree.io/f/xreapnkb', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
-      if (response.ok) {
+      const json = await response.json();
+      if (response.ok && json.success) {
         setFormSuccess(true);
         form.reset();
       } else {
-        setFormError('Error al enviar. Intenta de nuevo.');
+        setFormError(json.error || 'Error al enviar. Intenta de nuevo.');
       }
     } catch {
-      setFormError('Error de conexión. Verifica tu internet.');
+      setFormError('Error al enviar. Escribinos a info@sacredlevels.com');
     }
     setFormLoading(false);
   };
