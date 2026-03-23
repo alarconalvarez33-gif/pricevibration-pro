@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import LegalDisclaimer from '@/components/LegalDisclaimer'
 
 const COURSES = [
   {
@@ -374,6 +375,10 @@ export default function BillingPage() {
               </Link>
             </div>
           )}
+
+          <div className="mt-16">
+            <LegalDisclaimer variant="full" />
+          </div>
         </div>
       </div>
 

@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
+import LegalDisclaimer from '@/components/LegalDisclaimer'
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
 const BG     = '#0A0A0B'
@@ -222,6 +223,8 @@ export default function QuantumPage() {
           </div>
         </div>
       </div>
+
+      <LegalDisclaimer variant="banner" />
 
       <div className="max-w-4xl mx-auto px-6 py-12">
 
@@ -507,12 +510,9 @@ export default function QuantumPage() {
               </p>
             </div>
 
-            <p
-              className="text-[9px] mt-8 text-center uppercase tracking-[0.2em]"
-              style={{ color: '#222', fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Herramienta con fines educativos. No constituye asesoramiento financiero.
-            </p>
+            <div className="mt-8">
+              <LegalDisclaimer variant="full" />
+            </div>
           </>
         )}
       </div>

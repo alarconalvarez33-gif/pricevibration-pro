@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import LegalDisclaimer from '@/components/LegalDisclaimer';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -333,6 +334,8 @@ export default function QuantumSignalHub() {
           </div>
         </div>
       </header>
+
+      <LegalDisclaimer variant="banner" />
 
       <main className="max-w-[1800px] mx-auto px-6 py-4">
 
@@ -700,19 +703,9 @@ export default function QuantumSignalHub() {
       </main>
 
       {/* Disclaimer */}
-      <div className="border-t mt-4" style={{ borderColor: BORDER, backgroundColor: CARD }}>
+      <div className="border-t" style={{ borderColor: BORDER }}>
         <div className="max-w-[1800px] mx-auto px-6 py-5">
-          <p className="text-[8px] uppercase tracking-[0.2em] mb-2 font-semibold" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
-            Aviso Legal / Legal Disclaimer
-          </p>
-          <p className="text-[9px] leading-relaxed" style={{ color: '#2a2a2a' }}>
-            <span className="font-medium" style={{ color: '#333' }}>ES:</span>{' '}
-            El contenido de este sitio es exclusivamente de carácter educativo e informativo. Las señales, análisis y niveles cuánticos presentados NO constituyen asesoría de inversión, recomendación financiera ni oferta de compra o venta de ningún activo. Operar en mercados financieros conlleva un riesgo elevado de pérdida de capital. El usuario es el único responsable de sus decisiones de inversión.
-          </p>
-          <p className="text-[9px] leading-relaxed mt-1.5" style={{ color: '#2a2a2a' }}>
-            <span className="font-medium" style={{ color: '#333' }}>EN:</span>{' '}
-            All content is provided for educational and informational purposes only. Signals, analysis, and quantum levels do NOT constitute investment advice. Trading financial markets involves substantial risk of capital loss.
-          </p>
+          <LegalDisclaimer variant="full" />
         </div>
       </div>
 
