@@ -190,10 +190,10 @@ export default function QuantumPage() {
               className="text-base font-bold text-white"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Calculadora Cuadrática
+              Quantum Tech
             </h1>
             <p className="text-[10px] mt-0.5" style={{ color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}>
-              Distribución E=n² aplicada al precio
+              Niveles cuánticos E=n² · Sacred Levels
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -228,35 +228,81 @@ export default function QuantumPage() {
 
       <div className="max-w-4xl mx-auto px-6 py-12">
 
+        {/* Guía de uso */}
+        <div className="mb-8 border" style={{ borderColor: BORDER, backgroundColor: CARD }}>
+          <div className="px-6 py-3 border-b flex items-center gap-2" style={{ borderColor: BORDER, backgroundColor: '#0d0d0e' }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: CYAN }} />
+            <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}>
+              Cómo usar Quantum Tech
+            </span>
+          </div>
+          <div className="p-6 grid sm:grid-cols-3 gap-6">
+            {[
+              {
+                step: '01',
+                title: 'Ingresá el rango',
+                desc: 'Tomá el High y Low de la vela diaria o semanal del activo que querés analizar (Oro, EUR/USD, BTC, etc.)',
+              },
+              {
+                step: '02',
+                title: 'Obtenés los niveles',
+                desc: 'El algoritmo E=n² distribuye niveles cuánticos de soporte y resistencia con mayor densidad cerca del mínimo, como los electrones en un átomo.',
+              },
+              {
+                step: '03',
+                title: 'Operá con precisión',
+                desc: 'Usá los niveles como zonas de entrada, stop-loss y take-profit. Los niveles con mayor probabilidad (%) son los más relevantes.',
+              },
+            ].map(item => (
+              <div key={item.step} className="flex gap-4">
+                <span
+                  className="text-2xl font-bold shrink-0 leading-none mt-0.5"
+                  style={{ color: `${CYAN}30`, fontFamily: "'JetBrains Mono', monospace" }}
+                >
+                  {item.step}
+                </span>
+                <div>
+                  <p className="text-white text-sm font-semibold mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                    {item.title}
+                  </p>
+                  <p className="text-[11px] leading-relaxed" style={{ color: MUTED }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="px-6 pb-4 flex flex-wrap gap-4 border-t pt-4" style={{ borderColor: BORDER }}>
+            {[
+              { label: 'Mercados', value: 'Forex · Oro · Crypto · Índices' },
+              { label: 'Algoritmo', value: 'E = n² (distribución cuántica)' },
+              { label: 'Precisión', value: 'Hasta 20 niveles por rango' },
+            ].map(item => (
+              <div key={item.label} className="flex items-center gap-2">
+                <span className="text-[9px] uppercase tracking-[0.2em]" style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}>{item.label}:</span>
+                <span className="text-[10px]" style={{ color: MUTED, fontFamily: "'JetBrains Mono', monospace" }}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Free trial banner */}
         {!access.paid && (
           <div
-            className="border mb-10 p-6"
+            className="border mb-8 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
             style={{ borderColor: `${CYAN}20`, backgroundColor: `${CYAN}05` }}
           >
-            <h3
-              className="text-lg font-bold text-white mb-2"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Prueba Gratuita
-            </h3>
-            <p className="text-sm mb-4" style={{ color: MUTED }}>
-              Prueba los Niveles Cuadráticos{' '}
-              <span className="font-semibold" style={{ color: CYAN }}>3 veces GRATIS</span>{' '}
-              sin registrarte.
-            </p>
-            {access.usesLeft > 0 && (
-              <p
-                className="text-sm font-mono"
-                style={{ color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}
-              >
-                {access.usesLeft}/3 pruebas restantes
+            <div>
+              <p className="text-white font-semibold text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                Prueba gratuita —{' '}
+                <span style={{ color: CYAN }}>{access.usesLeft}/3 usos restantes</span>
               </p>
-            )}
+              <p className="text-[11px]" style={{ color: MUTED }}>Sin registro. Acceso completo con suscripción Quantum Access.</p>
+            </div>
             {access.usesLeft <= 0 && (
               <a
                 href="/billing"
-                className="inline-block border px-6 py-3 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
+                className="shrink-0 border px-6 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
                 style={{ backgroundColor: CYAN, borderColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
               >
                 Suscribirse — Gs. 350.000/mes
@@ -321,7 +367,7 @@ export default function QuantumPage() {
               className="w-full py-4 text-sm font-bold uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
               style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              {calculating ? 'Calculando...' : 'Calcular Niveles Cuadráticos'}
+              {calculating ? 'Calculando...' : 'Generar Niveles Quantum'}
             </button>
 
             {!access.paid && (

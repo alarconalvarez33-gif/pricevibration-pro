@@ -107,7 +107,7 @@ export default function DashboardPage() {
   }
 
   const modules = [
-    { id: 'calculator' as ModuleType, label: 'Gann Calculator', icon: '📊' },
+    { id: 'calculator' as ModuleType, label: 'Detector de Puntos Clave', icon: '📊' },
     { id: 'astro' as ModuleType, label: 'Astro-Gann', icon: '☿' },
   ]
 
