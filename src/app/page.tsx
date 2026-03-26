@@ -129,6 +129,49 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── VIDEO TUTORIAL ───────────────────────────────────────── */}
+        <section className="py-20 px-6" style={{ backgroundColor: C.bg }}>
+          <div className="max-w-[800px] mx-auto">
+            <div className="text-center mb-8">
+              <p
+                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
+                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Tutorial
+              </p>
+              <h2
+                className="text-3xl font-bold text-white mb-3"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Cómo Usar Sacred Levels
+              </h2>
+              <p className="text-sm" style={{ color: C.muted }}>
+                Mirá este tutorial rápido para comenzar
+              </p>
+            </div>
+
+            {/* Video container */}
+            <div
+              className="relative w-full overflow-hidden rounded-xl"
+              style={{
+                paddingBottom: '56.25%', /* 16:9 */
+                backgroundColor: '#000',
+                boxShadow: '0 0 40px rgba(196, 167, 125, 0.08), 0 0 80px rgba(196, 167, 125, 0.04)',
+                border: `1px solid ${C.border}`,
+              }}
+            >
+              <iframe
+                className="absolute top-0 left-0 w-full h-full rounded-xl"
+                src="https://www.youtube.com/embed/nSOP0BqqNfw"
+                title="Cómo Usar Sacred Levels"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+
         {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
         <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
