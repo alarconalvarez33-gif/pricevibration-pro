@@ -222,7 +222,7 @@ export default function BillingPage() {
                 className="mb-8 p-4 border text-center text-xs font-medium"
                 style={{ borderColor: `${CYAN}20`, backgroundColor: `${CYAN}06`, color: CYAN }}
               >
-                3 usos gratuitos disponibles sin registrarse
+                7 días de prueba gratuita disponibles
               </div>
 
               {/* Payment badges — diseño intencional */}

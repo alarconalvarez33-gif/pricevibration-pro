@@ -202,7 +202,7 @@ export default function QuantumPage() {
                 className="border px-3 py-1 text-xs"
                 style={{ borderColor: `${CYAN}25`, backgroundColor: `${CYAN}08`, color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}
               >
-                {access.usesLeft}/3 usos gratis
+                {access.usesLeft > 0 ? `${access.usesLeft}d gratis` : 'Trial expirado'}
               </div>
             )}
             {access.paid && (
@@ -295,9 +295,11 @@ export default function QuantumPage() {
             <div>
               <p className="text-white font-semibold text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Prueba gratuita —{' '}
-                <span style={{ color: CYAN }}>{access.usesLeft}/3 usos restantes</span>
+                <span style={{ color: CYAN }}>
+                  {access.usesLeft > 0 ? `${access.usesLeft} día${access.usesLeft !== 1 ? 's' : ''} restante${access.usesLeft !== 1 ? 's' : ''}` : 'Expirada'}
+                </span>
               </p>
-              <p className="text-[11px]" style={{ color: MUTED }}>Sin registro. Acceso completo con suscripción Quantum Access.</p>
+              <p className="text-[11px]" style={{ color: MUTED }}>7 días gratis desde el primer acceso. Acceso completo con suscripción Quantum Access.</p>
             </div>
             {access.usesLeft <= 0 && (
               <a
@@ -370,9 +372,9 @@ export default function QuantumPage() {
               {calculating ? 'Calculando...' : 'Generar Niveles Quantum'}
             </button>
 
-            {!access.paid && (
+            {!access.paid && access.usesLeft > 0 && (
               <p className="text-center text-[9px] mt-3 uppercase tracking-[0.2em]" style={{ color: '#2a2a2a', fontFamily: "'Space Grotesk', sans-serif" }}>
-                Cada cálculo consume 1 uso · quedan {access.usesLeft}/3
+                Trial gratuito · {access.usesLeft} día{access.usesLeft !== 1 ? 's' : ''} restante{access.usesLeft !== 1 ? 's' : ''}
               </p>
             )}
           </div>
