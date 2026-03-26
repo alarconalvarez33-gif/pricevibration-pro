@@ -42,7 +42,10 @@ export default function Navbar() {
     { href: '/', label: 'Inicio' },
     { href: '/hub', label: 'Signal Hub' },
     ...(isQuantum
-      ? [{ href: '/dashboard', label: 'Dashboard' }]
+      ? [
+          { href: '/curso', label: 'Curso' },
+          { href: '/dashboard', label: 'Dashboard' },
+        ]
       : [{ href: '/billing', label: 'Planes' }]),
   ];
 
