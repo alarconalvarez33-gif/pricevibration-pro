@@ -141,6 +141,82 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
+        <section className="py-20 px-6" style={{ backgroundColor: '#0d0d0e' }}>
+          <div className="max-w-[900px] mx-auto">
+            <div className="text-center mb-10">
+              <p
+                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
+                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Curso Exclusivo
+              </p>
+              <h2
+                className="text-4xl font-bold text-white mb-3"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Super Estrategia
+              </h2>
+              <p className="text-sm" style={{ color: C.muted }}>
+                Aprende a operar con niveles sagrados y análisis cuantitativo
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-10 items-center">
+              {/* Flyer */}
+              <div
+                className="rounded-xl overflow-hidden"
+                style={{ border: `1px solid #222`, backgroundColor: '#111' }}
+              >
+                <img
+                  src="/super-estrategia.jpg"
+                  alt="Super Estrategia - Curso Exclusivo"
+                  style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
+                />
+              </div>
+
+              {/* Info */}
+              <div>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    'Niveles sagrados aplicados al trading',
+                    'Análisis cuantitativo paso a paso',
+                    'Gestión de riesgo profesional',
+                    'Estrategias probadas en mercados reales',
+                    'Acceso de por vida al material',
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm" style={{ color: C.muted }}>
+                      <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke={C.cyan} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <p
+                  className="text-4xl font-bold mb-1"
+                  style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
+                >
+                  Gs. 65.000
+                </p>
+                <p className="text-xs mb-6" style={{ color: C.muted }}>
+                  Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
+                </p>
+
+                <button
+                  onClick={handleBuyCurso}
+                  disabled={cursoLoading}
+                  className="w-full py-4 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+                  style={{ backgroundColor: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  {cursoLoading ? 'Procesando...' : 'Comprar Curso — Gs. 65.000'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── VIDEO TUTORIAL ───────────────────────────────────────── */}
         <section className="py-20 px-6" style={{ backgroundColor: C.bg }}>
           <div className="max-w-[800px] mx-auto">
@@ -608,112 +684,6 @@ export default function HomePage() {
             >
               Abrir Cuenta en Exness
             </a>
-          </div>
-        </section>
-
-        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
-        <section className="py-24 px-6 border-t" style={{ borderColor: C.border }}>
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                style={{ color: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Curso exclusivo
-              </p>
-              <h2
-                className="text-4xl font-bold text-white mb-3"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Super Estrategia
-              </h2>
-              <p className="text-sm" style={{ color: C.muted }}>
-                Aprende la estrategia completa paso a paso
-              </p>
-            </div>
-
-            <div
-              className="grid md:grid-cols-2 gap-0 border overflow-hidden"
-              style={{ borderColor: C.border }}
-            >
-              {/* Flyer */}
-              <div style={{ backgroundColor: '#111', minHeight: '320px' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/super-estrategia.jpg"
-                  alt="Super Estrategia"
-                  className="w-full h-full block"
-                  style={{ objectFit: 'contain', maxHeight: '420px' }}
-                />
-              </div>
-
-              {/* Info */}
-              <div
-                className="flex flex-col justify-between p-8 md:p-10"
-                style={{ backgroundColor: C.card }}
-              >
-                <div>
-                  <div
-                    className="inline-flex items-center gap-2 border px-3 py-1 mb-6"
-                    style={{ borderColor: '#C4A77D30', backgroundColor: '#C4A77D08' }}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#C4A77D' }} />
-                    <span className="text-[9px] font-bold uppercase tracking-[0.25em]" style={{ color: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}>
-                      Contenido Premium
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-white mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Super Estrategia - Contenido Exclusivo
-                  </h3>
-
-                  <div className="space-y-3 mb-8">
-                    {[
-                      'Estrategia completa explicada paso a paso',
-                      'Aplicable a Forex, Oro, Crypto e Índices',
-                      'Acceso inmediato tras el pago',
-                      'Pago único — sin cuotas mensuales',
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <span className="w-1 h-1 shrink-0" style={{ backgroundColor: '#C4A77D' }} />
-                        <span className="text-sm" style={{ color: C.muted }}>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-4">
-                    <div
-                      className="text-4xl font-bold mb-1"
-                      style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
-                    >
-                      Gs. 65.000
-                    </div>
-                    <p className="text-xs" style={{ color: C.subtle }}>
-                      Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={handleBuyCurso}
-                    disabled={cursoLoading}
-                    className="w-full py-4 text-sm font-bold uppercase tracking-[0.1em] transition-opacity hover:opacity-90 disabled:opacity-50"
-                    style={{ backgroundColor: '#C4A77D', color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    {cursoLoading ? 'Procesando...' : 'Comprar Ahora'}
-                  </button>
-
-                  <Link
-                    href="/curso"
-                    className="block text-center mt-3 text-xs uppercase tracking-[0.15em] transition-colors hover:text-white"
-                    style={{ color: C.subtle, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    Ver preview →
-                  </Link>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
