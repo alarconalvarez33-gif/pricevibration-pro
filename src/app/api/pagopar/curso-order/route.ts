@@ -60,6 +60,7 @@ export async function POST() {
       descripcion_resumen: CURSO.name,
       fecha_maxima_pago: fechaMaximaStr,
       forma_pago: 9,
+      url_retorno: 'https://sacredlevels.com/curso',
       comprador: {
         ruc: '',
         email: user.email,

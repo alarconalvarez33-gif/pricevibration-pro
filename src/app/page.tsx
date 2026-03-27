@@ -194,14 +194,20 @@ export default function HomePage() {
                   ))}
                 </ul>
 
-                <p
-                  className="text-4xl font-bold mb-1"
-                  style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
-                >
-                  Gs. 65.000
-                </p>
-                <p className="text-xs mb-6" style={{ color: C.muted }}>
+                <div className="flex items-baseline gap-3 mb-1">
+                  <p
+                    className="text-4xl font-bold"
+                    style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    Gs. 65.000
+                  </p>
+                  <p className="text-sm" style={{ color: C.muted }}>/ $10 USD</p>
+                </div>
+                <p className="text-xs mb-2" style={{ color: C.muted }}>
                   Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
+                </p>
+                <p className="text-[10px] mb-6" style={{ color: '#444' }}>
+                  Internacionales: podés pagar con tarjeta de crédito/débito internacional en el checkout. El contenido es educativo y no constituye asesoramiento financiero.
                 </p>
 
                 <button
