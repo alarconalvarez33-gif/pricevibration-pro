@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 const BG     = '#0A0A0B'
 const CARD   = '#141415'
@@ -13,9 +14,23 @@ const DARK   = '#0d0d0e'
 export default function CursoPage() {
   const { data: session, status } = useSession()
 
-  const plan = session?.user?.plan || 'free'
-  const role = (session?.user as any)?.role || 'user'
-  const hasAccess = status === 'authenticated' && (plan !== 'free' || role === 'admin')
+  const plan            = session?.user?.plan || 'free'
+  const role            = (session?.user as any)?.role || 'user'
+  const cursoPurchased  = (session?.user as any)?.cursoPurchased === true
+  const hasAccess = status === 'authenticated' && (plan !== 'free' || cursoPurchased || role === 'admin')
+  const [buying, setBuying] = useState(false)
+
+  const handleBuy = async () => {
+    if (!session) { window.location.href = '/login?redirect=/curso'; return }
+    setBuying(true)
+    try {
+      const res = await fetch('/api/pagopar/curso-order', { method: 'POST' })
+      const data = await res.json()
+      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl
+      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'))
+    } catch { alert('Error al procesar el pago') }
+    setBuying(false)
+  }
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}>
@@ -106,29 +121,41 @@ export default function CursoPage() {
               className="text-2xl font-bold text-white mb-3"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Contenido exclusivo
+              Super Estrategia
             </h3>
-            <p className="text-sm mb-2" style={{ color: MUTED }}>
-              Este curso está disponible solo para suscriptores activos de Sacred Levels.
+            <p className="text-sm mb-1" style={{ color: MUTED }}>
+              Comprá el curso o suscribite a Quantum Access para desbloquear este contenido.
             </p>
-            <p className="text-sm mb-10" style={{ color: MUTED }}>
-              {status === 'unauthenticated'
-                ? 'Iniciá sesión y suscribite para acceder.'
-                : 'Tu plan actual no incluye acceso a este contenido.'}
+            <p
+              className="text-3xl font-bold mb-2 mt-4"
+              style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
+            >
+              Gs. 65.000
+            </p>
+            <p className="text-xs mb-8" style={{ color: MUTED }}>
+              Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={handleBuy}
+                disabled={buying}
+                className="px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+                style={{ backgroundColor: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                {buying ? 'Procesando...' : 'Comprar Curso — Gs. 65.000'}
+              </button>
               <Link
                 href="/billing"
-                className="inline-block px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
-                style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+                className="inline-block border px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] transition-colors hover:text-white text-center"
+                style={{ borderColor: BORDER, color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Ver planes — desde Gs. 350.000/mes
+                Ver plan Quantum Access
               </Link>
               {status === 'unauthenticated' && (
                 <Link
                   href="/login?redirect=/curso"
-                  className="inline-block border px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] transition-colors hover:text-white"
+                  className="inline-block border px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] transition-colors hover:text-white text-center"
                   style={{ borderColor: BORDER, color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
                 >
                   Iniciar Sesión

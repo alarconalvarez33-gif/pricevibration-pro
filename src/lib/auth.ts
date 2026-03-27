@@ -42,6 +42,7 @@ export const authOptions: NextAuthOptions = {
           role: user.role,
           trialUses: user.trialUses,
           trialExpired: user.trialExpired,
+          cursoPurchased: user.cursoPurchased,
           subscriptionStatus: user.subscriptionStatus,
           autoRenew: user.autoRenew,
           nextBillingDate: user.nextBillingDate?.toISOString() || null,
@@ -86,6 +87,7 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as any).role
         token.trialUses = (user as any).trialUses
         token.trialExpired = (user as any).trialExpired
+        token.cursoPurchased = (user as any).cursoPurchased
         token.subscriptionStatus = (user as any).subscriptionStatus
         token.autoRenew = (user as any).autoRenew
         token.nextBillingDate = (user as any).nextBillingDate
@@ -102,6 +104,7 @@ export const authOptions: NextAuthOptions = {
         user.role = token.role
         user.trialUses = token.trialUses
         user.trialExpired = token.trialExpired
+        user.cursoPurchased = token.cursoPurchased
         user.subscriptionStatus = token.subscriptionStatus
         user.autoRenew = token.autoRenew
         user.nextBillingDate = token.nextBillingDate

@@ -21,6 +21,18 @@ export default function HomePage() {
   const [formLoading, setFormLoading] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const [formError, setFormError] = useState('');
+  const [cursoLoading, setCursoLoading] = useState(false);
+
+  const handleBuyCurso = async () => {
+    setCursoLoading(true);
+    try {
+      const res = await fetch('/api/pagopar/curso-order', { method: 'POST' });
+      const data = await res.json();
+      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
+      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
+    } catch { alert('Error al procesar el pago'); }
+    setCursoLoading(false);
+  };
 
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -596,6 +608,112 @@ export default function HomePage() {
             >
               Abrir Cuenta en Exness
             </a>
+          </div>
+        </section>
+
+        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
+        <section className="py-24 px-6 border-t" style={{ borderColor: C.border }}>
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <p
+                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
+                style={{ color: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Curso exclusivo
+              </p>
+              <h2
+                className="text-4xl font-bold text-white mb-3"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Super Estrategia
+              </h2>
+              <p className="text-sm" style={{ color: C.muted }}>
+                Aprende la estrategia completa paso a paso
+              </p>
+            </div>
+
+            <div
+              className="grid md:grid-cols-2 gap-0 border overflow-hidden"
+              style={{ borderColor: C.border }}
+            >
+              {/* Flyer */}
+              <div style={{ backgroundColor: '#111', minHeight: '320px' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/super-estrategia.jpg"
+                  alt="Super Estrategia"
+                  className="w-full h-full block"
+                  style={{ objectFit: 'contain', maxHeight: '420px' }}
+                />
+              </div>
+
+              {/* Info */}
+              <div
+                className="flex flex-col justify-between p-8 md:p-10"
+                style={{ backgroundColor: C.card }}
+              >
+                <div>
+                  <div
+                    className="inline-flex items-center gap-2 border px-3 py-1 mb-6"
+                    style={{ borderColor: '#C4A77D30', backgroundColor: '#C4A77D08' }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#C4A77D' }} />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.25em]" style={{ color: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Contenido Premium
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-white mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                    Super Estrategia - Contenido Exclusivo
+                  </h3>
+
+                  <div className="space-y-3 mb-8">
+                    {[
+                      'Estrategia completa explicada paso a paso',
+                      'Aplicable a Forex, Oro, Crypto e Índices',
+                      'Acceso inmediato tras el pago',
+                      'Pago único — sin cuotas mensuales',
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <span className="w-1 h-1 shrink-0" style={{ backgroundColor: '#C4A77D' }} />
+                        <span className="text-sm" style={{ color: C.muted }}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-4">
+                    <div
+                      className="text-4xl font-bold mb-1"
+                      style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
+                    >
+                      Gs. 65.000
+                    </div>
+                    <p className="text-xs" style={{ color: C.subtle }}>
+                      Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={handleBuyCurso}
+                    disabled={cursoLoading}
+                    className="w-full py-4 text-sm font-bold uppercase tracking-[0.1em] transition-opacity hover:opacity-90 disabled:opacity-50"
+                    style={{ backgroundColor: '#C4A77D', color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    {cursoLoading ? 'Procesando...' : 'Comprar Ahora'}
+                  </button>
+
+                  <Link
+                    href="/curso"
+                    className="block text-center mt-3 text-xs uppercase tracking-[0.15em] transition-colors hover:text-white"
+                    style={{ color: C.subtle, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Ver preview →
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

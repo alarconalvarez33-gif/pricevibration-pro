@@ -18,6 +18,7 @@ model User {
   role               String    @default("user") // user, admin
   trialUses          Int       @default(0)
   trialExpired       Boolean   @default(false)
+  cursoPurchased     Boolean   @default(false)
   signalsViewed      Int       @default(0)
   subscriptionStatus String    @default("inactive") // inactive, active, cancelled, expired
   autoRenew          Boolean   @default(true)

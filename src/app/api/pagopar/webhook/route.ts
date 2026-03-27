@@ -142,6 +142,15 @@ export async function POST(request: Request) {
           })
           console.log(`✅ QuantumAccess activado para usuario ${purchase.userId}`)
         }
+
+        // Si es super-estrategia → marcar cursoPurchased en el usuario
+        if (purchase.productId === 'super-estrategia' && purchase.userId) {
+          await prisma.user.update({
+            where: { id: purchase.userId },
+            data: { cursoPurchased: true },
+          })
+          console.log(`✅ cursoPurchased activado para usuario ${purchase.userId}`)
+        }
       } else {
         await prisma.productPurchase.update({
           where: { id: purchase.id },
