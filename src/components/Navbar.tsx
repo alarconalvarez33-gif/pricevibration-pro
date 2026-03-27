@@ -15,6 +15,7 @@ export default function Navbar() {
   const plan = session?.user?.plan || 'free';
   const role = session?.user?.role || 'user';
   const isAdmin = role === 'admin';
+  const cursoPurchased = (session?.user as any)?.cursoPurchased === true;
   const isQuantum = plan === 'quantum' || isAdmin;
   const isWhale = plan === 'whale' || isAdmin;
   const isPro = plan === 'pro' || isAdmin;
@@ -46,6 +47,8 @@ export default function Navbar() {
           { href: '/curso', label: 'Curso' },
           { href: '/dashboard', label: 'Dashboard' },
         ]
+      : cursoPurchased
+      ? [{ href: '/curso', label: 'Curso' }]
       : [{ href: '/billing', label: 'Planes' }]),
   ];
 
