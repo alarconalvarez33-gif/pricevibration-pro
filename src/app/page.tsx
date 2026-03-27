@@ -169,7 +169,7 @@ export default function HomePage() {
                 style={{ border: `1px solid #222`, backgroundColor: '#111' }}
               >
                 <img
-                  src="/super-estrategia.jpg"
+                  src="/Super estrategia.jpg"
                   alt="Super Estrategia - Curso Exclusivo"
                   style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
                 />
