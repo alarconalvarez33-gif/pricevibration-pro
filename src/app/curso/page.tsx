@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const BG     = '#0A0A0B'
 const CARD   = '#141415'
@@ -13,24 +13,33 @@ const DARK   = '#0d0d0e'
 
 export default function CursoPage() {
   const { data: session, status } = useSession()
+  const [hasAccess, setHasAccess]   = useState<boolean | null>(null)
+  const [buying, setBuying]         = useState(false)
 
-  const plan            = session?.user?.plan || 'free'
-  const role            = (session?.user as any)?.role || 'user'
-  const cursoPurchased  = (session?.user as any)?.cursoPurchased === true
-  const hasAccess = status === 'authenticated' && (plan !== 'free' || cursoPurchased || role === 'admin')
-  const [buying, setBuying] = useState(false)
+  // Verify access directly from DB (avoids stale JWT after payment)
+  useEffect(() => {
+    if (status === 'loading') return
+    if (status === 'unauthenticated') { setHasAccess(false); return }
+
+    fetch('/api/curso/check-access')
+      .then((r) => r.json())
+      .then((d) => setHasAccess(d.hasAccess === true))
+      .catch(() => setHasAccess(false))
+  }, [status])
 
   const handleBuy = async () => {
     if (!session) { window.location.href = '/login?redirect=/curso'; return }
     setBuying(true)
     try {
-      const res = await fetch('/api/pagopar/curso-order', { method: 'POST' })
+      const res  = await fetch('/api/pagopar/curso-order', { method: 'POST' })
       const data = await res.json()
       if (data.success && data.paymentUrl) window.location.href = data.paymentUrl
       else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'))
     } catch { alert('Error al procesar el pago') }
     setBuying(false)
   }
+
+  const loading = status === 'loading' || hasAccess === null
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}>
@@ -77,7 +86,14 @@ export default function CursoPage() {
           </p>
         </div>
 
-        {hasAccess ? (
+        {loading ? (
+          <div className="text-center py-20">
+            <div
+              className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto"
+              style={{ borderColor: `${CYAN}40`, borderTopColor: 'transparent' }}
+            />
+          </div>
+        ) : hasAccess ? (
           /* ── Video player ── */
           <div
             className="relative w-full overflow-hidden rounded-xl"
@@ -127,11 +143,12 @@ export default function CursoPage() {
               Comprá el curso o suscribite a Quantum Access para desbloquear este contenido.
             </p>
             <p
-              className="text-3xl font-bold mb-2 mt-4"
+              className="text-3xl font-bold mb-1 mt-4"
               style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
             >
               Gs. 65.000
             </p>
+            <p className="text-sm mb-1" style={{ color: MUTED }}>/ $10 USD para internacionales</p>
             <p className="text-xs mb-8" style={{ color: MUTED }}>
               Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
             </p>
