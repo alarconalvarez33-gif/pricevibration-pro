@@ -42,13 +42,9 @@ export default function Navbar() {
   const navLinks = [
     { href: '/', label: 'Inicio' },
     { href: '/hub', label: 'Signal Hub' },
+    { href: '/curso', label: 'Curso' },
     ...(isQuantum
-      ? [
-          { href: '/curso', label: 'Curso' },
-          { href: '/dashboard', label: 'Dashboard' },
-        ]
-      : cursoPurchased
-      ? [{ href: '/curso', label: 'Curso' }]
+      ? [{ href: '/dashboard', label: 'Dashboard' }]
       : [{ href: '/billing', label: 'Planes' }]),
   ];
 
