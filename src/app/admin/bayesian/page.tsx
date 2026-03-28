@@ -23,6 +23,11 @@ interface BayesResult {
   velas: number
   precio: number
   distanciaPct: number
+  sinDatos?: boolean
+  nivelAlejado?: boolean
+  mensaje?: string
+  toques?: number
+  rebotes?: number
   condiciones: {
     rsi: number
     sobreventa: boolean
@@ -32,13 +37,13 @@ interface BayesResult {
     atr: number
     ema50: number
   }
-  bayes: { pA: number; pBdadoA: number; pB: number; posterior: number }
+  bayes?: { pA: number; pBdadoA: number; pB: number; posterior: number }
   monteCarlo: {
     P0: number; mu: number; sigma: number
     p5: number; p25: number; mediana: number; p75: number; p95: number
     varPct: number
   }
-  signal: 'FUERTE' | 'DÉBIL' | 'NEGATIVA'
+  signal?: 'MUY FUERTE' | 'FUERTE' | 'MODERADA' | 'DÉBIL'
 }
 
 function Pct({ label, value, color }: { label: string; value: number; color?: string }) {
@@ -105,8 +110,11 @@ export default function BayesianPage() {
     finally   { setLoading(false) }
   }
 
-  const signalColor = result?.signal === 'FUERTE' ? GREEN
-    : result?.signal === 'DÉBIL' ? GOLD : RED
+  const signalColor =
+    result?.signal === 'MUY FUERTE' ? CYAN
+    : result?.signal === 'FUERTE'   ? GREEN
+    : result?.signal === 'MODERADA' ? GOLD
+    : RED
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}>
@@ -220,6 +228,30 @@ export default function BayesianPage() {
         {result && !loading && (
           <div className="space-y-6">
 
+            {/* Aviso nivel alejado */}
+            {result.nivelAlejado && (
+              <div className="border rounded-xl p-4 flex items-center gap-3" style={{ borderColor: `${GOLD}40`, backgroundColor: `${GOLD}08` }}>
+                <span style={{ color: GOLD }}>⚠️</span>
+                <p className="text-xs" style={{ color: GOLD, fontFamily: MONO }}>
+                  Nivel muy alejado del precio actual ({result.distanciaPct.toFixed(1)}% de distancia). El análisis puede ser menos preciso.
+                </p>
+              </div>
+            )}
+
+            {/* Sin datos */}
+            {result.sinDatos ? (
+              <div className="border rounded-xl p-8 text-center" style={{ borderColor: `${RED}30`, backgroundColor: `${RED}06` }}>
+                <p className="text-2xl mb-2" style={{ color: RED, fontFamily: MONO }}>SIN DATOS</p>
+                <p className="text-sm" style={{ color: MUTED, fontFamily: SANS }}>
+                  El precio no ha testeado el nivel ${result.nivel.toLocaleString()} en el histórico disponible ({result.velas} velas de {result.temporalidad}).
+                </p>
+                <p className="text-xs mt-2" style={{ color: '#444', fontFamily: MONO }}>
+                  Intentá con un nivel más cercano al precio actual (${result.precio.toLocaleString('en-US', { minimumFractionDigits: 2 })})
+                </p>
+              </div>
+            ) : (
+            <>
+
             {/* Signal banner */}
             <div
               className="border rounded-xl p-5 flex items-center justify-between"
@@ -235,13 +267,16 @@ export default function BayesianPage() {
                 <p className="text-3xl font-bold" style={{ color: signalColor, fontFamily: MONO }}>
                   {result.signal}
                 </p>
+                <p className="text-[10px] mt-1" style={{ color: MUTED, fontFamily: MONO }}>
+                  {result.toques} toques · {result.rebotes} rebotes confirmados
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-[10px] uppercase tracking-[0.2em] mb-1" style={{ color: MUTED, fontFamily: SANS }}>
                   P(A|B) Posterior
                 </p>
                 <p className="text-4xl font-bold" style={{ color: signalColor, fontFamily: MONO }}>
-                  {(result.bayes.posterior * 100).toFixed(1)}%
+                  {result.bayes ? (result.bayes.posterior * 100).toFixed(1) : '—'}%
                 </p>
               </div>
             </div>
@@ -253,12 +288,14 @@ export default function BayesianPage() {
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] mb-5" style={{ color: CYAN, fontFamily: SANS }}>
                   Probabilidades Bayesianas
                 </h3>
+                {result.bayes && <>
                 <Pct label="P(A) — Prior: rebote histórico en nivel" value={result.bayes.pA} />
                 <Pct label="P(B|A) — Likelihood: condiciones en rebotes" value={result.bayes.pBdadoA} color={GOLD} />
                 <Pct label="P(B) — Evidencia: frecuencia condiciones extremas" value={result.bayes.pB} color={MUTED} />
                 <div className="mt-4 pt-4 border-t" style={{ borderColor: BORDER }}>
                   <Pct label="P(A|B) — POSTERIOR" value={result.bayes.posterior} color={signalColor} />
                 </div>
+                </>}
 
                 {/* Condiciones */}
                 <div className="mt-4 pt-4 border-t" style={{ borderColor: BORDER }}>
@@ -311,7 +348,7 @@ export default function BayesianPage() {
                 </div>
 
                 {/* Recomendación */}
-                {result.bayes.posterior > 0.65 && (
+                {result.bayes && result.bayes.posterior > 0.50 && (
                   <div className="mt-4 p-3 rounded border" style={{ borderColor: `${GREEN}25`, backgroundColor: `${GREEN}06` }}>
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-1" style={{ color: GREEN, fontFamily: SANS }}>
                       Operación sugerida
@@ -333,6 +370,9 @@ export default function BayesianPage() {
                 {' · '}solo uso educativo, no es asesoramiento financiero
               </p>
             </div>
+
+            </>
+            )}  {/* end sinDatos ternary */}
 
           </div>
         )}
