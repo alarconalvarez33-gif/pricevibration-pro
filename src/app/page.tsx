@@ -151,15 +151,14 @@ export default function HomePage() {
               </div>
 
               {/* ── Right: course flyers ── */}
-              <div className="hidden lg:flex gap-4 justify-center">
+              <div className="flex gap-4 justify-center">
 
                 {/* Flyer 1 — Curso Premium */}
-                <div className="group flex flex-col items-center gap-2 flex-1">
+                <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
                   <div
-                    className="w-full overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
+                    className="w-full rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
                     style={{
-                      aspectRatio: '210/297',
-                      backgroundColor: '#111',
+                      backgroundColor: C.bg,
                       border: `1px solid ${C.border}`,
                       boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
                     }}
@@ -167,7 +166,7 @@ export default function HomePage() {
                     <img
                       src="/flyer1.jpg"
                       alt="Curso Premium"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
                     />
                   </div>
                   <p
