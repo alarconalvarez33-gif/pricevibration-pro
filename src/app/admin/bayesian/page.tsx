@@ -139,11 +139,6 @@ export default function BayesianPage() {
   useEffect(() => { lastNivelRef.current = nivel }, [nivel])
   useEffect(() => { lastTempRef.current = temporalidad }, [temporalidad])
 
-  if (status === 'loading') return null
-  if (status === 'unauthenticated' || session?.user?.email !== ADMIN_EMAIL) {
-    router.replace('/'); return null
-  }
-
   const run = useCallback(async (nv?: string, temp?: string) => {
     const nivelActual = nv ?? lastNivelRef.current
     const tempActual  = temp ?? lastTempRef.current
@@ -158,8 +153,6 @@ export default function BayesianPage() {
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Error del servidor'); return }
       setResult(data)
-
-      // Sonido si hay alerta activa
       if (sonido && data.señalesActivas?.some((s: Señal) => s.alertaActiva)) {
         playBeep(880, 0.3)
         setTimeout(() => playBeep(1100, 0.2), 400)
@@ -174,6 +167,11 @@ export default function BayesianPage() {
     const id = setInterval(() => run(), 60_000)
     return () => clearInterval(id)
   }, [autoRefresh, result, run])
+
+  if (status === 'loading') return null
+  if (status === 'unauthenticated' || session?.user?.email !== ADMIN_EMAIL) {
+    router.replace('/'); return null
+  }
 
   const cf   = result?.analisis?.confluencia
   const mc   = result?.analisis?.monteCarlo
@@ -387,11 +385,10 @@ export default function BayesianPage() {
                         <p style={{ color: '#aaa' }}>Entrada → <PriceFmt v={result.precio} /></p>
                         <p style={{ color: GREEN }}>Target → <PriceFmt v={cf!.esSoporte ? mc!.p75 : mc!.p25} /></p>
                         <p style={{ color: RED }}>Stop → <PriceFmt v={cf!.esSoporte ? mc!.p5 : mc!.p95} /></p>
-                        <p style={{ color: '#aaa' }}>R:R → {
-                          Math.abs(
-                            (cf!.esSoporte ? mc!.p75 : mc!.p25) - result.precio
-                          ) / (Math.abs(result.precio - (cf!.esSoporte ? mc!.p5 : mc!.p95)) || 1)
-                        .toFixed(2)}:1</p>
+                        <p style={{ color: '#aaa' }}>R:R → {(
+                          Math.abs((cf!.esSoporte ? mc!.p75 : mc!.p25) - result.precio) /
+                          (Math.abs(result.precio - (cf!.esSoporte ? mc!.p5 : mc!.p95)) || 1)
+                        ).toFixed(2)}:1</p>
                       </div>
                     </div>
                   )}
