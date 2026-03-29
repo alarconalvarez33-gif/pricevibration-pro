@@ -42,7 +42,7 @@ export default async function ExpansionMatematicaPage() {
           <div className="flex items-center gap-3">
             <span className="text-2xl">👑</span>
             <div>
-              <h1 className="text-lg font-bold text-white">Curso Premium</h1>
+              <h1 className="text-lg font-bold text-white">Genesis</h1>
               <p className="text-xs text-[#c9a227]">Estrategias de The Mentor — Acceso Exclusivo</p>
             </div>
           </div>
@@ -56,7 +56,7 @@ export default async function ExpansionMatematicaPage() {
         /* ── CONTENIDO DEL CURSO ── */
         <div className="max-w-5xl mx-auto px-4 py-12">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Curso Premium</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Genesis</h2>
             <p className="text-gray-400 text-lg">Técnicas nunca antes vistas, sumamente eficientes y demostrables</p>
           </div>
 
@@ -78,7 +78,7 @@ export default async function ExpansionMatematicaPage() {
                 src="https://player.vimeo.com/video/1167191647?badge=0&autopause=0&player_id=0&app_id=58479&sharing=0&dnt=1&fl=sv&fe=ci"
                 allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                title="Curso Premium"
+                title="Genesis"
               />
             </div>
           </div>
@@ -121,7 +121,7 @@ export default async function ExpansionMatematicaPage() {
             Debés comprar el curso para poder ver el contenido.
           </p>
           <p className="text-gray-500 text-sm mb-8">
-            <span className="text-[#c9a227] font-semibold">Curso Premium</span> — acceso único por{' '}
+            <span className="text-[#c9a227] font-semibold">Genesis</span> — acceso único por{' '}
             <span className="text-white font-bold">Gs. 500.000</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

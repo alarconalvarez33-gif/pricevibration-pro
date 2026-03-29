@@ -26,7 +26,7 @@ const COURSES = [
   },
   {
     id: 'expansion-matematica',
-    name: 'Curso Premium',
+    name: 'Genesis',
     pricePyg: 500000,
     priceUsd: 77,
     flyer: '/flyer1.jpg',

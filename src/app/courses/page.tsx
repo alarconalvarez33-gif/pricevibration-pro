@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 
 export const metadata = {
   title: 'Cursos de Trading | Sacred Levels',
-  description: 'Aprende análisis técnico profesional: Canal Paralelo, Fibonacci, Curso Premium y Física Cuántica aplicada al trading.',
+  description: 'Aprende análisis técnico profesional: Canal Paralelo, Fibonacci, Genesis y Física Cuántica aplicada al trading.',
 };
 
 export default function CoursesPage() {
@@ -105,16 +105,16 @@ export default function CoursesPage() {
               </div>
             </div>
 
-            {/* Curso Premium */}
+            {/* Genesis */}
             <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-rose-500/30 hover:border-rose-500/60 transition-all">
               <div className="relative h-80 bg-[#0a0a0a] overflow-hidden">
-                <Image src="/flyer1.jpg" alt="Curso Premium" fill className="object-contain p-4" />
+                <Image src="/flyer1.jpg" alt="Genesis" fill className="object-contain p-4" />
                 <div className="absolute top-4 left-4">
                   <span className="bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Premium</span>
                 </div>
               </div>
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-white mb-3">Curso Premium</h3>
+                <h3 className="text-2xl font-bold text-white mb-3">Genesis</h3>
                 <p className="text-gray-400 mb-6">
                   Técnicas de trading avanzadas nunca antes vistas, sumamente eficientes y demostrables.
                 </p>

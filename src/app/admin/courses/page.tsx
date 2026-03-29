@@ -24,7 +24,7 @@ const COURSES = [
   },
   {
     id: 'expansion-matematica',
-    title: 'Curso Premium',
+    title: 'Genesis',
     icon: '👑',
     price: '500.000 GS',
     url: '/courses/expansion-matematica',

@@ -153,7 +153,7 @@ export default function HomePage() {
               {/* ── Right: course flyers ── */}
               <div className="flex gap-4 justify-center">
 
-                {/* Flyer 1 — Curso Premium */}
+                {/* Flyer 1 — Genesis */}
                 <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
                   <div
                     className="w-full rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
@@ -165,7 +165,7 @@ export default function HomePage() {
                   >
                     <img
                       src="/flyer1.jpg"
-                      alt="Curso Premium"
+                      alt="Genesis"
                       style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
                     />
                   </div>
@@ -491,7 +491,7 @@ export default function HomePage() {
                 },
                 {
                   id: 'expansion-matematica',
-                  name: 'Curso Premium',
+                  name: 'Genesis',
                   price: 'Gs. 500.000',
                   usd: '$77 USD',
                   flyer: '/flyer1.jpg',
