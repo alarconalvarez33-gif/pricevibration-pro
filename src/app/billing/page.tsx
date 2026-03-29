@@ -28,7 +28,7 @@ const COURSES = [
     id: 'expansion-matematica',
     name: 'Expansión Matemática',
     pricePyg: 1500000,
-    priceUsd: 220,
+    priceUsd: 260,
     flyer: '/expa.png',
     description: 'Herramientas matemáticas avanzadas para análisis profundo de mercados financieros.',
   },
@@ -178,16 +178,16 @@ export default function BillingPage() {
                   Quantum Access
                 </h2>
                 <p className="text-[#444] text-sm mb-5">Acceso completo a todas las herramientas cuánticas</p>
-                <div className="flex items-baseline gap-2 mb-2">
+                <div className="flex items-baseline gap-3 mb-1">
                   <span
                     className="text-4xl font-bold text-white"
                     style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   >
                     {Gs(350000)}
                   </span>
+                  <span className="text-[#444] text-sm">/ $50 USD</span>
                   <span className="text-[#444] text-sm">/mes</span>
                 </div>
-                <p className="text-[#333] text-xs uppercase tracking-[0.2em]">Internacional: $50 USD / mes</p>
               </div>
 
               {/* Features */}
@@ -345,7 +345,7 @@ export default function BillingPage() {
                         >
                           {Gs(course.pricePyg)}
                         </div>
-                        <div className="text-[#333] text-[10px]">${course.priceUsd} USD · único</div>
+                        <div className="text-[#555] text-[10px]">/ ${course.priceUsd} USD · pago único</div>
                       </div>
                       <button
                         onClick={() => handleBuyCourse(course.id)}

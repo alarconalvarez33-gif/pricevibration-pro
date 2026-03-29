@@ -52,7 +52,7 @@ export default function CursoPage() {
               Curso Exclusivo
             </h1>
             <p className="text-[10px] mt-0.5" style={{ color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}>
-              Sacred Levels · Contenido premium
+              Contenido premium exclusivo
             </p>
           </div>
           <Link
@@ -79,10 +79,10 @@ export default function CursoPage() {
             className="text-4xl font-bold text-white mb-3"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            Sacred Levels
+            Super Estrategia
           </h2>
           <p className="text-sm" style={{ color: MUTED }}>
-            Contenido premium para suscriptores
+            Curso exclusivo de trading avanzado
           </p>
         </div>
 
@@ -142,13 +142,12 @@ export default function CursoPage() {
             <p className="text-sm mb-1" style={{ color: MUTED }}>
               Comprá el curso o suscribite a Quantum Access para desbloquear este contenido.
             </p>
-            <p
-              className="text-3xl font-bold mb-1 mt-4"
-              style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
-            >
-              Gs. 65.000
-            </p>
-            <p className="text-sm mb-1" style={{ color: MUTED }}>/ $10 USD para internacionales</p>
+            <div className="flex items-baseline gap-3 mt-4 mb-1">
+              <p className="text-3xl font-bold" style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}>
+                Gs. 65.000
+              </p>
+              <p className="text-sm" style={{ color: MUTED }}>/ $10 USD</p>
+            </div>
             <p className="text-xs mb-8" style={{ color: MUTED }}>
               Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
             </p>

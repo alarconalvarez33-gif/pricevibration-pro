@@ -81,62 +81,90 @@ export default function HomePage() {
             style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}40, transparent)` }}
           />
 
-          <div className="relative max-w-5xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
-              <span
-                className="w-1.5 h-1.5 rounded-full animate-pulse"
-                style={{ backgroundColor: C.green }}
-              />
-              <span
-                className="text-[10px] font-semibold uppercase tracking-[0.3em]"
-                style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Sacred Levels — Plataforma Cuántica de Trading
-              </span>
-            </div>
+          <div className="relative max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-            <h1
-              className="text-5xl md:text-7xl font-bold leading-[1.05] mb-8 text-white"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Predice niveles donde<br />
-              <span style={{ color: C.cyan }}>el precio va a girar.</span>
-            </h1>
+              {/* ── Left: hero copy ── */}
+              <div>
+                <div className="flex items-center gap-3 mb-8">
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.green }} />
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.3em]"
+                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}>
+                    Sacred Levels — Plataforma Cuántica de Trading
+                  </span>
+                </div>
 
-            <p className="text-lg text-[#666] mb-12 max-w-xl leading-relaxed">
-              Niveles cuánticos de alta probabilidad para Forex, Oro y Crypto.
-              Matemática n² aplicada al precio.
-            </p>
+                <h1 className="text-5xl md:text-6xl font-bold leading-[1.05] mb-8 text-white"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  Predice niveles donde<br />
+                  <span style={{ color: C.cyan }}>el precio va a girar.</span>
+                </h1>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <Link
-                href="/quantum"
-                className="inline-flex items-center gap-2 px-8 py-4 font-bold text-sm uppercase tracking-[0.12em] text-black transition-all duration-200"
-                style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Probar Calculadora Cuadrática
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-              <Link
-                href="/billing"
-                className="inline-flex items-center gap-2 px-8 py-4 font-bold text-sm uppercase tracking-[0.12em] text-white border transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF]"
-                style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Ver Planes
-              </Link>
-            </div>
+                <p className="text-lg text-[#666] mb-12 leading-relaxed">
+                  Niveles cuánticos de alta probabilidad para Forex, Oro y Crypto.
+                  Matemática n² aplicada al precio.
+                </p>
 
-            <div className="flex flex-wrap gap-8 text-[#444] text-xs">
-              {['3 usos gratis sin registrarse', 'Sin tarjeta de crédito', 'Resultados instantáneos'].map((t) => (
-                <span key={t} className="flex items-center gap-2">
-                  <svg className="w-3 h-3 shrink-0" fill="none" stroke={C.green} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                  {t}
-                </span>
-              ))}
+                <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                  <Link href="/quantum"
+                    className="inline-flex items-center gap-2 px-8 py-4 font-bold text-sm uppercase tracking-[0.12em] text-black transition-all duration-200"
+                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
+                    Probar Calculadora Cuadrática
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
+                  <Link href="/billing"
+                    className="inline-flex items-center gap-2 px-8 py-4 font-bold text-sm uppercase tracking-[0.12em] text-white border transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF]"
+                    style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}>
+                    Ver Planes
+                  </Link>
+                </div>
+
+                <div className="flex flex-wrap gap-6 text-[#444] text-xs">
+                  {['3 usos gratis sin registrarse', 'Sin tarjeta de crédito', 'Resultados instantáneos'].map((t) => (
+                    <span key={t} className="flex items-center gap-2">
+                      <svg className="w-3 h-3 shrink-0" fill="none" stroke={C.green} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Right: course flyers ── */}
+              <div className="hidden lg:flex gap-4 justify-center">
+                {[
+                  { img: '/flyer1.jpg', label: 'Canal Paralelo · Fibonacci' },
+                  { img: '/flyer2.jpg', label: 'Expansión Matemática' },
+                ].map((f) => (
+                  <Link key={f.img} href="/billing" className="group flex flex-col items-center gap-3 flex-1">
+                    <div
+                      className="w-full overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{
+                        aspectRatio: '210/297',
+                        backgroundColor: '#111',
+                        border: `1px solid ${C.border}`,
+                        boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
+                      }}
+                    >
+                      <img
+                        src={f.img}
+                        alt={f.label}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      />
+                    </div>
+                    <button
+                      className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Comprar
+                    </button>
+                  </Link>
+                ))}
+              </div>
+
             </div>
           </div>
         </section>
@@ -158,7 +186,7 @@ export default function HomePage() {
                 Super Estrategia
               </h2>
               <p className="text-sm" style={{ color: C.muted }}>
-                Aprende a operar con niveles sagrados y análisis cuantitativo
+                Curso independiente de trading avanzado con estrategias probadas
               </p>
             </div>
 
@@ -179,8 +207,8 @@ export default function HomePage() {
               <div>
                 <ul className="space-y-3 mb-8">
                   {[
-                    'Niveles sagrados aplicados al trading',
-                    'Análisis cuantitativo paso a paso',
+                    'Estrategia de trading probada en mercados reales',
+                    'Análisis técnico avanzado paso a paso',
                     'Gestión de riesgo profesional',
                     'Estrategias probadas en mercados reales',
                     'Acceso de por vida al material',
