@@ -159,7 +159,7 @@ export default function CursoPage() {
                 className="px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
                 style={{ backgroundColor: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                {buying ? 'Procesando...' : 'Comprar Curso — Gs. 65.000'}
+                {buying ? 'Procesando...' : 'No quiero seguir operando a ciegas'}
               </button>
               <Link
                 href="/billing"

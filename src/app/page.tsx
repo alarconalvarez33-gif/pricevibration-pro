@@ -181,7 +181,7 @@ export default function HomePage() {
                     className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    {flyer1Loading ? 'Procesando...' : 'Comprar'}
+                    {flyer1Loading ? 'Procesando...' : 'No quiero seguir operando a ciegas'}
                   </button>
                 </div>
 
@@ -286,7 +286,7 @@ export default function HomePage() {
                   className="w-full py-4 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
                   style={{ backgroundColor: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  {cursoLoading ? 'Procesando...' : 'Comprar Curso — Gs. 65.000'}
+                  {cursoLoading ? 'Procesando...' : 'No quiero seguir operando a ciegas'}
                 </button>
               </div>
             </div>
