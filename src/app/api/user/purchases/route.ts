@@ -10,7 +10,7 @@ const COURSE_META: Record<string, { title: string; url: string; icon: string }> 
     icon: '🎓',
   },
   'expansion-matematica': {
-    title: 'Expansión Matemática',
+    title: 'Curso Premium',
     url: '/courses/expansion-matematica',
     icon: '👑',
   },

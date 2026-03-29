@@ -34,6 +34,23 @@ export default function HomePage() {
     setCursoLoading(false);
   };
 
+  const [flyer1Loading, setFlyer1Loading] = useState(false);
+
+  const handleBuyFlyer1 = async () => {
+    setFlyer1Loading(true);
+    try {
+      const res = await fetch('/api/pagopar/create-product-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: 'expansion-matematica' }),
+      });
+      const data = await res.json();
+      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
+      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
+    } catch { alert('Error al procesar el pago'); }
+    setFlyer1Loading(false);
+  };
+
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormLoading(true);
@@ -135,34 +152,60 @@ export default function HomePage() {
 
               {/* ── Right: course flyers ── */}
               <div className="hidden lg:flex gap-4 justify-center">
-                {[
-                  { img: '/flyer1.jpg', label: 'Canal Paralelo · Fibonacci' },
-                  { img: '/flyer2.jpg', label: 'Expansión Matemática' },
-                ].map((f) => (
-                  <Link key={f.img} href="/billing" className="group flex flex-col items-center gap-3 flex-1">
-                    <div
-                      className="w-full overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{
-                        aspectRatio: '210/297',
-                        backgroundColor: '#111',
-                        border: `1px solid ${C.border}`,
-                        boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
-                      }}
+
+                {/* Flyer 1 — Curso Premium */}
+                <div className="group flex flex-col items-center gap-2 flex-1">
+                  <div
+                    className="w-full overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
+                    style={{
+                      aspectRatio: '210/297',
+                      backgroundColor: '#111',
+                      border: `1px solid ${C.border}`,
+                      boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
+                    }}
+                  >
+                    <img
+                      src="/flyer1.jpg"
+                      alt="Curso Premium"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    />
+                  </div>
+                  <p
+                    className="text-white text-xs font-bold text-center"
+                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    Gs. 500.000 <span style={{ color: C.muted }}>/ $77 USD</span>
+                  </p>
+                  <button
+                    onClick={handleBuyFlyer1}
+                    disabled={flyer1Loading}
+                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
+                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    {flyer1Loading ? 'Procesando...' : 'Comprar'}
+                  </button>
+                </div>
+
+                {/* Flyer 2 — Próximamente */}
+                <div className="flex flex-col items-center gap-2 flex-1">
+                  <div
+                    className="w-full rounded-xl flex flex-col items-center justify-center"
+                    style={{
+                      aspectRatio: '210/297',
+                      border: `1.5px dashed ${C.cyan}40`,
+                      backgroundColor: `${C.cyan}05`,
+                    }}
+                  >
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-[0.3em]"
+                      style={{ color: `${C.cyan}70`, fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                      <img
-                        src={f.img}
-                        alt={f.label}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                      />
-                    </div>
-                    <button
-                      className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90"
-                      style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      Comprar
-                    </button>
-                  </Link>
-                ))}
+                      Próximamente
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-center" style={{ color: C.muted }}>Nuevo curso en camino</p>
+                </div>
+
               </div>
 
             </div>
@@ -448,12 +491,12 @@ export default function HomePage() {
                   desc: 'Retrocesos y extensiones de Fibonacci aplicados al trading profesional.',
                 },
                 {
-                  id: 'expansion',
-                  name: 'Expansión Matemática',
-                  price: 'Gs. 1.500.000',
-                  usd: '$220 USD',
-                  flyer: '/expa.png',
-                  desc: 'Herramientas matemáticas avanzadas para análisis profundo de mercados.',
+                  id: 'expansion-matematica',
+                  name: 'Curso Premium',
+                  price: 'Gs. 500.000',
+                  usd: '$77 USD',
+                  flyer: '/flyer1.jpg',
+                  desc: 'Técnicas de trading avanzadas nunca antes vistas, sumamente eficientes y demostrables.',
                 },
               ].map((course) => (
                 <div

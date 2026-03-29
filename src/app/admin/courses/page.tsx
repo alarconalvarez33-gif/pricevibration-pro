@@ -24,9 +24,9 @@ const COURSES = [
   },
   {
     id: 'expansion-matematica',
-    title: 'Expansión Matemática',
+    title: 'Curso Premium',
     icon: '👑',
-    price: '1.500.000 GS',
+    price: '500.000 GS',
     url: '/courses/expansion-matematica',
     vimeoSrc: 'https://player.vimeo.com/video/1167191647?badge=0&autopause=0&player_id=0&app_id=58479&sharing=0&dnt=1',
   },

@@ -26,11 +26,11 @@ const COURSES = [
   },
   {
     id: 'expansion-matematica',
-    name: 'Expansión Matemática',
-    pricePyg: 1500000,
-    priceUsd: 260,
-    flyer: '/expa.png',
-    description: 'Herramientas matemáticas avanzadas para análisis profundo de mercados financieros.',
+    name: 'Curso Premium',
+    pricePyg: 500000,
+    priceUsd: 77,
+    flyer: '/flyer1.jpg',
+    description: 'Técnicas de trading avanzadas nunca antes vistas, sumamente eficientes y demostrables.',
   },
 ]
 
