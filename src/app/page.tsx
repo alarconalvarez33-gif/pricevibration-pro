@@ -339,6 +339,48 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── YOUTUBE SHORT ────────────────────────────────────────── */}
+        <section className="py-16 px-6" style={{ backgroundColor: '#0d0d0e' }}>
+          <div className="max-w-[315px] mx-auto">
+            <div className="text-center mb-8">
+              <p
+                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
+                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Shorts
+              </p>
+              <h2
+                className="text-2xl font-bold text-white"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Trading en Acción
+              </h2>
+            </div>
+
+            <div
+              className="overflow-hidden rounded-xl w-full"
+              style={{
+                aspectRatio: '9/16',
+                border: `1px solid ${C.border}`,
+                boxShadow: `0 0 40px ${C.cyan}10, 0 0 80px ${C.cyan}06`,
+                backgroundColor: '#000',
+              }}
+            >
+              <iframe
+                src="https://www.youtube.com/embed/IeHgw7WSRPo?si=5PbBmmy7eOTjRnsY"
+                title="Trading en Acción"
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                style={{ display: 'block' }}
+              />
+            </div>
+          </div>
+        </section>
+
         {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
         <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
