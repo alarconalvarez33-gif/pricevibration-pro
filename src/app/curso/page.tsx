@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const BG     = '#0A0A0B'
 const CARD   = '#141415'
@@ -13,19 +13,33 @@ const DARK   = '#0d0d0e'
 
 export default function CursoPage() {
   const { data: session, status } = useSession()
-  const [hasAccess, setHasAccess]   = useState<boolean | null>(null)
-  const [buying, setBuying]         = useState(false)
+  const [hasAccess, setHasAccess]     = useState<boolean | null>(null)
+  const [buying, setBuying]           = useState(false)
+  const [verifying, setVerifying]     = useState(false)
+  const [verifyMsg, setVerifyMsg]     = useState('')
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const checkAccess = () =>
+    fetch('/api/curso/check-access')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.hasAccess === true) {
+          setHasAccess(true)
+          if (pollRef.current) clearInterval(pollRef.current)
+        }
+        return d.hasAccess === true
+      })
+      .catch(() => false)
 
   // Verify access directly from DB (avoids stale JWT after payment)
   useEffect(() => {
     if (status === 'loading') return
     if (status === 'unauthenticated') { setHasAccess(false); return }
-
-    fetch('/api/curso/check-access')
-      .then((r) => r.json())
-      .then((d) => setHasAccess(d.hasAccess === true))
-      .catch(() => setHasAccess(false))
+    checkAccess()
   }, [status])
+
+  // Cleanup poll on unmount
+  useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current) }, [])
 
   const handleBuy = async () => {
     if (!session) { window.location.href = '/login?redirect=/curso'; return }
@@ -33,10 +47,32 @@ export default function CursoPage() {
     try {
       const res  = await fetch('/api/pagopar/curso-order', { method: 'POST' })
       const data = await res.json()
-      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl
-      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'))
+      if (data.success && data.paymentUrl) {
+        // Start polling while user is on Pagopar — when they return access is instant
+        pollRef.current = setInterval(checkAccess, 5000)
+        window.location.href = data.paymentUrl
+      } else {
+        alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'))
+      }
     } catch { alert('Error al procesar el pago') }
     setBuying(false)
+  }
+
+  const handleVerify = async () => {
+    if (!session) { window.location.href = '/login?redirect=/curso'; return }
+    setVerifying(true)
+    setVerifyMsg('')
+    try {
+      const res  = await fetch('/api/pagopar/verify-curso', { method: 'POST' })
+      const data = await res.json()
+      if (data.hasAccess) {
+        setVerifyMsg('✓ Pago confirmado — desbloqueando...')
+        setTimeout(() => setHasAccess(true), 800)
+      } else {
+        setVerifyMsg(data.message || 'Pago aún no confirmado. Si ya pagaste, esperá unos minutos.')
+      }
+    } catch { setVerifyMsg('Error al verificar. Intentá de nuevo.') }
+    setVerifying(false)
   }
 
   const loading = status === 'loading' || hasAccess === null
@@ -142,7 +178,7 @@ export default function CursoPage() {
             <p className="text-sm mb-1" style={{ color: MUTED }}>
               Comprá el curso o suscribite a Quantum Access para desbloquear este contenido.
             </p>
-            <div className="flex items-baseline gap-3 mt-4 mb-1">
+            <div className="flex items-baseline gap-3 mt-4 mb-1 justify-center">
               <p className="text-3xl font-bold" style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}>
                 Gs. 65.000
               </p>
@@ -152,7 +188,7 @@ export default function CursoPage() {
               Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
               <button
                 onClick={handleBuy}
                 disabled={buying}
@@ -178,6 +214,28 @@ export default function CursoPage() {
                 </Link>
               )}
             </div>
+
+            {/* ── Ya pagué — verificar ── */}
+            {status === 'authenticated' && (
+              <div className="border-t pt-6" style={{ borderColor: BORDER }}>
+                <button
+                  onClick={handleVerify}
+                  disabled={verifying}
+                  className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white disabled:opacity-50"
+                  style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  {verifying ? 'Verificando...' : '¿Ya pagaste? — Verificar acceso'}
+                </button>
+                {verifyMsg && (
+                  <p
+                    className="text-xs mt-3"
+                    style={{ color: verifyMsg.startsWith('✓') ? CYAN : MUTED }}
+                  >
+                    {verifyMsg}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
