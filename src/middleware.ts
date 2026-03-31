@@ -25,6 +25,7 @@ const PUBLIC_PREFIXES = [
   '/api/pagopar/',   // Pagopar webhooks & payment routes
   '/api/contact',    // Contact form
   '/courses/',       // Course pages handle their own access (ProductPurchase check)
+  '/curso',          // /curso and /curso/* handle their own access (cursoPurchased check)
   '/_next/',
 ]
 
