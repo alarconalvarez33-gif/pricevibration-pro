@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -57,6 +57,12 @@ function SpinIcon() {
 export default function BillingPage() {
   const { data: session } = useSession()
   const [loading, setLoading] = useState<string | null>(null)
+  const [isLocked, setIsLocked] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setIsLocked(params.get('locked') === 'true')
+  }, [])
 
   const handleSubscribe = async () => {
     if (!session) { window.location.href = '/login?redirect=/billing'; return }
@@ -96,6 +102,21 @@ export default function BillingPage() {
       style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}
     >
       <Navbar />
+
+      {isLocked && (
+        <div
+          className="w-full px-6 py-4 text-center text-sm font-semibold"
+          style={{
+            backgroundColor: '#1a0a00',
+            borderBottom: '1px solid #ff4500',
+            color: '#ff6b35',
+            fontFamily: "'Space Grotesk', sans-serif",
+            letterSpacing: '0.02em',
+          }}
+        >
+          Tu acceso ha sido suspendido. Activa Quantum Access para continuar.
+        </div>
+      )}
 
       <div className="pt-36 pb-24 px-6">
         <div className="max-w-3xl mx-auto">
