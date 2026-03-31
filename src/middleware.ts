@@ -9,6 +9,7 @@ const PUBLIC_PATHS = new Set([
   '/register',
   '/billing',
   '/pricing',
+  '/courses',
   '/contact',
   '/terms',
   '/privacy',
@@ -23,6 +24,7 @@ const PUBLIC_PREFIXES = [
   '/api/auth/',      // NextAuth internals
   '/api/pagopar/',   // Pagopar webhooks & payment routes
   '/api/contact',    // Contact form
+  '/courses/',       // Course pages handle their own access (ProductPurchase check)
   '/_next/',
 ]
 
