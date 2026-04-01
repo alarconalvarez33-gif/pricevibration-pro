@@ -3,7 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
-const TRIAL_DAYS = 7
+const FREE_TRIAL_USES = 3
 
 export async function POST() {
   try {
@@ -19,33 +19,40 @@ export async function POST() {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    if (user.isPremium) {
+    // Premium users always pass
+    if (user.isPremium || user.plan === 'quantum') {
       return NextResponse.json({ success: true, isPremium: true, remainingUses: -1 })
     }
 
-    // 7-day trial from account creation
-    const trialExpiry = new Date(user.createdAt.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000)
-    const now = new Date()
-    const isExpired = now >= trialExpiry
-    const daysLeft = isExpired ? 0 : Math.ceil((trialExpiry.getTime() - now.getTime()) / 86400000)
-
-    if (isExpired) {
-      // Keep trialExpired flag in sync
+    // Trial already expired
+    if (user.trialExpired || user.trialUses >= FREE_TRIAL_USES) {
       if (!user.trialExpired) {
-        await prisma.user.update({ where: { id: session.user.id }, data: { trialExpired: true } })
+        await prisma.user.update({ where: { id: user.id }, data: { trialExpired: true } })
       }
       return NextResponse.json(
-        { error: 'Trial expired', remainingUses: 0, trialExpired: true, daysLeft: 0 },
+        { error: 'Trial expired', remainingUses: 0, trialExpired: true },
         { status: 403 }
       )
+    }
+
+    // Consume one use
+    const updated = await prisma.user.update({
+      where: { id: user.id },
+      data: { trialUses: user.trialUses + 1 },
+    })
+
+    const remaining = FREE_TRIAL_USES - updated.trialUses
+
+    // If this was the last use, mark as expired
+    if (remaining <= 0) {
+      await prisma.user.update({ where: { id: user.id }, data: { trialExpired: true } })
     }
 
     return NextResponse.json({
       success: true,
       isPremium: false,
-      remainingUses: daysLeft,
-      daysLeft,
-      trialExpired: false,
+      remainingUses: Math.max(0, remaining),
+      trialExpired: remaining <= 0,
     })
   } catch (error) {
     console.error('Trial API error:', error)

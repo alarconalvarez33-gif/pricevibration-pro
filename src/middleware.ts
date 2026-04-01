@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
+const FREE_TRIAL_USES = 3
+
 // Routes that are always public — no auth or plan required
 const PUBLIC_PATHS = new Set([
   '/',
@@ -24,6 +26,7 @@ const PUBLIC_PREFIXES = [
   '/api/auth/',      // NextAuth internals
   '/api/pagopar/',   // Pagopar webhooks & payment routes
   '/api/contact',    // Contact form
+  '/api/trial/',     // Trial use API must be reachable by free users
   '/courses/',       // Course pages handle their own access (ProductPurchase check)
   '/curso',          // /curso and /curso/* handle their own access (cursoPurchased check)
   '/api/curso/',     // check-access must be reachable by course-only users
@@ -54,14 +57,18 @@ export async function middleware(request: NextRequest) {
   // Admin always has full access
   if (token.role === 'admin') return NextResponse.next()
 
-  // Verify paid plan
-  if (!PAID_PLANS.includes((token.plan as string) ?? '')) {
-    const url = new URL('/billing', request.url)
-    url.searchParams.set('locked', 'true')
-    return NextResponse.redirect(url)
-  }
+  // Paid plan → full access
+  if (PAID_PLANS.includes((token.plan as string) ?? '')) return NextResponse.next()
 
-  return NextResponse.next()
+  // Free users with remaining trial uses → allow through (dashboard enforces the limit)
+  const trialExpired = token.trialExpired as boolean | undefined
+  const trialUses = (token.trialUses as number) || 0
+  if (!trialExpired && trialUses < FREE_TRIAL_USES) return NextResponse.next()
+
+  // No plan, no trial left → paywall
+  const url = new URL('/billing', request.url)
+  url.searchParams.set('locked', 'true')
+  return NextResponse.redirect(url)
 }
 
 export const config = {

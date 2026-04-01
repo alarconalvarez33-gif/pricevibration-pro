@@ -74,7 +74,7 @@ export default function DashboardPage() {
   // Trial system for non-premium users
   if (!isPremium) {
     // If trial is expired, show upgrade prompt
-    if (trialExpired || trialUses >= 2) {
+    if (trialExpired || trialUses >= 3) {
       return (
         <main className="min-h-screen bg-terminal-bg">
           <Navbar />

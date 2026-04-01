@@ -31,7 +31,7 @@ export default function GannCalculator({
   const [showLegalWarning, setShowLegalWarning] = useState(false)
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
   const [isCalculating, setIsCalculating] = useState(false)
-  const [remainingTrialUses, setRemainingTrialUses] = useState(2 - trialUses)
+  const [remainingTrialUses, setRemainingTrialUses] = useState(3 - trialUses)
   const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false)
   const [termsCheckboxAccepted, setTermsCheckboxAccepted] = useState(false)
 
