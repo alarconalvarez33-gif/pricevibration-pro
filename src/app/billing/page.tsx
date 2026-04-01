@@ -328,14 +328,14 @@ export default function BillingPage() {
               </h2>
             </div>
 
-            <div className="grid gap-px sm:grid-cols-1 md:grid-cols-3" style={{ backgroundColor: BORDER }}>
-              {COURSES.map((course) => (
+            {/* Canal Paralelo + Fibonacci */}
+            <div className="grid gap-px sm:grid-cols-1 md:grid-cols-2" style={{ backgroundColor: BORDER }}>
+              {COURSES.filter(c => c.id !== 'expansion-matematica').map((course) => (
                 <div
                   key={course.id}
                   className="flex flex-col"
                   style={{ backgroundColor: CARD }}
                 >
-                  {/* Flyer — completo, sin recorte */}
                   <div
                     className="w-full overflow-hidden"
                     style={{ height: '200px', backgroundColor: '#111' }}
@@ -382,6 +382,90 @@ export default function BillingPage() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* ── Genesis — featured card ── */}
+            <div className="mt-px" style={{ backgroundColor: CARD }}>
+              {/* Top accent */}
+              <div className="h-px" style={{ background: `linear-gradient(90deg, transparent, #C4A77D, transparent)` }} />
+
+              <div className="flex flex-col md:flex-row">
+                {/* Flyer */}
+                <div
+                  className="w-full md:w-2/5 shrink-0"
+                  style={{ backgroundColor: '#111', minHeight: '280px' }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/flyer1.jpg"
+                    alt="Genesis"
+                    className="w-full h-full block"
+                    style={{ objectFit: 'contain', maxHeight: '420px' }}
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="p-8 md:p-10 flex flex-col justify-between flex-1">
+                  <div>
+                    {/* Badge */}
+                    <span
+                      className="inline-block text-[9px] font-bold uppercase tracking-[0.3em] mb-4 px-2 py-1"
+                      style={{ color: '#C4A77D', border: '1px solid #C4A77D30', backgroundColor: '#C4A77D08', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Curso Exclusivo
+                    </span>
+
+                    <h3
+                      className="text-2xl font-bold text-white mb-2"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Genesis
+                    </h3>
+
+                    {/* Price */}
+                    <div className="flex items-baseline gap-2 mb-6">
+                      <span
+                        className="text-xl font-bold"
+                        style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
+                      >
+                        {Gs(500000)}
+                      </span>
+                      <span className="text-[#444] text-xs">/ $77 USD · pago único</span>
+                    </div>
+
+                    {/* Description */}
+                    <p
+                      className="text-sm leading-relaxed mb-8"
+                      style={{ color: '#666' }}
+                    >
+                      ¿Te has preguntado por qué el precio reacciona con precisión quirúrgica en ciertos puntos?
+                      La respuesta está en la raíz cuadrada de los niveles armónicos. En esta sección te revelo
+                      cómo los ratios de $0.25$, $0.5$ y $0.75$ actúan como imanes magnéticos para las instituciones.
+                      Aprende a leer el esqueleto del mercado y deja de operar a ciegas.
+                    </p>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <span
+                      className="border px-5 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-center"
+                      style={{ borderColor: '#C4A77D30', color: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Quiero saber más
+                    </span>
+                    <button
+                      onClick={() => handleBuyCourse('expansion-matematica')}
+                      disabled={loading === 'expansion-matematica'}
+                      className="px-6 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+                      style={{ backgroundColor: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      {loading === 'expansion-matematica' ? (
+                        <span className="flex items-center justify-center gap-2"><SpinIcon />Procesando...</span>
+                      ) : 'Adquirir Genesis'}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <p className="text-[#333] text-[9px] text-center mt-4 uppercase tracking-[0.2em]">
