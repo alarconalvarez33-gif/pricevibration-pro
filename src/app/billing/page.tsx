@@ -25,6 +25,14 @@ const COURSES = [
     description: 'Retrocesos y extensiones de Fibonacci aplicados al trading profesional.',
   },
   {
+    id: 'super-estrategia',
+    name: 'Super Estrategia',
+    pricePyg: 65000,
+    priceUsd: 10,
+    flyer: '/Super estrategia.jpg',
+    description: 'Estrategia de trading probada en mercados reales. Análisis técnico avanzado y gestión de riesgo profesional.',
+  },
+  {
     id: 'expansion-matematica',
     name: 'Genesis',
     pricePyg: 500000,

@@ -9,6 +9,7 @@ const products: Record<string, { name: string; price: number; pricePYG: number; 
   'expansion-matematica': { name: 'Genesis', price: 77, pricePYG: 500000, courseUrl: '/courses/expansion-matematica' },
   'fisica-cuantica': { name: 'Física Cuántica - Niveles de Probabilidad', price: 100, pricePYG: 650000, courseUrl: '/quantum' },
   'fibonacci': { name: 'Curso de Fibonacci - Potencial Oculto', price: 75, pricePYG: 499000, courseUrl: '/courses/fibonacci' },
+  'super-estrategia': { name: 'Super Estrategia - Curso Exclusivo', price: 10, pricePYG: 65000, courseUrl: '/curso' },
 }
 
 export async function POST(request: Request) {

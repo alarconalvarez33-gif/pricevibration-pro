@@ -185,110 +185,40 @@ export default function HomePage() {
                   </button>
                 </div>
 
-                {/* Flyer 2 — Próximamente */}
-                <div className="flex flex-col items-center gap-2 flex-1">
+                {/* Flyer 2 — Super Estrategia */}
+                <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
                   <div
-                    className="w-full rounded-xl flex flex-col items-center justify-center"
+                    className="w-full rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
                     style={{
-                      aspectRatio: '210/297',
-                      border: `1.5px dashed ${C.cyan}40`,
-                      backgroundColor: `${C.cyan}05`,
+                      backgroundColor: C.bg,
+                      border: `1px solid ${C.border}`,
+                      boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
                     }}
                   >
-                    <span
-                      className="text-[10px] font-bold uppercase tracking-[0.3em]"
-                      style={{ color: `${C.cyan}70`, fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      Próximamente
-                    </span>
+                    <img
+                      src="/Super estrategia.jpg"
+                      alt="Super Estrategia"
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                    />
                   </div>
-                  <p className="text-[10px] text-center" style={{ color: C.muted }}>Nuevo curso en camino</p>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
-        <section className="py-20 px-6" style={{ backgroundColor: '#0d0d0e' }}>
-          <div className="max-w-[900px] mx-auto">
-            <div className="text-center mb-10">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Curso Exclusivo
-              </p>
-              <h2
-                className="text-4xl font-bold text-white mb-3"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Super Estrategia
-              </h2>
-              <p className="text-sm" style={{ color: C.muted }}>
-                Curso independiente de trading avanzado con estrategias probadas
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-10 items-center">
-              {/* Flyer */}
-              <div
-                className="rounded-xl overflow-hidden"
-                style={{ border: `1px solid #222`, backgroundColor: '#111' }}
-              >
-                <img
-                  src="/Super estrategia.jpg"
-                  alt="Super Estrategia - Curso Exclusivo"
-                  style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
-                />
-              </div>
-
-              {/* Info */}
-              <div>
-                <ul className="space-y-3 mb-8">
-                  {[
-                    'Estrategia de trading probada en mercados reales',
-                    'Análisis técnico avanzado paso a paso',
-                    'Gestión de riesgo profesional',
-                    'Estrategias probadas en mercados reales',
-                    'Acceso de por vida al material',
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-sm" style={{ color: C.muted }}>
-                      <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke={C.cyan} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex items-baseline gap-3 mb-1">
                   <p
-                    className="text-4xl font-bold"
-                    style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}
+                    className="text-white text-xs font-bold text-center"
+                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   >
-                    Gs. 65.000
+                    Gs. 65.000 <span style={{ color: C.muted }}>/ $10 USD</span>
                   </p>
-                  <p className="text-sm" style={{ color: C.muted }}>/ $10 USD</p>
+                  <button
+                    onClick={handleBuyCurso}
+                    disabled={cursoLoading}
+                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
+                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    {cursoLoading ? 'Procesando...' : 'No quiero seguir operando a ciegas'}
+                  </button>
                 </div>
-                <p className="text-xs mb-2" style={{ color: C.muted }}>
-                  Pago único · Cuotas disponibles con tarjetas Familiar y Ueno
-                </p>
-                <p className="text-[10px] mb-6" style={{ color: '#444' }}>
-                  Internacionales: podés pagar con tarjeta de crédito/débito internacional en el checkout. El contenido es educativo y no constituye asesoramiento financiero.
-                </p>
 
-                <button
-                  onClick={handleBuyCurso}
-                  disabled={cursoLoading}
-                  className="w-full py-4 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
-                  style={{ backgroundColor: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  {cursoLoading ? 'Procesando...' : 'No quiero seguir operando a ciegas'}
-                </button>
               </div>
+
             </div>
           </div>
         </section>
