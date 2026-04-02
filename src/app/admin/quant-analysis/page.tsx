@@ -177,13 +177,22 @@ export default function QuantAnalysisPage() {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [status, session, fetchData])
 
-  // Show blank while session loads
+  // Wait for session
   if (status === 'loading') return <div style={{ background: BG, minHeight: '100vh' }} />
 
-  // Redirect non-admins only once session is confirmed
-  if (status === 'unauthenticated' || session?.user?.email !== ADMIN_EMAIL) {
-    router.replace('/')
+  // Not logged in → send to login
+  if (status === 'unauthenticated') {
+    router.replace('/login?redirect=/admin/quant-analysis')
     return null
+  }
+
+  // Logged in but not admin → show denial
+  if (session?.user?.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    return (
+      <div style={{ background: BG, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: SANS }}>
+        <p>Acceso denegado</p>
+      </div>
+    )
   }
 
   const maxVolume = data ? Math.max(...data.volumeProfile.map(v => v.volume)) : 1
