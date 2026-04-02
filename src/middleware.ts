@@ -27,6 +27,7 @@ const PUBLIC_PREFIXES = [
   '/api/pagopar/',   // Pagopar webhooks & payment routes
   '/api/contact',    // Contact form
   '/api/trial/',     // Trial use API must be reachable by free users
+  '/api/user/',      // Purchases/subscription info needed by course-only users
   '/courses/',       // Course pages handle their own access (ProductPurchase check)
   '/curso',          // /curso and /curso/* handle their own access (cursoPurchased check)
   '/api/curso/',     // check-access must be reachable by course-only users
