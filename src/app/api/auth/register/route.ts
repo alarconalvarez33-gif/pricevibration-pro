@@ -58,7 +58,12 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    await sendVerificationEmail(email, name, code)
+    try {
+      await sendVerificationEmail(email, name, code)
+    } catch (mailErr) {
+      console.error('SMTP send failed:', mailErr)
+      // User created — they can request resend from /verify
+    }
 
     return NextResponse.json({ requiresVerification: true, email }, { status: 201 })
   } catch (error) {
