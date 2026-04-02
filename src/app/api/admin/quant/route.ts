@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { isAdmin } from '@/lib/constants'
 
 export const dynamic = 'force-dynamic'
-
-const ADMIN_EMAIL = 'raul@sacredlevels.com'
 
 interface Candle { t: number; o: number; h: number; l: number; c: number; v: number }
 
@@ -189,7 +188,7 @@ function zSignal(z: number): string {
 
 export async function GET() {
   const session = await getServerSession(authOptions)
-  if (session?.user?.email !== ADMIN_EMAIL) {
+  if (!isAdmin(session?.user?.email)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
