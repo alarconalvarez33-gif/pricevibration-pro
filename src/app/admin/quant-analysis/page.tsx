@@ -185,15 +185,7 @@ export default function QuantAnalysisPage() {
     router.replace('/login?redirect=/admin/quant-analysis')
     return null
   }
-
-  // Logged in but not admin → show denial
-  if (session?.user?.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-    return (
-      <div style={{ background: BG, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: SANS }}>
-        <p>Acceso denegado</p>
-      </div>
-    )
-  }
+  // If authenticated, render — the API returns 403 if not admin
 
   const maxVolume = data ? Math.max(...data.volumeProfile.map(v => v.volume)) : 1
   const closestVP = data
