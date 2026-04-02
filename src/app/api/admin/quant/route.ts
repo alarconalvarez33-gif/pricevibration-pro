@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
+export const dynamic = 'force-dynamic'
+
 const ADMIN_EMAIL = 'raul@sacredlevels.com'
 
 interface Candle { t: number; o: number; h: number; l: number; c: number; v: number }
