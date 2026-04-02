@@ -6,30 +6,74 @@ import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 
 const MAX_RESENDS = 3
+const CYAN = '#00E5FF'
+const MUTED = '#555'
 
 export default function VerifyPage() {
-  const [email, setEmail]           = useState('')
-  const [code, setCode]             = useState(['', '', '', '', '', ''])
-  const [error, setError]           = useState('')
-  const [loading, setLoading]       = useState(false)
-  const [resendCount, setResendCount] = useState(0)
+  const [email, setEmail]               = useState('')
+  const [code, setCode]                 = useState(['', '', '', '', '', ''])
+  const [error, setError]               = useState('')
+  const [loading, setLoading]           = useState(false)
+  const [autoVerifying, setAutoVerifying] = useState(false)
+  const [resendCount, setResendCount]   = useState(0)
   const [resendLoading, setResendLoading] = useState(false)
-  const [resendMsg, setResendMsg]   = useState('')
-  const [countdown, setCountdown]   = useState(0)
+  const [resendMsg, setResendMsg]       = useState('')
+  const [countdown, setCountdown]       = useState(0)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+  const autoVerifiedRef = useRef(false)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const e = params.get('email')
+    const c = params.get('code')
     if (e) setEmail(decodeURIComponent(e))
+    if (c && c.length === 6) {
+      const digits = c.split('')
+      setCode(digits)
+      // Auto-verify when both email and code come from the link
+      if (e && !autoVerifiedRef.current) {
+        autoVerifiedRef.current = true
+        setAutoVerifying(true)
+        autoVerify(decodeURIComponent(e), c)
+      }
+    }
   }, [])
 
-  // Countdown timer for resend cooldown
   useEffect(() => {
     if (countdown <= 0) return
     const t = setTimeout(() => setCountdown(c => c - 1), 1000)
     return () => clearTimeout(t)
   }, [countdown])
+
+  async function autoVerify(emailVal: string, codeVal: string) {
+    try {
+      const res = await fetch('/api/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailVal, code: codeVal }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Enlace inválido o expirado')
+        setAutoVerifying(false)
+        return
+      }
+      await finishLogin(emailVal)
+    } catch {
+      setError('Error al verificar. Intentá de nuevo.')
+      setAutoVerifying(false)
+    }
+  }
+
+  async function finishLogin(emailVal: string) {
+    const pw = sessionStorage.getItem('__reg_pw')
+    if (pw) {
+      const result = await signIn('credentials', { email: emailVal, password: pw, redirect: false })
+      sessionStorage.removeItem('__reg_pw')
+      if (!result?.error) { window.location.href = '/dashboard'; return }
+    }
+    window.location.href = '/login?verified=true'
+  }
 
   const handleDigitChange = (i: number, val: string) => {
     const digit = val.replace(/\D/g, '').slice(-1)
@@ -40,9 +84,7 @@ export default function VerifyPage() {
   }
 
   const handleKeyDown = (i: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !code[i] && i > 0) {
-      inputRefs.current[i - 1]?.focus()
-    }
+    if (e.key === 'Backspace' && !code[i] && i > 0) inputRefs.current[i - 1]?.focus()
   }
 
   const handlePaste = (e: React.ClipboardEvent) => {
@@ -58,7 +100,6 @@ export default function VerifyPage() {
     if (fullCode.length < 6) { setError('Ingresá los 6 dígitos'); return }
     setError('')
     setLoading(true)
-
     try {
       const res = await fetch('/api/auth/verify-email', {
         method: 'POST',
@@ -66,18 +107,8 @@ export default function VerifyPage() {
         body: JSON.stringify({ email, code: fullCode }),
       })
       const data = await res.json()
-
       if (!res.ok) { setError(data.error || 'Código incorrecto'); setLoading(false); return }
-
-      // Auto-login after verification — get password from sessionStorage (set by register page)
-      const pw = sessionStorage.getItem('__reg_pw')
-      if (pw) {
-        const result = await signIn('credentials', { email, password: pw, redirect: false })
-        sessionStorage.removeItem('__reg_pw')
-        if (!result?.error) { window.location.href = '/dashboard'; return }
-      }
-      // If no stored password, go to login
-      window.location.href = '/login?verified=true'
+      await finishLogin(email)
     } catch {
       setError('Error al verificar. Intentá de nuevo.')
       setLoading(false)
@@ -88,7 +119,6 @@ export default function VerifyPage() {
     if (resendCount >= MAX_RESENDS) return
     setResendLoading(true)
     setResendMsg('')
-
     try {
       const res = await fetch('/api/auth/resend-verification', {
         method: 'POST',
@@ -109,8 +139,23 @@ export default function VerifyPage() {
     setResendLoading(false)
   }
 
-  const CYAN  = '#00E5FF'
-  const MUTED = '#555'
+  // Auto-verifying screen
+  if (autoVerifying) {
+    return (
+      <main className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
+        <div className="text-center">
+          <div
+            className="w-16 h-16 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-6"
+            style={{ borderColor: `${CYAN}40`, borderTopColor: CYAN }}
+          />
+          <p className="text-white font-semibold mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            Verificando tu cuenta...
+          </p>
+          <p className="text-sm" style={{ color: MUTED }}>Un momento</p>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-[#0A0A0B]">
@@ -132,7 +177,7 @@ export default function VerifyPage() {
               Verificá tu email
             </h1>
             <p className="text-sm" style={{ color: MUTED }}>
-              Enviamos un código de 6 dígitos a
+              Enviamos un código a
             </p>
             {email && (
               <p className="text-sm font-medium mt-1" style={{ color: CYAN }}>
@@ -149,7 +194,11 @@ export default function VerifyPage() {
               </div>
             )}
 
-            {/* 6-digit code inputs */}
+            <p className="text-xs mb-5 text-center" style={{ color: MUTED }}>
+              Ingresá el código de 6 dígitos del email, o hacé click en el botón del email directamente.
+            </p>
+
+            {/* 6-digit inputs */}
             <div className="flex gap-3 justify-center mb-8" onPaste={handlePaste}>
               {code.map((digit, i) => (
                 <input
@@ -212,7 +261,6 @@ export default function VerifyPage() {
                 </p>
               )}
             </div>
-
           </div>
 
           <p className="text-center text-xs mt-6" style={{ color: '#333' }}>
