@@ -31,6 +31,8 @@ const PUBLIC_PREFIXES = [
   '/courses/',       // Course pages handle their own access (ProductPurchase check)
   '/curso',          // /curso and /curso/* handle their own access (cursoPurchased check)
   '/api/curso/',     // check-access must be reachable by course-only users
+  '/admin/',         // Admin pages handle their own auth internally
+  '/api/admin/',     // Admin API routes handle their own auth internally
   '/_next/',
 ]
 

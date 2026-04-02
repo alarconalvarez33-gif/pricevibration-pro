@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,8 +29,8 @@ export default function LoginPage() {
         setError('Email o contraseña incorrectos')
         setIsLoading(false)
       } else {
-        // Full page reload — ensures session cookie is available server-side
-        window.location.href = '/dashboard'
+        const redirect = searchParams.get('redirect') || '/dashboard'
+        window.location.href = redirect
       }
     } catch {
       setError('Error al iniciar sesión')
