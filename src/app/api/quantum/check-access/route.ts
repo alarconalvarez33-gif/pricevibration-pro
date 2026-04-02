@@ -5,14 +5,15 @@ import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 import { hasFullAccess } from '@/lib/constants'
 
-const TRIAL_DAYS = 7
+const FREE_USES = 3
 
-function trialStatus(createdAt: Date) {
-  const expiry = new Date(createdAt.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000)
-  const now = new Date()
-  const allowed = now < expiry
-  const daysLeft = allowed ? Math.ceil((expiry.getTime() - now.getTime()) / 86400000) : 0
-  return { allowed, daysLeft, expiry }
+function isPaidUser(plan?: string | null, role?: string | null, email?: string | null) {
+  return role === 'admin' || plan === 'quantum' || hasFullAccess(email ?? '')
+}
+
+function buildKey(ip: string, email?: string | null) {
+  const src = email ? `${ip}:${email}` : `guest:${ip}`
+  return crypto.createHash('sha256').update(src).digest('hex')
 }
 
 export async function GET(request: NextRequest) {
@@ -23,28 +24,24 @@ export async function GET(request: NextRequest) {
     request.headers.get('x-real-ip') ||
     '0.0.0.0'
 
-  const keySource = session?.user?.email ? `${ip}:${session.user.email}` : `guest:${ip}`
-  const visitorKey = crypto.createHash('sha256').update(keySource).digest('hex')
-
   if (session?.user?.email) {
     const user = await prisma.user.findUnique({ where: { email: session.user.email } })
 
-    if (user?.role === 'admin' || hasFullAccess(session.user.email) || user?.plan === 'quantum') {
-      return NextResponse.json({ allowed: true, paid: true, daysLeft: 999 })
+    if (isPaidUser(user?.plan, user?.role, session.user.email)) {
+      return NextResponse.json({ allowed: true, paid: true, usesLeft: 999 })
     }
 
     const hasPaid = await prisma.productPurchase.findFirst({
       where: { userId: user?.id, productId: 'fisica-cuantica', status: 'paid' },
     })
-
     if (hasPaid) {
-      return NextResponse.json({ allowed: true, paid: true, daysLeft: 999 })
+      return NextResponse.json({ allowed: true, paid: true, usesLeft: 999 })
     }
   }
 
-  // Check/create free trial record (works for guests and logged-in users)
+  const visitorKey = buildKey(ip, session?.user?.email)
   const userId = session?.user?.email
-    ? (await prisma.user.findUnique({ where: { email: session.user.email! }, select: { id: true } }))?.id ?? null
+    ? (await prisma.user.findUnique({ where: { email: session.user.email }, select: { id: true } }))?.id ?? null
     : null
 
   const access = await prisma.quantumAccess.upsert({
@@ -53,8 +50,8 @@ export async function GET(request: NextRequest) {
     create: { visitorKey, userId, usesCount: 0 },
   })
 
-  const { allowed, daysLeft } = trialStatus(access.createdAt)
-  return NextResponse.json({ allowed, paid: false, daysLeft, usesLeft: daysLeft })
+  const usesLeft = Math.max(0, FREE_USES - access.usesCount)
+  return NextResponse.json({ allowed: usesLeft > 0, paid: false, usesLeft })
 }
 
 export async function POST(request: NextRequest) {
@@ -65,41 +62,32 @@ export async function POST(request: NextRequest) {
     request.headers.get('x-real-ip') ||
     '0.0.0.0'
 
-  const keySource = session?.user?.email ? `${ip}:${session.user.email}` : `guest:${ip}`
-  const visitorKey = crypto.createHash('sha256').update(keySource).digest('hex')
-
   if (session?.user?.email) {
     const user = await prisma.user.findUnique({ where: { email: session.user.email } })
 
-    if (user?.role === 'admin' || hasFullAccess(session.user.email) || user?.plan === 'quantum') {
-      return NextResponse.json({ allowed: true, paid: true })
+    if (isPaidUser(user?.plan, user?.role, session.user.email)) {
+      return NextResponse.json({ allowed: true, paid: true, usesLeft: 999 })
     }
 
     const hasPaid = await prisma.productPurchase.findFirst({
       where: { userId: user?.id, productId: 'fisica-cuantica', status: 'paid' },
     })
-
     if (hasPaid) {
-      return NextResponse.json({ allowed: true, paid: true })
+      return NextResponse.json({ allowed: true, paid: true, usesLeft: 999 })
     }
-
-    const access = await prisma.quantumAccess.upsert({
-      where: { visitorKey },
-      update: { usesCount: { increment: 1 } },
-      create: { visitorKey, userId: user?.id, usesCount: 1 },
-    })
-
-    const { allowed, daysLeft } = trialStatus(access.createdAt)
-    return NextResponse.json({ allowed, daysLeft, usesLeft: daysLeft })
   }
 
-  // Guest user
+  const visitorKey = buildKey(ip, session?.user?.email)
+  const userId = session?.user?.email
+    ? (await prisma.user.findUnique({ where: { email: session.user.email }, select: { id: true } }))?.id ?? null
+    : null
+
   const access = await prisma.quantumAccess.upsert({
     where: { visitorKey },
     update: { usesCount: { increment: 1 } },
-    create: { visitorKey, userId: null, usesCount: 1 },
+    create: { visitorKey, userId, usesCount: 1 },
   })
 
-  const { allowed, daysLeft } = trialStatus(access.createdAt)
-  return NextResponse.json({ allowed, daysLeft, usesLeft: daysLeft })
+  const usesLeft = Math.max(0, FREE_USES - access.usesCount)
+  return NextResponse.json({ allowed: usesLeft > 0, paid: false, usesLeft })
 }

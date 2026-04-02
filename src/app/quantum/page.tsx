@@ -296,10 +296,10 @@ export default function QuantumPage() {
               <p className="text-white font-semibold text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Prueba gratuita —{' '}
                 <span style={{ color: CYAN }}>
-                  {access.usesLeft > 0 ? `${access.usesLeft} día${access.usesLeft !== 1 ? 's' : ''} restante${access.usesLeft !== 1 ? 's' : ''}` : 'Expirada'}
+                  {access.usesLeft > 0 ? `${access.usesLeft} uso${access.usesLeft !== 1 ? 's' : ''} restante${access.usesLeft !== 1 ? 's' : ''}` : 'Agotada'}
                 </span>
               </p>
-              <p className="text-[11px]" style={{ color: MUTED }}>7 días gratis desde el primer acceso. Acceso completo con suscripción Quantum Access.</p>
+              <p className="text-[11px]" style={{ color: MUTED }}>3 usos gratuitos. Acceso completo con suscripción Quantum Access.</p>
             </div>
             {access.usesLeft <= 0 && (
               <a
