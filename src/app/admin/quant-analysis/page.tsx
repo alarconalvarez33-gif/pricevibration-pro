@@ -153,11 +153,6 @@ export default function QuantAnalysisPage() {
   const [lastUpdate, setLastUpdate] = useState<string | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  useEffect(() => {
-    if (status === 'unauthenticated') router.replace('/login')
-    if (status === 'authenticated' && session?.user?.email !== ADMIN_EMAIL) router.replace('/')
-  }, [status, session, router])
-
   const fetchData = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -182,8 +177,13 @@ export default function QuantAnalysisPage() {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [status, session, fetchData])
 
-  if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== ADMIN_EMAIL)) {
-    return <div style={{ background: BG, minHeight: '100vh' }} />
+  // Show blank while session loads
+  if (status === 'loading') return <div style={{ background: BG, minHeight: '100vh' }} />
+
+  // Redirect non-admins only once session is confirmed
+  if (status === 'unauthenticated' || session?.user?.email !== ADMIN_EMAIL) {
+    router.replace('/')
+    return null
   }
 
   const maxVolume = data ? Math.max(...data.volumeProfile.map(v => v.volume)) : 1
