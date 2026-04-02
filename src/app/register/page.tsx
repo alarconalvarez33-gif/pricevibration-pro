@@ -54,9 +54,9 @@ export default function RegisterPage() {
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Error al registrar'); setIsLoading(false); return }
 
-      const loginResult = await signIn('credentials', { email, password, redirect: false })
-      if (loginResult?.error) { window.location.href = '/login?registered=true'; return }
-      window.location.href = '/dashboard'
+      // Store password temporarily so verify page can auto-login after verification
+      sessionStorage.setItem('__reg_pw', password)
+      window.location.href = `/verify?email=${encodeURIComponent(email)}`
     } catch {
       setError('Error inesperado. Intentá de nuevo.')
       setIsLoading(false)

@@ -2,71 +2,67 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
+import { sendVerificationEmail } from '@/lib/mailer'
 
 const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  email: z.string().email('Email inválido'),
+  password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
   whatsapp: z.string().optional(),
 })
+
+function generateCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString()
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Validate input
     const result = registerSchema.safeParse(body)
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error.errors[0].message },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: result.error.errors[0].message }, { status: 400 })
     }
 
     const { name, email, password, whatsapp } = result.data
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    })
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'User with this email already exists' },
-        { status: 400 }
-      )
+    // Check existing user
+    const existing = await prisma.user.findUnique({ where: { email } })
+    if (existing) {
+      // If unverified and expired → delete and allow re-register
+      if (!existing.emailVerified && existing.verificationExpires && existing.verificationExpires < new Date()) {
+        await prisma.user.delete({ where: { email } })
+      } else if (!existing.emailVerified) {
+        return NextResponse.json(
+          { error: 'Ya existe un registro pendiente de verificación para este email. Revisá tu bandeja de entrada.' },
+          { status: 400 }
+        )
+      } else {
+        return NextResponse.json({ error: 'Ya existe una cuenta con ese email' }, { status: 400 })
+      }
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12)
+    const code = generateCode()
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
 
-    // Create user
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        isPremium: false,
         whatsapp: whatsapp || null,
+        emailVerified: false,
+        verificationCode: code,
+        verificationExpires: expires,
       },
     })
 
-    return NextResponse.json(
-      {
-        message: 'User created successfully',
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        },
-      },
-      { status: 201 }
-    )
+    await sendVerificationEmail(email, name, code)
+
+    return NextResponse.json({ requiresVerification: true, email }, { status: 201 })
   } catch (error) {
     console.error('Registration error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
   }
 }

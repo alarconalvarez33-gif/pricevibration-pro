@@ -9,6 +9,7 @@ const PUBLIC_PATHS = new Set([
   '/',
   '/login',
   '/register',
+  '/verify',
   '/billing',
   '/pricing',
   '/courses',
