@@ -377,7 +377,7 @@ export default function BillingPage() {
                       >
                         {loading === course.id ? (
                           <span className="flex items-center gap-1"><SpinIcon />...</span>
-                        ) : 'No quiero seguir operando a ciegas'}
+                        ) : 'Lo quiero!'}
                       </button>
                     </div>
                   </div>
