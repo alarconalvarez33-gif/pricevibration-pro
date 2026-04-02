@@ -25,9 +25,6 @@ model User {
   autoRenew          Boolean   @default(true)
   cancelledAt        DateTime?
   nextBillingDate    DateTime?
-  emailVerified      Boolean   @default(true)
-  verificationCode   String?
-  verificationExpires DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   calculations       Calculation[]

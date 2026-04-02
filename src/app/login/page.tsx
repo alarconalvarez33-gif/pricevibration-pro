@@ -24,10 +24,6 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        if (result.error.includes('EMAIL_NOT_VERIFIED')) {
-          window.location.href = `/verify?email=${encodeURIComponent(email)}`
-          return
-        }
         setError('Email o contraseña incorrectos')
         setIsLoading(false)
       } else {

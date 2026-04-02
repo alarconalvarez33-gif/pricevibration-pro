@@ -238,13 +238,6 @@ export default function BillingPage() {
                 Los cursos no están incluidos — se compran por separado
               </div>
 
-              {/* Free trial */}
-              <div
-                className="mb-8 p-4 border text-center text-xs font-medium"
-                style={{ borderColor: `${CYAN}20`, backgroundColor: `${CYAN}06`, color: CYAN }}
-              >
-                7 días de prueba gratuita disponibles
-              </div>
 
               {/* Payment badges — diseño intencional */}
               <div
