@@ -329,6 +329,17 @@ export default function BillingPage() {
               </h2>
             </div>
 
+            {/* Course access notice */}
+            <div
+              className="flex items-start gap-3 mb-6 px-4 py-3 rounded-xl"
+              style={{ background: `${CYAN}10`, border: `1px solid ${CYAN}25` }}
+            >
+              <span className="text-lg shrink-0 mt-0.5">ℹ️</span>
+              <p className="text-sm" style={{ color: CYAN }}>
+                Al comprar cualquier curso, accedé al contenido completo desde la sección <strong>CURSOS</strong> en tu cuenta.
+              </p>
+            </div>
+
             {/* Canal Paralelo + Fibonacci */}
             <div className="grid gap-px sm:grid-cols-1 md:grid-cols-2" style={{ backgroundColor: BORDER }}>
               {COURSES.filter(c => c.id !== 'expansion-matematica').map((course) => (

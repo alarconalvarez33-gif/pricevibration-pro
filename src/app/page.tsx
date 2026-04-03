@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
@@ -16,6 +16,56 @@ const C = {
   muted:  '#555555',
   subtle: '#333333',
 } as const;
+
+const STATIC_PROOFS = [
+  { imageUrl: '/proof1.jpg', caption: 'XAUUSD — Rebote exacto en nivel Q3' },
+  { imageUrl: '/proof2.jpg', caption: 'XAUUSD — Resistencia en nivel Q7 respetada' },
+  { imageUrl: '/proof3.jpg', caption: 'BTC/USD — Soporte cuántico confirmado' },
+  { imageUrl: '/proof4.jpg', caption: 'EUR/USD — Nivel Sacred como pivote' },
+]
+
+function ProofGrid() {
+  const [proofs, setProofs] = useState<{ imageUrl: string; caption: string }[]>([])
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/proofs')
+      .then(r => r.json())
+      .then(data => {
+        setProofs(Array.isArray(data) && data.length > 0 ? data : STATIC_PROOFS)
+        setLoaded(true)
+      })
+      .catch(() => { setProofs(STATIC_PROOFS); setLoaded(true) })
+  }, [])
+
+  if (!loaded) return null
+
+  return (
+    <div className="grid sm:grid-cols-2 gap-4">
+      {proofs.map((p, i) => (
+        <div
+          key={i}
+          className="group overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]"
+          style={{ border: `1px solid #222`, backgroundColor: '#111' }}
+        >
+          <div style={{ aspectRatio: '16/9', overflow: 'hidden', backgroundColor: '#0d0d0e' }}>
+            <img
+              src={p.imageUrl}
+              alt={p.caption}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
+          </div>
+          <div className="px-4 py-3">
+            <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace" }}>
+              {p.caption}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function HomePage() {
   const [formLoading, setFormLoading] = useState(false);
@@ -113,13 +163,12 @@ export default function HomePage() {
 
                 <h1 className="text-5xl md:text-6xl font-bold leading-[1.05] mb-8 text-white"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Predice niveles donde<br />
-                  <span style={{ color: C.cyan }}>el precio va a girar.</span>
+                  El mercado no es azar,<br />
+                  <span style={{ color: C.cyan }}>es geometría.</span>
                 </h1>
 
                 <p className="text-lg text-[#666] mb-12 leading-relaxed">
-                  Niveles cuánticos de alta probabilidad para Forex, Oro y Crypto.
-                  Matemática n² aplicada al precio.
+                  Descubre la frecuencia matemática del XAUUSD. Sacred Levels utiliza Ciclos de Gann y Niveles Cuánticos para darte entradas de alta probabilidad.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mb-12">
@@ -181,7 +230,7 @@ export default function HomePage() {
                     className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    {flyer1Loading ? 'Procesando...' : 'No quiero seguir operando a ciegas'}
+                    {flyer1Loading ? 'Procesando...' : 'LO QUIERO'}
                   </button>
                 </div>
 
@@ -213,7 +262,7 @@ export default function HomePage() {
                     className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    {cursoLoading ? 'Procesando...' : 'No quiero seguir operando a ciegas'}
+                    {cursoLoading ? 'Procesando...' : 'LO QUIERO'}
                   </button>
                 </div>
 
@@ -311,117 +360,28 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
+        {/* ── NIVELES EN ACCIÓN ────────────────────────────────── */}
         <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-            <div>
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12 text-center">
               <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-6"
+                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
                 style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Metodología
+                Resultados
               </p>
               <h2
-                className="text-4xl font-bold text-white mb-10"
+                className="text-4xl font-bold text-white mb-3"
                 style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Cómo funciona
+                Niveles en Acción — Resultados Reales
               </h2>
-              <div className="space-y-8">
-                {[
-                  { n: '01', title: 'Ingresa el rango', desc: 'Precio máximo y mínimo del período que analizas.' },
-                  { n: '02', title: 'Obtén los niveles', desc: '9 niveles cuánticos calculados con la fórmula E=n² de distribución de energía.' },
-                  { n: '03', title: 'Opera con ventaja', desc: 'Compra en zonas de acumulación Q0–Q3, vende en distribución Q6–Q8.' },
-                ].map((item) => (
-                  <div key={item.n} className="flex gap-6">
-                    <span
-                      className="text-sm font-bold shrink-0 mt-0.5 w-8"
-                      style={{ color: C.cyan, fontFamily: "'JetBrains Mono', monospace" }}
-                    >
-                      {item.n}
-                    </span>
-                    <div>
-                      <h3 className="text-white font-semibold text-sm mb-1.5" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                        {item.title}
-                      </h3>
-                      <p className="text-[#555] text-sm leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <p className="text-sm" style={{ color: C.muted }}>
+                Capturas reales de nuestros niveles funcionando en el mercado
+              </p>
             </div>
 
-            {/* Terminal-style level preview */}
-            <div
-              className="border rounded-sm overflow-hidden"
-              style={{ backgroundColor: C.card, borderColor: C.border }}
-            >
-              <div
-                className="flex items-center justify-between px-5 py-3 border-b"
-                style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}
-              >
-                <span
-                  className="text-[11px] font-semibold tracking-widest uppercase"
-                  style={{ color: C.cyan, fontFamily: "'JetBrains Mono', monospace" }}
-                >
-                  XAU/USD
-                </span>
-                <span className="text-[10px] uppercase tracking-widest text-[#333]">demo</span>
-              </div>
-              <div className="p-1">
-                {[
-                  { level: 'Q8', price: '2,700.00', type: 'sell' },
-                  { level: 'Q7', price: '2,676.56', type: 'sell' },
-                  { level: 'Q6', price: '2,656.25', type: 'sell' },
-                  { level: 'Q5', price: '2,625.00', type: 'eq' },
-                  { level: 'Q4', price: '2,600.00', type: 'eq' },
-                  { level: 'Q3', price: '2,556.25', type: 'buy' },
-                  { level: 'Q2', price: '2,525.00', type: 'buy' },
-                  { level: 'Q1', price: '2,506.25', type: 'buy' },
-                ].map((row) => {
-                  const col = row.type === 'sell' ? C.red : row.type === 'buy' ? C.green : '#c9a227';
-                  const label = row.type === 'sell' ? 'DIST' : row.type === 'buy' ? 'ACCUM' : 'EQ';
-                  return (
-                    <div
-                      key={row.level}
-                      className="flex items-center justify-between px-4 py-2.5 border-l-2 mb-0.5"
-                      style={{
-                        borderLeftColor: col,
-                        backgroundColor: `${col}08`,
-                      }}
-                    >
-                      <span
-                        className="text-xs font-bold w-8"
-                        style={{ color: col, fontFamily: "'JetBrains Mono', monospace" }}
-                      >
-                        {row.level}
-                      </span>
-                      <span
-                        className="text-xs text-white"
-                        style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                      >
-                        {row.price}
-                      </span>
-                      <span
-                        className="text-[9px] font-bold tracking-widest w-12 text-right"
-                        style={{ color: col }}
-                      >
-                        {label}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
-                <Link
-                  href="/quantum"
-                  className="block w-full py-3 text-center text-black text-sm font-bold uppercase tracking-[0.12em] transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Calcular Mis Niveles
-                </Link>
-              </div>
-            </div>
+            <ProofGrid />
           </div>
         </section>
 
@@ -441,6 +401,17 @@ export default function HomePage() {
               >
                 Cursos de Trading
               </h2>
+            </div>
+
+            {/* Course access notice */}
+            <div
+              className="flex items-start gap-3 mb-8 px-4 py-3 rounded-xl"
+              style={{ background: `${C.cyan}10`, border: `1px solid ${C.cyan}25` }}
+            >
+              <span className="text-lg shrink-0 mt-0.5">ℹ️</span>
+              <p className="text-sm" style={{ color: C.cyan }}>
+                Al comprar cualquier curso, accedé al contenido completo desde la sección <strong>CURSOS</strong> en tu cuenta.
+              </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-px" style={{ backgroundColor: C.border }}>

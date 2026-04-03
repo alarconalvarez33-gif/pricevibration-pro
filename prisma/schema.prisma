@@ -179,3 +179,12 @@ model GalleryResult {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 }
+
+model Proof {
+  id        String   @id @default(cuid())
+  imageUrl  String   @db.Text
+  caption   String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
