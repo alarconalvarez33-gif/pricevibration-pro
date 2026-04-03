@@ -92,8 +92,6 @@ function ProofGrid() {
     </>
   )
 }
-  )
-}
 
 export default function HomePage() {
   const [formLoading, setFormLoading] = useState(false);
