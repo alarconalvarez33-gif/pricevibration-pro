@@ -6,12 +6,14 @@ import { isAdmin } from '@/lib/constants'
 
 export const dynamic = 'force-dynamic'
 
+const MAX_PROOFS = 3
+
 export async function GET() {
   try {
     const proofs = await prisma.proof.findMany({
       where: { isActive: true },
-      orderBy: { order: 'asc' },
-      select: { id: true, imageUrl: true, caption: true, order: true },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, imageUrl: true, caption: true },
     })
     return NextResponse.json(proofs)
   } catch {
@@ -22,9 +24,18 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!isAdmin(session?.user?.email)) return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
-  const { imageUrl, caption, order } = await req.json()
+
+  const { imageUrl, caption } = await req.json()
   if (!imageUrl || !caption) return NextResponse.json({ error: 'Faltan campos' }, { status: 400 })
-  const proof = await prisma.proof.create({ data: { imageUrl, caption, order: order ?? 0 } })
+
+  // Auto-delete oldest if at max capacity
+  const all = await prisma.proof.findMany({ orderBy: { createdAt: 'asc' }, select: { id: true } })
+  if (all.length >= MAX_PROOFS) {
+    const toDelete = all.slice(0, all.length - MAX_PROOFS + 1)
+    await prisma.proof.deleteMany({ where: { id: { in: toDelete.map(p => p.id) } } })
+  }
+
+  const proof = await prisma.proof.create({ data: { imageUrl, caption, order: 0 } })
   return NextResponse.json(proof)
 }
 

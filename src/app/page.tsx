@@ -18,10 +18,9 @@ const C = {
 } as const;
 
 const STATIC_PROOFS = [
-  { imageUrl: '/proof1.jpg', caption: 'XAUUSD — Rebote exacto en nivel Q3' },
-  { imageUrl: '/proof2.jpg', caption: 'XAUUSD — Resistencia en nivel Q7 respetada' },
-  { imageUrl: '/proof3.jpg', caption: 'BTC/USD — Soporte cuántico confirmado' },
-  { imageUrl: '/proof4.jpg', caption: 'EUR/USD — Nivel Sacred como pivote' },
+  { imageUrl: '/proof1.jpg', caption: 'Nivel Sacred en acción' },
+  { imageUrl: '/proof2.jpg', caption: 'Nivel Sacred en acción' },
+  { imageUrl: '/proof3.jpg', caption: 'Nivel Sacred en acción' },
 ]
 
 function ProofGrid() {
