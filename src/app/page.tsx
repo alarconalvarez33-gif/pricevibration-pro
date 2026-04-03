@@ -26,6 +26,7 @@ const STATIC_PROOFS = [
 function ProofGrid() {
   const [proofs, setProofs] = useState<{ imageUrl: string; caption: string }[]>([])
   const [loaded, setLoaded] = useState(false)
+  const [selected, setSelected] = useState<{ imageUrl: string; caption: string } | null>(null)
 
   useEffect(() => {
     fetch('/api/proofs')
@@ -40,29 +41,57 @@ function ProofGrid() {
   if (!loaded) return null
 
   return (
-    <div className="grid sm:grid-cols-2 gap-4">
-      {proofs.map((p, i) => (
+    <>
+      <div className="grid sm:grid-cols-2 gap-4">
+        {proofs.map((p, i) => (
+          <div
+            key={i}
+            className="group overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02] cursor-zoom-in"
+            style={{ border: `1px solid #222`, backgroundColor: '#111' }}
+            onClick={() => setSelected(p)}
+          >
+            <div style={{ backgroundColor: '#0d0d0e' }}>
+              <img
+                src={p.imageUrl}
+                alt={p.caption}
+                style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+              />
+            </div>
+            <div className="px-4 py-3">
+              <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace" }}>
+                {p.caption}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Lightbox */}
+      {selected && (
         <div
-          key={i}
-          className="group overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]"
-          style={{ border: `1px solid #222`, backgroundColor: '#111' }}
+          onClick={() => setSelected(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            backgroundColor: 'rgba(0,0,0,0.92)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            padding: '24px', cursor: 'zoom-out',
+          }}
         >
-          <div style={{ backgroundColor: '#0d0d0e' }}>
-            <img
-              src={p.imageUrl}
-              alt={p.caption}
-              style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-            />
-          </div>
-          <div className="px-4 py-3">
-            <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace" }}>
-              {p.caption}
-            </p>
-          </div>
+          <img
+            src={selected.imageUrl}
+            alt={selected.caption}
+            style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain', borderRadius: 8, boxShadow: '0 0 60px rgba(0,229,255,0.1)' }}
+          />
+          <p style={{ color: '#aaa', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 16 }}>
+            {selected.caption}
+          </p>
+          <p style={{ color: '#444', fontSize: 11, marginTop: 8 }}>Clic para cerrar</p>
         </div>
-      ))}
-    </div>
+      )}
+    </>
+  )
+}
   )
 }
 
