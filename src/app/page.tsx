@@ -47,11 +47,11 @@ function ProofGrid() {
           className="group overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]"
           style={{ border: `1px solid #222`, backgroundColor: '#111' }}
         >
-          <div style={{ aspectRatio: '16/9', overflow: 'hidden', backgroundColor: '#0d0d0e' }}>
+          <div style={{ backgroundColor: '#0d0d0e' }}>
             <img
               src={p.imageUrl}
               alt={p.caption}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
           </div>
