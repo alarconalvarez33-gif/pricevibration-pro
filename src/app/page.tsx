@@ -25,41 +25,47 @@ const STATIC_PROOFS = [
 
 function ProofGrid() {
   const [proofs, setProofs] = useState<{ imageUrl: string; caption: string }[]>([])
-  const [loaded, setLoaded] = useState(false)
   const [selected, setSelected] = useState<{ imageUrl: string; caption: string } | null>(null)
 
   useEffect(() => {
     fetch('/api/proofs')
       .then(r => r.json())
-      .then(data => {
-        setProofs(Array.isArray(data) && data.length > 0 ? data : STATIC_PROOFS)
-        setLoaded(true)
-      })
-      .catch(() => { setProofs(STATIC_PROOFS); setLoaded(true) })
+      .then(data => { if (Array.isArray(data) && data.length > 0) setProofs(data) })
+      .catch(() => {})
   }, [])
 
-  if (!loaded) return null
+  if (proofs.length === 0) {
+    return (
+      <p style={{ color: '#333', fontSize: 12, textAlign: 'center', padding: '40px 0', fontFamily: "'JetBrains Mono', monospace" }}>
+        Próximamente — capturas reales de niveles en acción
+      </p>
+    )
+  }
 
   return (
     <>
-      <div className="grid sm:grid-cols-2 gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
         {proofs.map((p, i) => (
           <div
             key={i}
-            className="group overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02] cursor-zoom-in"
-            style={{ border: `1px solid #222`, backgroundColor: '#111' }}
             onClick={() => setSelected(p)}
+            style={{
+              border: '1px solid #222', backgroundColor: '#111', borderRadius: 12,
+              overflow: 'hidden', cursor: 'zoom-in', transition: 'transform 0.2s',
+              width: '100%',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
+            onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            <div style={{ backgroundColor: '#0d0d0e' }}>
+            <div style={{ backgroundColor: '#0d0d0e', width: '100%' }}>
               <img
                 src={p.imageUrl}
                 alt={p.caption}
-                style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', maxWidth: '100%' }}
               />
             </div>
-            <div className="px-4 py-3">
-              <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace" }}>
+            <div style={{ padding: '10px 14px' }}>
+              <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
                 {p.caption}
               </p>
             </div>
@@ -75,18 +81,18 @@ function ProofGrid() {
             position: 'fixed', inset: 0, zIndex: 9999,
             backgroundColor: 'rgba(0,0,0,0.92)',
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            padding: '24px', cursor: 'zoom-out',
+            padding: '20px', cursor: 'zoom-out',
           }}
         >
           <img
             src={selected.imageUrl}
             alt={selected.caption}
-            style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain', borderRadius: 8, boxShadow: '0 0 60px rgba(0,229,255,0.1)' }}
+            style={{ maxWidth: '95vw', maxHeight: '82vh', objectFit: 'contain', borderRadius: 8, boxShadow: '0 0 60px rgba(0,229,255,0.1)' }}
           />
-          <p style={{ color: '#aaa', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 16 }}>
+          <p style={{ color: '#aaa', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 14, textAlign: 'center' }}>
             {selected.caption}
           </p>
-          <p style={{ color: '#444', fontSize: 11, marginTop: 8 }}>Clic para cerrar</p>
+          <p style={{ color: '#555', fontSize: 11, marginTop: 6 }}>Toca para cerrar</p>
         </div>
       )}
     </>
