@@ -23,11 +23,11 @@ export default function PromoPopup() {
     const plan = (session?.user as any)?.plan
     if (plan === 'quantum' || (session?.user as any)?.role === 'admin') return
 
-    if (sessionStorage.getItem('promo_shown')) return
+    if (sessionStorage.getItem('promo_shown_v2')) return
 
     const t = setTimeout(() => {
       setVisible(true)
-      sessionStorage.setItem('promo_shown', '1')
+      sessionStorage.setItem('promo_shown_v2', '1')
     }, 8000)
 
     return () => clearTimeout(t)
