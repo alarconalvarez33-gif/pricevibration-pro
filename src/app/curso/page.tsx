@@ -132,23 +132,21 @@ export default function CursoPage() {
         ) : hasAccess ? (
           /* ── Video player ── */
           <div
-            className="relative w-full overflow-hidden rounded-xl"
+            className="w-full rounded-xl overflow-hidden"
             style={{
-              paddingBottom: '56.25%',
+              position: 'relative',
+              aspectRatio: '16/9',
               backgroundColor: '#000',
               border: `1px solid ${BORDER}`,
-              boxShadow: '0 0 60px rgba(0,229,255,0.04), 0 0 120px rgba(0,229,255,0.02)',
+              boxShadow: '0 0 60px rgba(0,229,255,0.04)',
             }}
           >
             <iframe
-              className="absolute top-0 left-0 w-full h-full rounded-xl"
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
               src="https://player.vimeo.com/video/1177466951?badge=0&autopause=0&player_id=0&app_id=58479"
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
               allowFullScreen
+              title="Super Estrategia"
             />
           </div>
         ) : (

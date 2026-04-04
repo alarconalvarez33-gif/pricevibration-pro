@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 const COURSE_META: Record<string, { title: string; url: string; icon: string }> = {
   'canal-paralelo': {
     title: 'Canal Paralelo',
@@ -18,6 +20,11 @@ const COURSE_META: Record<string, { title: string; url: string; icon: string }> 
     title: 'Curso de Fibonacci',
     url: '/courses/fibonacci',
     icon: '📊',
+  },
+  'super-estrategia': {
+    title: 'Super Estrategia',
+    url: '/curso',
+    icon: '🏆',
   },
 }
 
@@ -38,7 +45,7 @@ export async function GET() {
 
     const isAdmin = user.email === 'raul@sacredlevels.com' || user.role === 'admin'
 
-    // Admins see all available courses without needing a purchase record
+    // Admins see all courses
     if (isAdmin) {
       const courses = Object.entries(COURSE_META).map(([productId, meta]) => ({
         productId,
@@ -58,12 +65,23 @@ export async function GET() {
       productId: p.productId,
       orderId: p.orderId,
       paidAt: p.paidAt,
-      ...(COURSE_META[p.productId] || {
+      ...(COURSE_META[p.productId] ?? {
         title: p.productId,
         url: '#',
         icon: '📚',
       }),
     }))
+
+    // If cursoPurchased flag is set but no purchase record, add super-estrategia
+    const alreadyHasSuperEstrategia = courses.some(c => c.productId === 'super-estrategia')
+    if (user.cursoPurchased && !alreadyHasSuperEstrategia) {
+      courses.unshift({
+        productId: 'super-estrategia',
+        orderId: 'manual',
+        paidAt: null,
+        ...COURSE_META['super-estrategia'],
+      })
+    }
 
     return NextResponse.json({ courses })
   } catch (error) {
