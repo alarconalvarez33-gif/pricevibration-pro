@@ -188,3 +188,10 @@ model Proof {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
+
+model Reservation {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  whatsapp  String?
+  createdAt DateTime @default(now())
+}

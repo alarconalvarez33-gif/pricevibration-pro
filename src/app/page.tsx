@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
+import PromoPopup from '@/components/PromoPopup';
 
 /* ── Design tokens ── */
 const C = {
@@ -162,6 +163,7 @@ export default function HomePage() {
   return (
     <>
       <Navbar />
+      <PromoPopup />
       <main className="min-h-screen" style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif" }}>
 
         {/* ── HERO ─────────────────────────────────────────────────── */}
