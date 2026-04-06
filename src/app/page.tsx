@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import PromoPopup from '@/components/PromoPopup';
+import MentorProfile from '@/components/MentorProfile';
 
 /* ── Design tokens ── */
 const C = {
@@ -491,6 +492,9 @@ export default function HomePage() {
             </p>
           </div>
         </section>
+
+        {/* ── MENTOR PROFILE ───────────────────────────────────────── */}
+        <MentorProfile />
 
         {/* ── QUANTUM ACCESS PRICING ───────────────────────────────── */}
         <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
