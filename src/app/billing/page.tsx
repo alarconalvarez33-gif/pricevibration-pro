@@ -29,7 +29,7 @@ const COURSES = [
     name: 'Super Estrategia',
     pricePyg: 65000,
     priceUsd: 10,
-    flyer: '/Super estrategia.jpg',
+    flyer: '/nuevo.png',
     description: 'Estrategia de trading probada en mercados reales. Análisis técnico avanzado y gestión de riesgo profesional.',
   },
   {
@@ -360,6 +360,17 @@ export default function BillingPage() {
                       style={{ objectFit: 'contain' }}
                     />
                   </div>
+                  {course.id === 'super-estrategia' && (
+                    <p style={{
+                      padding: '10px 16px', margin: 0,
+                      fontSize: 11, fontStyle: 'italic', lineHeight: 1.5,
+                      color: '#00E5FF', borderTop: '1px solid #1e1e1f',
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      background: '#0d0d0e',
+                    }}>
+                      "No busco alumnos, busco tiburones. El que no tiene hambre, que se vaya."
+                    </p>
+                  )}
                   <div className="p-5 flex flex-col flex-1">
                     <h3
                       className="text-white font-bold text-sm mb-2"
