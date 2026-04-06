@@ -93,7 +93,7 @@ export default function MentorProfile() {
         {/* ── TOP: photo + intro ── */}
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '80px 24px 60px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 48, alignItems: 'start' }}
-            className="md:grid-cols-[380px_1fr]"
+            className="md:grid-cols-[200px_1fr]"
           >
 
             {/* Photo column */}
@@ -111,8 +111,8 @@ export default function MentorProfile() {
                 <Image
                   src="/thementor.jpeg"
                   alt="Raúl Alarcón — The Mentor"
-                  width={380}
-                  height={500}
+                  width={200}
+                  height={260}
                   style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
                   priority
                 />
