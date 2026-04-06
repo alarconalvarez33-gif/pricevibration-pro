@@ -368,7 +368,7 @@ export default function BillingPage() {
                       fontFamily: "'Space Grotesk', sans-serif",
                       background: '#0d0d0e',
                     }}>
-                      "No busco alumnos, busco tiburones. El que no tiene hambre, que se vaya."
+                      &ldquo;No busco alumnos, busco tiburones. El que no tiene hambre, que se vaya.&rdquo;
                     </p>
                   )}
                   <div className="p-5 flex flex-col flex-1">
