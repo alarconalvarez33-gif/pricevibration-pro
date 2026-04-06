@@ -106,14 +106,15 @@ export default function MentorProfile() {
                 position: 'relative', borderRadius: 4,
                 border: `1px solid rgba(201,168,76,0.3)`,
                 overflow: 'hidden',
+                height: 200,
+                width: 200,
                 boxShadow: `0 0 80px rgba(201,168,76,0.08), 0 32px 64px rgba(0,0,0,0.6)`,
               }}>
                 <Image
-                  src="/thementor.jpeg"
+                  src="/thementor.png"
                   alt="Raúl Alarcón — The Mentor"
-                  width={200}
-                  height={260}
-                  style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
+                  fill
+                  style={{ objectFit: 'cover' }}
                   priority
                 />
                 {/* Gradient overlay bottom */}
