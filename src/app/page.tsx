@@ -485,188 +485,60 @@ export default function HomePage() {
               ))}
             </div>
 
-            <p className="text-[#333] text-xs mt-6 text-center uppercase tracking-[0.2em]">
-              Cursos independientes del plan · la suscripción{' '}
-              <span style={{ color: C.cyan }}>Quantum Access</span>{' '}
-              incluye Calculadora, Signal Hub, DXY y análisis IA
+            {/* ── QUANTUM ACCESS — compact banner ── */}
+            <div className="mt-6 border" style={{ borderColor: C.border, backgroundColor: C.card }}>
+              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)` }} />
+              <div className="flex flex-col md:flex-row items-center md:items-stretch gap-0">
+                {/* Price block */}
+                <div
+                  className="flex flex-col items-center justify-center px-8 py-6 border-b md:border-b-0 md:border-r shrink-0"
+                  style={{ borderColor: C.border, backgroundColor: '#0d0d0e', minWidth: 200 }}
+                >
+                  <div className="inline-flex items-center gap-2 mb-3">
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan }}>Quantum Access</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white mb-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                    Gs. 350.000
+                  </div>
+                  <p className="text-[#444] text-[11px] mb-4">$50 USD · pago mensual</p>
+                  <Link
+                    href="/billing"
+                    className="block w-full py-2.5 text-black text-[11px] font-bold uppercase tracking-[0.1em] text-center transition-opacity hover:opacity-90"
+                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Suscribirme
+                  </Link>
+                  <p className="text-[#333] text-[9px] mt-2 uppercase tracking-widest">3 usos gratis sin registrarse</p>
+                </div>
+
+                {/* Features */}
+                <div className="flex flex-wrap gap-x-6 gap-y-3 px-8 py-6 items-center">
+                  {[
+                    ['⚡', 'Calculadora Cuadrática ilimitada'],
+                    ['📡', 'Signal Hub en tiempo real'],
+                    ['🌐', 'Forex · Crypto · Oro · Índices'],
+                    ['🤖', 'Análisis IA cuántico'],
+                    ['📊', 'Dashboard Quantum Levels'],
+                    ['🔓', 'Acceso 24/7 sin restricciones'],
+                  ].map(([icon, label]) => (
+                    <div key={label} className="flex items-center gap-2">
+                      <span className="text-sm">{icon}</span>
+                      <span className="text-[11px] text-[#888]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <p className="text-[#333] text-[10px] mt-4 text-center uppercase tracking-[0.2em]">
+              Cursos independientes del plan · suscripción mensual renovable
             </p>
           </div>
         </section>
 
         {/* ── MENTOR PROFILE ───────────────────────────────────────── */}
         <MentorProfile />
-
-        {/* ── QUANTUM ACCESS PRICING ───────────────────────────────── */}
-        <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
-          <div className="max-w-5xl mx-auto">
-            <div className="mb-14 text-center">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Suscripción
-              </p>
-              <h2
-                className="text-4xl font-bold text-white"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Un plan. Todo incluido.
-              </h2>
-            </div>
-
-            <div
-              className="border"
-              style={{ backgroundColor: C.card, borderColor: C.border }}
-            >
-              {/* Top accent line */}
-              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)` }} />
-
-              <div className="grid md:grid-cols-[1fr_1.2fr]">
-                {/* Left — flyer + precio */}
-                <div
-                  className="flex flex-col items-center p-10 gap-8 border-r"
-                  style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}
-                >
-                  <div
-                    className="w-full max-w-[280px] overflow-hidden"
-                    style={{ backgroundColor: '#111', aspectRatio: '1/1' }}
-                  >
-                    <Image
-                      src="/signal.png"
-                      alt="Quantum Access"
-                      width={280}
-                      height={280}
-                      className="w-full h-full"
-                      style={{ objectFit: 'contain' }}
-                    />
-                  </div>
-
-                  <div className="text-center w-full">
-                    <div
-                      className="inline-flex items-center gap-2 border px-3 py-1 mb-4"
-                      style={{ borderColor: `${C.cyan}30`, backgroundColor: `${C.cyan}08` }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
-                      <span
-                        className="text-[9px] font-bold uppercase tracking-[0.3em]"
-                        style={{ color: C.cyan }}
-                      >
-                        Plan Único
-                      </span>
-                    </div>
-
-                    <h3
-                      className="text-2xl font-bold text-white mb-4"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      QUANTUM ACCESS
-                    </h3>
-
-                    <div
-                      className="text-4xl font-bold text-white mb-1"
-                      style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                    >
-                      Gs. 350.000
-                    </div>
-                    <p className="text-[#444] text-sm">$50 USD / mes</p>
-
-                    <Link
-                      href="/billing"
-                      className="mt-6 block w-full py-3.5 text-black text-sm font-bold uppercase tracking-[0.1em] text-center transition-opacity hover:opacity-90"
-                      style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      Suscribirme Ahora
-                    </Link>
-                    <p className="text-[#333] text-[10px] mt-3 uppercase tracking-widest">
-                      3 usos gratis sin registrarse
-                    </p>
-                  </div>
-                </div>
-
-                {/* Right — features + cuotas */}
-                <div className="p-10">
-                  <p
-                    className="text-[9px] font-bold uppercase tracking-[0.3em] mb-6"
-                    style={{ color: C.cyan }}
-                  >
-                    Incluye
-                  </p>
-                  <ul className="space-y-3 mb-10">
-                    {[
-                      ['Calculadora Cuadrática ilimitada', 'Niveles n² en cualquier mercado'],
-                      ['Signal Hub completo', 'Señales en tiempo real'],
-                      ['DXY Dollar Index', 'Índice del dólar en vivo'],
-                      ['Todos los mercados', 'Forex · Crypto · Oro · Índices'],
-                      ['Análisis IA cuántico', 'Interpretación automática por zona'],
-                      ['Dashboard Quantum Levels', 'Panel exclusivo de acceso rápido'],
-                      ['Acceso 24/7', 'Sin restricciones'],
-                    ].map(([title, sub], i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="w-1 h-1 rounded-full mt-2 shrink-0" style={{ backgroundColor: C.cyan }} />
-                        <div>
-                          <p className="text-white text-sm font-medium" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                            {title}
-                          </p>
-                          <p className="text-[#444] text-xs mt-0.5">{sub}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Payment badges — 0% interés */}
-                  <div className="border-t pt-6" style={{ borderColor: C.border }}>
-                    <p className="text-[9px] uppercase tracking-[0.3em] text-[#333] mb-4">
-                      Pagá en cuotas · 0% interés
-                    </p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { cuotas: '1', monto: '350.000' },
-                        { cuotas: '3', monto: '116.667' },
-                        { cuotas: '6', monto: '58.334' },
-                        { cuotas: '12', monto: '29.167' },
-                      ].map((c) => (
-                        <div
-                          key={c.cuotas}
-                          className="border p-3 flex items-center justify-between transition-colors duration-200 hover:border-[#333]"
-                          style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}
-                        >
-                          <div>
-                            <span
-                              className="text-[9px] font-bold uppercase tracking-[0.2em]"
-                              style={{ color: C.cyan }}
-                            >
-                              {c.cuotas}x
-                            </span>
-                            <p className="text-[9px] text-[#333] uppercase tracking-widest">0% interés</p>
-                          </div>
-                          <span
-                            className="text-xs font-bold text-white"
-                            style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                          >
-                            Gs. {c.monto}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-[#333] text-[9px] mt-3 uppercase tracking-[0.2em]">
-                      Visa · Mastercard · Bancard
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Payment logos */}
-            <div
-              className="mt-4 border p-6 flex flex-wrap items-center justify-center gap-8"
-              style={{ borderColor: C.border, backgroundColor: C.card }}
-            >
-              <Image src="/familiar.png" alt="Banco Familiar" width={110} height={44} className="object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/ueno.jpeg" alt="Ueno" width={110} height={44} className="object-contain opacity-70 hover:opacity-100 transition-opacity" />
-            </div>
-          </div>
-        </section>
 
         {/* ── EXNESS AFFILIATION ───────────────────────────────────── */}
         <section
