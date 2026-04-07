@@ -224,7 +224,6 @@ export default function BillingPage() {
                 {[
                   'Calculadora Cuadrática (ilimitada)',
                   'Signal Hub (todas las señales)',
-                  'DXY Dollar Index en vivo',
                   'Forex, Crypto, Oro e Índices',
                   'Análisis IA en tiempo real',
                   'Dashboard Quantum Levels',
@@ -247,53 +246,9 @@ export default function BillingPage() {
               </div>
 
 
-              {/* Payment badges — diseño intencional */}
-              <div
-                className="mb-8 border p-5"
-                style={{ borderColor: BORDER, backgroundColor: DARK_BG }}
-              >
-                <p
-                  className="text-[9px] uppercase tracking-[0.3em] mb-4"
-                  style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Pagá en cuotas sin interés
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-                  {[
-                    { n: 1, monto: 350000 },
-                    { n: 3, monto: 116667 },
-                    { n: 6, monto: 58334 },
-                    { n: 12, monto: 29167 },
-                  ].map((c) => (
-                    <div
-                      key={c.n}
-                      className="border p-3 flex flex-col items-center gap-1 transition-colors duration-200 hover:border-[#333]"
-                      style={{ borderColor: BORDER }}
-                    >
-                      <span
-                        className="text-base font-bold"
-                        style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
-                      >
-                        {c.n}x
-                      </span>
-                      <span
-                        className="text-[9px] font-bold text-white"
-                        style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                      >
-                        {Gs(c.monto)}
-                      </span>
-                      <span
-                        className="text-[8px] font-bold uppercase tracking-widest"
-                        style={{ color: '#00D26A' }}
-                      >
-                        0% INTERÉS
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[#333] text-[9px] uppercase tracking-[0.2em]">
-                  Visa · Mastercard · Bancard
-                </p>
+              {/* Payment method note */}
+              <div className="mb-8 p-4 border text-xs text-[#444]" style={{ borderColor: BORDER, backgroundColor: DARK_BG }}>
+                Pago mensual · Visa · Mastercard · Bancard
               </div>
 
               {/* CTA */}
