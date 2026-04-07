@@ -307,6 +307,64 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── QUANTUM ACCESS PRICING ───────────────────────────────── */}
+        <section className="px-6 py-10" style={{ backgroundColor: C.bg, borderBottom: `1px solid ${C.border}` }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="border" style={{ borderColor: C.border, backgroundColor: C.card }}>
+              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)` }} />
+              <div className="flex flex-col md:flex-row">
+
+                {/* Flyer */}
+                <div className="shrink-0 flex items-center justify-center p-4 border-b md:border-b-0 md:border-r" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
+                  <Image
+                    src="/signal.png"
+                    alt="Quantum Access"
+                    width={120}
+                    height={120}
+                    style={{ objectFit: 'contain', display: 'block' }}
+                  />
+                </div>
+
+                {/* Price + label */}
+                <div className="flex flex-col justify-center items-center px-8 py-5 border-b md:border-b-0 md:border-r shrink-0 gap-1" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
+                  <div className="inline-flex items-center gap-2 mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Quantum Access</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 350.000</div>
+                  <p className="text-[#444] text-[11px]">$50 USD · pago mensual</p>
+                  <Link
+                    href="/billing"
+                    className="mt-3 px-6 py-2.5 text-black text-[11px] font-bold uppercase tracking-[0.1em] text-center transition-opacity hover:opacity-90"
+                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Suscribirme
+                  </Link>
+                  <p className="text-[#333] text-[9px] mt-1 uppercase tracking-widest">3 usos gratis sin registrarse</p>
+                </div>
+
+                {/* Features */}
+                <div className="flex flex-wrap gap-x-6 gap-y-3 px-8 py-6 items-center">
+                  {[
+                    ['⚡', 'Calculadora Cuadrática ilimitada'],
+                    ['📡', 'Signal Hub en tiempo real'],
+                    ['🌐', 'Forex · Crypto · Oro · Índices'],
+                    ['🤖', 'Análisis IA cuántico'],
+                    ['📊', 'Dashboard Quantum Levels'],
+                    ['🔓', 'Acceso 24/7 sin restricciones'],
+                  ].map(([icon, label]) => (
+                    <div key={label} className="flex items-center gap-2">
+                      <span className="text-sm">{icon}</span>
+                      <span className="text-[11px] text-[#888]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── VIDEO TUTORIAL ───────────────────────────────────────── */}
         <section className="py-20 px-6" style={{ backgroundColor: C.bg }}>
           <div className="max-w-[800px] mx-auto">
@@ -483,52 +541,6 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* ── QUANTUM ACCESS — compact banner ── */}
-            <div className="mt-6 border" style={{ borderColor: C.border, backgroundColor: C.card }}>
-              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)` }} />
-              <div className="flex flex-col md:flex-row items-center md:items-stretch gap-0">
-                {/* Price block */}
-                <div
-                  className="flex flex-col items-center justify-center px-8 py-6 border-b md:border-b-0 md:border-r shrink-0"
-                  style={{ borderColor: C.border, backgroundColor: '#0d0d0e', minWidth: 200 }}
-                >
-                  <div className="inline-flex items-center gap-2 mb-3">
-                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
-                    <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan }}>Quantum Access</span>
-                  </div>
-                  <div className="text-2xl font-bold text-white mb-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                    Gs. 350.000
-                  </div>
-                  <p className="text-[#444] text-[11px] mb-4">$50 USD · pago mensual</p>
-                  <Link
-                    href="/billing"
-                    className="block w-full py-2.5 text-black text-[11px] font-bold uppercase tracking-[0.1em] text-center transition-opacity hover:opacity-90"
-                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    Suscribirme
-                  </Link>
-                  <p className="text-[#333] text-[9px] mt-2 uppercase tracking-widest">3 usos gratis sin registrarse</p>
-                </div>
-
-                {/* Features */}
-                <div className="flex flex-wrap gap-x-6 gap-y-3 px-8 py-6 items-center">
-                  {[
-                    ['⚡', 'Calculadora Cuadrática ilimitada'],
-                    ['📡', 'Signal Hub en tiempo real'],
-                    ['🌐', 'Forex · Crypto · Oro · Índices'],
-                    ['🤖', 'Análisis IA cuántico'],
-                    ['📊', 'Dashboard Quantum Levels'],
-                    ['🔓', 'Acceso 24/7 sin restricciones'],
-                  ].map(([icon, label]) => (
-                    <div key={label} className="flex items-center gap-2">
-                      <span className="text-sm">{icon}</span>
-                      <span className="text-[11px] text-[#888]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
 
             <p className="text-[#333] text-[10px] mt-4 text-center uppercase tracking-[0.2em]">
