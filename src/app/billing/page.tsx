@@ -106,7 +106,7 @@ export default function BillingPage() {
 
   return (
     <main
-      className="min-h-screen"
+      className="min-h-screen pb-20 md:pb-0"
       style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}
     >
       <Navbar />
@@ -126,7 +126,7 @@ export default function BillingPage() {
         </div>
       )}
 
-      <div className="pt-36 pb-24 px-6">
+      <div className="pt-24 sm:pt-36 pb-24 px-4 sm:px-6 pb-28 md:pb-24">
         <div className="max-w-3xl mx-auto">
 
           {/* Header */}
@@ -138,7 +138,7 @@ export default function BillingPage() {
               Acceso Total
             </p>
             <h1
-              className="text-5xl font-bold text-white mb-4 leading-tight"
+              className="text-3xl sm:text-5xl font-bold text-white mb-4 leading-tight"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               Un plan.
@@ -159,7 +159,7 @@ export default function BillingPage() {
 
             {/* Header strip */}
             <div
-              className="flex items-center justify-between px-8 py-4 border-b"
+              className="flex items-center justify-between px-4 sm:px-8 py-4 border-b"
               style={{ borderColor: BORDER, backgroundColor: DARK_BG }}
             >
               <span
@@ -196,20 +196,20 @@ export default function BillingPage() {
               />
             </div>
 
-            <div className="p-8 md:p-10">
+            <div className="p-5 sm:p-8 md:p-10">
 
               {/* Price block */}
               <div className="mb-8 pb-8 border-b" style={{ borderColor: BORDER }}>
                 <h2
-                  className="text-2xl font-bold text-white mb-2"
+                  className="text-xl sm:text-2xl font-bold text-white mb-2"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
                   Quantum Access
                 </h2>
-                <p className="text-[#444] text-sm mb-5">Acceso completo a todas las herramientas cuánticas</p>
+                <p className="text-[#444] text-sm mb-5">Todo lo que necesitás para operar con precisión matemática</p>
                 <div className="flex items-baseline gap-3 mb-1">
                   <span
-                    className="text-4xl font-bold text-white"
+                    className="text-3xl sm:text-4xl font-bold text-white"
                     style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   >
                     {Gs(350000)}
@@ -262,26 +262,26 @@ export default function BillingPage() {
                   <span className="flex items-center justify-center gap-2">
                     <SpinIcon /> Procesando...
                   </span>
-                ) : 'Suscribirme Ahora'}
+                ) : 'Comenzar Ahora'}
               </button>
+              <p className="text-center text-[10px] mt-3 uppercase tracking-[0.15em]" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
+                Cancelá cuando quieras · Pago seguro con Visa/Mastercard
+              </p>
             </div>
           </div>
 
           {/* ── Courses ── */}
           <div className="mt-20">
             <div className="mb-10">
-              <p
-                className="text-[9px] uppercase tracking-[0.3em] mb-3"
-                style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Cursos — compra por separado
-              </p>
               <h2
-                className="text-3xl font-bold text-white"
+                className="text-3xl font-bold text-white mb-3"
                 style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Formación Avanzada
+                Formación Complementaria — Cursos Independientes
               </h2>
+              <p className="text-sm" style={{ color: MUTED }}>
+                Comprás una vez, accedés para siempre. No requieren suscripción.
+              </p>
             </div>
 
             {/* Course access notice */}
@@ -317,13 +317,14 @@ export default function BillingPage() {
                   </div>
                   {course.id === 'super-estrategia' && (
                     <p style={{
-                      padding: '10px 16px', margin: 0,
-                      fontSize: 11, fontStyle: 'italic', lineHeight: 1.5,
+                      padding: '8px 16px', margin: 0,
+                      fontSize: 10, lineHeight: 1.5,
                       color: '#00E5FF', borderTop: '1px solid #1e1e1f',
                       fontFamily: "'Space Grotesk', sans-serif",
                       background: '#0d0d0e',
+                      textTransform: 'uppercase', letterSpacing: '0.15em',
                     }}>
-                      &ldquo;No busco alumnos, busco tiburones. El que no tiene hambre, que se vaya.&rdquo;
+                      ★ Ideal para empezar
                     </p>
                   )}
                   <div className="p-5 flex flex-col flex-1">
@@ -349,12 +350,12 @@ export default function BillingPage() {
                       <button
                         onClick={() => handleBuyCourse(course.id)}
                         disabled={loading === course.id}
-                        className="border px-4 py-2 text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] text-[#555] disabled:opacity-50"
+                        className="flex items-center justify-center border px-4 min-h-[48px] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] text-[#555] disabled:opacity-50"
                         style={{ borderColor: BORDER, fontFamily: "'Space Grotesk', sans-serif" }}
                       >
                         {loading === course.id ? (
                           <span className="flex items-center gap-1"><SpinIcon />...</span>
-                        ) : 'Lo quiero!'}
+                        ) : 'Lo quiero'}
                       </button>
                     </div>
                   </div>
@@ -383,14 +384,14 @@ export default function BillingPage() {
                 </div>
 
                 {/* Content */}
-                <div className="p-8 md:p-10 flex flex-col justify-between flex-1">
+                <div className="p-5 sm:p-8 md:p-10 flex flex-col justify-between flex-1">
                   <div>
                     {/* Badge */}
                     <span
                       className="inline-block text-[9px] font-bold uppercase tracking-[0.3em] mb-4 px-2 py-1"
                       style={{ color: '#C4A77D', border: '1px solid #C4A77D30', backgroundColor: '#C4A77D08', fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                      Curso Exclusivo
+                      Avanzado
                     </span>
 
                     <h3
@@ -426,7 +427,7 @@ export default function BillingPage() {
                   {/* Buttons */}
                   <div className="flex flex-col sm:flex-row gap-3">
                     <span
-                      className="border px-5 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-center"
+                      className="flex items-center justify-center border px-5 min-h-[52px] text-[11px] font-bold uppercase tracking-[0.15em] text-center"
                       style={{ borderColor: '#C4A77D30', color: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
                     >
                       Quiero saber más
@@ -434,7 +435,7 @@ export default function BillingPage() {
                     <button
                       onClick={() => handleBuyCourse('expansion-matematica')}
                       disabled={loading === 'expansion-matematica'}
-                      className="px-6 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+                      className="flex items-center justify-center px-6 min-h-[52px] text-[11px] font-bold uppercase tracking-[0.15em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
                       style={{ backgroundColor: '#C4A77D', fontFamily: "'Space Grotesk', sans-serif" }}
                     >
                       {loading === 'expansion-matematica' ? (
@@ -447,7 +448,7 @@ export default function BillingPage() {
             </div>
 
             <p className="text-[#333] text-[9px] text-center mt-4 uppercase tracking-[0.2em]">
-              Los cursos se pueden pagar a cuotas con tus tarjetas
+              Pago único · Sin suscripción · Acceso de por vida
             </p>
           </div>
 

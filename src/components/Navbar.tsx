@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
+const MOBILE_STICKY_HIDDEN_PATHS = ['/quantum']
+
 export default function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -15,7 +17,6 @@ export default function Navbar() {
   const plan = session?.user?.plan || 'free';
   const role = session?.user?.role || 'user';
   const isAdmin = role === 'admin';
-  const cursoPurchased = (session?.user as any)?.cursoPurchased === true;
   const isQuantum = plan === 'quantum' || isAdmin;
   const isWhale = plan === 'whale' || isAdmin;
   const isPro = plan === 'pro' || isAdmin;
@@ -31,7 +32,6 @@ export default function Navbar() {
   const showCancelledBanner = subscriptionStatus === 'cancelled' && daysLeft !== null && daysLeft > 0;
   const showExpiringBanner  = subscriptionStatus === 'active' && daysLeft !== null && daysLeft <= 3 && daysLeft > 0;
   const showExpiredBanner   = subscriptionStatus === 'expired';
-  const hasBanner = showCancelledBanner || showExpiringBanner || showExpiredBanner;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -45,7 +45,7 @@ export default function Navbar() {
     { href: '/curso', label: 'Curso' },
     ...(isQuantum
       ? [{ href: '/dashboard', label: 'Dashboard' }]
-      : [{ href: '/billing', label: 'Planes' }]),
+      : [{ href: '/billing', label: 'Precios' }]),
   ];
 
   const isActive = (href: string) => pathname === href;
@@ -58,23 +58,26 @@ export default function Navbar() {
             ? 'bg-[#0A0A0B]/98 backdrop-blur-md border-[#222]'
             : 'bg-[#0A0A0B]/95 border-[#1a1a1a]'
         }`}
-        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          // Safe area for iPhone notch
+          paddingTop: 'env(safe-area-inset-top)',
+        }}
       >
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div className="flex items-center justify-between h-20">
+        {/* ── Main bar ── */}
+        <div className="max-w-7xl mx-auto px-4 md:px-12">
+          <div className="flex items-center justify-between h-16 md:h-20">
 
-            {/* Logo — Negative Space tratado como marca de lujo */}
-            <Link href="/" className="flex items-center gap-5 shrink-0">
-              <div className="relative">
-                <Image
-                  src="/logosacred.png"
-                  alt="Sacred Levels"
-                  width={56}
-                  height={56}
-                  className="rounded-lg"
-                  priority
-                />
-              </div>
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 shrink-0">
+              <Image
+                src="/logosacred.png"
+                alt="Sacred Levels"
+                width={40}
+                height={40}
+                className="rounded-lg md:w-14 md:h-14"
+                priority
+              />
               <div className="hidden sm:block">
                 <span className="text-white font-semibold text-base tracking-tight leading-none block">
                   Sacred Levels
@@ -92,9 +95,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={`relative px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors duration-200 ${
-                    isActive(link.href)
-                      ? 'text-[#00E5FF]'
-                      : 'text-[#666] hover:text-white'
+                    isActive(link.href) ? 'text-[#00E5FF]' : 'text-[#666] hover:text-white'
                   }`}
                 >
                   {isActive(link.href) && (
@@ -144,7 +145,8 @@ export default function Navbar() {
                   </Link>
                   <Link
                     href="/register"
-                    className="border border-[#00E5FF]/40 hover:border-[#00E5FF] text-[#00E5FF] px-5 py-2 text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-200 hover:bg-[#00E5FF]/5"
+                    className="px-5 py-2 text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-200 hover:opacity-90"
+                    style={{ backgroundColor: '#fbbf24', color: '#000' }}
                   >
                     Registrarse
                   </Link>
@@ -152,64 +154,78 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Mobile toggle */}
+            {/* Mobile toggle — 44×44px touch target */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#555] hover:text-white border border-[#222] hover:border-[#333] transition-colors"
+              className="md:hidden flex items-center justify-center w-11 h-11 text-[#555] hover:text-white border border-[#222] hover:border-[#333] transition-colors"
               aria-label="Menu"
             >
               {mobileMenuOpen ? (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
           </div>
 
-          {/* Mobile menu */}
-          <div className={`md:hidden overflow-hidden transition-all duration-200 ${
-            mobileMenuOpen ? 'max-h-[520px] opacity-100' : 'max-h-0 opacity-0'
+          {/* Mobile menu — max height prevents viewport overflow */}
+          <div className={`md:hidden overflow-y-auto transition-all duration-200 ${
+            mobileMenuOpen ? 'max-h-[calc(100vh-64px)] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
           }`}>
-            <div className="py-4 border-t border-[#1a1a1a]">
-              <div className="flex flex-col gap-0.5">
+            <div className="py-3 border-t border-[#1a1a1a]">
+              <div className="flex flex-col">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors border-l-2 ${
+                    className={`px-4 py-4 text-sm font-semibold uppercase tracking-[0.12em] transition-colors border-l-2 min-h-[52px] flex items-center ${
                       isActive(link.href)
                         ? 'border-[#00E5FF] text-[#00E5FF] bg-[#00E5FF]/4'
-                        : 'border-transparent text-[#555] hover:text-white hover:bg-white/3'
+                        : 'border-transparent text-[#666] hover:text-white'
                     }`}
                   >
                     {link.label}
                   </Link>
                 ))}
-                <div className="border-t border-[#1a1a1a] pt-4 mt-3 space-y-1 px-4">
+
+                <div className="border-t border-[#1a1a1a] pt-3 mt-2 px-4 pb-4 space-y-2">
                   {session ? (
                     <>
-                      <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-[#555] hover:text-white text-[11px] uppercase tracking-[0.12em] font-semibold transition-colors">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center min-h-[52px] text-[#666] hover:text-white text-sm uppercase tracking-[0.12em] font-semibold transition-colors"
+                      >
                         Dashboard
                       </Link>
                       <button
                         onClick={() => { signOut({ callbackUrl: '/' }); setMobileMenuOpen(false); }}
-                        className="block w-full text-left py-3 text-[#ff4757] text-[11px] uppercase tracking-[0.12em] font-semibold"
+                        className="flex items-center w-full min-h-[52px] text-[#ff4757] text-sm uppercase tracking-[0.12em] font-semibold"
                       >
                         Cerrar Sesión
                       </button>
                     </>
                   ) : (
                     <>
-                      <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block py-3 text-[#555] hover:text-white text-[11px] uppercase tracking-[0.12em] font-semibold transition-colors">
+                      <Link
+                        href="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center min-h-[52px] text-[#666] hover:text-white text-sm uppercase tracking-[0.12em] font-semibold transition-colors"
+                      >
                         Iniciar Sesión
                       </Link>
-                      <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="block mt-2 border border-[#00E5FF]/40 text-[#00E5FF] px-4 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-center">
-                        Crear Cuenta
+                      <Link
+                        href="/register"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center justify-center w-full min-h-[52px] px-4 font-bold text-sm uppercase tracking-[0.12em]"
+                        style={{ backgroundColor: '#fbbf24', color: '#000' }}
+                      >
+                        Crear Cuenta Gratis
                       </Link>
                     </>
                   )}
@@ -221,32 +237,54 @@ export default function Navbar() {
 
         {/* Subscription banners */}
         {showCancelledBanner && (
-          <div className="border-t border-[#c9a227]/20 bg-[#c9a227]/8 px-8 py-2 flex items-center justify-between gap-3">
+          <div className="border-t border-[#c9a227]/20 bg-[#c9a227]/8 px-4 sm:px-8 py-2 flex items-center justify-between gap-3">
             <p className="text-[#c9a227] text-[10px] font-medium tracking-wide">
               Suscripción cancelada · Acceso hasta{' '}
               <span className="font-bold">{premiumUntil?.toLocaleDateString('es-PY')}</span>
             </p>
-            <Link href="/account/subscription" className="text-[10px] font-bold text-[#c9a227] underline whitespace-nowrap">
+            <Link href="/account/subscription" className="text-[10px] font-bold text-[#c9a227] underline shrink-0">
               Reactivar
             </Link>
           </div>
         )}
         {showExpiringBanner && (
-          <div className="border-t border-[#ff4757]/20 bg-[#ff4757]/8 px-8 py-2 flex items-center justify-between gap-3">
+          <div className="border-t border-[#ff4757]/20 bg-[#ff4757]/8 px-4 sm:px-8 py-2 flex items-center justify-between gap-3">
             <p className="text-[#ff4757] text-[10px] font-medium">
               Suscripción vence en <span className="font-bold">{daysLeft} día{daysLeft !== 1 ? 's' : ''}</span>
             </p>
-            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline whitespace-nowrap">Renovar</Link>
+            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline shrink-0">Renovar</Link>
           </div>
         )}
         {showExpiredBanner && (
-          <div className="border-t border-[#ff4757]/20 bg-[#ff4757]/8 px-8 py-2 flex items-center justify-between gap-3">
+          <div className="border-t border-[#ff4757]/20 bg-[#ff4757]/8 px-4 sm:px-8 py-2 flex items-center justify-between gap-3">
             <p className="text-[#ff4757] text-[10px] font-medium">Suscripción expirada · Plan gratuito activo</p>
-            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline whitespace-nowrap">Suscribirme</Link>
+            <Link href="/billing" className="text-[10px] font-bold text-[#ff4757] underline shrink-0">Suscribirme</Link>
           </div>
         )}
       </nav>
 
+      {/* Mobile sticky bottom CTA — only for guests, hidden on /quantum */}
+      {!session && !MOBILE_STICKY_HIDDEN_PATHS.includes(pathname) && (
+        <div
+          className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4"
+          style={{
+            backgroundColor: 'rgba(10,10,11,0.96)',
+            backdropFilter: 'blur(12px)',
+            borderTop: '1px solid #222',
+            // Safe area for iPhone home indicator
+            paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)',
+            paddingTop: '12px',
+          }}
+        >
+          <Link
+            href="/quantum"
+            className="flex items-center justify-center w-full min-h-[52px] font-bold text-sm uppercase tracking-[0.12em] transition-opacity hover:opacity-90"
+            style={{ backgroundColor: '#fbbf24', color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Probar Gratis — Sin Registro
+          </Link>
+        </div>
+      )}
     </>
   );
 }

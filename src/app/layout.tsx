@@ -8,30 +8,32 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   themeColor: '#fbbf24',
+  viewportFit: 'cover',
 }
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://sacredlevels.com'),
   title: {
-    default: 'Sacred Levels | Calculadora de Niveles Cuánticos para Trading',
+    default: 'Sacred Levels | Calculadora de Niveles Gann para Trading — Oro, Forex, Crypto',
     template: '%s | Sacred Levels'
   },
-  description: 'Calcula niveles de alta probabilidad de giro usando física cuántica. Herramienta profesional para traders de Forex, Oro y Crypto. Prueba gratis.',
+  description: 'Calculá niveles de soporte y resistencia de alta probabilidad con el método de raíz cuadrada de W.D. Gann. Herramienta profesional para XAUUSD, Forex y Crypto. 3 usos gratis.',
   keywords: [
     'trading',
-    'niveles cuánticos',
+    'niveles Gann',
+    'calculadora Gann',
     'forex',
     'oro',
     'xauusd',
-    'fibonacci',
     'soporte resistencia',
     'análisis técnico',
-    'física cuántica trading',
+    'W.D. Gann trading',
     'calculadora trading',
     'niveles de precio',
     'XAU/USD calculator',
     'gold trading',
     'crypto análisis',
+    'raíz cuadrada precio',
   ],
   authors: [{ name: 'Sacred Levels' }],
   creator: 'Sacred Levels',
@@ -52,21 +54,21 @@ export const metadata: Metadata = {
     locale: 'es_ES',
     url: 'https://sacredlevels.com',
     siteName: 'Sacred Levels',
-    title: 'Sacred Levels | Niveles Cuánticos para Trading',
-    description: 'Predice zonas de giro con física cuántica. 2 cálculos gratis.',
+    title: 'Sacred Levels | Calculadora de Niveles Gann para Trading',
+    description: 'Calculá niveles de soporte y resistencia de alta probabilidad con el método de W.D. Gann. 3 usos gratis, sin registro.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Sacred Levels - Calculadora de Niveles Cuánticos',
+        alt: 'Sacred Levels - Calculadora de Niveles Gann para Trading',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sacred Levels | Calculadora Cuántica',
-    description: 'Niveles de alta probabilidad para traders profesionales',
+    title: 'Sacred Levels | Calculadora de Niveles Gann',
+    description: 'Calculá niveles de alta probabilidad para XAUUSD, Forex y Crypto con el método de W.D. Gann. 3 usos gratis.',
     images: ['/og-image.png'],
   },
   icons: {
@@ -89,6 +91,33 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+        {/* Structured Data — SoftwareApplication */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "Sacred Levels — Calculadora de Niveles Gann",
+              "applicationCategory": "FinanceApplication",
+              "operatingSystem": "Web",
+              "url": "https://sacredlevels.com/quantum",
+              "description": "Calculadora de niveles de soporte y resistencia basada en el método de raíz cuadrada de W.D. Gann. Para Oro (XAUUSD), Forex y Crypto.",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "3 cálculos gratuitos sin registro"
+              },
+              "author": {
+                "@type": "Organization",
+                "name": "Sacred Levels",
+                "url": "https://sacredlevels.com"
+              }
+            })
+          }}
+        />
 
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17947767962"></script>

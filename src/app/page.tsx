@@ -19,63 +19,51 @@ const C = {
   subtle: '#333333',
 } as const;
 
-const STATIC_PROOFS = [
-  { imageUrl: '/proof1.jpg', caption: 'Nivel Sacred en acción' },
-  { imageUrl: '/proof2.jpg', caption: 'Nivel Sacred en acción' },
-  { imageUrl: '/proof3.jpg', caption: 'Nivel Sacred en acción' },
+// Agregar imágenes aquí a medida que se suben a /public/results/
+// Descomentar cada línea cuando la imagen esté disponible
+const resultImages: { src: string; pair: string; date: string }[] = [
+  // { src: '/results/result-1.jpg', pair: 'XAUUSD', date: '2026-04-08' },
+  // { src: '/results/result-2.jpg', pair: 'BTCUSD', date: '2026-04-08' },
+  // { src: '/results/result-3.jpg', pair: 'EURUSD', date: '2026-04-08' },
+  // { src: '/results/result-4.jpg', pair: 'XAUUSD', date: '2026-04-08' },
 ]
 
-function ProofGrid() {
-  const [proofs, setProofs] = useState<{ imageUrl: string; caption: string }[]>([])
-  const [selected, setSelected] = useState<{ imageUrl: string; caption: string } | null>(null)
-
-  useEffect(() => {
-    fetch('/api/proofs')
-      .then(r => r.json())
-      .then(data => { if (Array.isArray(data) && data.length > 0) setProofs(data) })
-      .catch(() => {})
-  }, [])
-
-  if (proofs.length === 0) {
-    return (
-      <p style={{ color: '#333', fontSize: 12, textAlign: 'center', padding: '40px 0', fontFamily: "'JetBrains Mono', monospace" }}>
-        Próximamente — capturas reales de niveles en acción
-      </p>
-    )
-  }
+function ResultsGrid() {
+  const [selected, setSelected] = useState<{ src: string; pair: string; date: string } | null>(null)
 
   return (
     <>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-        {proofs.map((p, i) => (
+        {resultImages.map((img, i) => (
           <div
             key={i}
-            onClick={() => setSelected(p)}
+            onClick={() => setSelected(img)}
             style={{
-              border: '1px solid #222', backgroundColor: '#111', borderRadius: 12,
+              border: '1px solid #222', backgroundColor: '#111',
               overflow: 'hidden', cursor: 'zoom-in', transition: 'transform 0.2s',
-              width: '100%',
+              position: 'relative',
             }}
             onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
             onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            <div style={{ backgroundColor: '#0d0d0e', width: '100%' }}>
-              <img
-                src={p.imageUrl}
-                alt={p.caption}
-                style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', maxWidth: '100%' }}
-              />
-            </div>
-            <div style={{ padding: '10px 14px' }}>
-              <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
-                {p.caption}
+            <img
+              src={img.src}
+              alt={`${img.pair} — ${img.date}`}
+              style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+            />
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0,
+              padding: '8px 12px',
+              background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+            }}>
+              <p style={{ color: '#aaa', fontSize: 11, fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
+                {img.pair} <span style={{ color: '#555' }}>· {img.date}</span>
               </p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Lightbox */}
       {selected && (
         <div
           onClick={() => setSelected(null)}
@@ -87,12 +75,12 @@ function ProofGrid() {
           }}
         >
           <img
-            src={selected.imageUrl}
-            alt={selected.caption}
-            style={{ maxWidth: '95vw', maxHeight: '82vh', objectFit: 'contain', borderRadius: 8, boxShadow: '0 0 60px rgba(0,229,255,0.1)' }}
+            src={selected.src}
+            alt={selected.pair}
+            style={{ maxWidth: '95vw', maxHeight: '82vh', objectFit: 'contain', boxShadow: '0 0 60px rgba(0,229,255,0.1)' }}
           />
-          <p style={{ color: '#aaa', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 14, textAlign: 'center' }}>
-            {selected.caption}
+          <p style={{ color: '#aaa', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 14 }}>
+            {selected.pair} <span style={{ color: '#555' }}>· {selected.date}</span>
           </p>
           <p style={{ color: '#555', fontSize: 11, marginTop: 6 }}>Toca para cerrar</p>
         </div>
@@ -165,10 +153,11 @@ export default function HomePage() {
     <>
       <Navbar />
       <PromoPopup />
-      <main className="min-h-screen" style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif" }}>
+      {/* pb-20 md:pb-0 accounts for mobile sticky CTA bar */}
+      <main className="min-h-screen pb-20 md:pb-0" style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif" }}>
 
         {/* ── HERO ─────────────────────────────────────────────────── */}
-        <section className="relative pt-40 pb-28 px-6 overflow-hidden">
+        <section className="relative pt-28 sm:pt-40 pb-16 sm:pb-28 px-4 sm:px-6 overflow-hidden">
           {/* Subtle grid texture */}
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.03]"
@@ -179,7 +168,7 @@ export default function HomePage() {
           />
           {/* Top glow — restrained */}
           <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px]"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[min(600px,100vw)] h-[1px]"
             style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}40, transparent)` }}
           />
 
@@ -196,34 +185,37 @@ export default function HomePage() {
                   </span>
                 </div>
 
-                <h1 className="text-5xl md:text-6xl font-bold leading-[1.05] mb-8 text-white"
+                <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-6 sm:mb-8 text-white"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  El mercado no es azar,<br />
-                  <span style={{ color: C.cyan }}>es geometría.</span>
+                  Calculá los niveles exactos donde el precio va a rebotar{' '}
+                  <span style={{ color: C.cyan }}>— antes de que pase.</span>
                 </h1>
 
-                <p className="text-lg text-[#666] mb-12 leading-relaxed">
-                  Descubre la frecuencia matemática del XAUUSD. Sacred Levels utiliza Ciclos de Gann y Niveles Cuánticos para darte entradas de alta probabilidad.
+                <p className="text-base sm:text-lg text-[#666] mb-8 sm:mb-12 leading-relaxed">
+                  Nuestra calculadora analiza la raíz cuadrada del precio con el método de W.D. Gann para encontrar zonas de soporte y resistencia de alta probabilidad en Oro, Forex y Crypto.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <div className="flex flex-col gap-3 mb-8 sm:mb-12">
                   <Link href="/quantum"
-                    className="inline-flex items-center gap-2 px-8 py-4 font-bold text-sm uppercase tracking-[0.12em] text-black transition-all duration-200"
+                    className="flex items-center justify-center gap-2 px-6 py-4 font-bold text-sm uppercase tracking-[0.12em] text-black transition-all duration-200 w-full sm:w-auto min-h-[52px]"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Probar Calculadora Cuadrática
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    Probar Gratis — Sin Registro
+                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
-                  <Link href="/billing"
-                    className="inline-flex items-center gap-2 px-8 py-4 font-bold text-sm uppercase tracking-[0.12em] text-white border transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF]"
-                    style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Ver Planes
-                  </Link>
+                  <div className="flex flex-col gap-1">
+                    <Link href="/billing"
+                      className="flex items-center justify-center gap-2 px-6 py-4 font-bold text-sm uppercase tracking-[0.12em] text-white border transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] w-full sm:w-auto min-h-[52px]"
+                      style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Ver Precios
+                    </Link>
+                    <span className="text-[10px] text-center" style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}>Desde Gs. 65.000 / $10 USD</span>
+                  </div>
                 </div>
 
-                <div className="flex flex-wrap gap-6 text-[#444] text-xs">
-                  {['3 usos gratis sin registrarse', 'Sin tarjeta de crédito', 'Resultados instantáneos'].map((t) => (
+                <div className="flex flex-wrap gap-4 sm:gap-6 text-[#444] text-xs">
+                  {['3 cálculos gratis sin crear cuenta', 'Resultados en 2 segundos', 'Oro · Forex · Crypto · Índices'].map((t) => (
                     <span key={t} className="flex items-center gap-2">
                       <svg className="w-3 h-3 shrink-0" fill="none" stroke={C.green} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -307,6 +299,19 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── TRUST BANNER ─────────────────────────────────────────── */}
+        <section className="py-3 px-4 border-y" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+              {['24,000+ visitas mensuales', 'Desde 2023', 'Método W.D. Gann', 'Paraguay 🇵🇾'].map((item, i) => (
+                <span key={i} className="text-[10px] tracking-[0.2em] uppercase" style={{ color: C.muted, fontFamily: "'JetBrains Mono', monospace" }}>
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ── QUANTUM ACCESS PRICING ───────────────────────────────── */}
         <section className="px-6 py-10" style={{ backgroundColor: C.bg, borderBottom: `1px solid ${C.border}` }}>
           <div className="max-w-6xl mx-auto">
@@ -326,7 +331,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Price + label */}
-                <div className="flex flex-col justify-center items-center px-8 py-5 border-b md:border-b-0 md:border-r shrink-0 gap-1" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
+                <div className="flex flex-col justify-center items-center px-4 sm:px-8 py-5 border-b md:border-b-0 md:border-r shrink-0 gap-1" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
                   <div className="inline-flex items-center gap-2 mb-1">
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
                     <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Quantum Access</span>
@@ -412,30 +417,32 @@ export default function HomePage() {
         </section>
 
 
-        {/* ── NIVELES EN ACCIÓN ────────────────────────────────── */}
-        <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-12 text-center">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Resultados
-              </p>
-              <h2
-                className="text-4xl font-bold text-white mb-3"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Niveles en Acción — Resultados Reales
-              </h2>
-              <p className="text-sm" style={{ color: C.muted }}>
-                Capturas reales de nuestros niveles funcionando en el mercado
-              </p>
-            </div>
+        {/* ── NIVELES EN ACCIÓN — solo visible cuando hay imágenes ── */}
+        {resultImages.length > 0 && (
+          <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
+            <div className="max-w-6xl mx-auto">
+              <div className="mb-12 text-center">
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
+                  style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Resultados
+                </p>
+                <h2
+                  className="text-4xl font-bold text-white mb-3"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Niveles en Acción — Resultados Reales
+                </h2>
+                <p className="text-sm" style={{ color: C.muted }}>
+                  Capturas reales de nuestros niveles funcionando en el mercado
+                </p>
+              </div>
 
-            <ProofGrid />
-          </div>
-        </section>
+              <ResultsGrid />
+            </div>
+          </section>
+        )}
 
         {/* ── COURSES ──────────────────────────────────────────────── */}
         <section className="py-24 px-6" style={{ backgroundColor: C.bg }}>
@@ -532,7 +539,7 @@ export default function HomePage() {
                       </div>
                       <Link
                         href="/billing"
-                        className="border px-4 py-2 text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] text-[#555]"
+                        className="flex items-center justify-center border px-4 min-h-[44px] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] text-[#555]"
                         style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}
                       >
                         Comprar
@@ -719,9 +726,9 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-[#333] text-[10px] uppercase tracking-[0.2em]">
-              <Link href="/quantum" className="hover:text-[#00E5FF] transition-colors duration-200">Calculadora</Link>
+              <Link href="/quantum" className="hover:text-[#00E5FF] transition-colors duration-200">Calculadora Gratis</Link>
               <Link href="/courses" className="hover:text-[#00E5FF] transition-colors duration-200">Cursos</Link>
-              <Link href="/billing" className="hover:text-[#00E5FF] transition-colors duration-200">Planes</Link>
+              <Link href="/billing" className="hover:text-[#00E5FF] transition-colors duration-200">Precios</Link>
               <Link href="/hub" className="hover:text-[#00E5FF] transition-colors duration-200">Signal Hub</Link>
               <a href="mailto:soporte@sacredlevels.com" className="hover:text-[#00E5FF] transition-colors duration-200">Contacto</a>
             </div>

@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import LegalDisclaimer from '@/components/LegalDisclaimer'
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
@@ -13,9 +14,14 @@ const GREEN  = '#00D26A'
 const RED    = '#FF4757'
 const MUTED  = '#555555'
 const DARK   = '#0d0d0e'
+const AMBER  = '#fbbf24'
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+const N          = 8
+const FREE_LIMIT = 3
+const LOCAL_KEY  = 'sl_free_uses'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-
 interface QuantumLevel {
   n: number
   price: number
@@ -26,15 +32,13 @@ interface QuantumLevel {
 
 interface AccessState {
   loading: boolean
-  allowed: boolean
   paid: boolean
   usesLeft: number
   usesCount: number
-  reason?: string
+  isGuest: boolean
 }
 
-const N = 8
-
+// ── Calculation ───────────────────────────────────────────────────────────────
 function calculateQuantumLevels(max: number, min: number): QuantumLevel[] {
   const range = max - min
   return Array.from({ length: N + 1 }, (_, n) => {
@@ -53,32 +57,126 @@ function calculateQuantumLevels(max: number, min: number): QuantumLevel[] {
   })
 }
 
-// ── Level color helper ────────────────────────────────────────────────────────
 function levelColor(type: QuantumLevel['type']) {
   return type === 'accumulation' ? GREEN : type === 'distribution' ? RED : CYAN
 }
 
+// ── Tag component ─────────────────────────────────────────────────────────────
+function Tag({ children, col }: { children: React.ReactNode; col: string }) {
+  return (
+    <span
+      className="text-[10px] px-3 py-1 uppercase tracking-[0.1em] font-semibold border"
+      style={{
+        color: col,
+        borderColor: `${col}30`,
+        backgroundColor: `${col}08`,
+        fontFamily: "'Space Grotesk', sans-serif",
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+// ── Level card component ───────────────────────────────────────────────────────
+function LevelCard({ level }: { level: QuantumLevel }) {
+  const col = levelColor(level.type)
+  return (
+    <div
+      className="border-l-2 p-5"
+      style={{
+        borderLeftColor: col,
+        backgroundColor: `${col}06`,
+        borderTop: `1px solid ${BORDER}`,
+        borderRight: `1px solid ${BORDER}`,
+        borderBottom: `1px solid ${BORDER}`,
+      }}
+    >
+      <div className="flex justify-between items-start">
+        <div>
+          <span className="text-xl sm:text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            ${level.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
+          <span className="ml-3 text-sm" style={{ color: MUTED, fontFamily: "'JetBrains Mono', monospace" }}>
+            n={level.n}
+          </span>
+        </div>
+        <div className="text-right">
+          <div className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: col, fontFamily: "'Space Grotesk', sans-serif" }}>
+            {level.strength === 'extreme' ? 'EXTREMO' : level.strength === 'strong' ? 'FUERTE' : 'MODERADO'}
+          </div>
+          <div className="text-[9px] mt-0.5 uppercase tracking-widest" style={{ color: '#333', fontFamily: "'JetBrains Mono', monospace" }}>
+            {level.probability}% energía
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        {level.type === 'accumulation' && <>
+          <Tag col={GREEN}>Zona de Rebote Alcista</Tag>
+          <Tag col="#4a9eff">Si rompe → actúa como Resistencia</Tag>
+          {level.n === 0 && <Tag col={CYAN}>Base cuántica extrema</Tag>}
+          {(level.strength === 'strong' || level.strength === 'extreme') && <Tag col="#f59e0b">Breakout Zone — pullback posible</Tag>}
+        </>}
+        {level.type === 'equilibrium' && <>
+          <Tag col={CYAN}>Zona de Equilibrio</Tag>
+          <Tag col="#a855f7">Flip Zone — Soporte / Resistencia</Tag>
+          <Tag col={MUTED}>Posible continuación o reversión</Tag>
+        </>}
+        {level.type === 'distribution' && <>
+          <Tag col={RED}>Zona de Rebote Bajista</Tag>
+          <Tag col="#4a9eff">Si rompe → actúa como Soporte</Tag>
+          {level.n === N && <Tag col={CYAN}>Techo cuántico extremo</Tag>}
+          {(level.strength === 'strong' || level.strength === 'extreme') && <Tag col="#f59e0b">Breakout Zone — pullback posible</Tag>}
+        </>}
+      </div>
+    </div>
+  )
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
 export default function QuantumPage() {
   const { status } = useSession()
 
-  const [access, setAccess]       = useState<AccessState>({ loading: true, allowed: false, paid: false, usesLeft: 0, usesCount: 0 })
-  const [maxVal, setMaxVal]       = useState('')
-  const [minVal, setMinVal]       = useState('')
-  const [levels, setLevels]       = useState<QuantumLevel[]>([])
-  const [error, setError]         = useState('')
+  const [access, setAccess]           = useState<AccessState>({ loading: true, paid: false, usesLeft: FREE_LIMIT, usesCount: 0, isGuest: false })
+  const [maxVal, setMaxVal]           = useState('')
+  const [minVal, setMinVal]           = useState('')
+  const [levels, setLevels]           = useState<QuantumLevel[]>([])
+  const [error, setError]             = useState('')
   const [calculating, setCalculating] = useState(false)
+  const [showModal, setShowModal]     = useState(false)
 
+  // ── Load access state ──────────────────────────────────────────────────────
   useEffect(() => {
     if (status === 'loading') return
+
+    if (status === 'unauthenticated') {
+      // Guest: use localStorage immediately, no spinner
+      const uses = parseInt(localStorage.getItem(LOCAL_KEY) || '0', 10)
+      setAccess({
+        loading: false,
+        paid: false,
+        usesLeft: Math.max(0, FREE_LIMIT - uses),
+        usesCount: uses,
+        isGuest: true,
+      })
+      return
+    }
+
+    // Authenticated: check server for paid plan status
     fetch('/api/quantum/check-access')
       .then(r => r.json())
       .then(data => setAccess({
-        loading: false, allowed: data.allowed, paid: data.paid ?? false,
-        usesLeft: data.usesLeft ?? 0, usesCount: data.usesCount ?? 0, reason: data.reason,
+        loading: false,
+        paid: data.paid ?? false,
+        usesLeft: data.usesLeft ?? 0,
+        usesCount: data.usesCount ?? 0,
+        isGuest: false,
       }))
-      .catch(() => setAccess(p => ({ ...p, loading: false })))
+      .catch(() => setAccess({ loading: false, paid: false, usesLeft: 0, usesCount: 0, isGuest: false }))
   }, [status])
 
+  // ── Submit handler ─────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -87,22 +185,47 @@ export default function QuantumPage() {
     if (isNaN(max) || isNaN(min)) { setError('Ingresá valores numéricos válidos.'); return }
     if (min >= max) { setError('El máximo debe ser mayor al mínimo.'); return }
 
-    if (!access.paid) {
-      setCalculating(true)
-      try {
-        const res  = await fetch('/api/quantum/check-access', { method: 'POST' })
-        const data = await res.json()
-        if (!data.allowed && data.usesLeft === undefined) return
-        setAccess(p => ({ ...p, allowed: data.allowed, usesLeft: data.usesLeft ?? 0, usesCount: data.usesCount ?? 0 }))
-        if (!data.allowed) { setError('No tenés más usos gratuitos disponibles.'); setCalculating(false); return }
-      } catch { setError('Error de conexión. Intentá de nuevo.'); setCalculating(false); return }
-      setCalculating(false)
+    // Paid users: calculate directly
+    if (access.paid) {
+      setLevels(calculateQuantumLevels(max, min))
+      return
     }
+
+    // Guest users: localStorage counter
+    if (access.isGuest) {
+      const uses = parseInt(localStorage.getItem(LOCAL_KEY) || '0', 10)
+      if (uses >= FREE_LIMIT) {
+        setShowModal(true)
+        return
+      }
+      const newUses = uses + 1
+      localStorage.setItem(LOCAL_KEY, String(newUses))
+      setAccess(p => ({ ...p, usesLeft: Math.max(0, FREE_LIMIT - newUses), usesCount: newUses }))
+      setLevels(calculateQuantumLevels(max, min))
+      return
+    }
+
+    // Authenticated non-paid: use server-side counter
+    if (access.usesLeft <= 0) {
+      window.location.href = '/billing?locked=true'
+      return
+    }
+    setCalculating(true)
+    try {
+      const res  = await fetch('/api/quantum/check-access', { method: 'POST' })
+      const data = await res.json()
+      setAccess(p => ({ ...p, usesLeft: data.usesLeft ?? 0, usesCount: data.usesCount ?? 0 }))
+      if (!data.allowed) { setError('No tenés más usos gratuitos disponibles.'); setCalculating(false); return }
+    } catch { setError('Error de conexión. Intentá de nuevo.'); setCalculating(false); return }
+    setCalculating(false)
     setLevels(calculateQuantumLevels(max, min))
   }
 
-  // ── Loading ──────────────────────────────────────────────────────────────────
-  if (access.loading) {
+  // Blur last 4 levels for guests on their 3rd (final) calculation
+  const showBlur = access.isGuest && access.usesCount >= FREE_LIMIT && levels.length > 0
+
+  // ── Loading state (only for authenticated users while checking server) ──────
+  if (access.loading && status !== 'unauthenticated') {
     return (
       <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: BG }}>
         <div className="text-center">
@@ -118,17 +241,17 @@ export default function QuantumPage() {
     )
   }
 
-  // ── Paywall ──────────────────────────────────────────────────────────────────
-  if (!access.allowed && access.usesLeft === 0 && !access.paid) {
+  // ── Paywall (only authenticated non-paid users with no trial uses left) ─────
+  if (!access.paid && !access.isGuest && access.usesLeft === 0 && !access.loading) {
     return (
       <main
-        className="min-h-screen flex items-center justify-center px-6"
+        className="min-h-screen flex items-center justify-center px-4 sm:px-6"
         style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}
       >
         <div className="max-w-md w-full">
           <div className="border" style={{ backgroundColor: CARD, borderColor: BORDER }}>
             <div className="h-px" style={{ background: `linear-gradient(90deg, transparent, ${CYAN}, transparent)` }} />
-            <div className="p-10 text-center">
+            <div className="p-6 sm:p-10 text-center">
               <div
                 className="w-12 h-12 border flex items-center justify-center mx-auto mb-6"
                 style={{ borderColor: `${CYAN}30` }}
@@ -137,23 +260,13 @@ export default function QuantumPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h2
-                className="text-2xl font-bold text-white mb-3"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
+              <h2 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Calculadora Cuadrática
               </h2>
-              <p className="text-sm mb-2" style={{ color: MUTED }}>
-                Usaste tus 3 cálculos gratuitos.
+              <p className="text-sm mb-8" style={{ color: MUTED }}>
+                Usaste tus 3 cálculos gratuitos. Suscribite para acceso ilimitado.
               </p>
-              <p className="text-sm mb-8 italic leading-relaxed" style={{ color: '#333' }}>
-                &ldquo;Si la inversión en educación te parece cara,
-                <br />imagina el precio de la ignorancia&rdquo;
-              </p>
-              <div
-                className="text-4xl font-bold text-white mb-1"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              >
+              <div className="text-4xl font-bold text-white mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                 Gs. 350.000
               </div>
               <p className="text-xs mb-8 uppercase tracking-[0.2em]" style={{ color: MUTED }}>
@@ -176,20 +289,15 @@ export default function QuantumPage() {
     )
   }
 
-  // ── Main ─────────────────────────────────────────────────────────────────────
+  // ── Main calculator ───────────────────────────────────────────────────────
   return (
-    <main
-      className="min-h-screen"
-      style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}
-    >
+    <main className="min-h-screen" style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}>
+
       {/* Header */}
       <div className="border-b sticky top-0 z-10" style={{ backgroundColor: BG, borderColor: BORDER }}>
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
           <div>
-            <h1
-              className="text-base font-bold text-white"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
+            <h1 className="text-base font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               Quantum Tech
             </h1>
             <p className="text-[10px] mt-0.5" style={{ color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}>
@@ -197,14 +305,7 @@ export default function QuantumPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {!access.paid && (
-              <div
-                className="border px-3 py-1 text-xs"
-                style={{ borderColor: `${CYAN}25`, backgroundColor: `${CYAN}08`, color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}
-              >
-                {access.usesLeft > 0 ? `${access.usesLeft}d gratis` : 'Trial expirado'}
-              </div>
-            )}
+            {/* Status badge */}
             {access.paid && (
               <div
                 className="border px-3 py-1 text-xs uppercase tracking-widest"
@@ -213,20 +314,39 @@ export default function QuantumPage() {
                 Acceso completo
               </div>
             )}
-            <a
-              href="/dashboard"
-              className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white"
-              style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              ← Dashboard
-            </a>
+            {!access.paid && access.isGuest && (
+              <div
+                className="border px-3 py-1 text-xs"
+                style={{ borderColor: `${CYAN}25`, backgroundColor: `${CYAN}08`, color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                {access.usesLeft > 0 ? `${access.usesLeft} usos gratis` : 'Registro para más'}
+              </div>
+            )}
+            {!access.paid && !access.isGuest && (
+              <div
+                className="border px-3 py-1 text-xs"
+                style={{ borderColor: `${CYAN}25`, backgroundColor: `${CYAN}08`, color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                {access.usesLeft > 0 ? `${access.usesLeft}d gratis` : 'Trial expirado'}
+              </div>
+            )}
+            {/* Back link */}
+            {access.isGuest ? (
+              <Link href="/" className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
+                ← Inicio
+              </Link>
+            ) : (
+              <a href="/dashboard" className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
+                ← Dashboard
+              </a>
+            )}
           </div>
         </div>
       </div>
 
       <LegalDisclaimer variant="banner" />
 
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
 
         {/* Guía de uso */}
         <div className="mb-8 border" style={{ borderColor: BORDER, backgroundColor: CARD }}>
@@ -286,8 +406,26 @@ export default function QuantumPage() {
           </div>
         </div>
 
-        {/* Free trial banner */}
-        {!access.paid && (
+        {/* Guest free trial banner (pre-calculation) */}
+        {access.isGuest && access.usesCount === 0 && (
+          <div
+            className="border mb-8 p-5"
+            style={{ borderColor: `${CYAN}20`, backgroundColor: `${CYAN}05` }}
+          >
+            <p className="text-white font-semibold text-sm mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              3 cálculos gratuitos — <span style={{ color: CYAN }}>sin registro</span>
+            </p>
+            <p className="text-[11px]" style={{ color: MUTED }}>
+              Calculá ahora. Para acceso ilimitado,{' '}
+              <Link href="/register" style={{ color: CYAN, textDecoration: 'underline' }}>
+                creá tu cuenta gratis
+              </Link>.
+            </p>
+          </div>
+        )}
+
+        {/* Server-side trial banner (authenticated non-paid users) */}
+        {!access.paid && !access.isGuest && (
           <div
             className="border mb-8 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
             style={{ borderColor: `${CYAN}20`, backgroundColor: `${CYAN}05` }}
@@ -315,18 +453,15 @@ export default function QuantumPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-          <div className="border p-8 mb-6" style={{ backgroundColor: CARD, borderColor: BORDER }}>
-            <h2
-              className="text-xl font-bold text-white mb-2"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
+          <div className="border p-5 sm:p-8 mb-6" style={{ backgroundColor: CARD, borderColor: BORDER }}>
+            <h2 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               Ingresá el rango de precios
             </h2>
             <p className="text-sm mb-7" style={{ color: MUTED }}>
               Los niveles se distribuyen con la función n² — más densos cerca del mínimo.
             </p>
 
-            <div className="grid grid-cols-2 gap-5 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
               {[
                 { label: 'Máximo (High)', name: 'max', placeholder: '3100', val: maxVal, set: setMaxVal },
                 { label: 'Mínimo (Low)',  name: 'min', placeholder: '2800', val: minVal, set: setMinVal },
@@ -344,7 +479,7 @@ export default function QuantumPage() {
                     onChange={e => f.set(e.target.value)}
                     placeholder={f.placeholder}
                     step="0.01"
-                    className="w-full border px-4 py-3.5 text-white text-xl focus:outline-none transition-colors duration-200"
+                    className="w-full border px-4 py-4 text-white text-lg sm:text-xl focus:outline-none transition-colors duration-200 min-h-[56px]"
                     style={{
                       backgroundColor: DARK,
                       borderColor: BORDER,
@@ -372,9 +507,9 @@ export default function QuantumPage() {
               {calculating ? 'Calculando...' : 'Generar Niveles Quantum'}
             </button>
 
-            {!access.paid && access.usesLeft > 0 && (
+            {access.isGuest && access.usesLeft > 0 && (
               <p className="text-center text-[9px] mt-3 uppercase tracking-[0.2em]" style={{ color: '#2a2a2a', fontFamily: "'Space Grotesk', sans-serif" }}>
-                Trial gratuito · {access.usesLeft} día{access.usesLeft !== 1 ? 's' : ''} restante{access.usesLeft !== 1 ? 's' : ''}
+                {access.usesLeft} cálculo{access.usesLeft !== 1 ? 's' : ''} gratuito{access.usesLeft !== 1 ? 's' : ''} restante{access.usesLeft !== 1 ? 's' : ''}
               </p>
             )}
           </div>
@@ -383,6 +518,32 @@ export default function QuantumPage() {
         {/* Results */}
         {levels.length > 0 && (
           <>
+            {/* Guest banner after 1st or 2nd calculation (usesLeft > 0 means not yet at limit) */}
+            {access.isGuest && access.usesCount > 0 && access.usesCount < FREE_LIMIT && (
+              <div
+                className="border mb-6 px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+                style={{ borderColor: `${AMBER}25`, backgroundColor: `${AMBER}06` }}
+              >
+                <p className="text-sm" style={{ color: '#aaa', fontFamily: "'Space Grotesk', sans-serif" }}>
+                  Te quedan{' '}
+                  <span style={{ color: AMBER, fontWeight: 700 }}>
+                    {access.usesLeft} uso{access.usesLeft !== 1 ? 's' : ''} gratuito{access.usesLeft !== 1 ? 's' : ''}
+                  </span>.{' '}
+                  <Link href="/register" style={{ color: AMBER, textDecoration: 'underline' }}>
+                    Registrate
+                  </Link>{' '}
+                  para acceso ilimitado.
+                </p>
+                <Link
+                  href="/register"
+                  className="flex items-center justify-center sm:shrink-0 w-full sm:w-auto px-5 min-h-[48px] text-[11px] font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: AMBER, fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Crear Cuenta Gratis
+                </Link>
+              </div>
+            )}
+
             {/* n² curve */}
             <div
               className="mb-6 border p-5 relative overflow-hidden"
@@ -427,100 +588,79 @@ export default function QuantumPage() {
 
             {/* Level cards */}
             <div className="space-y-2">
-              {levels.map(level => {
-                const col = levelColor(level.type)
-                return (
+              {/* First 5 levels — always visible */}
+              {levels.slice(0, 5).map(level => (
+                <LevelCard key={level.n} level={level} />
+              ))}
+
+              {/* Last 4 levels — blurred for guests who used all 3 free calculations */}
+              <div className="relative">
+                <div style={{
+                  filter: showBlur ? 'blur(7px)' : 'none',
+                  userSelect: showBlur ? 'none' : 'auto',
+                  pointerEvents: showBlur ? 'none' : 'auto',
+                  transition: 'filter 0.3s ease',
+                }}>
+                  <div className="space-y-2">
+                    {levels.slice(5).map(level => (
+                      <LevelCard key={level.n} level={level} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Blur overlay CTA */}
+                {showBlur && (
                   <div
-                    key={level.n}
-                    className="border-l-2 p-5"
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6"
                     style={{
-                      borderLeftColor: col,
-                      backgroundColor: `${col}06`,
-                      borderTop: `1px solid ${BORDER}`,
-                      borderRight: `1px solid ${BORDER}`,
-                      borderBottom: `1px solid ${BORDER}`,
+                      background: `linear-gradient(to bottom, rgba(10,10,11,0.3), rgba(10,10,11,0.9))`,
+                      backdropFilter: 'blur(1px)',
                     }}
                   >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <span
-                          className="text-2xl font-bold text-white"
-                          style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                        >
-                          ${level.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
-                        <span
-                          className="ml-3 text-sm"
-                          style={{ color: MUTED, fontFamily: "'JetBrains Mono', monospace" }}
-                        >
-                          n={level.n}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <div
-                          className="text-xs font-bold uppercase tracking-[0.15em]"
-                          style={{ color: col, fontFamily: "'Space Grotesk', sans-serif" }}
-                        >
-                          {level.strength === 'extreme' ? 'EXTREMO' : level.strength === 'strong' ? 'FUERTE' : 'MODERADO'}
-                        </div>
-                        <div
-                          className="text-[9px] mt-0.5 uppercase tracking-widest"
-                          style={{ color: '#333', fontFamily: "'JetBrains Mono', monospace" }}
-                        >
-                          {level.probability}% energía
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {level.type === 'accumulation' && <>
-                        <Tag col={GREEN}>Zona de Rebote Alcista</Tag>
-                        <Tag col="#4a9eff">Si rompe → actúa como Resistencia</Tag>
-                        {level.n === 0 && <Tag col={CYAN}>Base cuántica extrema</Tag>}
-                        {(level.strength === 'strong' || level.strength === 'extreme') && <Tag col="#f59e0b">Breakout Zone — pullback posible</Tag>}
-                      </>}
-                      {level.type === 'equilibrium' && <>
-                        <Tag col={CYAN}>Zona de Equilibrio</Tag>
-                        <Tag col="#a855f7">Flip Zone — Soporte / Resistencia</Tag>
-                        <Tag col={MUTED}>Posible continuación o reversión</Tag>
-                      </>}
-                      {level.type === 'distribution' && <>
-                        <Tag col={RED}>Zona de Rebote Bajista</Tag>
-                        <Tag col="#4a9eff">Si rompe → actúa como Soporte</Tag>
-                        {level.n === N && <Tag col={CYAN}>Techo cuántico extremo</Tag>}
-                        {(level.strength === 'strong' || level.strength === 'extreme') && <Tag col="#f59e0b">Breakout Zone — pullback posible</Tag>}
-                      </>}
-                    </div>
+                    <p className="text-white font-bold text-base text-center" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Creá tu cuenta gratis para ver todos los niveles
+                    </p>
+                    <p className="text-[11px] text-center" style={{ color: MUTED }}>
+                      Registro en 30 segundos. Sin tarjeta de crédito.
+                    </p>
+                    <Link
+                      href="/register"
+                      className="px-8 py-3 font-bold text-sm uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: AMBER, fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Crear Cuenta Gratis
+                    </Link>
+                    <Link
+                      href="/billing"
+                      className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white"
+                      style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Ver planes desde Gs. 65.000
+                    </Link>
                   </div>
-                )
-              })}
+                )}
+              </div>
             </div>
 
             {/* Legend */}
             <div className="mt-8 grid grid-cols-3 gap-px" style={{ backgroundColor: BORDER }}>
               {[
-                { col: GREEN, label: 'Acumulación', sub: 'n=0,1,2,3 · Rebote alcista' },
-                { col: CYAN,  label: 'Equilibrio',  sub: 'n=4,5 · Reversión o continuación' },
-                { col: RED,   label: 'Distribución', sub: 'n=6,7,8 · Rebote bajista' },
+                { col: GREEN, label: 'Acumulación', sub: 'n=0-3 · Alcista' },
+                { col: CYAN,  label: 'Equilibrio',  sub: 'n=4,5 · Reversión' },
+                { col: RED,   label: 'Distribución', sub: 'n=6-8 · Bajista' },
               ].map(({ col, label, sub }) => (
-                <div key={label} className="p-4 text-center" style={{ backgroundColor: CARD }}>
-                  <div
-                    className="text-xs font-bold uppercase tracking-[0.1em] mb-1"
-                    style={{ color: col, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
+                <div key={label} className="p-2 sm:p-4 text-center" style={{ backgroundColor: CARD }}>
+                  <div className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.05em] sm:tracking-[0.1em] mb-1" style={{ color: col, fontFamily: "'Space Grotesk', sans-serif" }}>
                     {label}
                   </div>
-                  <div className="text-[10px]" style={{ color: MUTED }}>{sub}</div>
+                  <div className="text-[9px] sm:text-[10px]" style={{ color: MUTED }}>{sub}</div>
                 </div>
               ))}
             </div>
 
             {/* Guide */}
             <div className="mt-4 border p-6" style={{ backgroundColor: CARD, borderColor: BORDER }}>
-              <h4
-                className="text-sm font-bold text-white mb-4 uppercase tracking-[0.1em]"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
+              <h4 className="text-sm font-bold text-white mb-4 uppercase tracking-[0.1em]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Guía Breakout vs Rebote
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -544,10 +684,7 @@ export default function QuantumPage() {
 
             {/* Fibonacci comparison */}
             <div className="border p-6 mt-4" style={{ borderColor: `${CYAN}20`, backgroundColor: `${CYAN}04` }}>
-              <h4
-                className="text-sm font-bold text-white mb-3 uppercase tracking-[0.1em]"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
+              <h4 className="text-sm font-bold text-white mb-3 uppercase tracking-[0.1em]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Por qué es diferente a Fibonacci
               </h4>
               <p className="text-sm leading-relaxed" style={{ color: MUTED }}>
@@ -558,28 +695,95 @@ export default function QuantumPage() {
               </p>
             </div>
 
+            {/* Upsell for guests after final calculation */}
+            {access.isGuest && access.usesCount >= FREE_LIMIT && (
+              <div className="mt-6 border p-8 text-center" style={{ backgroundColor: CARD, borderColor: `${AMBER}30` }}>
+                <div className="h-px mb-8" style={{ background: `linear-gradient(90deg, transparent, ${AMBER}60, transparent)` }} />
+                <p className="text-white font-bold text-lg mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  ¿Te fueron útiles los niveles?
+                </p>
+                <p className="text-sm mb-6" style={{ color: MUTED }}>
+                  Usaste tus 3 cálculos gratuitos. Registrate gratis para seguir calculando.
+                </p>
+                <div className="flex flex-col gap-3">
+                  <Link
+                    href="/register"
+                    className="flex items-center justify-center w-full min-h-[52px] px-8 font-bold text-sm uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90"
+                    style={{ backgroundColor: AMBER, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Crear Cuenta Gratis
+                  </Link>
+                  <Link
+                    href="/billing"
+                    className="flex items-center justify-center w-full min-h-[52px] px-8 font-bold text-sm uppercase tracking-[0.12em] border transition-colors hover:border-[#00E5FF]/50 hover:text-[#00E5FF]"
+                    style={{ borderColor: BORDER, color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Ver Planes
+                  </Link>
+                </div>
+              </div>
+            )}
+
             <div className="mt-8">
               <LegalDisclaimer variant="full" />
             </div>
           </>
         )}
       </div>
-    </main>
-  )
-}
 
-function Tag({ children, col }: { children: React.ReactNode; col: string }) {
-  return (
-    <span
-      className="text-[10px] px-3 py-1 uppercase tracking-[0.1em] font-semibold border"
-      style={{
-        color: col,
-        borderColor: `${col}30`,
-        backgroundColor: `${col}08`,
-        fontFamily: "'Space Grotesk', sans-serif",
-      }}
-    >
-      {children}
-    </span>
+      {/* Modal — shown when guest tries a 4th calculation */}
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center px-6"
+          style={{ backgroundColor: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="max-w-sm w-full border"
+            style={{ backgroundColor: CARD, borderColor: BORDER }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="h-px" style={{ background: `linear-gradient(90deg, transparent, ${AMBER}, transparent)` }} />
+            <div className="p-8 text-center">
+              <div
+                className="w-12 h-12 border flex items-center justify-center mx-auto mb-5"
+                style={{ borderColor: `${AMBER}30` }}
+              >
+                <svg className="w-6 h-6" fill="none" stroke={AMBER} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                Ya usaste tus 3 cálculos gratuitos
+              </h3>
+              <p className="text-sm mb-8" style={{ color: MUTED }}>
+                Registrate en 30 segundos para seguir calculando sin límites.
+              </p>
+              <Link
+                href="/register"
+                className="flex items-center justify-center w-full min-h-[52px] font-bold text-sm uppercase tracking-[0.12em] text-black mb-3 transition-opacity hover:opacity-90"
+                style={{ backgroundColor: AMBER, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Crear Cuenta Gratis
+              </Link>
+              <Link
+                href="/billing"
+                className="flex items-center justify-center w-full min-h-[52px] text-sm border font-bold uppercase tracking-[0.12em] transition-colors hover:border-[#555] mb-4"
+                style={{ borderColor: BORDER, color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Ver Planes
+              </Link>
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex items-center justify-center w-full min-h-[44px] text-xs transition-colors hover:text-white"
+                style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
   )
 }

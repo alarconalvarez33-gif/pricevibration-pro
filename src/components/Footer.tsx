@@ -59,18 +59,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/quantum" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
+                  Calculadora Gratis
+                </Link>
+              </li>
+              <li>
                 <Link href="/billing" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
-                  Pricing
+                  Precios
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
                   Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link href="/astrology" className="text-terminal-muted hover:text-gold-500 transition-colors text-sm">
-                  Astrology
                 </Link>
               </li>
             </ul>
