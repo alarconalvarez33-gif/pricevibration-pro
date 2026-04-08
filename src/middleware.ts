@@ -38,7 +38,7 @@ const PUBLIC_PREFIXES = [
   '/api/proofs',     // proof images shown publicly on home page
   '/api/reservations', // reservation form is public
   '/admin/',         // Admin pages handle their own auth internally
-  '/api/admin/',     // Admin API routes handle their own auth internally
+  '/api/admin/',     // Admin API routes handle their own auth internally (check session + ADMIN_EMAILS internally)
   '/_next/',
 ]
 
