@@ -324,7 +324,7 @@ export default function BillingPage() {
                       background: '#0d0d0e',
                       textTransform: 'uppercase', letterSpacing: '0.15em',
                     }}>
-                      ★ Ideal para empezar
+                      ★ Nunca antes viste esto. Es impactante. Te vas a sorprender. Garantizado.
                     </p>
                   )}
                   <div className="p-5 flex flex-col flex-1">
@@ -398,7 +398,7 @@ export default function BillingPage() {
                       className="text-2xl font-bold text-white mb-2"
                       style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                      Genesis
+                      Niveles PRO
                     </h3>
 
                     {/* Price */}
@@ -419,8 +419,8 @@ export default function BillingPage() {
                     >
                       ¿Te has preguntado por qué el precio reacciona con precisión quirúrgica en ciertos puntos?
                       La respuesta está en la raíz cuadrada de los niveles armónicos. En esta sección te revelo
-                      cómo los ratios de $0.25$, $0.5$ y $0.75$ actúan como imanes magnéticos para las instituciones.
-                      Aprende a leer el esqueleto del mercado y deja de operar a ciegas.
+                      cómo los ratios actúan como imanes magnéticos para las instituciones.
+                      Aprende a leer el esqueleto del mercado y deja de operar a ciegas. IM PER DI BLE
                     </p>
                   </div>
 
