@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import CalcGuide from '@/components/CalcGuide'
+import { GUIDE_AUREA } from '@/lib/calcGuides'
 
 const INCREMENTOS = [0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5]
 const ETIQUETAS = ['1/16', '2/16', '3/16', '4/16', '5/16', '6/16', '7/16', '8/16']
@@ -39,6 +41,7 @@ export default function GannAurea() {
   const [expandedR, setExpandedR] = useState<number | null>(null)
   const [expandedS, setExpandedS] = useState<number | null>(null)
   const [error, setError] = useState('')
+  const [guideOpen, setGuideOpen] = useState(false)
 
   const handleCalc = () => {
     const min = parseFloat(minPrice.replace(',', '.'))
@@ -77,12 +80,22 @@ export default function GannAurea() {
   const fmt = (val: number, dec: number) => val.toFixed(dec)
 
   return (
+    <>
     <div className="space-y-6">
       {/* Input panel */}
       <div className="bg-[#141415] border border-[#222] rounded-xl p-5 sm:p-6">
-        <h2 className="text-white font-bold text-lg mb-1 flex items-center gap-2">
-          <span className="text-[#fbbf24]">◈</span> Calculadora Áurea de Gann
-        </h2>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-white font-bold text-lg flex items-center gap-2">
+            <span className="text-[#fbbf24]">◈</span> Calculadora Áurea de Gann
+          </h2>
+          <button
+            onClick={() => setGuideOpen(true)}
+            className="w-8 h-8 rounded-full border border-[#2a2a2a] flex items-center justify-center text-sm font-bold text-[#555] hover:text-white hover:border-[#444] transition-colors"
+            title="Guía de uso"
+          >
+            ?
+          </button>
+        </div>
         <p className="text-[#555] text-xs mb-5">Método raíz cuadrada · 8 incrementos (1/16 a 8/16)</p>
 
         {/* Asset selector */}
@@ -236,5 +249,13 @@ export default function GannAurea() {
         </>
       )}
     </div>
+
+    <CalcGuide
+      isOpen={guideOpen}
+      onClose={() => setGuideOpen(false)}
+      title="Guía · Calculadora Áurea"
+      content={GUIDE_AUREA}
+    />
+    </>
   )
 }

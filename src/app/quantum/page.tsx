@@ -4,6 +4,27 @@ import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import LegalDisclaimer from '@/components/LegalDisclaimer'
+import { GUIDE_QUANTICA } from '@/lib/calcGuides'
+
+// ── Fingerprint ────────────────────────────────────────────────────────────────
+function getFingerprint(): string {
+  const parts = [
+    navigator.userAgent,
+    screen.width,
+    screen.height,
+    screen.colorDepth,
+    navigator.language,
+    new Date().getTimezoneOffset(),
+    navigator.hardwareConcurrency || 0,
+  ].join('|')
+  let hash = 0
+  for (let i = 0; i < parts.length; i++) {
+    const char = parts.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash |= 0
+  }
+  return Math.abs(hash).toString(36)
+}
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
 const BG     = '#0A0A0B'
@@ -145,6 +166,16 @@ export default function QuantumPage() {
   const [error, setError]             = useState('')
   const [calculating, setCalculating] = useState(false)
   const [showModal, setShowModal]     = useState(false)
+  const [guideOpen, setGuideOpen]     = useState(false)
+  const [guideLang, setGuideLang]     = useState<'es' | 'en'>('es')
+
+  // Guide: expanded by default on first visit
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const seen = localStorage.getItem('sl_guide_seen')
+    setGuideOpen(!seen)
+    if (!seen) localStorage.setItem('sl_guide_seen', 'true')
+  }, [])
 
   // ── Load access state ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -191,16 +222,43 @@ export default function QuantumPage() {
       return
     }
 
-    // Guest users: localStorage counter
+    // Guest users: localStorage fast-path + server fingerprint check
     if (access.isGuest) {
-      const uses = parseInt(localStorage.getItem(LOCAL_KEY) || '0', 10)
-      if (uses >= FREE_LIMIT) {
+      const localUses = parseInt(localStorage.getItem(LOCAL_KEY) || '0', 10)
+      // Fast path: already at limit in localStorage
+      if (localUses >= FREE_LIMIT) {
         setShowModal(true)
         return
       }
-      const newUses = uses + 1
-      localStorage.setItem(LOCAL_KEY, String(newUses))
-      setAccess(p => ({ ...p, usesLeft: Math.max(0, FREE_LIMIT - newUses), usesCount: newUses }))
+
+      setCalculating(true)
+      try {
+        const fp = getFingerprint()
+        const res = await fetch('/api/free-usage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fingerprint: fp }),
+        })
+        const data = await res.json()
+
+        if (!data.allowed) {
+          localStorage.setItem(LOCAL_KEY, String(FREE_LIMIT))
+          setAccess(p => ({ ...p, usesLeft: 0, usesCount: FREE_LIMIT }))
+          setCalculating(false)
+          setShowModal(true)
+          return
+        }
+
+        const newUses = localUses + 1
+        localStorage.setItem(LOCAL_KEY, String(newUses))
+        setAccess(p => ({ ...p, usesLeft: Math.max(0, FREE_LIMIT - newUses), usesCount: newUses }))
+      } catch {
+        // API failed — fallback to localStorage only
+        const newUses = localUses + 1
+        localStorage.setItem(LOCAL_KEY, String(newUses))
+        setAccess(p => ({ ...p, usesLeft: Math.max(0, FREE_LIMIT - newUses), usesCount: newUses }))
+      }
+      setCalculating(false)
       setLevels(calculateQuantumLevels(max, min))
       return
     }
@@ -514,6 +572,76 @@ export default function QuantumPage() {
             )}
           </div>
         </form>
+
+        {/* ── Collapsible guide ───────────────────────────────────────────── */}
+        <div className="mb-8 border" style={{ borderColor: BORDER, backgroundColor: CARD }}>
+          <button
+            onClick={() => setGuideOpen(v => !v)}
+            className="w-full flex items-center justify-between px-5 py-4 text-left"
+          >
+            <span className="flex items-center gap-2.5 text-white font-semibold text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <span>📖</span> Cómo usar esta calculadora
+            </span>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* ES/EN toggle */}
+              <div
+                className="flex rounded-full overflow-hidden border text-xs font-semibold"
+                style={{ borderColor: '#2a2a2a' }}
+                onClick={e => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setGuideLang('es')}
+                  className={`px-2.5 py-1 transition-colors ${guideLang === 'es' ? 'text-black font-bold' : 'hover:text-white'}`}
+                  style={guideLang === 'es' ? { backgroundColor: AMBER, color: '#000' } : { color: '#555' }}
+                >ES</button>
+                <button
+                  onClick={() => setGuideLang('en')}
+                  className={`px-2.5 py-1 transition-colors ${guideLang === 'en' ? 'text-black font-bold' : 'hover:text-white'}`}
+                  style={guideLang === 'en' ? { backgroundColor: AMBER, color: '#000' } : { color: '#555' }}
+                >EN</button>
+              </div>
+              <span className="text-xs" style={{ color: MUTED }}>{guideOpen ? '▲' : '▼'}</span>
+            </div>
+          </button>
+
+          {guideOpen && (
+            <div className="px-5 pb-5 border-t space-y-3" style={{ borderColor: BORDER }}>
+              {(guideLang === 'es' ? GUIDE_QUANTICA.es : GUIDE_QUANTICA.en).split('\n\n').map((block, bi) => {
+                const lines = block.split('\n')
+                if (bi === 0) {
+                  return null // title already shown in button
+                }
+                const firstLine = lines[0]
+                if (/^[A-ZÁÉÍÓÚÜÑCómo].+:$/.test(firstLine)) {
+                  return (
+                    <div key={bi} className="pt-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: AMBER }}>{firstLine}</p>
+                      {lines.slice(1).map((l, li) => (
+                        l.startsWith('- ') ? (
+                          <p key={li} className="text-xs mb-1 pl-3 leading-relaxed" style={{ color: MUTED }}>• {l.slice(2)}</p>
+                        ) : /^\d+\./.test(l) ? (
+                          <p key={li} className="text-xs mb-1 pl-3 leading-relaxed" style={{ color: MUTED }}>{l}</p>
+                        ) : l.trim() ? (
+                          <p key={li} className="text-xs mb-1 leading-relaxed" style={{ color: MUTED }}>{l}</p>
+                        ) : null
+                      ))}
+                    </div>
+                  )
+                }
+                if (firstLine.startsWith('💡')) {
+                  return (
+                    <div key={bi} className="mt-3 p-3 border rounded" style={{ borderColor: `${AMBER}20`, backgroundColor: `${AMBER}05` }}>
+                      <p className="text-xs leading-relaxed" style={{ color: AMBER }}>{firstLine}</p>
+                    </div>
+                  )
+                }
+                return (
+                  <p key={bi} className="text-xs leading-relaxed" style={{ color: MUTED }}>{block}</p>
+                )
+              })}
+            </div>
+          )}
+        </div>
 
         {/* Results */}
         {levels.length > 0 && (

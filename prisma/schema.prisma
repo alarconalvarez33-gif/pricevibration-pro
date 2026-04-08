@@ -195,3 +195,17 @@ model Reservation {
   whatsapp  String?
   createdAt DateTime @default(now())
 }
+
+model FreeUsage {
+  id          String   @id @default(cuid())
+  fingerprint String
+  ip          String
+  usageCount  Int      @default(1)
+  lastUsedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([fingerprint, ip])
+  @@index([fingerprint])
+  @@index([ip])
+}

@@ -29,6 +29,7 @@ const PUBLIC_PREFIXES = [
   '/api/contact',    // Contact form
   '/api/trial/',     // Trial use API must be reachable by free users
   '/api/quantum/',   // Quantum access API reachable by free/guest users
+  '/api/free-usage', // Anti-abuse free usage tracking (called by unauthenticated users)
   '/api/user/',      // Purchases/subscription info needed by course-only users
   '/courses/',       // Course pages handle their own access (ProductPurchase check)
   '/curso',          // /curso and /curso/* handle their own access (cursoPurchased check)
