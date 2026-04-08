@@ -8,12 +8,13 @@ import Footer from '@/components/Footer'
 import GannCalculator from '@/components/GannCalculator'
 import GannCosmogram from '@/components/GannCosmogram'
 import AstroGann from '@/components/AstroGann'
+import GannAurea from '@/components/GannAurea'
 import NewsWidget from '@/components/NewsWidget'
 import { GannLevels } from '@/lib/gann'
 import Link from 'next/link'
 import PersonalizedGreeting from '@/components/PersonalizedGreeting'
 
-type ModuleType = 'calculator' | 'astro'
+type ModuleType = 'calculator' | 'aurea' | 'astro'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -107,7 +108,8 @@ export default function DashboardPage() {
   }
 
   const modules = [
-    { id: 'calculator' as ModuleType, label: 'Detector de Puntos Clave', icon: '📊' },
+    { id: 'calculator' as ModuleType, label: 'Calculadora Gann', icon: '📊' },
+    { id: 'aurea' as ModuleType, label: 'Calculadora Áurea', icon: '◈' },
     { id: 'astro' as ModuleType, label: 'Astro-Gann', icon: '☿' },
   ]
 
@@ -256,14 +258,16 @@ export default function DashboardPage() {
               <button
                 key={mod.id}
                 onClick={() => setActiveModule(mod.id)}
-                className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
+                className={`px-4 sm:px-6 rounded-full font-semibold transition-all text-sm min-h-[48px] flex items-center gap-2 ${
                   activeModule === mod.id
-                    ? 'bg-gold-500 text-black'
-                    : 'bg-terminal-card border border-terminal-border text-terminal-muted hover:border-gold-500'
+                    ? 'text-black'
+                    : 'bg-[#141415] border border-[#222] text-[#666] hover:border-[#444] hover:text-white'
                 }`}
+                style={activeModule === mod.id ? { backgroundColor: '#fbbf24' } : {}}
               >
-                <span className="mr-2">{mod.icon}</span>
+                <span>{mod.icon}</span>
                 <span className="hidden sm:inline">{mod.label}</span>
+                <span className="sm:hidden text-xs">{mod.label.split(' ')[mod.label.split(' ').length - 1]}</span>
               </button>
             ))}
           </div>
@@ -293,6 +297,11 @@ export default function DashboardPage() {
                 </div>
               </div>
             </>
+          )}
+
+          {/* Calculadora Áurea Module */}
+          {activeModule === 'aurea' && (
+            <GannAurea />
           )}
 
           {/* Astro-Gann Module */}
