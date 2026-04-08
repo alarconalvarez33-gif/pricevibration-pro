@@ -209,3 +209,15 @@ model FreeUsage {
   @@index([fingerprint])
   @@index([ip])
 }
+
+model ProofResult {
+  id          String   @id @default(cuid())
+  imageData   String   @db.Text    // base64 encoded image (Vercel-safe storage)
+  mimeType    String   @default("image/jpeg")
+  description String
+  date        String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

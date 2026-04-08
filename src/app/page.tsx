@@ -19,46 +19,47 @@ const C = {
   subtle: '#333333',
 } as const;
 
-// Agregar imágenes aquí a medida que se suben a /public/results/
-// Descomentar cada línea cuando la imagen esté disponible
-const resultImages: { src: string; pair: string; date: string }[] = [
-  // { src: '/results/result-1.jpg', pair: 'XAUUSD', date: '2026-04-08' },
-  // { src: '/results/result-2.jpg', pair: 'BTCUSD', date: '2026-04-08' },
-  // { src: '/results/result-3.jpg', pair: 'EURUSD', date: '2026-04-08' },
-  // { src: '/results/result-4.jpg', pair: 'XAUUSD', date: '2026-04-08' },
-]
+interface ProofResult {
+  id: string
+  description: string
+  date: string | null
+}
 
-function ResultsGrid() {
-  const [selected, setSelected] = useState<{ src: string; pair: string; date: string } | null>(null)
+function ResultsGrid({ results }: { results: ProofResult[] }) {
+  const [selected, setSelected] = useState<ProofResult | null>(null)
+
+  const cols =
+    results.length === 1 ? 'max-w-md mx-auto' :
+    results.length === 2 ? 'grid sm:grid-cols-2' :
+    'grid sm:grid-cols-2 lg:grid-cols-3'
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-        {resultImages.map((img, i) => (
+      <div className={cols} style={{ gap: 16, display: results.length === 1 ? 'block' : undefined }}>
+        {results.map((r) => (
           <div
-            key={i}
-            onClick={() => setSelected(img)}
-            style={{
-              border: '1px solid #222', backgroundColor: '#111',
-              overflow: 'hidden', cursor: 'zoom-in', transition: 'transform 0.2s',
-              position: 'relative',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
-            onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+            key={r.id}
+            onClick={() => setSelected(r)}
+            className="rounded-xl overflow-hidden cursor-zoom-in transition-all duration-200 hover:scale-[1.02]"
+            style={{ border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.03)' }}
           >
-            <img
-              src={img.src}
-              alt={`${img.pair} — ${img.date}`}
-              style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
-            />
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0,
-              padding: '8px 12px',
-              background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
-            }}>
-              <p style={{ color: '#aaa', fontSize: 11, fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
-                {img.pair} <span style={{ color: '#555' }}>· {img.date}</span>
+            <div style={{ aspectRatio: '16/9', overflow: 'hidden', backgroundColor: '#0a0a0b' }}>
+              <img
+                src={`/api/results/image/${r.id}`}
+                alt={r.description}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                loading="lazy"
+              />
+            </div>
+            <div className="p-3">
+              <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
+                {r.description}
               </p>
+              {r.date && (
+                <p style={{ color: '#555', fontSize: 11, marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>
+                  {r.date}
+                </p>
+              )}
             </div>
           </div>
         ))}
@@ -75,14 +76,19 @@ function ResultsGrid() {
           }}
         >
           <img
-            src={selected.src}
-            alt={selected.pair}
+            src={`/api/results/image/${selected.id}`}
+            alt={selected.description}
             style={{ maxWidth: '95vw', maxHeight: '82vh', objectFit: 'contain', boxShadow: '0 0 60px rgba(0,229,255,0.1)' }}
           />
           <p style={{ color: '#aaa', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 14 }}>
-            {selected.pair} <span style={{ color: '#555' }}>· {selected.date}</span>
+            {selected.description}
           </p>
-          <p style={{ color: '#555', fontSize: 11, marginTop: 6 }}>Toca para cerrar</p>
+          {selected.date && (
+            <p style={{ color: '#555', fontSize: 11, marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>
+              {selected.date}
+            </p>
+          )}
+          <p style={{ color: '#555', fontSize: 11, marginTop: 8 }}>Toca para cerrar</p>
         </div>
       )}
     </>
@@ -94,6 +100,14 @@ export default function HomePage() {
   const [formSuccess, setFormSuccess] = useState(false);
   const [formError, setFormError] = useState('');
   const [cursoLoading, setCursoLoading] = useState(false);
+  const [proofResults, setProofResults] = useState<ProofResult[]>([]);
+
+  useEffect(() => {
+    fetch('/api/results')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data.results)) setProofResults(data.results) })
+      .catch(() => {})
+  }, []);
 
   const handleBuyCurso = async () => {
     setCursoLoading(true);
@@ -417,11 +431,11 @@ export default function HomePage() {
         </section>
 
 
-        {/* ── NIVELES EN ACCIÓN — solo visible cuando hay imágenes ── */}
-        {resultImages.length > 0 && (
-          <section className="py-24 px-6 border-y" style={{ borderColor: C.border }}>
-            <div className="max-w-6xl mx-auto">
-              <div className="mb-12 text-center">
+        {/* ── NIVELES EN ACCIÓN — solo visible cuando hay resultados ── */}
+        {proofResults.length > 0 && (
+          <section className="py-20 px-4 sm:px-6 border-y" style={{ borderColor: C.border }}>
+            <div className="max-w-5xl mx-auto">
+              <div className="mb-10 text-center">
                 <p
                   className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
                   style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
@@ -429,7 +443,7 @@ export default function HomePage() {
                   Resultados
                 </p>
                 <h2
-                  className="text-4xl font-bold text-white mb-3"
+                  className="text-3xl sm:text-4xl font-bold text-white mb-3"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
                   Niveles en Acción — Resultados Reales
@@ -439,7 +453,7 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <ResultsGrid />
+              <ResultsGrid results={proofResults} />
             </div>
           </section>
         )}
