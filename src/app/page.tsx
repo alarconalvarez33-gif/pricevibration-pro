@@ -272,7 +272,7 @@ export default function HomePage() {
                     }}
                   >
                     <img
-                      src="/nuevo.png"
+                      src="/Super estrategia.jpg"
                       alt="Super Estrategia"
                       style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
                     />
