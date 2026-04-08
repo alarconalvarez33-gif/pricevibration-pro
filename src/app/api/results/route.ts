@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // GET /api/results — public, returns active ProofResults (no imageData for performance)
 export async function GET() {
   try {
