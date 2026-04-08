@@ -336,8 +336,8 @@ export default function HomePage() {
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
                     <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Quantum Access</span>
                   </div>
-                  <div className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 350.000</div>
-                  <p className="text-[#444] text-[11px]">$50 USD · pago mensual</p>
+                  <div className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 180.000</div>
+                  <p className="text-[#444] text-[11px]">$25 USD · pago mensual</p>
                   <Link
                     href="/billing"
                     className="mt-3 px-6 py-2.5 text-black text-[11px] font-bold uppercase tracking-[0.1em] text-center transition-opacity hover:opacity-90"

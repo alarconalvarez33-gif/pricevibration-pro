@@ -267,10 +267,10 @@ export default function QuantumPage() {
                 Usaste tus 3 cálculos gratuitos. Suscribite para acceso ilimitado.
               </p>
               <div className="text-4xl font-bold text-white mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                Gs. 350.000
+                Gs. 180.000
               </div>
               <p className="text-xs mb-8 uppercase tracking-[0.2em]" style={{ color: MUTED }}>
-                $50 USD · mensual · incluye todo
+                $25 USD · mensual · incluye todo
               </p>
               <a
                 href="/billing"
@@ -445,7 +445,7 @@ export default function QuantumPage() {
                 className="shrink-0 border px-6 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
                 style={{ backgroundColor: CYAN, borderColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Suscribirse — Gs. 350.000/mes
+                Suscribirse — Gs. 180.000/mes
               </a>
             )}
           </div>

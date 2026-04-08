@@ -137,11 +137,11 @@ function SignalPaywall({ viewed, limit }: { viewed: number; limit: number }) {
             </p>
             <div className="flex items-baseline gap-2 mb-1">
               <span className="font-bold text-lg" style={{ color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}>
-                Gs. 350.000
+                Gs. 180.000
               </span>
               <span className="text-[#333] text-xs">/ mes</span>
             </div>
-            <p className="text-[#333] text-xs">$50 USD equivalente</p>
+            <p className="text-[#333] text-xs">$25 USD equivalente</p>
           </div>
           <Link
             href="/billing"
@@ -693,7 +693,7 @@ export default function QuantumSignalHub() {
                 >
                   <span>Quantum Access</span>
                   <span className="font-bold" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                    Gs. 350.000
+                    Gs. 180.000
                   </span>
                 </Link>
               )}

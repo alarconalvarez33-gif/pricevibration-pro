@@ -212,9 +212,9 @@ export default function BillingPage() {
                     className="text-3xl sm:text-4xl font-bold text-white"
                     style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   >
-                    {Gs(350000)}
+                    {Gs(180000)}
                   </span>
-                  <span className="text-[#444] text-sm">/ $50 USD</span>
+                  <span className="text-[#444] text-sm">/ $25 USD</span>
                   <span className="text-[#444] text-sm">/mes</span>
                 </div>
               </div>
