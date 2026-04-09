@@ -120,18 +120,19 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    // All ProductPurchase (paid), most recent first
     const purchases = await prisma.productPurchase.findMany({
-      where: { orderId: { startsWith: 'MANUAL-ADMIN-' } },
+      where: { status: 'paid' },
       orderBy: { paidAt: 'desc' },
-      take: 30,
+      take: 40,
       include: { user: { select: { email: true } } },
     })
 
-    // Also include manual quantum activations from SubscriptionLog
+    // All paid quantum subscriptions from SubscriptionLog
     const quantumLogs = await prisma.subscriptionLog.findMany({
-      where: { note: 'Manual admin activation' },
+      where: { event: 'activated' },
       orderBy: { createdAt: 'desc' },
-      take: 20,
+      take: 40,
       include: { user: { select: { email: true } } },
     })
 
@@ -141,6 +142,7 @@ export async function GET() {
       email: p.user.email,
       product: p.productId,
       type: 'course',
+      source: p.orderId?.startsWith('MANUAL-ADMIN-') ? 'manual' : 'pagopar',
     }))
 
     const quantumRows = quantumLogs.map(l => ({
@@ -149,11 +151,12 @@ export async function GET() {
       email: l.user.email,
       product: 'quantum-access',
       type: 'subscription',
+      source: l.note === 'Manual admin activation' ? 'manual' : 'pagopar',
     }))
 
     const all = [...purchaseRows, ...quantumRows]
       .sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime())
-      .slice(0, 30)
+      .slice(0, 40)
 
     return NextResponse.json({ activations: all })
   } catch (error) {

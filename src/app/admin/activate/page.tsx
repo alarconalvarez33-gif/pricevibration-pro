@@ -30,6 +30,7 @@ interface Activation {
   email: string
   product: string
   type: string
+  source: 'manual' | 'pagopar'
 }
 
 const PRODUCT_LABEL: Record<string, string> = {
@@ -275,7 +276,7 @@ export default function AdminActivatePage() {
         {/* Activations log */}
         <div className="border rounded-xl overflow-hidden" style={{ backgroundColor: CARD, borderColor: BORDER }}>
           <div className="px-5 py-3 border-b flex items-center justify-between" style={{ borderColor: BORDER, backgroundColor: '#0d0d0e' }}>
-            <span className="text-white font-bold text-sm">Últimas activaciones</span>
+            <span className="text-white font-bold text-sm">Últimas compras y activaciones</span>
             <button
               onClick={loadLogs}
               className="text-xs uppercase tracking-widest transition-colors hover:text-white"
@@ -298,7 +299,7 @@ export default function AdminActivatePage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b" style={{ borderColor: BORDER }}>
-                    {['Fecha', 'Email', 'Producto', ''].map(h => (
+                    {['Fecha', 'Email', 'Producto', 'Origen', ''].map(h => (
                       <th key={h} className="px-4 py-2.5 text-left text-[10px] uppercase tracking-widest" style={{ color: MUTED }}>
                         {h}
                       </th>
@@ -317,6 +318,17 @@ export default function AdminActivatePage() {
                       <td className="px-4 py-3 text-white text-xs">{a.email}</td>
                       <td className="px-4 py-3 text-xs" style={{ color: '#aaa' }}>
                         {PRODUCT_LABEL[a.product] ?? a.product}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className="text-[10px] px-2 py-0.5 border rounded font-bold uppercase"
+                          style={{
+                            color: a.source === 'manual' ? AMBER : CYAN,
+                            borderColor: a.source === 'manual' ? `${AMBER}30` : `${CYAN}30`,
+                          }}
+                        >
+                          {a.source === 'manual' ? 'manual' : 'pagopar'}
+                        </span>
                       </td>
                       <td className="px-4 py-3">
                         <span
