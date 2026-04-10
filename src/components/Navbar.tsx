@@ -68,10 +68,8 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 md:px-12">
           <div className="flex items-center justify-between h-16 md:h-20">
 
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 shrink-0">
-             <Image src="/loguo.png" alt="Sacred Levels" width={180} height={48} quality={95} className="!h-[36px] !w-auto sm:!h-[40px] md:!h-[44px] flex-shrink-0" />
-             <Link href="/" className="flex items-center gap-3 shrink-0">
+{/* Logo */}
+<Link href="/" className="flex items-center gap-3 shrink-0">
   <Image src="/loguo.png" alt="Sacred Levels" width={200} height={56} quality={95} className="!h-[48px] !w-auto sm:!h-[52px] md:!h-[56px] flex-shrink-0 object-contain" />
   <div className="hidden sm:block">
     <span className="text-white font-semibold text-base tracking-tight leading-none block">
