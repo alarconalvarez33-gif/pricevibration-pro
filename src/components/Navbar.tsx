@@ -70,14 +70,15 @@ export default function Navbar() {
 
 {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
-             <Image src="/loguo-navbar.png" alt="Sacred Levels" width={200} height={56} quality={95} className="!h-[40px] !w-auto sm:!h-[48px] md:!h-[52px] flex-shrink-0 object-contain" />
-  <span className="text-white font-semibold text-base tracking-tight leading-none block">
-    Sacred Levels
-  </span>
-  <span className="text-[#444] text-[10px] tracking-[0.25em] uppercase mt-0.5 block">
-    Quantum Trading
-  </span>
-</div>
+              <img src="/loguo-navbar.png" alt="Sacred Levels" style={{ height: '52px', width: 'auto' }} className="flex-shrink-0 object-contain" />
+              <div className="hidden sm:block">
+                <span className="text-white font-semibold text-base tracking-tight leading-none block">
+                  Sacred Levels
+                </span>
+                <span className="text-[#444] text-[10px] tracking-[0.25em] uppercase mt-0.5 block">
+                  Quantum Trading
+                </span>
+              </div>
             </Link>
 
             {/* Desktop nav */}
