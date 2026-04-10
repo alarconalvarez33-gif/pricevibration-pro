@@ -70,7 +70,7 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
-             <Image src="/logosacred.png" alt="Sacred Levels" width={52} height={52} quality={90} className="w-[44px] h-[44px] sm:w-[48px] sm:h-[48px] md:w-[52px] md:h-[52px] flex-shrink-0" />
+             <Image src="/loguo.png" alt="Sacred Levels" width={52} height={52} quality={90} className="w-[44px] h-[44px] sm:w-[48px] sm:h-[48px] md:w-[52px] md:h-[52px] flex-shrink-0" />
               <div className="hidden sm:block">
                 <span className="text-white font-semibold text-base tracking-tight leading-none block">
                   Sacred Levels
