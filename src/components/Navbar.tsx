@@ -66,19 +66,19 @@ export default function Navbar() {
       >
         {/* ── Main bar ── */}
         <div className="max-w-7xl mx-auto px-4 md:px-12">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between min-h-[80px] md:min-h-[88px]">
 
 {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
-              <Image src="/loguo.png" alt="Sacred Levels" width={200} height={56} quality={95} className="!h-[48px] !w-auto sm:!h-[52px] md:!h-[56px] flex-shrink-0 object-contain" />
-              <div className="hidden sm:block">
-                <span className="text-white font-semibold text-base tracking-tight leading-none block">
-                  Sacred Levels & trading.com.py
-                </span>
-                <span className="text-[#444] text-[10px] tracking-[0.25em] uppercase mt-0.5 block">
-                  Quantum Trading / TRADING DE ÉLITE
-                </span>
-              </div>
+              <Image src="/loguo.png" alt="Sacred Levels" width={280} height={72} quality={95} className="!h-[60px] !w-auto sm:!h-[68px] md:!h-[72px] flex-shrink-0 object-contain" />
+            <div className="hidden sm:block">
+  <span className="text-white font-semibold text-base tracking-tight leading-none block">
+    Sacred Levels
+  </span>
+  <span className="text-[#444] text-[10px] tracking-[0.25em] uppercase mt-0.5 block">
+    Quantum Trading
+  </span>
+</div>
             </Link>
 
             {/* Desktop nav */}
