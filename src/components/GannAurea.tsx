@@ -4,8 +4,7 @@ import { useState } from 'react'
 import CalcGuide from '@/components/CalcGuide'
 import { GUIDE_AUREA } from '@/lib/calcGuides'
 
-const INCREMENTOS = [0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5]
-const ETIQUETAS = ['1/16', '2/16', '3/16', '4/16', '5/16', '6/16', '7/16', '8/16']
+const STEPS = [0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5]
 
 const ASSETS = [
   { id: 'XAUUSD', label: 'XAU/USD', decimals: 2 },
@@ -17,20 +16,12 @@ const ASSETS = [
   { id: 'DXY',    label: 'DXY',     decimals: 3 },
 ]
 
-interface LevelRow {
-  label: string
-  value: number
-  increment: number
-}
-
 interface AureaResult {
-  resistances: LevelRow[]
-  supports: LevelRow[]
+  resistances: number[]
+  supports: number[]
   precioMin: number
   precioMax: number
   decimals: number
-  sqrtMin: number
-  sqrtMax: number
 }
 
 export default function GannAurea() {
@@ -38,8 +29,6 @@ export default function GannAurea() {
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [result, setResult] = useState<AureaResult | null>(null)
-  const [expandedR, setExpandedR] = useState<number | null>(null)
-  const [expandedS, setExpandedS] = useState<number | null>(null)
   const [error, setError] = useState('')
   const [guideOpen, setGuideOpen] = useState(false)
 
@@ -60,21 +49,13 @@ export default function GannAurea() {
     const sqrtMin = Math.sqrt(min)
     const sqrtMax = Math.sqrt(max)
 
-    const resistances: LevelRow[] = INCREMENTOS.map((inc, i) => ({
-      label: ETIQUETAS[i],
-      value: Math.pow(sqrtMin + inc, 2),
-      increment: inc,
-    }))
-
-    const supports: LevelRow[] = INCREMENTOS.map((inc, i) => ({
-      label: ETIQUETAS[i],
-      value: Math.pow(sqrtMax - inc, 2),
-      increment: inc,
-    }))
-
-    setResult({ resistances, supports, precioMin: min, precioMax: max, decimals: asset.decimals, sqrtMin, sqrtMax })
-    setExpandedR(null)
-    setExpandedS(null)
+    setResult({
+      resistances: STEPS.map((s) => Math.pow(sqrtMin + s, 2)),
+      supports:    STEPS.map((s) => Math.pow(sqrtMax - s, 2)),
+      precioMin: min,
+      precioMax: max,
+      decimals: asset.decimals,
+    })
   }
 
   const fmt = (val: number, dec: number) => val.toFixed(dec)
@@ -84,7 +65,7 @@ export default function GannAurea() {
     <div className="space-y-6">
       {/* Input panel */}
       <div className="bg-[#141415] border border-[#222] rounded-xl p-5 sm:p-6">
-        <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center justify-between mb-5">
           <h2 className="text-white font-bold text-lg flex items-center gap-2">
             <span className="text-[#fbbf24]">◈</span> Calculadora Áurea de Gann
           </h2>
@@ -96,7 +77,6 @@ export default function GannAurea() {
             ?
           </button>
         </div>
-        <p className="text-[#555] text-xs mb-5">Método raíz cuadrada · 8 incrementos (1/16 a 8/16)</p>
 
         {/* Asset selector */}
         <div className="mb-5">
@@ -157,96 +137,45 @@ export default function GannAurea() {
 
       {/* Results */}
       {result && (
-        <>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {/* Resistances — from MIN */}
-            <div className="bg-[#141415] border border-[#222] rounded-xl overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#222] bg-red-950/20 flex items-center justify-between">
-                <div>
-                  <p className="text-[#555] text-[10px] uppercase tracking-widest mb-0.5">Desde Mínimo</p>
-                  <p className="text-red-400 font-bold text-sm">Resistencias</p>
-                </div>
-                <span className="text-[#444] font-mono text-xs">{fmt(result.precioMin, result.decimals)}</span>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {/* Resistances */}
+          <div className="bg-[#141415] border border-[#222] rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#222] bg-red-950/20 flex items-center justify-between">
+              <div>
+                <p className="text-[#555] text-[10px] uppercase tracking-widest mb-0.5">Desde Mínimo</p>
+                <p className="text-red-400 font-bold text-sm">Resistencias</p>
               </div>
-              <div className="divide-y divide-[#111]">
-                {result.resistances.map((r, i) => (
-                  <div key={i}>
-                    <button
-                      onClick={() => setExpandedR(expandedR === i ? null : i)}
-                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/[0.02] transition-colors group text-left"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-[#3a3a3a] text-xs font-mono w-6">R{i + 1}</span>
-                        <span className="text-[#555] text-xs">{r.label}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-red-400 font-bold font-mono text-sm">{fmt(r.value, result.decimals)}</span>
-                        <span className="text-[#333] text-[10px] group-hover:text-[#555] transition-colors">
-                          {expandedR === i ? '▲' : '▼'}
-                        </span>
-                      </div>
-                    </button>
-                    {expandedR === i && (
-                      <div className="px-4 py-3 bg-[#0d0d0e] border-t border-[#111] text-[#444] text-xs font-mono leading-relaxed">
-                        <span className="text-[#333]">(√{fmt(result.precioMin, result.decimals)} + {r.increment})²</span><br />
-                        <span className="text-[#333]">= ({result.sqrtMin.toFixed(6)} + {r.increment})²</span><br />
-                        <span className="text-[#333]">= {(result.sqrtMin + r.increment).toFixed(6)}²</span><br />
-                        <span className="text-red-400 font-bold">= {fmt(r.value, result.decimals)}</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+              <span className="text-[#444] font-mono text-xs">{fmt(result.precioMin, result.decimals)}</span>
             </div>
-
-            {/* Supports — from MAX */}
-            <div className="bg-[#141415] border border-[#222] rounded-xl overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#222] bg-emerald-950/20 flex items-center justify-between">
-                <div>
-                  <p className="text-[#555] text-[10px] uppercase tracking-widest mb-0.5">Desde Máximo</p>
-                  <p className="text-emerald-400 font-bold text-sm">Soportes</p>
+            <div className="divide-y divide-[#111]">
+              {result.resistances.map((val, i) => (
+                <div key={i} className="flex items-center justify-between px-4 py-3">
+                  <span className="text-[#3a3a3a] text-xs font-mono">R{i + 1}</span>
+                  <span className="text-red-400 font-bold font-mono text-sm">{fmt(val, result.decimals)}</span>
                 </div>
-                <span className="text-[#444] font-mono text-xs">{fmt(result.precioMax, result.decimals)}</span>
-              </div>
-              <div className="divide-y divide-[#111]">
-                {result.supports.map((s, i) => (
-                  <div key={i}>
-                    <button
-                      onClick={() => setExpandedS(expandedS === i ? null : i)}
-                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/[0.02] transition-colors group text-left"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-[#3a3a3a] text-xs font-mono w-6">S{i + 1}</span>
-                        <span className="text-[#555] text-xs">{s.label}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-emerald-400 font-bold font-mono text-sm">{fmt(s.value, result.decimals)}</span>
-                        <span className="text-[#333] text-[10px] group-hover:text-[#555] transition-colors">
-                          {expandedS === i ? '▲' : '▼'}
-                        </span>
-                      </div>
-                    </button>
-                    {expandedS === i && (
-                      <div className="px-4 py-3 bg-[#0d0d0e] border-t border-[#111] text-[#444] text-xs font-mono leading-relaxed">
-                        <span className="text-[#333]">(√{fmt(result.precioMax, result.decimals)} - {s.increment})²</span><br />
-                        <span className="text-[#333]">= ({result.sqrtMax.toFixed(6)} - {s.increment})²</span><br />
-                        <span className="text-[#333]">= {(result.sqrtMax - s.increment).toFixed(6)}²</span><br />
-                        <span className="text-emerald-400 font-bold">= {fmt(s.value, result.decimals)}</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Formula reminder */}
-          <div className="p-3 bg-[#fbbf24]/5 border border-[#fbbf24]/10 rounded-lg">
-            <p className="text-[#fbbf24]/60 text-[10px] font-mono text-center tracking-wide">
-              R_n = (√PrecioMínimo + n/16)² &nbsp;·&nbsp; S_n = (√PrecioMáximo − n/16)²
-            </p>
+          {/* Supports */}
+          <div className="bg-[#141415] border border-[#222] rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#222] bg-emerald-950/20 flex items-center justify-between">
+              <div>
+                <p className="text-[#555] text-[10px] uppercase tracking-widest mb-0.5">Desde Máximo</p>
+                <p className="text-emerald-400 font-bold text-sm">Soportes</p>
+              </div>
+              <span className="text-[#444] font-mono text-xs">{fmt(result.precioMax, result.decimals)}</span>
+            </div>
+            <div className="divide-y divide-[#111]">
+              {result.supports.map((val, i) => (
+                <div key={i} className="flex items-center justify-between px-4 py-3">
+                  <span className="text-[#3a3a3a] text-xs font-mono">S{i + 1}</span>
+                  <span className="text-emerald-400 font-bold font-mono text-sm">{fmt(val, result.decimals)}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
 

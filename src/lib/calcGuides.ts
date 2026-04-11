@@ -87,51 +87,37 @@ Reading results:
 export const GUIDE_AUREA: GuideContent = {
   es: `Cómo usar la Calculadora Áurea de Gann
 
-Esta calculadora usa el Método de Raíz Cuadrada, el sistema más puro de W.D. Gann. Trabaja directamente con la vibración intrínseca de cada precio individual.
+La calculadora usa un algoritmo propietario basado en geometría del precio para calcular niveles de alta probabilidad. El método está desarrollado en profundidad en el curso Genesis.
 
 Pasos:
 1. Para calcular RESISTENCIAS: ingresá el precio mínimo reciente (el low más bajo de la sesión o del período que analizás)
 2. Para calcular SOPORTES: ingresá el precio máximo reciente (el high más alto de la sesión o del período)
 3. Presioná 'Calcular Niveles Áureos'
 
-Cómo funciona:
-- La calculadora toma la raíz cuadrada de tu precio
-- Le suma (resistencias) o resta (soportes) incrementos de 1/16
-- Eleva al cuadrado cada resultado
-- Los incrementos de 1/16 representan 22.5° del círculo de Gann
-- Los 8 niveles cubren medio círculo (180°)
-
-Interpretación:
-- R1-R2: resistencias más cercanas, probables en scalping
+Interpretación de resultados:
+- R1-R2: resistencias más cercanas, útiles para scalping
 - R3-R5: resistencias intermedias, objetivos intraday
 - R6-R8: resistencias extendidas, objetivos de swing
 - Lo mismo aplica para soportes (S1 más cercano, S8 más lejano)
-- Los niveles R4 y S4 (incremento 0.25 = 90°) son especialmente fuertes
+- Los niveles del centro (R4, S4) son especialmente significativos
 
 💡 Consejo: Ingresá el low del día para resistencias y el high del día para soportes. Después compará con la calculadora cuántica — donde ambas coinciden, tenés una zona de alta probabilidad.`,
 
   en: `How to use the Gann Aurea Calculator
 
-This calculator uses the Square Root Method, W.D. Gann's purest system. It works directly with the intrinsic vibration of each individual price.
+The calculator uses a proprietary algorithm based on price geometry to calculate high-probability levels. The method is covered in depth in the Genesis course.
 
 Steps:
 1. For RESISTANCES: enter the recent low price (the lowest low of the session or period you're analyzing)
 2. For SUPPORTS: enter the recent high price (the highest high of the session or period)
 3. Press 'Calculate Aurea Levels'
 
-How it works:
-- The calculator takes the square root of your price
-- Adds (resistances) or subtracts (supports) increments of 1/16
-- Squares each result
-- The 1/16 increments represent 22.5° of Gann's circle
-- All 8 levels cover half the circle (180°)
-
 Reading results:
-- R1-R2: closest resistances, likely for scalping
+- R1-R2: closest resistances, useful for scalping
 - R3-R5: intermediate resistances, intraday targets
 - R6-R8: extended resistances, swing targets
 - Same applies for supports (S1 closest, S8 farthest)
-- R4 and S4 levels (increment 0.25 = 90°) are especially strong as they coincide with a quarter of the circle
+- Mid-range levels (R4, S4) are especially significant
 
 💡 Tip: Enter today's low for resistances and today's high for supports. Then compare with the quantum calculator — where both agree, you have a high-probability zone.`,
 }
