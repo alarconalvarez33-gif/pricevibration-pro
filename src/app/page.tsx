@@ -314,6 +314,20 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── VIDEO ────────────────────────────────────────────────── */}
+        <section className="w-full max-w-3xl mx-auto px-4 py-12">
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10">
+            <iframe
+              src="https://www.youtube.com/embed/b_MA_UHN_sw"
+              title="Sacred Levels — Trading Profesional"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+        </section>
+
         {/* ── TRUST BANNER ─────────────────────────────────────────── */}
         <section className="py-3 px-4 border-y" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
           <div className="max-w-6xl mx-auto">
