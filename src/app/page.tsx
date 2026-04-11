@@ -201,12 +201,13 @@ export default function HomePage() {
 
                 <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-6 sm:mb-8 text-white"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Calculá los niveles exactos donde el precio va a rebotar{' '}
-                  <span style={{ color: C.cyan }}>— antes de que pase.</span>
+                  Opera con la precisión que el mercado exige.{' '}
+                  <span style={{ color: C.cyan }}>— Tecnología de precisión al servicio de tu operativa.</span>
                 </h1>
 
                 <p className="text-base sm:text-lg text-[#666] mb-8 sm:mb-12 leading-relaxed">
-                  Nuestra calculadora analiza la raíz cuadrada del precio con el método de W.D. Gann para encontrar zonas de soporte y resistencia de alta probabilidad en Oro, Forex y Crypto.
+                  Calcula soportes y resistencias en segundos para XAUUSD, Bitcoin y los principales pares de Forex.Zonas de alta probabilidad calculadas en segundos. Sin experiencia previa. Sin tarjeta de crédito.
+               
                 </p>
 
                 <div className="flex flex-col gap-3 mb-8 sm:mb-12">
