@@ -70,10 +70,10 @@ export default function Navbar() {
 
 {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
-              <img src="/loguo-navbar.png" alt="Sacred Levels" style={{ height: '52px', width: 'auto' }} className="flex-shrink-0 object-contain" />
+              <img src="/logonuevos.png" alt="Sacred Levels" style={{ height: '52px', width: 'auto' }} className="flex-shrink-0 object-contain" />
               <div className="hidden sm:block">
                 <span className="text-white font-semibold text-base tracking-tight leading-none block">
-                  Sacred Levels
+                  Sacred Levels 
                 </span>
                 <span className="text-[#444] text-[10px] tracking-[0.25em] uppercase mt-0.5 block">
                   Quantum Trading
