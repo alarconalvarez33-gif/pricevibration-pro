@@ -211,13 +211,13 @@ export default function DashboardPage() {
                     className="px-4 py-2 rounded-lg bg-terminal-card border border-gold-500/30 hover:border-gold-500 text-gold-500 hover:bg-gold-500/10 transition-all flex items-center gap-2 text-sm font-medium"
                   >
                     <span>📖</span>
-                    <span className="hidden sm:inline">User Guide</span>
+                    <span className="hidden sm:inline">Guía del Usuario</span>
                     <span className="sm:hidden">Guide</span>
                   </Link>
                 )}
                 {tier === 'quantum' ? (
                   <span className="px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-purple-600 to-purple-400 text-white flex items-center gap-2">
-                    <span>⚡</span> QUANTUM ACCESS
+                    <span>⚡</span> Acceso cuántico
                   </span>
                 ) : tier === 'whale' ? (
                   <span className="px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center gap-2">
