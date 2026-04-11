@@ -194,7 +194,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-3 mb-8">
                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.green }} />
                   <span className="text-[10px] font-semibold uppercase tracking-[0.3em]"
-                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}>
+                    style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
                     Sacred Levels — Plataforma Cuántica de Trading
                   </span>
                 </div>
@@ -206,7 +206,7 @@ export default function HomePage() {
                 </h1>
 
                 <p className="text-base sm:text-lg text-[#666] mb-8 sm:mb-12 leading-relaxed">
-                  Calcula soportes y resistencias en segundos para XAUUSD, Bitcoin y los principales pares de Forex.Zonas de alta probabilidad calculadas en segundos. Sin experiencia previa. Sin tarjeta de crédito.
+                  Soportes/resistencias en segundos para XAUUSD, Bitcoin y los principales pares de Forex.Zonas de alta probabilidad calculadas en segundos. Sin experiencia previa. Sin tarjeta de crédito.
                
                 </p>
 
