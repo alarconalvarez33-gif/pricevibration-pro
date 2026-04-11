@@ -193,7 +193,7 @@ export default function MentorProfile() {
           <div style={{ position: 'relative', paddingLeft: 32 }}>
             <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 2, background: `linear-gradient(to bottom, ${GOLD}, transparent)` }} />
             <p style={{ fontFamily: SERIF, fontSize: 'clamp(20px, 3vw, 28px)', color: '#ccc', lineHeight: 1.55, fontStyle: 'italic', fontWeight: 400 }}>
-              &ldquo La rentabilidad no es una cuestión de suerte, es una consecuencia de la gestión algorítmica del riesgo y del dominio de estas técnicas..&rdquo;
+              " La rentabilidad no es una cuestión de suerte, es una consecuencia de la gestión algorítmica del riesgo y del dominio de estas técnicas..&rdquo;
             </p>
             <p style={{ fontFamily: MONO, fontSize: 10, color: GOLD, letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 20 }}>
               — Raúl Alarcón
