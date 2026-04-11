@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
@@ -66,26 +65,15 @@ export default function Navbar() {
       >
         {/* ── Main bar ── */}
         <div className="max-w-7xl mx-auto px-4 md:px-12">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between min-h-[80px]">
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
-              <Image
-                src="/logosacred.png"
-                alt="Sacred Levels"
-                width={40}
-                height={40}
-                className="rounded-lg md:w-14 md:h-14"
-                priority
+              <img
+                src="/logonuevos.png"
+                alt="Trading.com.py"
+                style={{ height: '52px', width: 'auto', display: 'block' }}
               />
-              <div className="hidden sm:block">
-                <span className="text-white font-semibold text-base tracking-tight leading-none block">
-                  Sacred Levels
-                </span>
-                <span className="text-[#444] text-[10px] tracking-[0.25em] uppercase mt-0.5 block">
-                  Quantum Trading
-                </span>
-              </div>
             </Link>
 
             {/* Desktop nav */}
