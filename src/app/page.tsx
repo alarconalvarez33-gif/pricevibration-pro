@@ -194,19 +194,20 @@ export default function HomePage() {
                 <div className="flex items-center gap-3 mb-8">
                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.green }} />
                   <span className="text-[10px] font-semibold uppercase tracking-[0.3em]"
-                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}>
+                    style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
                     Sacred Levels — Plataforma Cuántica de Trading
                   </span>
                 </div>
 
                 <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-6 sm:mb-8 text-white"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Calculá los niveles exactos donde el precio va a rebotar{' '}
-                  <span style={{ color: C.cyan }}>— antes de que pase.</span>
+                  Opera con la precisión que el mercado exige.{' '}
+                  <span style={{ color: C.cyan }}>— Tecnología de precisión al servicio de tu operativa.</span>
                 </h1>
 
                 <p className="text-base sm:text-lg text-[#666] mb-8 sm:mb-12 leading-relaxed">
-                  Nuestra calculadora analiza la raíz cuadrada del precio con el método de W.D. Gann para encontrar zonas de soporte y resistencia de alta probabilidad en Oro, Forex y Crypto.
+                  Soportes/resistencias en segundos para XAUUSD, Bitcoin y los principales pares de Forex.Zonas de alta probabilidad calculadas en segundos. Sin experiencia previa. Sin tarjeta de crédito.
+               
                 </p>
 
                 <div className="flex flex-col gap-3 mb-8 sm:mb-12">
@@ -419,7 +420,7 @@ export default function HomePage() {
                 className="absolute top-0 left-0 w-full h-full rounded-xl"
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/-4dZH2zcjSM"
+                src="https://www.youtube.com/embed/n2UHGeKKH_o"
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
