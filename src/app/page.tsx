@@ -272,7 +272,7 @@ export default function HomePage() {
                     className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    {flyer1Loading ? 'Procesando...' : 'LO QUIERO'}
+                    {flyer1Loading ? 'Procesando...' : 'QUIERO APRENDER'}
                   </button>
                 </div>
 
@@ -304,7 +304,7 @@ export default function HomePage() {
                     className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    {cursoLoading ? 'Procesando...' : 'LO QUIERO'}
+                    {cursoLoading ? 'Procesando...' : 'QUIERO ESTE CONOCIMIENTO'}
                   </button>
                 </div>
 
@@ -363,7 +363,7 @@ export default function HomePage() {
                 <div className="flex flex-col justify-center items-center px-4 sm:px-8 py-5 border-b md:border-b-0 md:border-r shrink-0 gap-1" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
                   <div className="inline-flex items-center gap-2 mb-1">
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
-                    <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Quantum Access</span>
+                    <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Acceso Cuántico</span>
                   </div>
                   <div className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 180.000</div>
                   <p className="text-[#444] text-[11px]">$25 USD · pago mensual</p>
@@ -372,7 +372,7 @@ export default function HomePage() {
                     className="mt-3 px-6 py-2.5 text-black text-[11px] font-bold uppercase tracking-[0.1em] text-center transition-opacity hover:opacity-90"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    Suscribirme
+                    Suscribirme ahora!
                   </Link>
                   <p className="text-[#333] text-[9px] mt-1 uppercase tracking-widest">3 usos gratis sin registrarse</p>
                 </div>
