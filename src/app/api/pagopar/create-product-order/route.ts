@@ -79,10 +79,9 @@ export async function POST(request: Request) {
     fechaMaxima.setDate(fechaMaxima.getDate() + 7)
     const fechaMaximaStr = fechaMaxima.toISOString().slice(0, 19).replace('T', ' ')
 
-    // url_retorno: Pagopar redirige aquí después del pago (siempre URL de producción)
+    // Sin url_retorno: Pagopar rechaza el pedido cuando este campo está presente
     const pagoparBody = {
       token,
-      url_retorno: `https://sacredlevels.com${product.courseUrl}`,
       comprador: {
         ruc: '',
         email: user.email,
