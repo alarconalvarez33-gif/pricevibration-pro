@@ -121,6 +121,22 @@ export default function HomePage() {
   };
 
   const [flyer1Loading, setFlyer1Loading] = useState(false);
+  const [adxLoading, setAdxLoading] = useState(false);
+
+  const handleBuyAdx = async () => {
+    setAdxLoading(true);
+    try {
+      const res = await fetch('/api/pagopar/create-product-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: 'adx' }),
+      });
+      const data = await res.json();
+      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
+      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
+    } catch { alert('Error al procesar el pago'); }
+    setAdxLoading(false);
+  };
 
   const handleBuyFlyer1 = async () => {
     setFlyer1Loading(true);
@@ -330,13 +346,14 @@ export default function HomePage() {
                   >
                     Gs. 220.000 <span style={{ color: C.muted }}>/ $30 USD</span>
                   </p>
-                  <Link
-                    href="/courses/adx"
-                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 text-center block"
+                  <button
+                    onClick={handleBuyAdx}
+                    disabled={adxLoading}
+                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
                     style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    ¡QUIERO LA ESTRATEGIA!
-                  </Link>
+                    {adxLoading ? 'Procesando...' : '¡QUIERO LA ESTRATEGIA!'}
+                  </button>
                 </div>
 
               </div>

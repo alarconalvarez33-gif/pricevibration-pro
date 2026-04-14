@@ -10,6 +10,7 @@ const products: Record<string, { name: string; price: number; pricePYG: number; 
   'fisica-cuantica': { name: 'Física Cuántica - Niveles de Probabilidad', price: 100, pricePYG: 650000, courseUrl: '/quantum' },
   'fibonacci': { name: 'Curso de Fibonacci - Potencial Oculto', price: 75, pricePYG: 499000, courseUrl: '/courses/fibonacci' },
   'super-estrategia': { name: 'Super Estrategia - Curso Exclusivo', price: 10, pricePYG: 65000, courseUrl: '/curso' },
+  'adx': { name: 'Estrategia ADX - Manual Completo', price: 30, pricePYG: 220000, courseUrl: '/courses/adx' },
 }
 
 export async function POST(request: Request) {
