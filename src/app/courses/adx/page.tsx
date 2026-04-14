@@ -135,8 +135,7 @@ export default async function AdxCoursePage() {
             </p>
 
             <a
-              href="/guiaadx.pdf"
-              download="Guia-ADX-SacredLevels.pdf"
+              href="/api/download/adx"
               className="inline-flex items-center gap-3 px-8 py-4 font-bold text-sm uppercase tracking-[0.12em] text-black rounded-lg transition-opacity hover:opacity-90"
               style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
             >
