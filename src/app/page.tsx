@@ -308,6 +308,37 @@ export default function HomePage() {
                   </button>
                 </div>
 
+                {/* Flyer 3 — ADX / El Vaso */}
+                <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
+                  <div
+                    className="w-full rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
+                    style={{
+                      backgroundColor: C.bg,
+                      border: `1px solid ${C.border}`,
+                      boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
+                    }}
+                  >
+                    <img
+                      src="/vaso.png"
+                      alt="Estrategia ADX"
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                    />
+                  </div>
+                  <p
+                    className="text-white text-xs font-bold text-center"
+                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    Gs. 220.000 <span style={{ color: C.muted }}>/ $30 USD</span>
+                  </p>
+                  <Link
+                    href="/courses/adx"
+                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 text-center block"
+                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    ¡QUIERO LA ESTRATEGIA!
+                  </Link>
+                </div>
+
               </div>
 
             </div>

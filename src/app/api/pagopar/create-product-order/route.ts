@@ -78,9 +78,10 @@ export async function POST(request: Request) {
     fechaMaxima.setDate(fechaMaxima.getDate() + 7)
     const fechaMaximaStr = fechaMaxima.toISOString().slice(0, 19).replace('T', ' ')
 
-    // Igual que create-order: sin url_retorno (evita rechazo por URLs localhost en Vercel)
+    // url_retorno: Pagopar redirige aquí después del pago (siempre URL de producción)
     const pagoparBody = {
       token,
+      url_retorno: `https://sacredlevels.com${product.courseUrl}`,
       comprador: {
         ruc: '',
         email: user.email,

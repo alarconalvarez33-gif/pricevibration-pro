@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { hasFullAccess } from '@/lib/constants'
+import PendingPaymentPoller from '@/components/PendingPaymentPoller'
 
 export default async function ExpansionMatematicaPage() {
   const session = await getServerSession(authOptions)
@@ -93,20 +94,22 @@ export default async function ExpansionMatematicaPage() {
       ) : hasPending ? (
         /* ── PAGO EN PROCESO ── */
         <div className="max-w-2xl mx-auto px-4 py-24 text-center">
-          <div className="text-6xl mb-6">⏳</div>
-          <h2 className="text-3xl font-bold mb-4 text-white">Verificando tu pago...</h2>
+          <PendingPaymentPoller productId="expansion-matematica" />
+          <div className="text-6xl mb-6 animate-pulse">⏳</div>
+          <h2 className="text-3xl font-bold mb-4 text-white">Esperando confirmación de tu banco...</h2>
           <p className="text-gray-400 text-lg mb-4 leading-relaxed">
-            Tu pago fue registrado y está siendo confirmado. Esto puede demorar unos minutos.
+            Tu pago fue registrado. Estamos esperando la confirmación de tu banco, esto puede demorar unos minutos.
           </p>
           <p className="text-gray-500 text-sm mb-8">
-            Una vez confirmado el pago, esta página se desbloqueará automáticamente.
+            Esta página se desbloqueará automáticamente en cuanto se confirme el pago.
           </p>
-          <a
-            href="/courses/expansion-matematica"
-            className="inline-flex items-center gap-2 bg-[#c9a227] hover:bg-[#b8911f] text-black font-bold text-lg px-8 py-4 rounded-xl transition-all hover:scale-105"
-          >
-            🔄 Verificar nuevamente
-          </a>
+          <div className="flex items-center justify-center gap-2 text-[#c9a227] text-sm mb-8">
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Verificando cada 5 segundos...
+          </div>
           <p className="text-gray-600 text-xs mt-6">
             ¿Pasaron más de 30 minutos? Escribinos a contacto para resolver tu acceso.
           </p>

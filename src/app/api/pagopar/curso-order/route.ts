@@ -53,6 +53,7 @@ export async function POST() {
 
     const pagoparBody = {
       token,
+      url_retorno: 'https://sacredlevels.com/curso',
       public_key: publicKey,
       monto_total: monto,
       tipo_pedido: 'VENTA-COMERCIO',

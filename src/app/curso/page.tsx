@@ -13,10 +13,11 @@ const DARK   = '#0d0d0e'
 
 export default function CursoPage() {
   const { data: session, status } = useSession()
-  const [hasAccess, setHasAccess]     = useState<boolean | null>(null)
-  const [buying, setBuying]           = useState(false)
-  const [verifying, setVerifying]     = useState(false)
-  const [verifyMsg, setVerifyMsg]     = useState('')
+  const [hasAccess, setHasAccess]           = useState<boolean | null>(null)
+  const [hasPendingPayment, setPending]     = useState(false)
+  const [buying, setBuying]                 = useState(false)
+  const [verifying, setVerifying]           = useState(false)
+  const [verifyMsg, setVerifyMsg]           = useState('')
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const checkAccess = () =>
@@ -31,11 +32,37 @@ export default function CursoPage() {
       })
       .catch(() => false)
 
+  // Polls Pagopar directly for super-estrategia pending payment.
+  // Called on mount when user doesn't have access yet (e.g. returning from Pagopar).
+  const startPendingPoll = () => {
+    const check = async () => {
+      try {
+        const res  = await fetch('/api/pagopar/check-product-payment?productId=super-estrategia')
+        const data = await res.json()
+        if (data.status === 'paid') {
+          if (pollRef.current) clearInterval(pollRef.current)
+          setPending(false)
+          setHasAccess(true)
+        } else if (data.status === 'pending') {
+          setPending(true)
+        }
+      } catch (_) {}
+    }
+    check()
+    if (!pollRef.current) {
+      pollRef.current = setInterval(check, 5000)
+    }
+  }
+
   // Verify access directly from DB (avoids stale JWT after payment)
   useEffect(() => {
     if (status === 'loading') return
     if (status === 'unauthenticated') { setHasAccess(false); return }
-    checkAccess()
+    checkAccess().then((hasIt) => {
+      // If no access and authenticated, start polling Pagopar in case payment is pending
+      if (!hasIt) startPendingPoll()
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   // Cleanup poll on unmount
@@ -48,8 +75,8 @@ export default function CursoPage() {
       const res  = await fetch('/api/pagopar/curso-order', { method: 'POST' })
       const data = await res.json()
       if (data.success && data.paymentUrl) {
-        // Start polling while user is on Pagopar — when they return access is instant
-        pollRef.current = setInterval(checkAccess, 5000)
+        // Start polling Pagopar while user completes payment
+        startPendingPoll()
         window.location.href = data.paymentUrl
       } else {
         alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'))
@@ -75,7 +102,7 @@ export default function CursoPage() {
     setVerifying(false)
   }
 
-  const loading = status === 'loading' || hasAccess === null
+  const loading = status === 'loading' || (hasAccess === null && !hasPendingPayment)
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: BG, fontFamily: "'Inter', sans-serif" }}>
@@ -128,6 +155,30 @@ export default function CursoPage() {
               className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto"
               style={{ borderColor: `${CYAN}40`, borderTopColor: 'transparent' }}
             />
+          </div>
+        ) : hasPendingPayment ? (
+          /* ── Esperando banco ── */
+          <div className="text-center py-24 px-8">
+            <div className="text-6xl mb-6" style={{ animation: 'pulse 2s infinite' }}>⏳</div>
+            <h3
+              className="text-2xl font-bold text-white mb-3"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Esperando confirmación de tu banco...
+            </h3>
+            <p className="text-sm mb-6" style={{ color: MUTED }}>
+              Tu pago fue registrado. Esta página se desbloqueará automáticamente cuando tu banco confirme la transacción.
+            </p>
+            <div className="flex items-center justify-center gap-2 text-sm mb-2" style={{ color: CYAN }}>
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Verificando cada 5 segundos...
+            </div>
+            <p className="text-xs mt-8" style={{ color: MUTED }}>
+              ¿Pasaron más de 30 minutos? Escribinos a contacto para resolver tu acceso.
+            </p>
           </div>
         ) : hasAccess ? (
           /* ── Video player ── */
