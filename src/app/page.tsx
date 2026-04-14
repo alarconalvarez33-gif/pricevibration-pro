@@ -101,6 +101,7 @@ export default function HomePage() {
   const [formError, setFormError] = useState('');
   const [cursoLoading, setCursoLoading] = useState(false);
   const [proofResults, setProofResults] = useState<ProofResult[]>([]);
+  const [zoomedFlyer, setZoomedFlyer] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
     fetch('/api/results')
@@ -273,7 +274,8 @@ export default function HomePage() {
                     <img
                       src="/flyer1.jpg"
                       alt="Genesis"
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                      onClick={() => setZoomedFlyer({ src: '/flyer1.jpg', alt: 'Genesis' })}
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <p
@@ -305,7 +307,8 @@ export default function HomePage() {
                     <img
                       src="/Super estrategia.jpg"
                       alt="Super Estrategia"
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                      onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <p
@@ -337,7 +340,8 @@ export default function HomePage() {
                     <img
                       src="/vaso.png"
                       alt="Estrategia ADX"
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                      onClick={() => setZoomedFlyer({ src: '/vaso.png', alt: 'Estrategia ADX' })}
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <p
@@ -813,6 +817,44 @@ export default function HomePage() {
         </footer>
 
       </main>
+
+      {/* ── Flyer lightbox ── */}
+      {zoomedFlyer && (
+        <div
+          onClick={() => setZoomedFlyer(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            backgroundColor: 'rgba(0,0,0,0.93)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '20px', cursor: 'zoom-out',
+          }}
+        >
+          <img
+            src={zoomedFlyer.src}
+            alt={zoomedFlyer.alt}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '88vh',
+              objectFit: 'contain',
+              borderRadius: 12,
+              boxShadow: `0 0 80px ${C.cyan}18`,
+              cursor: 'default',
+            }}
+          />
+          <button
+            onClick={() => setZoomedFlyer(null)}
+            style={{
+              position: 'fixed', top: 20, right: 24,
+              background: 'none', border: 'none',
+              color: '#555', fontSize: 28, cursor: 'pointer', lineHeight: 1,
+            }}
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </>
   );
 }
