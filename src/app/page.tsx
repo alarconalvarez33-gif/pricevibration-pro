@@ -204,7 +204,7 @@ export default function HomePage() {
           />
 
           <div className="relative max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="grid lg:grid-cols-[5fr_6fr] gap-8 items-start">
 
               {/* ── Left: hero copy ── */}
               <div>
@@ -259,7 +259,7 @@ export default function HomePage() {
               </div>
 
               {/* ── Right: course flyers ── */}
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-3 justify-center">
 
                 {/* Flyer 1 — Genesis */}
                 <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
