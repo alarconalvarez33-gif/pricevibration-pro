@@ -259,105 +259,186 @@ export default function HomePage() {
               </div>
 
               {/* ── Right: course flyers ── */}
-              <div className="flex gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
 
-                {/* Flyer 1 — Genesis */}
-                <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
-                  <div
-                    className="w-full rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
-                    style={{
-                      backgroundColor: C.bg,
-                      border: `1px solid ${C.border}`,
-                      boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
-                    }}
-                  >
+                {/* Card 1 — Genesis */}
+                <div
+                  className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                  style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
+                >
+                  <div className="overflow-hidden">
                     <img
                       src="/flyer1.jpg"
                       alt="Genesis"
                       onClick={() => setZoomedFlyer({ src: '/flyer1.jpg', alt: 'Genesis' })}
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
-                  <p
-                    className="text-white text-xs font-bold text-center"
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                  >
-                    Gs. 500.000 <span style={{ color: C.muted }}>/ $77 USD</span>
-                  </p>
-                  <button
-                    onClick={handleBuyFlyer1}
-                    disabled={flyer1Loading}
-                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
-                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    {flyer1Loading ? 'Procesando...' : 'QUIERO APRENDER'}
-                  </button>
+                  <div className="flex flex-col flex-1 p-4 gap-3">
+                    <span
+                      className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
+                      style={{ backgroundColor: '#c9a22718', color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Premium
+                    </span>
+                    <h3
+                      className="text-xl font-bold text-white leading-tight"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      Genesis
+                    </h3>
+                    <p
+                      className="text-xs italic leading-relaxed"
+                      style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}
+                    >
+                      Expansión matemática del precio
+                    </p>
+                    <p className="text-sm font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      Gs. 500.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $77 USD</span>
+                    </p>
+                    <p className="text-[0.77rem] leading-relaxed" style={{ color: '#888', fontWeight: 300 }}>
+                      El método de raíz cuadrada aplicado con precisión quirúrgica. Aprende a calcular los niveles exactos donde el precio reacciona con mayor probabilidad.
+                    </p>
+                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: '3px solid #c9a227', backgroundColor: '#c9a22708' }}>
+                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
+                      <ul className="flex flex-col gap-1">
+                        {['Identificar soportes y resistencias de alta probabilidad', 'Aplicar la raíz cuadrada de Gann en tiempo real', 'Operar con un plan claro y sin improvisación'].map((item) => (
+                          <li key={item} className="flex items-start gap-1.5 text-[0.72rem]" style={{ color: '#777', fontWeight: 300 }}>
+                            <span style={{ color: '#c9a227', flexShrink: 0 }}>›</span> {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <button
+                      onClick={handleBuyFlyer1}
+                      disabled={flyer1Loading}
+                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded transition-all duration-200 hover:bg-[#c9a227] hover:text-black disabled:opacity-50"
+                      style={{ border: '1px solid #c9a227', color: '#c9a227', backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      {flyer1Loading ? 'Procesando...' : 'Adquirir Ahora'}
+                    </button>
+                  </div>
                 </div>
 
-                {/* Flyer 2 — Super Estrategia */}
-                <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
-                  <div
-                    className="w-full rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
-                    style={{
-                      backgroundColor: C.bg,
-                      border: `1px solid ${C.border}`,
-                      boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
-                    }}
-                  >
+                {/* Card 2 — Super Estrategia */}
+                <div
+                  className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                  style={{ backgroundColor: C.card, border: `1px solid ${C.cyan}30`, boxShadow: `0 0 30px ${C.cyan}10` }}
+                >
+                  <div className="overflow-hidden">
                     <img
                       src="/Super estrategia.jpg"
                       alt="Super Estrategia"
                       onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
-                  <p
-                    className="text-white text-xs font-bold text-center"
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                  >
-                    Gs. 65.000 <span style={{ color: C.muted }}>/ $10 USD</span>
-                  </p>
-                  <button
-                    onClick={handleBuyCurso}
-                    disabled={cursoLoading}
-                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
-                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    {cursoLoading ? 'Procesando...' : 'QUIERO ESTE CONOCIMIENTO'}
-                  </button>
+                  <div className="flex flex-col flex-1 p-4 gap-3">
+                    <span
+                      className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
+                      style={{ backgroundColor: `${C.cyan}18`, color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Fundamentos
+                    </span>
+                    <h3
+                      className="text-xl font-bold text-white leading-tight"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      Super Estrategia
+                    </h3>
+                    <p
+                      className="text-xs italic leading-relaxed"
+                      style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}
+                    >
+                      El punto de partida definitivo
+                    </p>
+                    <p className="text-sm font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      Gs. 65.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $10 USD</span>
+                    </p>
+                    <p className="text-[0.77rem] leading-relaxed" style={{ color: '#888', fontWeight: 300 }}>
+                      La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad.
+                    </p>
+                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: `3px solid ${C.cyan}`, backgroundColor: `${C.cyan}08` }}>
+                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
+                      <ul className="flex flex-col gap-1">
+                        {['Construir una base sólida en análisis técnico', 'Operar con reglas claras y gestión de riesgo', 'Tomar decisiones sin emociones'].map((item) => (
+                          <li key={item} className="flex items-start gap-1.5 text-[0.72rem]" style={{ color: '#777', fontWeight: 300 }}>
+                            <span style={{ color: C.cyan, flexShrink: 0 }}>›</span> {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <button
+                      onClick={handleBuyCurso}
+                      disabled={cursoLoading}
+                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
+                      style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      {cursoLoading ? 'Procesando...' : 'Adquirir Ahora'}
+                    </button>
+                  </div>
                 </div>
 
-                {/* Flyer 3 — ADX / El Vaso */}
-                <div className="group flex flex-col items-center gap-2 flex-1 min-w-0">
-                  <div
-                    className="w-full rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
-                    style={{
-                      backgroundColor: C.bg,
-                      border: `1px solid ${C.border}`,
-                      boxShadow: `0 0 30px ${C.cyan}10, 0 0 60px ${C.cyan}06`,
-                    }}
-                  >
+                {/* Card 3 — Estrategia ADX */}
+                <div
+                  className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                  style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
+                >
+                  <div className="overflow-hidden">
                     <img
                       src="/vaso.png"
                       alt="Estrategia ADX"
                       onClick={() => setZoomedFlyer({ src: '/vaso.png', alt: 'Estrategia ADX' })}
-                      style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
-                  <p
-                    className="text-white text-xs font-bold text-center"
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                  >
-                    Gs. 220.000 <span style={{ color: C.muted }}>/ $30 USD</span>
-                  </p>
-                  <button
-                    onClick={handleBuyAdx}
-                    disabled={adxLoading}
-                    className="w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] text-black rounded transition-opacity hover:opacity-90 disabled:opacity-50"
-                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    {adxLoading ? 'Procesando...' : '¡QUIERO LA ESTRATEGIA!'}
-                  </button>
+                  <div className="flex flex-col flex-1 p-4 gap-3">
+                    <span
+                      className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
+                      style={{ backgroundColor: '#c9a22718', color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Avanzado
+                    </span>
+                    <h3
+                      className="text-xl font-bold text-white leading-tight"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      Estrategia ADX
+                    </h3>
+                    <p
+                      className="text-xs italic leading-relaxed"
+                      style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}
+                    >
+                      Tendencia con confirmación cuantitativa
+                    </p>
+                    <p className="text-sm font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      Gs. 220.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $30 USD</span>
+                    </p>
+                    <p className="text-[0.77rem] leading-relaxed" style={{ color: '#888', fontWeight: 300 }}>
+                      Domina el indicador ADX para filtrar tendencias reales y eliminar el ruido del mercado. Incluye guía PDF descargable exclusiva.
+                    </p>
+                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: '3px solid #c9a227', backgroundColor: '#c9a22708' }}>
+                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
+                      <ul className="flex flex-col gap-1">
+                        {['Detectar tendencias fuertes antes de que exploten', 'Filtrar señales falsas con precisión', 'Operar solo en condiciones de mercado favorables'].map((item) => (
+                          <li key={item} className="flex items-start gap-1.5 text-[0.72rem]" style={{ color: '#777', fontWeight: 300 }}>
+                            <span style={{ color: '#c9a227', flexShrink: 0 }}>›</span> {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <button
+                      onClick={handleBuyAdx}
+                      disabled={adxLoading}
+                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
+                      style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      {adxLoading ? 'Procesando...' : 'Adquirir Ahora'}
+                    </button>
+                  </div>
                 </div>
 
               </div>
