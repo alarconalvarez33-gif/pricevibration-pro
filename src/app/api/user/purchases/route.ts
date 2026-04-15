@@ -5,27 +5,23 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const COURSE_META: Record<string, { title: string; url: string; icon: string }> = {
-  'canal-paralelo': {
-    title: 'Canal Paralelo',
-    url: '/courses/canal-paralelo',
-    icon: '🎓',
-  },
-  'expansion-matematica': {
-    title: 'Genesis',
-    url: '/courses/expansion-matematica',
-    icon: '👑',
-  },
-  'fibonacci': {
-    title: 'Curso de Fibonacci',
-    url: '/courses/fibonacci',
-    icon: '📊',
-  },
-  'super-estrategia': {
-    title: 'Super Estrategia',
-    url: '/curso',
-    icon: '🏆',
-  },
+const COURSE_META: Record<string, { title: string; url: string; icon: string; pricePYG: number; priceUSD: number }> = {
+  'canal-paralelo':     { title: 'Canal Paralelo',    url: '/courses/canal-paralelo',     icon: '🎓', pricePYG: 320000, priceUSD: 48 },
+  'expansion-matematica': { title: 'Genesis',          url: '/courses/expansion-matematica', icon: '👑', pricePYG: 500000, priceUSD: 77 },
+  'fibonacci':          { title: 'Fibonacci',          url: '/courses/fibonacci',           icon: '📊', pricePYG: 499000, priceUSD: 75 },
+  'super-estrategia':   { title: 'Super Estrategia',   url: '/curso',                       icon: '🏆', pricePYG:  65000, priceUSD: 10 },
+  'adx':               { title: 'Estrategia ADX',     url: '/courses/adx',                 icon: '📈', pricePYG: 220000, priceUSD: 30 },
+}
+
+type CourseEntry = {
+  productId: string
+  title: string
+  url: string
+  icon: string
+  pricePYG: number
+  priceUSD: number
+  orderId: string | null
+  paidAt: Date | null
 }
 
 export async function GET() {
@@ -45,45 +41,59 @@ export async function GET() {
 
     const isAdmin = user.email === 'raul@sacredlevels.com' || user.role === 'admin'
 
-    // Admins see all courses
+    // Admin sees every course as owned, nothing left to acquire
     if (isAdmin) {
-      const courses = Object.entries(COURSE_META).map(([productId, meta]) => ({
+      const owned: CourseEntry[] = Object.entries(COURSE_META).map(([productId, meta]) => ({
         productId,
         orderId: null,
         paidAt: null,
         ...meta,
       }))
-      return NextResponse.json({ courses })
+      return NextResponse.json({ owned, available: [] })
     }
 
+    // Regular users: fetch paid purchases
     const purchases = await prisma.productPurchase.findMany({
       where: { userId: user.id, status: 'paid' },
       orderBy: { paidAt: 'desc' },
     })
 
-    const courses = purchases.map((p) => ({
+    const owned: CourseEntry[] = purchases.map((p) => ({
       productId: p.productId,
-      orderId: p.orderId,
-      paidAt: p.paidAt,
+      orderId:   p.orderId,
+      paidAt:    p.paidAt,
       ...(COURSE_META[p.productId] ?? {
-        title: p.productId,
-        url: '#',
-        icon: '📚',
+        title:    p.productId,
+        url:      '#',
+        icon:     '📚',
+        pricePYG: 0,
+        priceUSD: 0,
       }),
     }))
 
-    // If cursoPurchased flag is set but no purchase record, add super-estrategia
-    const alreadyHasSuperEstrategia = courses.some(c => c.productId === 'super-estrategia')
+    // Legacy: cursoPurchased flag without a purchase record
+    const alreadyHasSuperEstrategia = owned.some(c => c.productId === 'super-estrategia')
     if (user.cursoPurchased && !alreadyHasSuperEstrategia) {
-      courses.unshift({
+      owned.unshift({
         productId: 'super-estrategia',
-        orderId: 'manual',
-        paidAt: null,
+        orderId:   'manual',
+        paidAt:    null,
         ...COURSE_META['super-estrategia'],
       })
     }
 
-    return NextResponse.json({ courses })
+    // Available = everything in COURSE_META that the user hasn't bought yet
+    const ownedIds = new Set(owned.map(c => c.productId))
+    const available: CourseEntry[] = Object.entries(COURSE_META)
+      .filter(([productId]) => !ownedIds.has(productId))
+      .map(([productId, meta]) => ({
+        productId,
+        orderId: null,
+        paidAt:  null,
+        ...meta,
+      }))
+
+    return NextResponse.json({ owned, available })
   } catch (error) {
     console.error('Purchases fetch error:', error)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })

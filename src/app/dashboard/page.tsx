@@ -21,7 +21,9 @@ export default function DashboardPage() {
   const router = useRouter()
   const [levels, setLevels] = useState<GannLevels | null>(null)
   const [activeModule, setActiveModule] = useState<ModuleType>('quantica')
-  const [myCourses, setMyCourses] = useState<{ productId: string; title: string; url: string; icon: string; paidAt: string | null }[]>([])
+  type CourseItem = { productId: string; title: string; url: string; icon: string; pricePYG: number; priceUSD: number; paidAt: string | null }
+  const [ownedCourses,     setOwnedCourses]     = useState<CourseItem[]>([])
+  const [availableCourses, setAvailableCourses] = useState<CourseItem[]>([])
   const [clasicaGuideOpen, setClasicaGuideOpen] = useState(false)
 
   useEffect(() => {
@@ -34,7 +36,10 @@ export default function DashboardPage() {
     if (status === 'authenticated') {
       fetch('/api/user/purchases')
         .then((r) => r.json())
-        .then((data) => { if (data.courses) setMyCourses(data.courses) })
+        .then((data) => {
+          if (data.owned)     setOwnedCourses(data.owned)
+          if (data.available) setAvailableCourses(data.available)
+        })
         .catch(() => {})
     }
   }, [status])
@@ -242,14 +247,18 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {/* Mis Cursos */}
-            {myCourses.length > 0 && (
-              <div className="p-4 bg-terminal-card border border-[#c9a227]/30 rounded-xl">
-                <h2 className="text-white font-bold mb-3 flex items-center gap-2">
+            {/* ── Cursos ── solo visible si el usuario tiene al menos un curso */}
+            {ownedCourses.length > 0 && (
+              <div className="p-5 bg-terminal-card border border-[#c9a227]/30 rounded-xl space-y-4">
+
+                {/* Header */}
+                <h2 className="text-white font-bold flex items-center gap-2">
                   <span>🎓</span> Mis Cursos
                 </h2>
+
+                {/* Cursos adquiridos */}
                 <div className="flex flex-wrap gap-3">
-                  {myCourses.map((course) => (
+                  {ownedCourses.map((course) => (
                     <Link
                       key={course.productId}
                       href={course.url}
@@ -263,6 +272,34 @@ export default function DashboardPage() {
                     </Link>
                   ))}
                 </div>
+
+                {/* Cursos disponibles para adquirir */}
+                {availableCourses.length > 0 && (
+                  <>
+                    <div className="border-t border-[#1e1e1e]" />
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#444]">
+                      Disponibles para adquirir
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {availableCourses.map((course) => (
+                        <Link
+                          key={course.productId}
+                          href="/billing"
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg bg-terminal-bg border border-[#1e1e1e] hover:border-[#c9a227]/40 hover:bg-[#c9a227]/5 transition-all group"
+                        >
+                          <span className="text-2xl opacity-60 group-hover:opacity-100 transition-opacity">{course.icon}</span>
+                          <div>
+                            <p className="text-[#888] group-hover:text-white font-semibold text-sm transition-colors">{course.title}</p>
+                            <p className="text-[#444] group-hover:text-[#c9a227] text-xs transition-colors">
+                              Gs. {course.pricePYG.toLocaleString('es-PY')} · Adquirir →
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </>
+                )}
+
               </div>
             )}
 
