@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import PromoPopup from '@/components/PromoPopup';
 import MentorProfile from '@/components/MentorProfile';
+import FormasDePago from '@/components/FormasDePago';
 
 /* ── Design tokens ── */
 const C = {
@@ -447,6 +448,9 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── FORMAS DE PAGO ───────────────────────────────────────── */}
+        <FormasDePago />
+
         {/* ── VIDEO ────────────────────────────────────────────────── */}
         <section className="w-full max-w-3xl mx-auto px-4 py-12">
           <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10">
@@ -757,7 +761,7 @@ export default function HomePage() {
         </section>
 
         {/* ── CONTACTO ─────────────────────────────────────────────── */}
-        <section className="py-24 px-6">
+        <section id="contacto" className="py-24 px-6">
           <div className="max-w-lg mx-auto">
             <div className="mb-10">
               <p
