@@ -451,19 +451,7 @@ export default function HomePage() {
         {/* ── FORMAS DE PAGO ───────────────────────────────────────── */}
         <FormasDePago />
 
-        {/* ── VIDEO ────────────────────────────────────────────────── */}
-        <section className="w-full max-w-3xl mx-auto px-4 py-12">
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10">
-            <iframe
-              src="https://www.youtube.com/embed/b_MA_UHN_sw"
-              title="Sacred Levels — Trading Profesional"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            />
-          </div>
-        </section>
+
 
         {/* ── TRUST BANNER ─────────────────────────────────────────── */}
         <section className="py-3 px-4 border-y" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
@@ -535,7 +523,51 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+ {/* ── VIDEO TUTORIAL ───────────────────────────────────────── */}
+        <section className="py-20 px-6" style={{ backgroundColor: C.bg }}>
+          <div className="max-w-[800px] mx-auto">
+            <div className="text-center mb-8">
+              <p
+                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
+                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Tutorial
+              </p>
+              <h2
+                className="text-3xl font-bold text-white mb-3"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Cómo Usar Sacred Levels
+              </h2>
+              <p className="text-sm" style={{ color: C.muted }}>
+                Mirá este tutorial rápido para comenzar
+              </p>
+            </div>
 
+            {/* Video container */}
+            <div
+              className="relative w-full overflow-hidden rounded-xl"
+              style={{
+                paddingBottom: '56.25%', /* 16:9 */
+                backgroundColor: '#000',
+                boxShadow: '0 0 40px rgba(196, 167, 125, 0.08), 0 0 80px rgba(196, 167, 125, 0.04)',
+                border: `1px solid ${C.border}`,
+              }}
+            >
+              <iframe
+                className="absolute top-0 left-0 w-full h-full rounded-xl"
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/n2UHGeKKH_o"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
        
 
 
