@@ -196,6 +196,40 @@ model Reservation {
   createdAt DateTime @default(now())
 }
 
+model WebhookLog {
+  id           String   @id @default(cuid())
+  provider     String   // "pagopar"
+  numeroPedido String?
+  hashPedido   String?
+  payload      Json
+  response     Json?
+  status       String   // "processing" | "processed" | "duplicate" | "not_found" | "cancelled" | "failed"
+  errorMsg     String?
+  userEmail    String?
+  createdAt    DateTime @default(now())
+
+  @@index([numeroPedido])
+  @@index([hashPedido])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model ActivationLog {
+  id          String   @id @default(cuid())
+  paymentId   String
+  userId      String
+  product     String
+  source      String   // "webhook" | "admin_manual"
+  triggeredBy String   // "pagopar_webhook" | admin email
+  success     Boolean
+  errorMsg    String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([source])
+}
+
 model FreeUsage {
   id          String   @id @default(cuid())
   fingerprint String

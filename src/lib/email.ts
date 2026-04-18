@@ -103,6 +103,54 @@ export async function sendExpiryEmail(email: string, name: string) {
   )
 }
 
+export async function sendWelcomeEmail(
+  email: string,
+  name: string,
+  product: string,
+  premiumUntil: Date | null
+) {
+  const displayName = name || email
+  const isSubscription = product === 'quantum'
+  const productNames: Record<string, string> = {
+    'quantum':            'Quantum Access',
+    'expansion-matematica': 'Genesis',
+    'canal-paralelo':     'Canal Paralelo',
+    'fibonacci':          'Fibonacci Avanzado',
+    'super-estrategia':   'Super Estrategia',
+    'adx':                'Estrategia ADX',
+  }
+  const productLabel = productNames[product] ?? product
+
+  const body = isSubscription && premiumUntil
+    ? `
+      <h2 style="color:#00d26a;font-size:20px;margin-bottom:8px;">¡Tu acceso está activo!</h2>
+      <p style="color:#8a9bb3;margin-bottom:16px;">Hola ${displayName},</p>
+      <p style="color:#8a9bb3;">Tu suscripción <strong style="color:#c9a227;">${productLabel}</strong> fue activada exitosamente.</p>
+      <div style="background:#131c2e;border-left:3px solid #00d26a;padding:16px;margin:20px 0;font-size:15px;color:#fff;">
+        Acceso activo hasta: <strong>${fmtDate(premiumUntil)}</strong>
+      </div>
+      <p style="color:#8a9bb3;">Podés acceder a todas las herramientas desde tu dashboard.</p>
+      <a href="https://sacredlevels.com/dashboard" style="display:inline-block;background:#c9a227;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;margin-top:16px;">
+        Ir al Dashboard
+      </a>
+    `
+    : `
+      <h2 style="color:#00d26a;font-size:20px;margin-bottom:8px;">¡Tu compra está lista!</h2>
+      <p style="color:#8a9bb3;margin-bottom:16px;">Hola ${displayName},</p>
+      <p style="color:#8a9bb3;">Tu acceso a <strong style="color:#c9a227;">${productLabel}</strong> fue activado exitosamente.</p>
+      <p style="color:#8a9bb3;">Podés acceder al contenido desde la sección Cursos en tu cuenta.</p>
+      <a href="https://sacredlevels.com/courses" style="display:inline-block;background:#c9a227;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;margin-top:16px;">
+        Ver mis cursos
+      </a>
+    `
+
+  await sendEmail(
+    email,
+    isSubscription ? '¡Tu acceso Quantum está activo! — Sacred Levels' : `¡Tu acceso a ${productLabel} está listo! — Sacred Levels`,
+    baseTemplate(body)
+  )
+}
+
 export async function sendReactivationEmail(email: string, name: string, plan: string, premiumUntil: Date) {
   const displayName = name || email
   const renewDate = fmtDate(premiumUntil)

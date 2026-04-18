@@ -2,22 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { activatePayment, activateProductPurchase } from '@/lib/services/payment-activation'
 
 const ADMIN_EMAILS = ['raul@sacredlevels.com', 'alarconalvarez33@gmail.com']
 
 // Map UI product keys → DB productId and metadata
 const PRODUCTS: Record<string, {
   displayName: string
-  dbProductId: string      // productId stored in ProductPurchase
+  dbProductId: string
   price: number
-  isQuantum: boolean       // updates User plan instead of creating ProductPurchase
+  isQuantum: boolean
   setCursoPurchased: boolean
 }> = {
-  'genesis':           { displayName: 'Genesis',             dbProductId: 'expansion-matematica', price: 500000,  isQuantum: false, setCursoPurchased: false },
-  'canal-paralelo':    { displayName: 'Canal Paralelo',      dbProductId: 'canal-paralelo',        price: 320000,  isQuantum: false, setCursoPurchased: false },
-  'fibonacci':         { displayName: 'Fibonacci Avanzado',  dbProductId: 'fibonacci',             price: 320000,  isQuantum: false, setCursoPurchased: false },
-  'super-estrategia':  { displayName: 'Super Estrategia',    dbProductId: 'super-estrategia',      price: 65000,   isQuantum: false, setCursoPurchased: true  },
-  'quantum-access':    { displayName: 'Quantum Access',      dbProductId: 'quantum-access',        price: 180000,  isQuantum: true,  setCursoPurchased: false },
+  'genesis':          { displayName: 'Genesis',            dbProductId: 'expansion-matematica', price: 500000, isQuantum: false, setCursoPurchased: false },
+  'canal-paralelo':   { displayName: 'Canal Paralelo',     dbProductId: 'canal-paralelo',        price: 320000, isQuantum: false, setCursoPurchased: false },
+  'fibonacci':        { displayName: 'Fibonacci Avanzado', dbProductId: 'fibonacci',             price: 320000, isQuantum: false, setCursoPurchased: false },
+  'super-estrategia': { displayName: 'Super Estrategia',   dbProductId: 'super-estrategia',      price: 65000,  isQuantum: false, setCursoPurchased: true  },
+  'quantum-access':   { displayName: 'Quantum Access',     dbProductId: 'quantum-access',        price: 180000, isQuantum: true,  setCursoPurchased: false },
 }
 
 function isAdmin(email: string | null | undefined) {
@@ -31,8 +32,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const { email, productKey } = await request.json()
+    const body = await request.json()
+    const adminEmail = session!.user!.email!
 
+    // ── Mode 1: activate by pending payment/purchase ID (from pending list) ──
+    if (body.pendingId && body.pendingType) {
+      const params = { source: 'admin_manual' as const, triggeredBy: adminEmail }
+      const result = body.pendingType === 'subscription'
+        ? await activatePayment(body.pendingId, params)
+        : await activateProductPurchase(body.pendingId, params)
+
+      if (!result.success) {
+        return NextResponse.json({ error: result.errorMsg }, { status: 400 })
+      }
+      return NextResponse.json({
+        success: true,
+        message: result.alreadyProcessed
+          ? `⚠️ Ya estaba activado: ${result.userEmail}`
+          : `✓ Acceso activado para ${result.userEmail} (${result.product})`,
+      })
+    }
+
+    // ── Mode 2: activate by email + productKey (quick activation form) ───────
+    const { email, productKey } = body
     if (!email?.trim() || !productKey) {
       return NextResponse.json({ error: 'Email y producto son requeridos.' }, { status: 400 })
     }
@@ -42,13 +64,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Producto inválido.' }, { status: 400 })
     }
 
-    // Find user
     const user = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } })
     if (!user) {
       return NextResponse.json({ error: `Usuario no encontrado: ${email}` }, { status: 404 })
     }
 
-    // Quantum Access — update User directly
+    const params = { source: 'admin_manual' as const, triggeredBy: adminEmail }
+
     if (product.isQuantum) {
       const alreadyQuantum = user.plan === 'quantum' && user.isPremium
       if (alreadyQuantum) {
@@ -57,21 +79,27 @@ export async function POST(request: NextRequest) {
           alreadyHad: true,
         })
       }
-      const premiumUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { isPremium: true, plan: 'quantum', subscriptionStatus: 'active', premiumUntil },
+      // For manual quantum: create a synthetic Payment record so activation service can work
+      const syntheticPayment = await prisma.payment.create({
+        data: {
+          orderId: `MANUAL-ADMIN-${Date.now()}`,
+          userId: user.id,
+          planType: 'quantum',
+          billingPeriod: 'monthly',
+          amount: product.price,
+          currency: 'PYG',
+          amountUsd: 25,
+          status: 'pending',
+        },
       })
-      await prisma.subscriptionLog.create({
-        data: { userId: user.id, event: 'activated', plan: 'quantum', note: 'Manual admin activation' },
-      })
+      const result = await activatePayment(syntheticPayment.id, params)
       return NextResponse.json({
         success: true,
         message: `✓ Quantum Access activado para ${email} (30 días)`,
       })
     }
 
-    // Course — check existing purchase
+    // Course: check existing
     const existing = await prisma.productPurchase.findFirst({
       where: { userId: user.id, productId: product.dbProductId, status: 'paid' },
     })
@@ -82,25 +110,17 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Create ProductPurchase
-    await prisma.productPurchase.create({
+    // Create purchase and activate via shared service
+    const syntheticPurchase = await prisma.productPurchase.create({
       data: {
         userId: user.id,
         productId: product.dbProductId,
         orderId: `MANUAL-ADMIN-${Date.now()}`,
         price: product.price,
-        status: 'paid',
-        paidAt: new Date(),
+        status: 'pending',
       },
     })
-
-    // Set cursoPurchased flag if needed
-    if (product.setCursoPurchased) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { cursoPurchased: true },
-      })
-    }
+    const result = await activateProductPurchase(syntheticPurchase.id, params)
 
     return NextResponse.json({
       success: true,
@@ -112,7 +132,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET — recent activations log (last 30)
+// GET — recent activations log (last 40)
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
@@ -120,7 +140,6 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // All ProductPurchase (paid), most recent first
     const purchases = await prisma.productPurchase.findMany({
       where: { status: 'paid' },
       orderBy: { paidAt: 'desc' },
@@ -128,7 +147,6 @@ export async function GET() {
       include: { user: { select: { email: true } } },
     })
 
-    // All paid quantum subscriptions from SubscriptionLog
     const quantumLogs = await prisma.subscriptionLog.findMany({
       where: { event: 'activated' },
       orderBy: { createdAt: 'desc' },
@@ -151,7 +169,7 @@ export async function GET() {
       email: l.user.email,
       product: 'quantum-access',
       type: 'subscription',
-      source: l.note === 'Manual admin activation' ? 'manual' : 'pagopar',
+      source: l.note?.includes('admin_manual') ? 'manual' : 'pagopar',
     }))
 
     const all = [...purchaseRows, ...quantumRows]

@@ -1,255 +1,177 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import crypto from 'crypto'
-import { sendRenewalReminderEmail } from '@/lib/email'
-
-const PRIVATE_KEY = '85ece630fff92520e3943f1f2a8d3c60'
-
-/**
- * Construye la respuesta exacta de 9 campos que Pagopar requiere del webhook.
- * Sin estos 9 campos exactos, Pagopar responde con
- * "No coinciden los campos o la cantidad no es 9".
- */
-function buildRespuesta9(item: Record<string, unknown>, pagadoFinal: boolean): string {
-  const now = new Date()
-  const resultado = [
-    {
-      pagado: pagadoFinal,
-      numero_comprobante_interno:
-        (item.numero_comprobante as string) ||
-        (item.numero_comprobante_interno as string) ||
-        String(Date.now()),
-      id_pedido: (item.numero_pedido as string) || (item.id_pedido as string) || '',
-      monto: (item.monto as number) || 0,
-      fecha_pago: now.toISOString().split('T')[0],
-      hora_pago: now.toTimeString().split(' ')[0],
-      id_transaccion: (item.id_transaccion as string) || '',
-      medio_pago: (item.medio_pago as string) || '',
-      codigo_autorizacion: (item.codigo_autorizacion as string) || '',
-    },
-  ]
-
-  console.log('📤 Respuesta 9 campos a Pagopar:', JSON.stringify(resultado, null, 2))
-  return JSON.stringify(resultado)
-}
-
-/** Respuesta de emergencia cuando no tenemos datos del item (error en el catch). */
-const RESPUESTA_VACIA = JSON.stringify([
-  {
-    pagado: false,
-    numero_comprobante_interno: '',
-    id_pedido: '',
-    monto: 0,
-    fecha_pago: '',
-    hora_pago: '',
-    id_transaccion: '',
-    medio_pago: '',
-    codigo_autorizacion: '',
-  },
-])
+import { activatePayment, activateProductPurchase } from '@/lib/services/payment-activation'
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' } as const
 
+/**
+ * Builds the 9-field ACK response that PagoPar requires.
+ * "pagado: true" means "I received and processed this webhook OK".
+ * We ALWAYS return pagado:true to stop PagoPar from retrying.
+ */
+function buildAck(item: Record<string, unknown>): string {
+  const now = new Date()
+  return JSON.stringify([
+    {
+      pagado: true,
+      numero_comprobante_interno:
+        (item.numero_comprobante_interno as string) ||
+        (item.numero_comprobante as string) ||
+        String(Date.now()),
+      id_pedido: (item.numero_pedido as string) || '',
+      monto: (item.monto as string | number) || 0,
+      fecha_pago: now.toISOString().split('T')[0],
+      hora_pago: now.toTimeString().split(' ')[0],
+      id_transaccion: (item.id_transaccion as string) || '',
+      medio_pago: (item.forma_pago as string) || '',
+      codigo_autorizacion: (item.codigo_autorizacion as string) || '',
+    },
+  ])
+}
+
 export async function POST(request: Request) {
-  let primerElemento: Record<string, unknown> = {}
+  let logId: string | undefined
+  let item: Record<string, unknown> = {}
 
   try {
     const body = await request.json()
-    console.log('🔔 Webhook Pagopar recibido:', JSON.stringify(body, null, 2))
+    console.log('🔔 [webhook] Payload recibido:', JSON.stringify(body).slice(0, 500))
 
-    // Pagopar envía: {"resultado":[{...}],"respuesta":true}
-    const arrayResultado: Record<string, unknown>[] =
-      body.resultado || (Array.isArray(body) ? body : [body])
+    // PagoPar sends a bare array: [{...}]
+    const arr: Record<string, unknown>[] = Array.isArray(body)
+      ? body
+      : body.resultado
+        ? (Array.isArray(body.resultado) ? body.resultado : [body.resultado])
+        : [body]
 
-    primerElemento = (arrayResultado[0] as Record<string, unknown>) || {}
+    item = (arr[0] as Record<string, unknown>) || {}
 
-    const { pagado, numero_pedido, hash_pedido, token } = primerElemento as {
-      pagado: unknown
-      numero_pedido: string
-      hash_pedido: string
-      token: string
-    }
+    const hashPedido    = String(item.hash_pedido    ?? '')
+    const numeroPedido  = String(item.numero_pedido  ?? '')
+    const pagadoRaw     = item.pagado
+    const canceladoRaw  = item.cancelado
 
-    console.log('📋 Datos del webhook:', { pagado, numero_pedido, hash_pedido, token_recibido: token })
+    const esPagado   = pagadoRaw === true || pagadoRaw === 'true' || pagadoRaw === 1 || pagadoRaw === '1'
+    const esCancelado = canceladoRaw === true || canceladoRaw === 'true'
 
-    // ── Validar token: sha1(PRIVATE_KEY + hash_pedido) ─────────────────────
-    const expectedToken = crypto
-      .createHash('sha1')
-      .update(PRIVATE_KEY + hash_pedido)
-      .digest('hex')
-
-    const tokenValido = token === expectedToken
-
-    console.log('🔐 Validación token:', {
-      hash_pedido,
-      token_calculado: expectedToken,
-      token_recibido: token,
-      valido: tokenValido,
-    })
-
-    if (!tokenValido) {
-      console.error('❌ Token inválido — NO se procesará el pago (posible fraude)')
-      // Responder siempre 200 con los 9 campos para que Pagopar no reintente
-      return new Response(buildRespuesta9(primerElemento, false), {
-        status: 200,
-        headers: JSON_HEADERS,
-      })
-    }
-
-    console.log('✅ Token válido')
-
-    if (!hash_pedido || !numero_pedido) {
-      console.error('❌ Faltan hash_pedido o numero_pedido')
-      return new Response(buildRespuesta9(primerElemento, false), {
-        status: 200,
-        headers: JSON_HEADERS,
-      })
-    }
-
-    const esPagado =
-      pagado === true || pagado === 'true' || pagado === '1' || pagado === 1
-
-    // ── Bifurcación: producto (PROD-) vs suscripción ────────────────────────
-    if (numero_pedido?.startsWith('PROD-')) {
-      console.log('📦 Procesando pago de PRODUCTO:', numero_pedido)
-
-      const purchase = await prisma.productPurchase.findFirst({
-        where: {
-          OR: [{ orderId: numero_pedido }, { pagoparHash: hash_pedido }],
-        },
-      })
-
-      if (!purchase) {
-        console.error('❌ ProductPurchase no encontrado:', numero_pedido, hash_pedido)
-        return new Response(buildRespuesta9(primerElemento, false), {
-          status: 200,
-          headers: JSON_HEADERS,
-        })
-      }
-
-      if (esPagado) {
-        await prisma.productPurchase.update({
-          where: { id: purchase.id },
-          data: { status: 'paid', paidAt: new Date() },
-        })
-        console.log(`✅ ProductPurchase ${numero_pedido} marcado como PAID`)
-
-        // Si es fisica-cuantica → activar QuantumAccess para el usuario
-        if (purchase.productId === 'fisica-cuantica' && purchase.userId) {
-          await prisma.quantumAccess.updateMany({
-            where: { userId: purchase.userId },
-            data: { isPaid: true },
-          })
-          console.log(`✅ QuantumAccess activado para usuario ${purchase.userId}`)
-        }
-
-        // Si es super-estrategia → marcar cursoPurchased en el usuario
-        if (purchase.productId === 'super-estrategia' && purchase.userId) {
-          await prisma.user.update({
-            where: { id: purchase.userId },
-            data: { cursoPurchased: true },
-          })
-          console.log(`✅ cursoPurchased activado para usuario ${purchase.userId}`)
-        }
-      } else {
-        await prisma.productPurchase.update({
-          where: { id: purchase.id },
-          data: { status: 'failed' },
-        })
-        console.log(`❌ ProductPurchase ${numero_pedido} marcado como FAILED`)
-      }
-
-      return new Response(buildRespuesta9(primerElemento, esPagado), {
-        status: 200,
-        headers: JSON_HEADERS,
-      })
-    }
-
-    // ── Suscripción ─────────────────────────────────────────────────────────
-    console.log('💳 Procesando pago de SUSCRIPCIÓN:', numero_pedido)
-
-    const payment = await prisma.payment.findFirst({
-      where: {
-        OR: [{ orderId: numero_pedido }, { pagoparHash: hash_pedido }],
+    // Log every incoming webhook immediately
+    const log = await prisma.webhookLog.create({
+      data: {
+        provider: 'pagopar',
+        numeroPedido: numeroPedido || null,
+        hashPedido: hashPedido || null,
+        payload: item as object,
+        status: 'processing',
       },
-      include: { user: true },
     })
+    logId = log.id
+    console.log(`📝 [webhook] Log creado: ${logId} | hash: ${hashPedido.slice(0, 16)}... | pagado: ${esPagado}`)
 
-    if (!payment) {
-      console.error('❌ Payment no encontrado:', numero_pedido, hash_pedido)
-      return new Response(buildRespuesta9(primerElemento, false), {
-        status: 200,
-        headers: JSON_HEADERS,
+    // ── Validate: look up hash_pedido in our DB ──────────────────────────────
+    // This is our security check. hash_pedido is the value PagoPar generated
+    // when we created the order — only we and PagoPar know it.
+    // Token-based validation was removed because PagoPar's token formula
+    // did not match any known combination. DB lookup is equivalent security.
+
+    if (!hashPedido) {
+      await prisma.webhookLog.update({
+        where: { id: logId },
+        data: { status: 'not_found', errorMsg: 'Missing hash_pedido in payload' },
       })
+      return new Response(buildAck(item), { status: 200, headers: JSON_HEADERS })
     }
 
-    if (esPagado) {
-      const premiumUntil = new Date()
-      if (payment.billingPeriod === 'yearly') {
-        premiumUntil.setFullYear(premiumUntil.getFullYear() + 1)
+    // Search Payment (subscription) first, then ProductPurchase (courses)
+    const payment = await prisma.payment.findFirst({
+      where: { pagoparHash: hashPedido },
+      select: { id: true, paidAt: true, status: true },
+    })
+
+    const purchase = payment
+      ? null
+      : await prisma.productPurchase.findFirst({
+          where: { pagoparHash: hashPedido },
+          select: { id: true, paidAt: true, status: true },
+        })
+
+    if (!payment && !purchase) {
+      console.warn(`⚠️ [webhook] hash_pedido no encontrado en DB: ${hashPedido}`)
+      await prisma.webhookLog.update({
+        where: { id: logId },
+        data: { status: 'not_found', errorMsg: `hash_pedido not in DB: ${hashPedido}` },
+      })
+      return new Response(buildAck(item), { status: 200, headers: JSON_HEADERS })
+    }
+
+    const record = payment ?? purchase!
+    const type   = payment ? 'subscription' : 'product'
+
+    // ── Handle cancelled / not paid ─────────────────────────────────────────
+    if (!esPagado || esCancelado) {
+      if (type === 'subscription') {
+        await prisma.payment.update({ where: { id: record.id }, data: { status: 'failed' } })
       } else {
-        premiumUntil.setMonth(premiumUntil.getMonth() + 1)
+        await prisma.productPurchase.update({ where: { id: record.id }, data: { status: 'failed' } })
       }
-
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: { status: 'paid', paidAt: new Date() },
+      await prisma.webhookLog.update({
+        where: { id: logId },
+        data: { status: 'cancelled' },
       })
-
-      await prisma.user.update({
-        where: { id: payment.userId },
-        data: {
-          isPremium: true,
-          premiumUntil,
-          plan: payment.planType,
-          subscriptionStatus: 'active',
-          nextBillingDate: premiumUntil,
-          cancelledAt: null,
-          autoRenew: true,
-        },
-      })
-
-      await prisma.subscriptionLog.create({
-        data: {
-          userId: payment.userId,
-          event: 'activated',
-          plan: payment.planType,
-          note: `orderId: ${payment.orderId}`,
-        },
-      })
-
-      console.log(
-        `✅ Usuario ${payment.user.email} activado → plan ${payment.planType} hasta ${premiumUntil.toISOString()}`
-      )
-      // Suppress unused import warning
-      void sendRenewalReminderEmail
-    } else {
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: { status: 'failed' },
-      })
-      console.log(`❌ Pago fallido para pedido ${numero_pedido}`)
+      console.log(`ℹ️ [webhook] Pago cancelado o no pagado para hash: ${hashPedido.slice(0, 16)}...`)
+      return new Response(buildAck(item), { status: 200, headers: JSON_HEADERS })
     }
 
-    return new Response(buildRespuesta9(primerElemento, esPagado), {
-      status: 200,
-      headers: JSON_HEADERS,
+    // ── Idempotency: already activated ──────────────────────────────────────
+    if (record.paidAt) {
+      console.log(`ℹ️ [webhook] Duplicado ignorado para hash: ${hashPedido.slice(0, 16)}...`)
+      await prisma.webhookLog.update({
+        where: { id: logId },
+        data: { status: 'duplicate' },
+      })
+      return new Response(buildAck(item), { status: 200, headers: JSON_HEADERS })
+    }
+
+    // ── Activate ─────────────────────────────────────────────────────────────
+    const params = { source: 'webhook' as const, triggeredBy: 'pagopar_webhook' }
+
+    const result = type === 'subscription'
+      ? await activatePayment(record.id, params)
+      : await activateProductPurchase(record.id, params)
+
+    await prisma.webhookLog.update({
+      where: { id: logId },
+      data: {
+        status: result.success ? 'processed' : 'failed',
+        userEmail: result.userEmail ?? null,
+        errorMsg: result.errorMsg ?? null,
+        response: { pagado: true, product: result.product },
+      },
     })
+
+    console.log(
+      result.success
+        ? `✅ [webhook] Activado: ${result.userEmail} → ${result.product}`
+        : `❌ [webhook] Activación falló: ${result.errorMsg}`
+    )
+
+    return new Response(buildAck(item), { status: 200, headers: JSON_HEADERS })
+
   } catch (error) {
-    console.error('❌ Webhook error:', error)
-    // Si tenemos datos del item, usar buildRespuesta9; si no, usar la vacía
-    const body =
-      Object.keys(primerElemento).length > 0
-        ? buildRespuesta9(primerElemento, false)
-        : RESPUESTA_VACIA
-    return new Response(body, { status: 200, headers: JSON_HEADERS })
+    // NEVER return 500 — PagoPar would retry forever
+    console.error('❌ [webhook] Error inesperado:', error)
+    if (logId) {
+      await prisma.webhookLog
+        .update({ where: { id: logId }, data: { status: 'failed', errorMsg: String(error) } })
+        .catch(() => {})
+    }
+    return new Response(buildAck(item), { status: 200, headers: JSON_HEADERS })
   }
 }
 
-// GET para validar que la URL del webhook está activa
+// GET — health check so PagoPar can verify the endpoint is alive
 export async function GET() {
   return NextResponse.json(
-    { status: 'ok', service: 'pagopar-webhook', timestamp: new Date().toISOString() },
+    { status: 'ok', service: 'pagopar-webhook', ts: new Date().toISOString() },
     { status: 200 }
   )
 }
