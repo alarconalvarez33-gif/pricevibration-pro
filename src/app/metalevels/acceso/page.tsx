@@ -93,20 +93,12 @@ export default async function MetaLevelsAccesoPage() {
     pineScript = '// Error al cargar el script. Contactá soporte.'
   }
 
-  // Admins see the script with a placeholder code for testing
-  const displayCode = license?.code ?? 'ADMIN-PREVIEW'
+  // Admins see a real sample code so the page looks exactly like what buyers see
+  const displayCode = license?.code ?? 'SL-ML-RFNCQ7LEAUCD'
 
   return (
     <>
       <Navbar />
-      {isAdmin && (
-        <div
-          className="text-center py-2 text-xs font-semibold uppercase tracking-widest"
-          style={{ backgroundColor: '#c9a22715', color: '#c9a227', borderBottom: '1px solid #c9a22730' }}
-        >
-          Vista Admin — el código de activación real se genera al momento del pago
-        </div>
-      )}
       <AccesoClient
         pineScript={pineScript}
         licenseCode={displayCode}
