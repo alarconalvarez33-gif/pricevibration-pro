@@ -1,16 +1,16 @@
 //@version=6
 indicator("Sacred Levels — Quantum Levels", overlay=true, max_lines_count=50, max_labels_count=50)
 
-// ─── Constants ────────────────────────────────────────
-float FACTOR   = 1.0 / 180.0
-int   LOOKBACK = 20
+// ─── Constantes ───────────────────────────────────────
+float FACTOR = 1.0 / 180.0
+int LOOKBACK = 20
 
-// ─── Swing Detection ──────────────────────────────────
+// ─── Detección de Swings ──────────────────────────────
 float ph = ta.pivothigh(high, LOOKBACK, LOOKBACK)
-float pl = ta.pivotlow(low,   LOOKBACK, LOOKBACK)
+float pl = ta.pivotlow(low, LOOKBACK, LOOKBACK)
 
 var float last_swing_high = na
-var float last_swing_low  = na
+var float last_swing_low = na
 
 if barstate.isconfirmed
     if not na(ph)
@@ -18,22 +18,22 @@ if barstate.isconfirmed
     if not na(pl)
         last_swing_low := pl
 
-// ─── Angle List ───────────────────────────────────────
+// ─── Lista de Ángulos ─────────────────────────────────
 array<int> angles = array.from(90, 180, 270, 360, 450, 540, 720)
-int        n_ang  = array.size(angles)
+int n_ang = array.size(angles)
 
-// ─── Colors ───────────────────────────────────────────
+// ─── Colores ──────────────────────────────────────────
 color COLOR_BULL = #00e5ff
 color COLOR_BEAR = #ff1744
-color COLOR_360  = #c9a227
+color COLOR_360 = #c9a227
 
-// ─── Drawing Storage ──────────────────────────────────
-var array<line>  bull_lines  = array.new<line>()
+// ─── Almacenamiento de Dibujos ────────────────────────
+var array<line> bull_lines = array.new<line>()
 var array<label> bull_labels = array.new<label>()
-var array<line>  bear_lines  = array.new<line>()
+var array<line> bear_lines = array.new<line>()
 var array<label> bear_labels = array.new<label>()
 
-// ─── Redraw on Confirmed Bars ─────────────────────────
+// ─── Redibujado en Velas Confirmadas ──────────────────
 if barstate.isconfirmed
     int bl_sz = array.size(bull_lines)
     if bl_sz > 0
@@ -51,34 +51,28 @@ if barstate.isconfirmed
     array.clear(bear_lines)
     array.clear(bear_labels)
 
+    // Dibujar niveles desde swing low (soportes)
     if not na(last_swing_low)
         for i = 0 to n_ang - 1
-            int   ang    = array.get(angles, i)
-            float target = math.pow(math.sqrt(last_swing_low) + float(ang) * FACTOR, 2)
-            color lc     = ang == 360 ? COLOR_360 : COLOR_BULL
-            line  ln     = line.new(bar_index, target, bar_index + 1, target,
-                                    color=lc, width=1, extend=extend.both)
-            label lb     = label.new(bar_index, target,
-                                     str.tostring(ang) + "deg | " + str.tostring(target, "#.##"),
-                                     color=color.new(color.black, 85),
-                                     textcolor=lc,
-                                     style=label.style_label_left,
-                                     size=size.small)
+            int ang = array.get(angles, i)
+            float sq = math.sqrt(last_swing_low)
+            float target = math.pow(sq + float(ang) * FACTOR, 2)
+            color lc = ang == 360 ? COLOR_360 : COLOR_BULL
+            line ln = line.new(bar_index, target, bar_index + 1, target, color=lc, width=1, extend=extend.both)
+            string lbl_text = str.tostring(ang) + "deg | " + str.tostring(target, "#.##")
+            label lb = label.new(bar_index, target, lbl_text, color=color.new(color.black, 85), textcolor=lc, style=label.style_label_left, size=size.small)
             array.push(bull_lines, ln)
             array.push(bull_labels, lb)
 
+    // Dibujar niveles desde swing high (resistencias)
     if not na(last_swing_high)
         for i = 0 to n_ang - 1
-            int   ang    = array.get(angles, i)
-            float target = math.pow(math.sqrt(last_swing_high) - float(ang) * FACTOR, 2)
-            color lc     = ang == 360 ? COLOR_360 : COLOR_BEAR
-            line  ln     = line.new(bar_index, target, bar_index + 1, target,
-                                    color=lc, width=1, extend=extend.both)
-            label lb     = label.new(bar_index, target,
-                                     str.tostring(ang) + "deg | " + str.tostring(target, "#.##"),
-                                     color=color.new(color.black, 85),
-                                     textcolor=lc,
-                                     style=label.style_label_left,
-                                     size=size.small)
+            int ang = array.get(angles, i)
+            float sq = math.sqrt(last_swing_high)
+            float target = math.pow(sq - float(ang) * FACTOR, 2)
+            color lc = ang == 360 ? COLOR_360 : COLOR_BEAR
+            line ln = line.new(bar_index, target, bar_index + 1, target, color=lc, width=1, extend=extend.both)
+            string lbl_text = str.tostring(ang) + "deg | " + str.tostring(target, "#.##")
+            label lb = label.new(bar_index, target, lbl_text, color=color.new(color.black, 85), textcolor=lc, style=label.style_label_left, size=size.small)
             array.push(bear_lines, ln)
             array.push(bear_labels, lb)
