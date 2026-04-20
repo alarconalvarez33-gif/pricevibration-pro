@@ -1,152 +1,84 @@
 //@version=6
-indicator("Gann Square 90", overlay=true)
+indicator("Sacred Levels — Quantum Levels", overlay=true, max_lines_count=50, max_labels_count=50)
 
-// Sistema de licencia con clave única
-licenseKey = input.string("", "Clave de Activación (uso único)", group="Licencia")
+// ─── Constants ────────────────────────────────────────
+float FACTOR   = 1.0 / 180.0
+int   LOOKBACK = 20
 
-// Verificar licencia — claves válidas
-isLicenseValid =
-  licenseKey == "SL-ML-RFNCQ7LEAUCD" or
-  licenseKey == "SL-ML-8C4QMUDXKBUP" or
-  licenseKey == "SL-ML-YN8DRU72M6F8" or
-  licenseKey == "SL-ML-ZAYDHWSQNQNW" or
-  licenseKey == "SL-ML-ERJFEZRED4G4" or
-  licenseKey == "SL-ML-5CDML6DZ6WXQ" or
-  licenseKey == "SL-ML-ZEA6FSXR7PUG" or
-  licenseKey == "SL-ML-FVYTX6ZXWVED" or
-  licenseKey == "SL-ML-VYTBBZBX9MB4" or
-  licenseKey == "SL-ML-PU9S2HBAEEJ4" or
-  licenseKey == "SL-ML-5WM3MV85M732" or
-  licenseKey == "SL-ML-E73WABLBYW8S" or
-  licenseKey == "SL-ML-28GSAETP83CM" or
-  licenseKey == "SL-ML-8NTXR2KC6A74" or
-  licenseKey == "SL-ML-RPE53CW9P7CC" or
-  licenseKey == "SL-ML-6RT825CZ6GR4" or
-  licenseKey == "SL-ML-XSL8NAGY5LM6" or
-  licenseKey == "SL-ML-2F7U2A7MYTHE" or
-  licenseKey == "SL-ML-293VBTHGWLST" or
-  licenseKey == "SL-ML-VGH6E75KZAR4" or
-  licenseKey == "SL-ML-38ZGXLYPQNM4" or
-  licenseKey == "SL-ML-7AT7NZQ93QWT" or
-  licenseKey == "SL-ML-ZZ4HMF4CHZ7T" or
-  licenseKey == "SL-ML-WYWLMTJVYTUV" or
-  licenseKey == "SL-ML-L57CQPCKHRH8" or
-  licenseKey == "SL-ML-WDBRLMALZKRD" or
-  licenseKey == "SL-ML-VAZAULS54T3L" or
-  licenseKey == "SL-ML-N24S6Z6L2QWG" or
-  licenseKey == "SL-ML-CQYRGWTZEJTM" or
-  licenseKey == "SL-ML-XCURBG55EPFJ" or
-  licenseKey == "SL-ML-8USY8KU383TB" or
-  licenseKey == "SL-ML-2KPUAZTNZBQV" or
-  licenseKey == "SL-ML-HKCZNTKPXMQS" or
-  licenseKey == "SL-ML-E2WNHH2HBFMV" or
-  licenseKey == "SL-ML-KMVQX5NLT96L" or
-  licenseKey == "SL-ML-U283TDHAAQF8" or
-  licenseKey == "SL-ML-ARWX6GGJ4HW3" or
-  licenseKey == "SL-ML-N6T2MV5XFLZA" or
-  licenseKey == "SL-ML-GFXN9ZUQF9XL" or
-  licenseKey == "SL-ML-4TK44QZG552Y" or
-  licenseKey == "SL-ML-4LSSTMBFXN29" or
-  licenseKey == "SL-ML-X7HQ67KJE4R9" or
-  licenseKey == "SL-ML-DL5VGD4T52LT" or
-  licenseKey == "SL-ML-Z97SA5XUWFGP" or
-  licenseKey == "SL-ML-UFBJLLSZUGXC" or
-  licenseKey == "SL-ML-ABDCZ87ZHJVN" or
-  licenseKey == "SL-ML-NVDBHZ4J8DDC" or
-  licenseKey == "SL-ML-86MKNP7MHRW7" or
-  licenseKey == "SL-ML-KM9MZCQM6QQW" or
-  licenseKey == "SL-ML-78V3LJ3J7DKV" or
-  licenseKey == "SL-ML-J4VYLAV9LWCL" or
-  licenseKey == "SL-ML-WNZ6THBZHN33" or
-  licenseKey == "SL-ML-7KX2BQ2NDNR4" or
-  licenseKey == "SL-ML-GK7E5CEXFDHT" or
-  licenseKey == "SL-ML-CAA3DQPWN8JE" or
-  licenseKey == "SL-ML-Y3MRHS89G5W6" or
-  licenseKey == "SL-ML-DJK9SVCCNVU2" or
-  licenseKey == "SL-ML-UZ2GQLMQY5V7" or
-  licenseKey == "SL-ML-E5BWCQAA2UCA" or
-  licenseKey == "SL-ML-BWNC6C4JBM9V" or
-  licenseKey == "SL-ML-ZMZPMCAA6UFL" or
-  licenseKey == "SL-ML-NAHMLM4PNM6S" or
-  licenseKey == "SL-ML-EX7N49GT3WS8" or
-  licenseKey == "SL-ML-KUPEGW88X4RQ" or
-  licenseKey == "SL-ML-G5WHFNWGH87C" or
-  licenseKey == "SL-ML-2T3YC4Z2MKPS" or
-  licenseKey == "SL-ML-K8DUV2K5F852" or
-  licenseKey == "SL-ML-F4BMTDAJMCFV" or
-  licenseKey == "SL-ML-35X2KX9FJLJY" or
-  licenseKey == "SL-ML-NLF5HJSABLHP" or
-  licenseKey == "SL-ML-E26TZKGT2RBT" or
-  licenseKey == "SL-ML-KC2VS4TQYPGS" or
-  licenseKey == "SL-ML-KG4XMCDGHUY9" or
-  licenseKey == "SL-ML-8XJYRHXXV2EG" or
-  licenseKey == "SL-ML-EF2L7YSHT3TV" or
-  licenseKey == "SL-ML-7ZCCB7SWPNMX" or
-  licenseKey == "SL-ML-EDSB9TZX2VYM" or
-  licenseKey == "SL-ML-Y8AZFTQL2WGD" or
-  licenseKey == "SL-ML-9CYYCAFT75UU" or
-  licenseKey == "SL-ML-JGGM56WXE5WQ" or
-  licenseKey == "SL-ML-9FVNTAP6GATB" or
-  licenseKey == "SL-ML-UW6TFV36GFP4" or
-  licenseKey == "SL-ML-444R4DCMFPP9" or
-  licenseKey == "SL-ML-8QDND3LDVXJH" or
-  licenseKey == "SL-ML-3VQK9E5LBA4Q" or
-  licenseKey == "SL-ML-R55U7AP3K9DE" or
-  licenseKey == "SL-ML-K7JT2FHSDVVU" or
-  licenseKey == "SL-ML-Y9CYEWWJCYT9" or
-  licenseKey == "SL-ML-SKCUJD4HUPAH" or
-  licenseKey == "SL-ML-HSYNWBQDFKJ2" or
-  licenseKey == "SL-ML-RB33JLHRE6B4" or
-  licenseKey == "SL-ML-FU86V465W3RX" or
-  licenseKey == "SL-ML-BDAP8JA9EVQS" or
-  licenseKey == "SL-ML-C9BH5UVV5JBJ" or
-  licenseKey == "SL-ML-QQAJ3Q62TYYR" or
-  licenseKey == "SL-ML-Z7BAMJ3SRA74" or
-  licenseKey == "SL-ML-QPN6VFQQSCB6" or
-  licenseKey == "SL-ML-CCS43RFMKN3E" or
-  licenseKey == "SL-ML-4BMANVK684AH" or
-  licenseKey == "SL-ML-5K6DV5RNVEAU"
+// ─── Swing Detection ──────────────────────────────────
+float ph = ta.pivothigh(high, LOOKBACK, LOOKBACK)
+float pl = ta.pivotlow(low,   LOOKBACK, LOOKBACK)
 
-// Variables del indicador
-baseTime = input.int(18, "Minutos por ciclo", minval=1, group="Configuración")
-var int startBar = bar_index
-barCount = bar_index - startBar
+var float last_swing_high = na
+var float last_swing_low  = na
 
-// Verificar puntos Gann
-isGann1 = barCount % (baseTime * 1) == 0
-isGann2 = barCount % (baseTime * 2) == 0
-isGann3 = barCount % (baseTime * 3) == 0
-isGann4 = barCount % (baseTime * 4) == 0
-isGann5 = barCount % (baseTime * 5) == 0
+if barstate.isconfirmed
+    if not na(ph)
+        last_swing_high := ph
+    if not na(pl)
+        last_swing_low := pl
 
-// Mostrar señales solo si está autorizado
-showSignal = isLicenseValid and (isGann1 or isGann2 or isGann3 or isGann4 or isGann5)
-plotshape(showSignal, "Gann Point", shape.triangleup, location.belowbar, color.yellow, size=size.tiny)
+// ─── Angle List ───────────────────────────────────────
+array<int> angles = array.from(90, 180, 270, 360, 450, 540, 720)
+int        n_ang  = array.size(angles)
 
-// Mensaje sobre la licencia
-if barCount <= 5
-    if isLicenseValid
-        label.new(bar_index, low, "✓ Licencia activada correctamente", color=color.green, textcolor=color.white, style=label.style_label_up, size=size.small)
-        label.new(bar_index[3], low, "⚠️ Licencia de uso único personal - No compartir", color=color.orange, textcolor=color.white, style=label.style_label_up, size=size.small)
-    else
-        label.new(bar_index, high, "Ingrese su clave de licencia para activar", color=color.red, textcolor=color.white, style=label.style_label_down, size=size.small)
+// ─── Colors ───────────────────────────────────────────
+color COLOR_BULL = #00e5ff
+color COLOR_BEAR = #ff1744
+color COLOR_360  = #c9a227
 
-// Lógica para elementos visuales
-if isLicenseValid
-    // Dibujar líneas en puntos Gann
-    if isGann1
-        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.yellow, width=1)
-    if isGann2
-        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.orange, width=1)
-    if isGann3
-        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.red, width=1)
-    if isGann4
-        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.blue, width=1)
-    if isGann5
-        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.green, width=1)
-else
-    // Demo limitado
-    if isGann1 and barCount % 15 == 0
-        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.gray, width=1)
-        if barCount % 100 == 0
-            label.new(bar_index, high, "VERSIÓN DEMO - Para la versión completa contacte al vendedor", color=color.blue, textcolor=color.white, style=label.style_label_down, size=size.small)
+// ─── Drawing Storage ──────────────────────────────────
+var array<line>  bull_lines  = array.new<line>()
+var array<label> bull_labels = array.new<label>()
+var array<line>  bear_lines  = array.new<line>()
+var array<label> bear_labels = array.new<label>()
+
+// ─── Redraw on Confirmed Bars ─────────────────────────
+if barstate.isconfirmed
+    int bl_sz = array.size(bull_lines)
+    if bl_sz > 0
+        for i = 0 to bl_sz - 1
+            line.delete(array.get(bull_lines, i))
+            label.delete(array.get(bull_labels, i))
+    array.clear(bull_lines)
+    array.clear(bull_labels)
+
+    int br_sz = array.size(bear_lines)
+    if br_sz > 0
+        for i = 0 to br_sz - 1
+            line.delete(array.get(bear_lines, i))
+            label.delete(array.get(bear_labels, i))
+    array.clear(bear_lines)
+    array.clear(bear_labels)
+
+    if not na(last_swing_low)
+        for i = 0 to n_ang - 1
+            int   ang    = array.get(angles, i)
+            float target = math.pow(math.sqrt(last_swing_low) + float(ang) * FACTOR, 2)
+            color lc     = ang == 360 ? COLOR_360 : COLOR_BULL
+            line  ln     = line.new(bar_index, target, bar_index + 1, target,
+                                    color=lc, width=1, extend=extend.both)
+            label lb     = label.new(bar_index, target,
+                                     str.tostring(ang) + "deg | " + str.tostring(target, "#.##"),
+                                     color=color.new(color.black, 85),
+                                     textcolor=lc,
+                                     style=label.style_label_left,
+                                     size=size.small)
+            array.push(bull_lines, ln)
+            array.push(bull_labels, lb)
+
+    if not na(last_swing_high)
+        for i = 0 to n_ang - 1
+            int   ang    = array.get(angles, i)
+            float target = math.pow(math.sqrt(last_swing_high) - float(ang) * FACTOR, 2)
+            color lc     = ang == 360 ? COLOR_360 : COLOR_BEAR
+            line  ln     = line.new(bar_index, target, bar_index + 1, target,
+                                    color=lc, width=1, extend=extend.both)
+            label lb     = label.new(bar_index, target,
+                                     str.tostring(ang) + "deg | " + str.tostring(target, "#.##"),
+                                     color=color.new(color.black, 85),
+                                     textcolor=lc,
+                                     style=label.style_label_left,
+                                     size=size.small)
+            array.push(bear_lines, ln)
+            array.push(bear_labels, lb)
