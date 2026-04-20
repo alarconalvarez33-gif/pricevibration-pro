@@ -16,6 +16,39 @@ import PersonalizedGreeting from '@/components/PersonalizedGreeting'
 
 type ModuleType = 'quantica' | 'clasica' | 'aurea'
 
+interface PendingItem {
+  id: string
+  type: 'subscription' | 'product'
+  email: string
+  name: string | null
+  product: string
+  amount: number
+  currency: string
+  orderId: string
+  createdAt: string
+  isOld: boolean
+}
+
+interface Activation {
+  id: string
+  date: string
+  email: string
+  product: string
+  type: string
+  source: 'manual' | 'pagopar'
+}
+
+const PRODUCT_LABEL: Record<string, string> = {
+  'expansion-matematica': 'Genesis',
+  'canal-paralelo':       'Canal Paralelo',
+  'fibonacci':            'Fibonacci',
+  'super-estrategia':     'Super Estrategia',
+  'quantum-access':       'Quantum Access',
+  'quantum':              'Quantum Access',
+  'adx':                  'ADX',
+  'metalevels':           'MetaLevels',
+}
+
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -25,6 +58,14 @@ export default function DashboardPage() {
   const [ownedCourses,     setOwnedCourses]     = useState<CourseItem[]>([])
   const [availableCourses, setAvailableCourses] = useState<CourseItem[]>([])
   const [clasicaGuideOpen, setClasicaGuideOpen] = useState(false)
+
+  // Admin state
+  const [pending,          setPending]          = useState<PendingItem[]>([])
+  const [activations,      setActivations]      = useState<Activation[]>([])
+  const [failedWebhooks,   setFailedWebhooks]   = useState(0)
+  const [adminLoading,     setAdminLoading]     = useState(false)
+  const [activatingId,     setActivatingId]     = useState<string | null>(null)
+  const [activateMsg,      setActivateMsg]      = useState<{ id: string; ok: boolean; msg: string } | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -43,6 +84,46 @@ export default function DashboardPage() {
         .catch(() => {})
     }
   }, [status])
+
+  // Load admin data if admin
+  useEffect(() => {
+    const role = (session?.user as any)?.role
+    if (status === 'authenticated' && role === 'admin') {
+      setAdminLoading(true)
+      Promise.all([
+        fetch('/api/admin/pending-payments').then(r => r.json()),
+        fetch('/api/admin/activate').then(r => r.json()),
+      ]).then(([p, a]) => {
+        setPending(p.pending ?? [])
+        setFailedWebhooks(p.failedWebhooks24h ?? 0)
+        setActivations((a.activations ?? []).slice(0, 5))
+      }).catch(() => {}).finally(() => setAdminLoading(false))
+    }
+  }, [status, session])
+
+  const handleAdminActivate = async (item: PendingItem) => {
+    setActivatingId(item.id)
+    setActivateMsg(null)
+    try {
+      const res = await fetch('/api/admin/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pendingId: item.id, pendingType: item.type }),
+      })
+      const data = await res.json()
+      setActivateMsg({ id: item.id, ok: res.ok, msg: data.message || data.error || '' })
+      if (res.ok) {
+        setPending(prev => prev.filter(p => p.id !== item.id))
+        // refresh activations
+        fetch('/api/admin/activate').then(r => r.json()).then(a => {
+          setActivations((a.activations ?? []).slice(0, 5))
+        }).catch(() => {})
+      }
+    } catch {
+      setActivateMsg({ id: item.id, ok: false, msg: 'Error de red' })
+    }
+    setActivatingId(null)
+  }
 
   if (status === 'loading') {
     return (
@@ -246,6 +327,178 @@ export default function DashboardPage() {
                 Not financial advice. Trading involves risk.
               </p>
             </div>
+
+            {/* ══ ADMIN PANEL (solo visible para admins) ══ */}
+            {isAdmin && (
+              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #c9a22730' }}>
+
+                {/* Header */}
+                <div
+                  className="flex items-center justify-between px-5 py-3"
+                  style={{ backgroundColor: '#0f0d08', borderBottom: '1px solid #c9a22720' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-base">📊</span>
+                    <span className="text-sm font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Panel Admin
+                    </span>
+                    {pending.length > 0 && (
+                      <span
+                        className="text-xs font-bold px-2 py-0.5 rounded-full animate-pulse"
+                        style={{ backgroundColor: '#FF475720', color: '#FF4757', border: '1px solid #FF475740' }}
+                      >
+                        {pending.length} pendiente{pending.length !== 1 ? 's' : ''}
+                      </span>
+                    )}
+                    {failedWebhooks > 0 && (
+                      <span
+                        className="text-xs font-bold px-2 py-0.5 rounded-full"
+                        style={{ backgroundColor: '#fbbf2420', color: '#fbbf24', border: '1px solid #fbbf2440' }}
+                      >
+                        {failedWebhooks} webhook fallido{failedWebhooks !== 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href="/admin/activate"
+                      className="text-[10px] uppercase tracking-[0.15em] px-3 py-1.5 border transition-colors hover:text-white"
+                      style={{ borderColor: '#c9a22740', color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Panel completo
+                    </Link>
+                    <Link
+                      href="/admin/licenses"
+                      className="text-[10px] uppercase tracking-[0.15em] px-3 py-1.5 border transition-colors hover:text-white"
+                      style={{ borderColor: '#333', color: '#555', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Licencias
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2" style={{ backgroundColor: '#0A0A0B' }}>
+
+                  {/* ── Pagos pendientes ── */}
+                  <div style={{ borderRight: '1px solid #1a1a1a' }}>
+                    <div className="px-5 py-3" style={{ borderBottom: '1px solid #1a1a1a' }}>
+                      <p className="text-[10px] uppercase tracking-[0.2em] font-semibold" style={{ color: '#555', fontFamily: "'Space Grotesk', sans-serif" }}>
+                        Pagos sin activar
+                      </p>
+                    </div>
+
+                    {adminLoading ? (
+                      <div className="px-5 py-6 text-xs" style={{ color: '#444' }}>Cargando...</div>
+                    ) : pending.length === 0 ? (
+                      <div className="px-5 py-6 text-xs flex items-center gap-2" style={{ color: '#444' }}>
+                        <svg className="w-4 h-4 shrink-0" fill="none" stroke="#00D26A" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Todo al día — sin pendientes
+                      </div>
+                    ) : (
+                      <div className="divide-y divide-[#1a1a1a]">
+                        {pending.map((item) => (
+                          <div key={item.id} className="px-5 py-3 flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                {item.isOld && (
+                                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase" style={{ backgroundColor: '#FF475715', color: '#FF4757' }}>
+                                    +48hs
+                                  </span>
+                                )}
+                                <span className="text-xs font-bold text-white truncate" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                                  {PRODUCT_LABEL[item.product] || item.product}
+                                </span>
+                              </div>
+                              <p className="text-xs truncate" style={{ color: '#555' }}>{item.email}</p>
+                              <p className="text-[10px]" style={{ color: '#c9a227', fontFamily: "'JetBrains Mono', monospace" }}>
+                                Gs. {item.amount.toLocaleString('es-PY')}
+                              </p>
+                            </div>
+                            <div className="shrink-0 flex flex-col items-end gap-1">
+                              <button
+                                onClick={() => handleAdminActivate(item)}
+                                disabled={activatingId === item.id}
+                                className="text-[10px] font-bold px-3 py-1.5 uppercase tracking-[0.1em] transition-all disabled:opacity-50"
+                                style={{
+                                  backgroundColor: activatingId === item.id ? '#141415' : '#00D26A20',
+                                  border: '1px solid #00D26A40',
+                                  color: '#00D26A',
+                                  fontFamily: "'Space Grotesk', sans-serif",
+                                }}
+                              >
+                                {activatingId === item.id ? '...' : 'Activar'}
+                              </button>
+                              {activateMsg?.id === item.id && (
+                                <p className="text-[9px]" style={{ color: activateMsg.ok ? '#00D26A' : '#FF4757' }}>
+                                  {activateMsg.msg}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Activaciones recientes ── */}
+                  <div>
+                    <div className="px-5 py-3" style={{ borderBottom: '1px solid #1a1a1a' }}>
+                      <p className="text-[10px] uppercase tracking-[0.2em] font-semibold" style={{ color: '#555', fontFamily: "'Space Grotesk', sans-serif" }}>
+                        Últimas activaciones
+                      </p>
+                    </div>
+
+                    {adminLoading ? (
+                      <div className="px-5 py-6 text-xs" style={{ color: '#444' }}>Cargando...</div>
+                    ) : activations.length === 0 ? (
+                      <div className="px-5 py-6 text-xs" style={{ color: '#444' }}>Sin activaciones registradas</div>
+                    ) : (
+                      <div className="divide-y divide-[#1a1a1a]">
+                        {activations.map((act) => (
+                          <div key={act.id} className="px-5 py-3 flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <span
+                                  className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase"
+                                  style={{
+                                    backgroundColor: act.source === 'pagopar' ? '#00D26A15' : '#00E5FF15',
+                                    color: act.source === 'pagopar' ? '#00D26A' : '#00E5FF',
+                                  }}
+                                >
+                                  {act.source === 'pagopar' ? 'auto' : 'manual'}
+                                </span>
+                                <span className="text-xs font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                                  {PRODUCT_LABEL[act.product] || act.product}
+                                </span>
+                              </div>
+                              <p className="text-xs truncate" style={{ color: '#555' }}>{act.email}</p>
+                            </div>
+                            <p
+                              className="text-[10px] shrink-0"
+                              style={{ color: '#444', fontFamily: "'JetBrains Mono', monospace" }}
+                            >
+                              {new Date(act.date).toLocaleDateString('es-PY', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+
+                {/* Footer hint */}
+                <div
+                  className="px-5 py-2 text-[10px]"
+                  style={{ backgroundColor: '#0f0d08', borderTop: '1px solid #c9a22715', color: '#444' }}
+                >
+                  Los pagos confirmados por PagoPar se activan automáticamente. Los pendientes acá requieren activación manual.
+                </div>
+
+              </div>
+            )}
 
             {/* ── Cursos ── solo visible si el usuario tiene al menos un curso */}
             {ownedCourses.length > 0 && (
