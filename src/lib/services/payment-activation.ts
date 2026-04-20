@@ -6,6 +6,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { sendWelcomeEmail } from '@/lib/email'
+import { generateMetaLevelsCode } from '@/lib/services/license-generator'
 
 export interface ActivationParams {
   source: 'webhook' | 'admin_manual'
@@ -160,6 +161,19 @@ export async function activateProductPurchase(
       where: { id: purchase.userId },
       data: { cursoPurchased: true },
     })
+  }
+
+  if (purchase.productId === 'metalevels') {
+    // Check if user already has an active license (idempotency)
+    const existingLicense = await prisma.license.findFirst({
+      where: { userId: purchase.userId, productType: 'metalevels', status: 'active' },
+    })
+    if (!existingLicense) {
+      await generateMetaLevelsCode({
+        userId: purchase.userId,
+        paymentId: purchase.id,
+      })
+    }
   }
 
   await prisma.activationLog.create({

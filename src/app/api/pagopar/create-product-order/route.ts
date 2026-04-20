@@ -11,6 +11,7 @@ const products: Record<string, { name: string; price: number; pricePYG: number; 
   'fibonacci': { name: 'Curso de Fibonacci - Potencial Oculto', price: 75, pricePYG: 499000, courseUrl: '/courses/fibonacci' },
   'super-estrategia': { name: 'Super Estrategia - Curso Exclusivo', price: 10, pricePYG: 65000, courseUrl: '/curso' },
   'adx': { name: 'Estrategia ADX - Manual Completo', price: 30, pricePYG: 220000, courseUrl: '/courses/adx' },
+  'metalevels': { name: 'MetaLevels - Indicador Pine Script', price: 20, pricePYG: 150000, courseUrl: '/metalevels/acceso' },
 }
 
 export async function POST(request: Request) {

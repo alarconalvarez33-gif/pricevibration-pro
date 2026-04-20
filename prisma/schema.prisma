@@ -31,6 +31,32 @@ model User {
   payments           Payment[]
   purchases          ProductPurchase[]
   subscriptionLogs   SubscriptionLog[]
+  licenses           License[]
+}
+
+model License {
+  id                String    @id @default(cuid())
+  code              String    @unique
+  productType       String    // "metalevels" | "quantum" | etc
+
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  paymentId         String?
+
+  status            String    @default("active") // active | revoked | expired
+
+  issuedAt          DateTime  @default(now())
+  expiresAt         DateTime?
+  revokedAt         DateTime?
+  revokedReason     String?
+
+  pineScriptVersion String    @default("v1.0")
+
+  @@index([code])
+  @@index([userId])
+  @@index([status])
+  @@index([productType])
 }
 
 model SubscriptionLog {

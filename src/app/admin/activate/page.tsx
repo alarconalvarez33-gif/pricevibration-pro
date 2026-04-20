@@ -22,6 +22,7 @@ const PRODUCTS = [
   { key: 'fibonacci',         label: 'Fibonacci Avanzado — Gs. 320.000', badge: '📊' },
   { key: 'super-estrategia',  label: 'Super Estrategia — Gs. 65.000',    badge: '🏆' },
   { key: 'quantum-access',    label: 'Quantum Access — Gs. 180.000',     badge: '⚡' },
+  { key: 'metalevels',        label: 'MetaLevels — Gs. 150.000',         badge: '📈' },
 ]
 
 const PRODUCT_LABEL: Record<string, string> = {
@@ -32,6 +33,7 @@ const PRODUCT_LABEL: Record<string, string> = {
   'quantum-access':       'Quantum Access',
   'quantum':              'Quantum Access',
   'adx':                  'Estrategia ADX',
+  'metalevels':           'MetaLevels',
 }
 
 interface Activation {
@@ -243,6 +245,13 @@ export default function AdminActivatePage() {
               style={{ borderColor: '#333', color: MUTED }}
             >
               Logs Webhook
+            </Link>
+            <Link
+              href="/admin/licenses"
+              className="text-xs uppercase tracking-widest px-4 py-2 border rounded transition-colors"
+              style={{ borderColor: '#c9a22740', color: '#c9a227' }}
+            >
+              Licencias
             </Link>
             <Link
               href="/admin/results"

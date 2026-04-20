@@ -1,0 +1,52 @@
+//@version=6
+indicator("Gann Square 90", overlay=true)
+
+// Sistema de licencia con clave única
+licenseKey = input.string("", "Clave de Activación (uso único)", group="Licencia")
+
+// Verificar licencia con clave única
+isLicenseValid = licenseKey == "GS90-7H3K9-2025Z"  // Esta es la clave que entregaría a su cliente
+
+// Variables del indicador
+baseTime = input.int(18, "Minutos por ciclo", minval=1, group="Configuración")
+var int startBar = bar_index
+barCount = bar_index - startBar
+
+// Verificar puntos Gann
+isGann1 = barCount % (baseTime * 1) == 0
+isGann2 = barCount % (baseTime * 2) == 0
+isGann3 = barCount % (baseTime * 3) == 0
+isGann4 = barCount % (baseTime * 4) == 0
+isGann5 = barCount % (baseTime * 5) == 0
+
+// Mostrar señales solo si está autorizado
+showSignal = isLicenseValid and (isGann1 or isGann2 or isGann3 or isGann4 or isGann5)
+plotshape(showSignal, "Gann Point", shape.triangleup, location.belowbar, color.yellow, size=size.tiny)
+
+// Mensaje sobre la licencia
+if barCount <= 5
+    if isLicenseValid
+        label.new(bar_index, low, "✓ Licencia activada correctamente", color=color.green, textcolor=color.white, style=label.style_label_up, size=size.small)
+        label.new(bar_index[3], low, "⚠️ Licencia de uso único personal - No compartir", color=color.orange, textcolor=color.white, style=label.style_label_up, size=size.small)
+    else
+        label.new(bar_index, high, "Ingrese su clave de licencia para activar", color=color.red, textcolor=color.white, style=label.style_label_down, size=size.small)
+
+// Lógica para elementos visuales
+if isLicenseValid
+    // Dibujar líneas en puntos Gann
+    if isGann1
+        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.yellow, width=1)
+    if isGann2
+        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.orange, width=1)
+    if isGann3
+        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.red, width=1)
+    if isGann4
+        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.blue, width=1)
+    if isGann5
+        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.green, width=1)
+else
+    // Demo limitado
+    if isGann1 and barCount % 15 == 0
+        line.new(bar_index, low - (low * 0.0001), bar_index, high + (high * 0.0001), color=color.gray, width=1)
+        if barCount % 100 == 0
+            label.new(bar_index, high, "VERSIÓN DEMO - Para la versión completa contacte al vendedor", color=color.blue, textcolor=color.white, style=label.style_label_down, size=size.small)

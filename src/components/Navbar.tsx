@@ -42,12 +42,16 @@ export default function Navbar() {
     { href: '/', label: 'Inicio' },
     { href: '/hub', label: 'Signal Hub' },
     { href: '/curso', label: 'Curso' },
+    { href: '/metalevels', label: 'MetaLevels', isNew: true },
     ...(isQuantum
       ? [{ href: '/dashboard', label: 'Dashboard' }]
       : [{ href: '/billing', label: 'Precios' }]),
   ];
 
-  const isActive = (href: string) => pathname === href;
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
+
+  // Override: '/' should only be active on exact match
+  const isNavActive = (href: string) => href === '/' ? pathname === '/' : isActive(href);
 
   return (
     <>
@@ -82,14 +86,22 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors duration-200 ${
-                    isActive(link.href) ? 'text-[#00E5FF]' : 'text-[#666] hover:text-white'
+                  className={`relative flex items-center gap-1.5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors duration-200 ${
+                    isNavActive(link.href) ? 'text-[#00E5FF]' : 'text-[#666] hover:text-white'
                   }`}
                 >
-                  {isActive(link.href) && (
+                  {isNavActive(link.href) && (
                     <span className="absolute bottom-0 left-4 right-4 h-px bg-[#00E5FF]" />
                   )}
                   {link.label}
+                  {(link as any).isNew && (
+                    <span
+                      className="text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest"
+                      style={{ backgroundColor: '#c9a22720', color: '#c9a227', border: '1px solid #c9a22740' }}
+                    >
+                      NUEVO
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -171,13 +183,21 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`px-4 py-4 text-sm font-semibold uppercase tracking-[0.12em] transition-colors border-l-2 min-h-[52px] flex items-center ${
-                      isActive(link.href)
+                    className={`px-4 py-4 text-sm font-semibold uppercase tracking-[0.12em] transition-colors border-l-2 min-h-[52px] flex items-center gap-2 ${
+                      isNavActive(link.href)
                         ? 'border-[#00E5FF] text-[#00E5FF] bg-[#00E5FF]/4'
                         : 'border-transparent text-[#666] hover:text-white'
                     }`}
                   >
                     {link.label}
+                    {(link as any).isNew && (
+                      <span
+                        className="text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest"
+                        style={{ backgroundColor: '#c9a22720', color: '#c9a227', border: '1px solid #c9a22740' }}
+                      >
+                        NUEVO
+                      </span>
+                    )}
                   </Link>
                 ))}
 

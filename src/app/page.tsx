@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import PromoPopup from '@/components/PromoPopup';
 import MentorProfile from '@/components/MentorProfile';
 import FormasDePago from '@/components/FormasDePago';
+import MetaLevelsPromoCard from '@/components/MetaLevelsPromoCard';
 
 /* ── Design tokens ── */
 const C = {
@@ -523,6 +524,9 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        {/* ── METALEVELS PROMO ─────────────────────────────────────── */}
+        <MetaLevelsPromoCard />
+
  {/* ── VIDEO TUTORIAL ───────────────────────────────────────── */}
         <section className="py-20 px-6" style={{ backgroundColor: C.bg }}>
           <div className="max-w-[800px] mx-auto">
