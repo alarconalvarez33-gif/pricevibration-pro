@@ -22,17 +22,21 @@ export default async function MetaLevelsAccesoPage() {
     redirect('/login')
   }
 
-  // Check for active MetaLevels license
-  const license = await prisma.license.findFirst({
-    where: {
-      userId: user.id,
-      productType: 'metalevels',
-      status: 'active',
-    },
-    orderBy: { issuedAt: 'desc' },
-  })
+  const isAdmin = user.role === 'admin'
 
-  if (!license) {
+  // Check for active MetaLevels license (admins bypass this check)
+  const license = isAdmin
+    ? null
+    : await prisma.license.findFirst({
+        where: {
+          userId: user.id,
+          productType: 'metalevels',
+          status: 'active',
+        },
+        orderBy: { issuedAt: 'desc' },
+      })
+
+  if (!isAdmin && !license) {
     // No license — show purchase prompt
     return (
       <>
@@ -89,12 +93,23 @@ export default async function MetaLevelsAccesoPage() {
     pineScript = '// Error al cargar el script. Contactá soporte.'
   }
 
+  // Admins see the script with a placeholder code for testing
+  const displayCode = license?.code ?? 'ADMIN-PREVIEW'
+
   return (
     <>
       <Navbar />
+      {isAdmin && (
+        <div
+          className="text-center py-2 text-xs font-semibold uppercase tracking-widest"
+          style={{ backgroundColor: '#c9a22715', color: '#c9a227', borderBottom: '1px solid #c9a22730' }}
+        >
+          Vista Admin — el código de activación real se genera al momento del pago
+        </div>
+      )}
       <AccesoClient
         pineScript={pineScript}
-        licenseCode={license.code}
+        licenseCode={displayCode}
         userEmail={session.user.email}
       />
     </>
