@@ -4,8 +4,108 @@ indicator("Gann Square 90", overlay=true)
 // Sistema de licencia con clave única
 licenseKey = input.string("", "Clave de Activación (uso único)", group="Licencia")
 
-// Verificar licencia con clave única
-isLicenseValid = licenseKey == "GS90-7H3K9-2025Z"  // Esta es la clave que entregaría a su cliente
+// Verificar licencia — claves válidas
+isLicenseValid =
+  licenseKey == "SL-ML-RFNCQ7LEAUCD" or
+  licenseKey == "SL-ML-8C4QMUDXKBUP" or
+  licenseKey == "SL-ML-YN8DRU72M6F8" or
+  licenseKey == "SL-ML-ZAYDHWSQNQNW" or
+  licenseKey == "SL-ML-ERJFEZRED4G4" or
+  licenseKey == "SL-ML-5CDML6DZ6WXQ" or
+  licenseKey == "SL-ML-ZEA6FSXR7PUG" or
+  licenseKey == "SL-ML-FVYTX6ZXWVED" or
+  licenseKey == "SL-ML-VYTBBZBX9MB4" or
+  licenseKey == "SL-ML-PU9S2HBAEEJ4" or
+  licenseKey == "SL-ML-5WM3MV85M732" or
+  licenseKey == "SL-ML-E73WABLBYW8S" or
+  licenseKey == "SL-ML-28GSAETP83CM" or
+  licenseKey == "SL-ML-8NTXR2KC6A74" or
+  licenseKey == "SL-ML-RPE53CW9P7CC" or
+  licenseKey == "SL-ML-6RT825CZ6GR4" or
+  licenseKey == "SL-ML-XSL8NAGY5LM6" or
+  licenseKey == "SL-ML-2F7U2A7MYTHE" or
+  licenseKey == "SL-ML-293VBTHGWLST" or
+  licenseKey == "SL-ML-VGH6E75KZAR4" or
+  licenseKey == "SL-ML-38ZGXLYPQNM4" or
+  licenseKey == "SL-ML-7AT7NZQ93QWT" or
+  licenseKey == "SL-ML-ZZ4HMF4CHZ7T" or
+  licenseKey == "SL-ML-WYWLMTJVYTUV" or
+  licenseKey == "SL-ML-L57CQPCKHRH8" or
+  licenseKey == "SL-ML-WDBRLMALZKRD" or
+  licenseKey == "SL-ML-VAZAULS54T3L" or
+  licenseKey == "SL-ML-N24S6Z6L2QWG" or
+  licenseKey == "SL-ML-CQYRGWTZEJTM" or
+  licenseKey == "SL-ML-XCURBG55EPFJ" or
+  licenseKey == "SL-ML-8USY8KU383TB" or
+  licenseKey == "SL-ML-2KPUAZTNZBQV" or
+  licenseKey == "SL-ML-HKCZNTKPXMQS" or
+  licenseKey == "SL-ML-E2WNHH2HBFMV" or
+  licenseKey == "SL-ML-KMVQX5NLT96L" or
+  licenseKey == "SL-ML-U283TDHAAQF8" or
+  licenseKey == "SL-ML-ARWX6GGJ4HW3" or
+  licenseKey == "SL-ML-N6T2MV5XFLZA" or
+  licenseKey == "SL-ML-GFXN9ZUQF9XL" or
+  licenseKey == "SL-ML-4TK44QZG552Y" or
+  licenseKey == "SL-ML-4LSSTMBFXN29" or
+  licenseKey == "SL-ML-X7HQ67KJE4R9" or
+  licenseKey == "SL-ML-DL5VGD4T52LT" or
+  licenseKey == "SL-ML-Z97SA5XUWFGP" or
+  licenseKey == "SL-ML-UFBJLLSZUGXC" or
+  licenseKey == "SL-ML-ABDCZ87ZHJVN" or
+  licenseKey == "SL-ML-NVDBHZ4J8DDC" or
+  licenseKey == "SL-ML-86MKNP7MHRW7" or
+  licenseKey == "SL-ML-KM9MZCQM6QQW" or
+  licenseKey == "SL-ML-78V3LJ3J7DKV" or
+  licenseKey == "SL-ML-J4VYLAV9LWCL" or
+  licenseKey == "SL-ML-WNZ6THBZHN33" or
+  licenseKey == "SL-ML-7KX2BQ2NDNR4" or
+  licenseKey == "SL-ML-GK7E5CEXFDHT" or
+  licenseKey == "SL-ML-CAA3DQPWN8JE" or
+  licenseKey == "SL-ML-Y3MRHS89G5W6" or
+  licenseKey == "SL-ML-DJK9SVCCNVU2" or
+  licenseKey == "SL-ML-UZ2GQLMQY5V7" or
+  licenseKey == "SL-ML-E5BWCQAA2UCA" or
+  licenseKey == "SL-ML-BWNC6C4JBM9V" or
+  licenseKey == "SL-ML-ZMZPMCAA6UFL" or
+  licenseKey == "SL-ML-NAHMLM4PNM6S" or
+  licenseKey == "SL-ML-EX7N49GT3WS8" or
+  licenseKey == "SL-ML-KUPEGW88X4RQ" or
+  licenseKey == "SL-ML-G5WHFNWGH87C" or
+  licenseKey == "SL-ML-2T3YC4Z2MKPS" or
+  licenseKey == "SL-ML-K8DUV2K5F852" or
+  licenseKey == "SL-ML-F4BMTDAJMCFV" or
+  licenseKey == "SL-ML-35X2KX9FJLJY" or
+  licenseKey == "SL-ML-NLF5HJSABLHP" or
+  licenseKey == "SL-ML-E26TZKGT2RBT" or
+  licenseKey == "SL-ML-KC2VS4TQYPGS" or
+  licenseKey == "SL-ML-KG4XMCDGHUY9" or
+  licenseKey == "SL-ML-8XJYRHXXV2EG" or
+  licenseKey == "SL-ML-EF2L7YSHT3TV" or
+  licenseKey == "SL-ML-7ZCCB7SWPNMX" or
+  licenseKey == "SL-ML-EDSB9TZX2VYM" or
+  licenseKey == "SL-ML-Y8AZFTQL2WGD" or
+  licenseKey == "SL-ML-9CYYCAFT75UU" or
+  licenseKey == "SL-ML-JGGM56WXE5WQ" or
+  licenseKey == "SL-ML-9FVNTAP6GATB" or
+  licenseKey == "SL-ML-UW6TFV36GFP4" or
+  licenseKey == "SL-ML-444R4DCMFPP9" or
+  licenseKey == "SL-ML-8QDND3LDVXJH" or
+  licenseKey == "SL-ML-3VQK9E5LBA4Q" or
+  licenseKey == "SL-ML-R55U7AP3K9DE" or
+  licenseKey == "SL-ML-K7JT2FHSDVVU" or
+  licenseKey == "SL-ML-Y9CYEWWJCYT9" or
+  licenseKey == "SL-ML-SKCUJD4HUPAH" or
+  licenseKey == "SL-ML-HSYNWBQDFKJ2" or
+  licenseKey == "SL-ML-RB33JLHRE6B4" or
+  licenseKey == "SL-ML-FU86V465W3RX" or
+  licenseKey == "SL-ML-BDAP8JA9EVQS" or
+  licenseKey == "SL-ML-C9BH5UVV5JBJ" or
+  licenseKey == "SL-ML-QQAJ3Q62TYYR" or
+  licenseKey == "SL-ML-Z7BAMJ3SRA74" or
+  licenseKey == "SL-ML-QPN6VFQQSCB6" or
+  licenseKey == "SL-ML-CCS43RFMKN3E" or
+  licenseKey == "SL-ML-4BMANVK684AH" or
+  licenseKey == "SL-ML-5K6DV5RNVEAU"
 
 // Variables del indicador
 baseTime = input.int(18, "Minutos por ciclo", minval=1, group="Configuración")
