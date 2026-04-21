@@ -15,6 +15,7 @@ const C = {
   card:   '#141415',
   border: '#222222',
   cyan:   '#00E5FF',
+  gold:   '#c9a227',
   green:  '#00D26A',
   red:    '#FF4757',
   muted:  '#555555',
@@ -125,6 +126,22 @@ export default function HomePage() {
 
   const [flyer1Loading, setFlyer1Loading] = useState(false);
   const [adxLoading, setAdxLoading] = useState(false);
+  const [frecuenciaLoading, setFrecuenciaLoading] = useState(false);
+
+  const handleBuyFrecuencia = async () => {
+    setFrecuenciaLoading(true);
+    try {
+      const res = await fetch('/api/pagopar/create-product-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: 'frecuencia' }),
+      });
+      const data = await res.json();
+      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
+      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
+    } catch { alert('Error al procesar el pago'); }
+    setFrecuenciaLoading(false);
+  };
 
   const handleBuyAdx = async () => {
     setAdxLoading(true);
@@ -353,13 +370,13 @@ export default function HomePage() {
                   className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
                   style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
                 >
-                  <div className="overflow-hidden">
+                  <div className="overflow-hidden" style={{ minHeight: '340px', backgroundColor: '#0d0d0d' }}>
                     <img
                       src="/flyer1.jpg"
                       alt="Genesis"
                       onClick={() => setZoomedFlyer({ src: '/flyer1.jpg', alt: 'Genesis' })}
-                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full h-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <div className="flex flex-col flex-1 p-4 gap-3">
@@ -408,63 +425,70 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Card 2 — Super Estrategia */}
+                {/* Card 2 — Frecuencia (NUEVO) */}
                 <div
                   className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
-                  style={{ backgroundColor: C.card, border: `1px solid ${C.cyan}30`, boxShadow: `0 0 30px ${C.cyan}10` }}
+                  style={{ backgroundColor: C.card, border: `1px solid ${C.gold}50`, boxShadow: `0 0 40px ${C.gold}15` }}
                 >
-                  <div className="overflow-hidden">
+                  <div className="relative overflow-hidden" style={{ minHeight: '340px', backgroundColor: '#0d0d0d' }}>
+                    <div className="absolute top-3 left-3 z-10">
+                      <span
+                        className="text-[8px] font-bold uppercase tracking-[0.25em] px-2 py-1"
+                        style={{ backgroundColor: '#c9a22720', color: '#c9a227', border: '1px solid #c9a22740', fontFamily: "'Space Grotesk', sans-serif" }}
+                      >
+                        NUEVO
+                      </span>
+                    </div>
                     <img
-                      src="/Super estrategia.jpg"
-                      alt="Super Estrategia"
-                      onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
-                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      src="/cuadradex.png"
+                      alt="Frecuencia"
+                      onClick={() => setZoomedFlyer({ src: '/cuadradex.png', alt: 'Frecuencia' })}
+                      className="w-full h-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <div className="flex flex-col flex-1 p-4 gap-3">
                     <span
                       className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
-                      style={{ backgroundColor: `${C.cyan}18`, color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                      style={{ backgroundColor: '#c9a22718', color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                      Fundamentos
+                      Avanzado
                     </span>
                     <h3
                       className="text-xl font-bold text-white leading-tight"
                       style={{ fontFamily: "'Playfair Display', serif" }}
                     >
-                      Super Estrategia
+                      Frecuencia
                     </h3>
                     <p
                       className="text-xs italic leading-relaxed"
-                      style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}
+                      style={{ color: C.gold, fontFamily: "'Playfair Display', serif" }}
                     >
-                      El punto de partida definitivo
+                      Decodificá la estructura fractal del mercado
                     </p>
                     <p className="text-sm font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      Gs. 65.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $10 USD</span>
+                      Gs. 200.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $27 USD</span>
                     </p>
                     <p className="text-[0.77rem] leading-relaxed" style={{ color: '#888', fontWeight: 300 }}>
-                      La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad.
+                      Sincronización de tiempo y precio para proyectar zonas geométricas exactas donde el ciclo del mercado tiende a revertir o acelerar.
                     </p>
-                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: `3px solid ${C.cyan}`, backgroundColor: `${C.cyan}08` }}>
-                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
+                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: `3px solid ${C.gold}`, backgroundColor: '#c9a22708' }}>
+                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: C.gold, fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
                       <ul className="flex flex-col gap-1">
-                        {['Construir una base sólida en análisis técnico', 'Operar con reglas claras y gestión de riesgo', 'Tomar decisiones sin emociones'].map((item) => (
+                        {['Decodificar la estructura fractal del mercado', 'Proyectar zonas de reversión con precisión', 'Identificar ciclos de aceleración y consolidación'].map((item) => (
                           <li key={item} className="flex items-start gap-1.5 text-[0.72rem]" style={{ color: '#777', fontWeight: 300 }}>
-                            <span style={{ color: C.cyan, flexShrink: 0 }}>›</span> {item}
+                            <span style={{ color: C.gold, flexShrink: 0 }}>›</span> {item}
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <button
-                      onClick={handleBuyCurso}
-                      disabled={cursoLoading}
-                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
-                      style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
+                    <Link
+                      href="/cursos/frecuencia"
+                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded text-center transition-all duration-200 hover:opacity-90"
+                      style={{ backgroundColor: C.gold, color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                      {cursoLoading ? 'Procesando...' : 'Adquirir Ahora'}
-                    </button>
+                      Ver curso →
+                    </Link>
                   </div>
                 </div>
 
@@ -473,13 +497,13 @@ export default function HomePage() {
                   className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
                   style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
                 >
-                  <div className="overflow-hidden">
+                  <div className="overflow-hidden" style={{ minHeight: '340px', backgroundColor: '#0d0d0d' }}>
                     <img
                       src="/vaso.png"
                       alt="Estrategia ADX"
                       onClick={() => setZoomedFlyer({ src: '/vaso.png', alt: 'Estrategia ADX' })}
-                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ height: 'auto', objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full h-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <div className="flex flex-col flex-1 p-4 gap-3">
@@ -739,6 +763,64 @@ export default function HomePage() {
             <p className="text-[#333] text-[10px] mt-4 text-center uppercase tracking-[0.2em]">
               Cursos independientes del plan · suscripción mensual renovable
             </p>
+          </div>
+        </section>
+
+        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
+        <section className="py-12 px-4 sm:px-6" style={{ borderTop: `1px solid ${C.border}` }}>
+          <div className="max-w-6xl mx-auto">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-6" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
+              Curso de entrada
+            </p>
+            <div
+              className="flex flex-col sm:flex-row gap-0 overflow-hidden rounded-xl"
+              style={{ border: `1px solid ${C.cyan}30`, backgroundColor: C.card }}
+            >
+              {/* Flyer */}
+              <div className="sm:w-56 shrink-0" style={{ backgroundColor: '#0d0d0d' }}>
+                <img
+                  src="/Super estrategia.jpg"
+                  alt="Super Estrategia"
+                  onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
+                  className="w-full h-full cursor-zoom-in"
+                  style={{ objectFit: 'contain', display: 'block', maxHeight: '220px' }}
+                />
+              </div>
+              {/* Content */}
+              <div className="flex flex-col flex-1 p-5 sm:p-6 gap-3 justify-center">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
+                    style={{ backgroundColor: `${C.cyan}18`, color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Fundamentos
+                  </span>
+                </div>
+                <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Super Estrategia
+                </h3>
+                <p className="text-xs italic" style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}>
+                  El punto de partida definitivo
+                </p>
+                <p className="text-sm leading-relaxed" style={{ color: '#777' }}>
+                  La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad.
+                </p>
+                <div className="flex items-center gap-4 mt-1">
+                  <div>
+                    <span className="text-lg font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 65.000</span>
+                    <span className="ml-2 text-xs" style={{ color: C.muted }}>/ $10 USD · pago único</span>
+                  </div>
+                  <button
+                    onClick={handleBuyCurso}
+                    disabled={cursoLoading}
+                    className="py-2.5 px-5 text-xs font-bold uppercase tracking-[0.15em] transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
+                    style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    {cursoLoading ? 'Procesando...' : 'Adquirir Ahora'}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
