@@ -189,8 +189,93 @@ export default function HomePage() {
       {/* pb-20 md:pb-0 accounts for mobile sticky CTA bar */}
       <main className="min-h-screen pb-20 md:pb-0" style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif" }}>
 
+        {/* ── QUANTUM ACCESS PRICING ───────────────────────────────── */}
+        <section className="px-4 sm:px-6 pt-28 sm:pt-36 pb-10" style={{ backgroundColor: C.bg, borderBottom: `1px solid ${C.border}` }}>
+          <div className="max-w-6xl mx-auto">
+            {/* Label */}
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em]"
+                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
+                Quantum Access — Suscripción mensual
+              </span>
+            </div>
+
+            <div className="border" style={{ borderColor: C.border, backgroundColor: C.card }}>
+              {/* Cyan top line */}
+              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)` }} />
+
+              <div className="flex flex-col md:flex-row">
+                {/* Flyer */}
+                <div className="md:w-72 shrink-0 border-b md:border-b-0 md:border-r" style={{ borderColor: C.border, backgroundColor: '#0e0e0f' }}>
+                  <img
+                    src="/signal.png"
+                    alt="Quantum Access"
+                    className="w-full h-full block"
+                    style={{ objectFit: 'cover', maxHeight: '320px' }}
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="flex flex-col flex-1 p-6 sm:p-8 gap-6">
+                  {/* Price */}
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Quantum Access
+                    </h2>
+                    <p className="text-sm mb-4" style={{ color: C.muted }}>
+                      Todo lo que necesitás para operar con precisión matemática
+                    </p>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-3xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                        Gs. 180.000
+                      </span>
+                      <span className="text-sm" style={{ color: C.muted }}>/ $25 USD</span>
+                      <span className="text-sm" style={{ color: C.muted }}>/mes</span>
+                    </div>
+                  </div>
+
+                  {/* Features */}
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    {[
+                      'Calculadora Cuadrática (ilimitada)',
+                      'Signal Hub (todas las señales)',
+                      'Forex, Crypto, Oro e Índices',
+                      'Análisis IA en tiempo real',
+                      'Dashboard Quantum Levels',
+                      'Acceso 24/7',
+                    ].map((f) => (
+                      <div key={f} className="flex items-center gap-2">
+                        <span className="w-1 h-1 shrink-0" style={{ backgroundColor: C.cyan }} />
+                        <span className="text-sm" style={{ color: '#666' }}>{f}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <div className="flex flex-col sm:flex-row gap-3 items-start">
+                    <Link href="/billing"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 font-bold text-sm uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Suscribirme Ahora
+                      <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </Link>
+                    <span className="text-[10px] mt-1 sm:mt-2.5 uppercase tracking-[0.15em]"
+                      style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}>
+                      Cancelá cuando quieras · Pago seguro
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── HERO ─────────────────────────────────────────────────── */}
-        <section className="relative pt-28 sm:pt-40 pb-16 sm:pb-28 px-4 sm:px-6 overflow-hidden">
+        <section className="relative pt-16 sm:pt-20 pb-16 sm:pb-28 px-4 sm:px-6 overflow-hidden">
           {/* Subtle grid texture */}
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.03]"
@@ -467,63 +552,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── QUANTUM ACCESS PRICING ───────────────────────────────── */}
-        <section className="px-6 py-10" style={{ backgroundColor: C.bg, borderBottom: `1px solid ${C.border}` }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="border" style={{ borderColor: C.border, backgroundColor: C.card }}>
-              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)` }} />
-              <div className="flex flex-col md:flex-row">
-
-                {/* Flyer */}
-                <div className="shrink-0 flex items-center justify-center p-4 border-b md:border-b-0 md:border-r" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
-                  <Image
-                    src="/signal.png"
-                    alt="Quantum Access"
-                    width={120}
-                    height={120}
-                    style={{ objectFit: 'contain', display: 'block' }}
-                  />
-                </div>
-
-                {/* Price + label */}
-                <div className="flex flex-col justify-center items-center px-4 sm:px-8 py-5 border-b md:border-b-0 md:border-r shrink-0 gap-1" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
-                  <div className="inline-flex items-center gap-2 mb-1">
-                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
-                    <span className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>Acceso Cuántico</span>
-                  </div>
-                  <div className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 180.000</div>
-                  <p className="text-[#444] text-[11px]">$25 USD · pago mensual</p>
-                  <Link
-                    href="/billing"
-                    className="mt-3 px-6 py-2.5 text-black text-[11px] font-bold uppercase tracking-[0.1em] text-center transition-opacity hover:opacity-90"
-                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    Suscribirme ahora!
-                  </Link>
-                  <p className="text-[#333] text-[9px] mt-1 uppercase tracking-widest">3 usos gratis sin registrarse</p>
-                </div>
-
-                {/* Features */}
-                <div className="flex flex-wrap gap-x-6 gap-y-3 px-8 py-6 items-center">
-                  {[
-                    ['⚡', 'Calculadora Cuadrática ilimitada'],
-                    ['📡', 'Signal Hub en tiempo real'],
-                    ['🌐', 'Forex · Crypto · Oro · Índices'],
-                    ['🤖', 'Análisis IA cuántico'],
-                    ['📊', 'Dashboard Quantum Levels'],
-                    ['🔓', 'Acceso 24/7 sin restricciones'],
-                  ].map(([icon, label]) => (
-                    <div key={label} className="flex items-center gap-2">
-                      <span className="text-sm">{icon}</span>
-                      <span className="text-[11px] text-[#888]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{label}</span>
-                    </div>
-                  ))}
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </section>
         {/* ── METALEVELS PROMO ─────────────────────────────────────── */}
         <MetaLevelsPromoCard />
 
