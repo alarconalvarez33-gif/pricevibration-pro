@@ -119,6 +119,7 @@ export async function sendWelcomeEmail(
     'super-estrategia':      'Super Estrategia',
     'adx':                   'Estrategia ADX',
     'metalevels':            'MetaLevels',
+    'frecuencia':            'Frecuencia',
   }
   const productLabel = productNames[product] ?? product
 
@@ -159,6 +160,46 @@ export async function sendWelcomeEmail(
         Ir al Dashboard
       </a>
     `
+    : product === 'frecuencia'
+    ? `
+      <h2 style="color:#00d26a;font-size:20px;margin-bottom:8px;">🎓 Bienvenido al curso Frecuencia</h2>
+      <p style="color:#8a9bb3;margin-bottom:16px;">Hola ${displayName},</p>
+      <p style="color:#8a9bb3;">Tu pago fue confirmado. Ya tenés <strong style="color:#fff;">acceso completo al curso Frecuencia</strong>.</p>
+      <div style="background:#0e0e0f;border:1px solid #222;border-radius:8px;overflow:hidden;margin:20px 0;">
+        <div style="background:#141415;padding:16px 20px;border-bottom:1px solid #222;">
+          <p style="color:#00e5ff;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 6px 0;">Nuevo Curso · Sacred Levels</p>
+          <p style="color:#fff;font-size:20px;font-weight:bold;margin:0;font-family:Georgia,serif;">Frecuencia</p>
+          <p style="color:#666;font-size:13px;margin:6px 0 0 0;">Decodificá la estructura fractal del mercado</p>
+        </div>
+        <div style="padding:16px 20px;">
+          <p style="color:#8a9bb3;font-size:14px;line-height:1.6;margin:0 0 16px 0;">
+            Podés acceder las veces que quieras desde tu cuenta en sacredlevels.com.
+          </p>
+          <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="background:#00e5ff;border-radius:4px;">
+                <a href="https://sacredlevels.com/cursos/frecuencia"
+                   style="display:inline-block;padding:12px 24px;color:#000;text-decoration:none;font-weight:bold;font-size:14px;letter-spacing:1px;text-transform:uppercase;">
+                  Acceder al Curso →
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div style="background:#0a1a0a;border:1px solid #1a3a1a;border-radius:8px;padding:16px 20px;margin:16px 0;">
+        <p style="color:#4a8a4a;font-size:13px;margin:0 0 8px 0;font-weight:bold;">✅ Tu compra incluye:</p>
+        <p style="color:#8a9bb3;font-size:13px;margin:0;line-height:1.8;">
+          · Material descargable + videos<br/>
+          · Acceso de por vida<br/>
+          · Soporte por WhatsApp
+        </p>
+      </div>
+      <p style="color:#4a5a6a;font-size:13px;margin-top:20px;">
+        ¿Necesitás ayuda?
+        <a href="https://wa.me/595981234128" style="color:#25D366;text-decoration:none;font-weight:bold;">Escribinos por WhatsApp</a>
+      </p>
+    `
     : product === 'metalevels'
     ? `
       <h2 style="color:#00d26a;font-size:20px;margin-bottom:8px;">¡Tu MetaLevels está listo!</h2>
@@ -179,11 +220,13 @@ export async function sendWelcomeEmail(
       </a>
     `
 
-  await sendEmail(
-    email,
-    isSubscription ? '¡Tu acceso Quantum está activo! — Sacred Levels' : `¡Tu acceso a ${productLabel} está listo! — Sacred Levels`,
-    baseTemplate(body)
-  )
+  const subject = isSubscription
+    ? '¡Tu acceso Quantum está activo! — Sacred Levels'
+    : product === 'frecuencia'
+    ? '🎓 Bienvenido al curso Frecuencia — Acceso activado'
+    : `¡Tu acceso a ${productLabel} está listo! — Sacred Levels`
+
+  await sendEmail(email, subject, baseTemplate(body))
 }
 
 export async function sendReactivationEmail(email: string, name: string, plan: string, premiumUntil: Date) {
