@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import Navbar from '@/components/Navbar'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 
 const C = {
   bg:     '#0A0A0B',
@@ -457,6 +458,68 @@ export default function MetaLevelsPage() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECCIÓN 5b: REQUISITOS TÉCNICOS ── */}
+        <section className="py-16 px-6" style={{ borderBottom: `1px solid ${C.border}` }}>
+          <div className="max-w-3xl mx-auto">
+            <div
+              className="rounded-xl p-7"
+              style={{
+                backgroundColor: '#0f0e08',
+                borderLeft: `4px solid ${C.gold}`,
+                border: `1px solid ${C.gold}25`,
+                borderLeftWidth: 4,
+              }}
+            >
+              <div className="flex items-start gap-3 mb-5">
+                <span className="text-xl shrink-0 mt-0.5">⚠️</span>
+                <h3
+                  className="text-base font-bold text-white"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Requisitos Técnicos para la Instalación
+                </h3>
+              </div>
+
+              <p className="text-sm leading-relaxed mb-6" style={{ color: '#888' }}>
+                MetaLevels se instala en TradingView a través del Editor Pine Script. Por
+                limitaciones técnicas del editor móvil (bugs de indentación), la instalación
+                inicial requiere una <strong className="text-white">computadora (PC o Mac)</strong>.
+              </p>
+
+              <div className="space-y-3 mb-6">
+                {[
+                  { icon: '✅', label: 'INSTALACIÓN', text: 'Requiere PC o Mac (una sola vez)' },
+                  { icon: '📱', label: 'USO DIARIO', text: 'Funciona en celular tras la instalación' },
+                  { icon: '🔄', label: 'SINCRONIZACIÓN', text: 'Automática entre todos tus dispositivos' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-3">
+                    <span className="text-base shrink-0">{item.icon}</span>
+                    <span className="text-xs font-bold uppercase tracking-wider shrink-0 w-28" style={{ color: C.gold }}>
+                      {item.label}:
+                    </span>
+                    <span className="text-sm" style={{ color: '#999' }}>{item.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-sm leading-relaxed mb-5" style={{ color: '#666' }}>
+                Una vez instalado desde PC, TradingView sincroniza automáticamente tu cuenta.
+                Desde ese momento, podés usar MetaLevels en cualquier dispositivo, incluyendo
+                tu celular.
+              </p>
+
+              <div className="flex items-center gap-3">
+                <span className="text-sm" style={{ color: '#555' }}>¿Dudas antes de comprar?</span>
+                <WhatsAppButton
+                  variant="inline"
+                  label="Escribinos"
+                  message="Hola, tengo una consulta sobre MetaLevels antes de comprar"
+                />
+              </div>
             </div>
           </div>
         </section>

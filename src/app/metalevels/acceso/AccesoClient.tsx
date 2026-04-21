@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 
 const C = {
   bg:     '#0A0A0B',
@@ -62,6 +63,79 @@ export default function AccesoClient({ pineScript, licenseCode, userEmail }: Pro
           <p className="text-sm" style={{ color: C.muted }}>
             Acceso de {userEmail}
           </p>
+        </div>
+
+        {/* ── Banner: Instalación desde PC requerida ── */}
+        <div
+          className="rounded-xl p-6 mb-8"
+          style={{
+            backgroundColor: '#1a1505',
+            borderTop: `2px solid ${C.gold}`,
+            borderBottom: `2px solid ${C.gold}`,
+            borderLeft: `1px solid ${C.gold}40`,
+            borderRight: `1px solid ${C.gold}40`,
+          }}
+        >
+          <div className="flex items-start gap-3 mb-4">
+            <span className="text-xl shrink-0 mt-0.5">⚠️</span>
+            <p
+              className="text-sm font-bold uppercase tracking-[0.15em]"
+              style={{ color: C.gold, fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Instalación desde Computadora Requerida
+            </p>
+          </div>
+
+          <p className="text-sm leading-relaxed mb-5" style={{ color: '#aaa' }}>
+            Para instalar MetaLevels necesitás una <strong className="text-white">PC o Mac</strong>.
+            El editor móvil de TradingView tiene un bug conocido que corrompe la indentación
+            del código Pine Script al pegarlo desde el celular, generando errores de compilación.
+          </p>
+
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="text-base shrink-0">🖥️</span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider mb-0.5" style={{ color: '#fff' }}>
+                  Desde PC / Mac
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: '#888' }}>
+                  Abrí TradingView en el navegador, seguí las instrucciones de abajo y pegá el código sin problemas.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-base shrink-0">📱</span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider mb-0.5" style={{ color: '#FF4757' }}>
+                  Desde Celular — No Recomendado
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: '#888' }}>
+                  El editor móvil puede generar errores como &ldquo;Mismatched input&rdquo; o &ldquo;Script must contain one declaration&rdquo;.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-base shrink-0">✨</span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider mb-0.5" style={{ color: C.green }}>
+                  Después de Instalar
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: '#888' }}>
+                  Una vez instalado desde PC, funciona perfectamente desde tu celular gracias a la sincronización automática de TradingView.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5 flex items-center gap-3">
+            <span className="text-sm" style={{ color: '#666' }}>¿Problemas con la instalación?</span>
+            <WhatsAppButton
+              variant="inline"
+              label="Pedinos ayuda"
+              message="Hola, tengo problemas instalando MetaLevels"
+            />
+          </div>
         </div>
 
         {/* Instrucciones */}

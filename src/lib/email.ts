@@ -112,14 +112,39 @@ export async function sendWelcomeEmail(
   const displayName = name || email
   const isSubscription = product === 'quantum'
   const productNames: Record<string, string> = {
-    'quantum':            'Quantum Access',
-    'expansion-matematica': 'Genesis',
-    'canal-paralelo':     'Canal Paralelo',
-    'fibonacci':          'Fibonacci Avanzado',
-    'super-estrategia':   'Super Estrategia',
-    'adx':                'Estrategia ADX',
+    'quantum':               'Quantum Access',
+    'expansion-matematica':  'Genesis',
+    'canal-paralelo':        'Canal Paralelo',
+    'fibonacci':             'Fibonacci Avanzado',
+    'super-estrategia':      'Super Estrategia',
+    'adx':                   'Estrategia ADX',
+    'metalevels':            'MetaLevels',
   }
   const productLabel = productNames[product] ?? product
+
+  const pcWarningCard = `
+    <div style="background:#1a1505;border:1px solid #c9a227;border-radius:8px;padding:20px;margin:20px 0;">
+      <p style="color:#c9a227;font-weight:bold;font-size:14px;margin:0 0 12px 0;">⚠️ Importante: Instalación desde PC</p>
+      <p style="color:#aaa;font-size:14px;line-height:1.6;margin:0 0 10px 0;">
+        Para instalar MetaLevels por primera vez, necesitás una <strong style="color:#fff;">computadora (PC o Mac)</strong>.
+        El editor móvil de TradingView tiene limitaciones técnicas que causan errores al pegar el código.
+      </p>
+      <p style="color:#aaa;font-size:14px;line-height:1.6;margin:0 0 16px 0;">
+        Una vez instalado desde PC, vas a poder usar el indicador desde cualquier dispositivo, incluyendo tu celular.
+      </p>
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="background:#25D366;border-radius:6px;">
+            <a href="https://wa.me/595981234128?text=${encodeURIComponent('Hola, tengo dudas sobre la instalación de MetaLevels')}"
+               style="display:inline-block;padding:12px 20px;color:#ffffff;text-decoration:none;font-weight:500;font-size:14px;">
+              <img src="https://sacredlevels.com/icons/whatsapp-white.svg" width="18" height="18" alt="WhatsApp" style="vertical-align:middle;margin-right:8px;">
+              Pedir ayuda por WhatsApp
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `
 
   const body = isSubscription && premiumUntil
     ? `
@@ -133,6 +158,16 @@ export async function sendWelcomeEmail(
       <a href="https://sacredlevels.com/dashboard" style="display:inline-block;background:#c9a227;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;margin-top:16px;">
         Ir al Dashboard
       </a>
+    `
+    : product === 'metalevels'
+    ? `
+      <h2 style="color:#00d26a;font-size:20px;margin-bottom:8px;">¡Tu MetaLevels está listo!</h2>
+      <p style="color:#8a9bb3;margin-bottom:16px;">Hola ${displayName},</p>
+      <p style="color:#8a9bb3;">Tu licencia de <strong style="color:#c9a227;">MetaLevels</strong> fue activada. Ya podés acceder al código Pine Script y tu clave personal desde el siguiente enlace:</p>
+      <a href="https://sacredlevels.com/metalevels/acceso" style="display:inline-block;background:#c9a227;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;margin-top:8px;margin-bottom:4px;">
+        Ver mi indicador →
+      </a>
+      ${pcWarningCard}
     `
     : `
       <h2 style="color:#00d26a;font-size:20px;margin-bottom:8px;">¡Tu compra está lista!</h2>
