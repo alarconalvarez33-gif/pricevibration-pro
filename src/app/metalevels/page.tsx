@@ -512,6 +512,31 @@ export default function MetaLevelsPage() {
                 tu celular.
               </p>
 
+              <div
+                className="rounded-lg px-4 py-3 mb-5"
+                style={{ backgroundColor: `${C.gold}10`, border: `1px solid ${C.gold}30` }}
+              >
+                <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: C.gold, fontFamily: "'Space Grotesk', sans-serif" }}>
+                  Activos compatibles (actualmente)
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {['US30', 'XAUUSD', 'BTCUSD', 'NASDAQ'].map((asset) => (
+                    <span
+                      key={asset}
+                      className="text-xs font-bold px-2.5 py-1 rounded"
+                      style={{
+                        backgroundColor: `${C.gold}15`,
+                        border: `1px solid ${C.gold}40`,
+                        color: C.gold,
+                        fontFamily: "'JetBrains Mono', monospace",
+                      }}
+                    >
+                      {asset}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
               <div className="flex items-center gap-3">
                 <span className="text-sm" style={{ color: '#555' }}>¿Dudas antes de comprar?</span>
                 <WhatsAppButton
