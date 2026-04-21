@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import Script from 'next/script';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 
 const C = {
@@ -156,35 +155,24 @@ export default function FrecuenciaPage() {
           </div>
         </section>
 
-        {/* ── VIDEO PREVIEW ── */}
+        {/* ── PRÓXIMAMENTE ── */}
         <section className="py-16 px-4 sm:px-6" style={{ backgroundColor: '#0d0d0e', borderBottom: `1px solid ${C.border}` }}>
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-3" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                Preview del curso
-              </p>
-              <h2 className="text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                Mirá cómo funciona Frecuencia
-              </h2>
-            </div>
+          <div className="max-w-4xl mx-auto text-center">
             <div
-              className="relative w-full overflow-hidden rounded-xl"
-              style={{
-                paddingBottom: '56.25%',
-                backgroundColor: '#000',
-                border: `1px solid ${C.border}`,
-                boxShadow: `0 0 40px ${C.cyan}10`,
-              }}
+              className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full"
+              style={{ backgroundColor: `${C.cyan}12`, border: `1px solid ${C.cyan}30` }}
             >
-              <iframe
-                src="https://player.vimeo.com/video/1185309543?badge=0&autopause=0&player_id=0&app_id=58479"
-                className="absolute top-0 left-0 w-full h-full rounded-xl"
-                frameBorder="0"
-                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                title="Frecuencia — Preview"
-              />
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
+                Próximamente
+              </span>
             </div>
+            <h2 className="text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              Contenido disponible muy pronto
+            </h2>
+            <p className="text-sm mt-3" style={{ color: C.muted }}>
+              El acceso completo al curso se habilita tras la compra.
+            </p>
           </div>
         </section>
 
@@ -395,7 +383,6 @@ export default function FrecuenciaPage() {
         </section>
 
       </main>
-      <Script src="https://player.vimeo.com/api/player.js" strategy="lazyOnload" />
     </>
   );
 }
