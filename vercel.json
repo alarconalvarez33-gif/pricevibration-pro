@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/renew-subscriptions",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-webhook-logs",
+      "schedule": "0 3 * * *"
     }
   ]
 }
