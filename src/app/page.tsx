@@ -558,6 +558,62 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
+        <section className="py-12 px-4 sm:px-6" style={{ borderTop: `1px solid ${C.border}` }}>
+          <div className="max-w-6xl mx-auto">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-6" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
+              Curso de entrada
+            </p>
+            <div
+              className="flex flex-col sm:flex-row gap-0 overflow-hidden rounded-xl"
+              style={{ border: `1px solid ${C.cyan}30`, backgroundColor: C.card }}
+            >
+              {/* Flyer */}
+              <div className="sm:w-56 shrink-0" style={{ backgroundColor: '#0d0d0d' }}>
+                <img
+                  src="/Super estrategia.jpg"
+                  alt="Super Estrategia"
+                  onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
+                  className="w-full h-full cursor-zoom-in"
+                  style={{ objectFit: 'contain', display: 'block', maxHeight: '220px' }}
+                />
+              </div>
+              {/* Content */}
+              <div className="flex flex-col flex-1 p-5 sm:p-6 gap-3 justify-center">
+                <span
+                  className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
+                  style={{ backgroundColor: `${C.cyan}18`, color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Fundamentos
+                </span>
+                <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Super Estrategia
+                </h3>
+                <p className="text-xs italic" style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}>
+                  El punto de partida definitivo
+                </p>
+                <p className="text-sm leading-relaxed" style={{ color: '#777' }}>
+                  La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad.
+                </p>
+                <div className="flex items-center gap-4 mt-1 flex-wrap">
+                  <div>
+                    <span className="text-lg font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 65.000</span>
+                    <span className="ml-2 text-xs" style={{ color: C.muted }}>/ $10 USD · pago único</span>
+                  </div>
+                  <button
+                    onClick={handleBuyCurso}
+                    disabled={cursoLoading}
+                    className="py-2.5 px-5 text-xs font-bold uppercase tracking-[0.15em] transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
+                    style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    {cursoLoading ? 'Procesando...' : 'Adquirir Ahora'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── FORMAS DE PAGO ───────────────────────────────────────── */}
         <FormasDePago />
 
@@ -763,64 +819,6 @@ export default function HomePage() {
             <p className="text-[#333] text-[10px] mt-4 text-center uppercase tracking-[0.2em]">
               Cursos independientes del plan · suscripción mensual renovable
             </p>
-          </div>
-        </section>
-
-        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
-        <section className="py-12 px-4 sm:px-6" style={{ borderTop: `1px solid ${C.border}` }}>
-          <div className="max-w-6xl mx-auto">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-6" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-              Curso de entrada
-            </p>
-            <div
-              className="flex flex-col sm:flex-row gap-0 overflow-hidden rounded-xl"
-              style={{ border: `1px solid ${C.cyan}30`, backgroundColor: C.card }}
-            >
-              {/* Flyer */}
-              <div className="sm:w-56 shrink-0" style={{ backgroundColor: '#0d0d0d' }}>
-                <img
-                  src="/Super estrategia.jpg"
-                  alt="Super Estrategia"
-                  onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
-                  className="w-full h-full cursor-zoom-in"
-                  style={{ objectFit: 'contain', display: 'block', maxHeight: '220px' }}
-                />
-              </div>
-              {/* Content */}
-              <div className="flex flex-col flex-1 p-5 sm:p-6 gap-3 justify-center">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
-                    style={{ backgroundColor: `${C.cyan}18`, color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    Fundamentos
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Super Estrategia
-                </h3>
-                <p className="text-xs italic" style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}>
-                  El punto de partida definitivo
-                </p>
-                <p className="text-sm leading-relaxed" style={{ color: '#777' }}>
-                  La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad.
-                </p>
-                <div className="flex items-center gap-4 mt-1">
-                  <div>
-                    <span className="text-lg font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 65.000</span>
-                    <span className="ml-2 text-xs" style={{ color: C.muted }}>/ $10 USD · pago único</span>
-                  </div>
-                  <button
-                    onClick={handleBuyCurso}
-                    disabled={cursoLoading}
-                    className="py-2.5 px-5 text-xs font-bold uppercase tracking-[0.15em] transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
-                    style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    {cursoLoading ? 'Procesando...' : 'Adquirir Ahora'}
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 

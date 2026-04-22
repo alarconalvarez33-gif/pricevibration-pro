@@ -178,7 +178,7 @@ export async function sendWelcomeEmail(
           <table cellpadding="0" cellspacing="0" border="0">
             <tr>
               <td style="background:#00e5ff;border-radius:4px;">
-                <a href="https://sacredlevels.com/cursos/frecuencia"
+                <a href="https://sacredlevels.com/dashboard/cursos/frecuencia"
                    style="display:inline-block;padding:12px 24px;color:#000;text-decoration:none;font-weight:bold;font-size:14px;letter-spacing:1px;text-transform:uppercase;">
                   Acceder al Curso →
                 </a>

@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 const COURSE_META: Record<string, { title: string; url: string; icon: string; pricePYG: number; priceUSD: number }> = {
-  'frecuencia':         { title: 'Frecuencia',         url: '/cursos/frecuencia',           icon: '🌀', pricePYG: 200000, priceUSD: 27 },
+  'frecuencia':         { title: 'Frecuencia',         url: '/dashboard/cursos/frecuencia', icon: '🌀', pricePYG: 200000, priceUSD: 27 },
   'canal-paralelo':     { title: 'Canal Paralelo',     url: '/courses/canal-paralelo',      icon: '🎓', pricePYG: 320000, priceUSD: 48 },
   'expansion-matematica': { title: 'Genesis',          url: '/courses/expansion-matematica', icon: '👑', pricePYG: 500000, priceUSD: 77 },
   'fibonacci':          { title: 'Fibonacci',          url: '/courses/fibonacci',           icon: '📊', pricePYG: 499000, priceUSD: 75 },
