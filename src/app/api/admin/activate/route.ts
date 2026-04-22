@@ -19,6 +19,9 @@ const PRODUCTS: Record<string, {
   'fibonacci':        { displayName: 'Fibonacci Avanzado', dbProductId: 'fibonacci',             price: 320000, isQuantum: false, setCursoPurchased: false },
   'super-estrategia': { displayName: 'Super Estrategia',   dbProductId: 'super-estrategia',      price: 65000,  isQuantum: false, setCursoPurchased: true  },
   'quantum-access':   { displayName: 'Quantum Access',     dbProductId: 'quantum-access',        price: 180000, isQuantum: true,  setCursoPurchased: false },
+  'metalevels':       { displayName: 'MetaLevels',         dbProductId: 'metalevels',            price: 150000, isQuantum: false, setCursoPurchased: false },
+  'adx':              { displayName: 'Estrategia ADX',     dbProductId: 'adx',                   price: 150000, isQuantum: false, setCursoPurchased: false },
+  'frecuencia':       { displayName: 'Frecuencia',         dbProductId: 'frecuencia',            price: 200000, isQuantum: false, setCursoPurchased: false },
 }
 
 function isAdmin(email: string | null | undefined) {

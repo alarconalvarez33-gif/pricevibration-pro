@@ -23,6 +23,8 @@ const PRODUCTS = [
   { key: 'super-estrategia',  label: 'Super Estrategia — Gs. 65.000',    badge: '🏆' },
   { key: 'quantum-access',    label: 'Quantum Access — Gs. 180.000',     badge: '⚡' },
   { key: 'metalevels',        label: 'MetaLevels — Gs. 150.000',         badge: '📈' },
+  { key: 'adx',               label: 'Estrategia ADX — Gs. 150.000',     badge: '📉' },
+  { key: 'frecuencia',        label: 'Frecuencia — Gs. 200.000',         badge: '🌀' },
 ]
 
 const PRODUCT_LABEL: Record<string, string> = {
