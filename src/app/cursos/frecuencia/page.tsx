@@ -155,26 +155,6 @@ export default function FrecuenciaPage() {
           </div>
         </section>
 
-        {/* ── PRÓXIMAMENTE ── */}
-        <section className="py-16 px-4 sm:px-6" style={{ backgroundColor: '#0d0d0e', borderBottom: `1px solid ${C.border}` }}>
-          <div className="max-w-4xl mx-auto text-center">
-            <div
-              className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full"
-              style={{ backgroundColor: `${C.cyan}12`, border: `1px solid ${C.cyan}30` }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                Próximamente
-              </span>
-            </div>
-            <h2 className="text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Contenido disponible muy pronto
-            </h2>
-            <p className="text-sm mt-3" style={{ color: C.muted }}>
-              El acceso completo al curso se habilita tras la compra.
-            </p>
-          </div>
-        </section>
 
         {/* ── DESCRIPCIÓN ── */}
         <section className="py-16 px-4 sm:px-6" style={{ borderBottom: `1px solid ${C.border}` }}>
