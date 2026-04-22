@@ -98,6 +98,10 @@ export default function AdminActivatePage() {
   const [verifyingId,  setVerifyingId]  = useState<string | null>(null)
   const [rowResult, setRowResult] = useState<Record<string, { ok: boolean; msg: string }>>({})
 
+  // Reconciliation
+  const [reconciling, setReconciling] = useState(false)
+  const [reconcileResult, setReconcileResult] = useState<{ ok: boolean; msg: string } | null>(null)
+
   const userEmail = session?.user?.email
 
   useEffect(() => {
@@ -188,6 +192,27 @@ export default function AdminActivatePage() {
     setActivatingId(null)
   }
 
+  const handleReconcileNow = async () => {
+    setReconciling(true)
+    setReconcileResult(null)
+    try {
+      const res  = await fetch('/api/admin/reconcile-now', { method: 'POST' })
+      const data = await res.json()
+      if (data.ok) {
+        setReconcileResult({
+          ok: true,
+          msg: `Completado — revisados: ${data.checked}, activados: ${data.activated}, errores: ${data.errors}`,
+        })
+        if (data.activated > 0) { loadPending(); loadLogs() }
+      } else {
+        setReconcileResult({ ok: false, msg: data.error || 'Error desconocido' })
+      }
+    } catch {
+      setReconcileResult({ ok: false, msg: 'Error de conexión' })
+    }
+    setReconciling(false)
+  }
+
   // Verify a pending payment directly with PagoPar
   const handleVerifyPagopar = async (item: PendingItem) => {
     if (!item.pagoparHash) return
@@ -238,7 +263,22 @@ export default function AdminActivatePage() {
             <h1 className="text-2xl font-bold text-white">Panel de Activaciones</h1>
             <p className="text-xs mt-1" style={{ color: MUTED }}>Gestión de accesos y pagos PagoPar</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={handleReconcileNow}
+              disabled={reconciling}
+              className="text-xs uppercase tracking-widest px-4 py-2 border rounded font-bold transition-all disabled:opacity-40"
+              style={{ borderColor: `${CYAN}40`, color: CYAN }}
+            >
+              {reconciling ? 'Ejecutando...' : 'Reconciliar ahora'}
+            </button>
+            <Link
+              href="/admin/reconciliation-logs"
+              className="text-xs uppercase tracking-widest px-4 py-2 border rounded transition-colors hover:text-white"
+              style={{ borderColor: '#333', color: MUTED }}
+            >
+              Recon. logs
+            </Link>
             <Link
               href="/admin/activate/logs"
               className="text-xs uppercase tracking-widest px-4 py-2 border rounded transition-colors hover:text-white"
@@ -269,6 +309,20 @@ export default function AdminActivatePage() {
             </Link>
           </div>
         </div>
+
+        {/* Reconciliation result */}
+        {reconcileResult && (
+          <div
+            className="px-4 py-3 rounded-lg border text-sm font-semibold"
+            style={{
+              borderColor: reconcileResult.ok ? `${GREEN}40` : `${RED}40`,
+              backgroundColor: reconcileResult.ok ? `${GREEN}08` : `${RED}08`,
+              color: reconcileResult.ok ? GREEN : RED,
+            }}
+          >
+            {reconcileResult.msg}
+          </div>
+        )}
 
         {/* Alerts */}
         {hasAlerts && (

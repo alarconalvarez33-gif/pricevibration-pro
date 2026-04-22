@@ -229,6 +229,18 @@ export async function sendWelcomeEmail(
   await sendEmail(email, subject, baseTemplate(body))
 }
 
+export async function sendAdminAlert(subject: string, body: string): Promise<void> {
+  const adminEmail = process.env.ADMIN_EMAIL || 'raul@sacredlevels.com'
+  await sendEmail(
+    adminEmail,
+    subject,
+    baseTemplate(`
+      <h2 style="color:#fbbf24;font-size:18px;margin-bottom:8px;">${subject}</h2>
+      <pre style="font-family:monospace;font-size:13px;color:#ccc;white-space:pre-wrap;background:#0d0d0e;border:1px solid #222;border-radius:6px;padding:16px;margin-top:16px;">${body}</pre>
+    `)
+  )
+}
+
 export async function sendReactivationEmail(email: string, name: string, plan: string, premiumUntil: Date) {
   const displayName = name || email
   const renewDate = fmtDate(premiumUntil)

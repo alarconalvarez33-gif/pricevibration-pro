@@ -256,6 +256,26 @@ model ActivationLog {
   @@index([source])
 }
 
+model ReconciliationLog {
+  id              String   @id @default(cuid())
+  paymentId       String
+  paymentType     String   @default("subscription") // "subscription" | "product"
+  userId          String
+  pagoparStatus   String
+  previousStatus  String
+  newStatus       String
+  action          String   // "activated" | "no_action" | "error"
+  source          String   // "cron" | "manual_admin"
+  errorMsg        String?
+  pagoparResponse Json?
+  createdAt       DateTime @default(now())
+
+  @@index([paymentId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action])
+}
+
 model FreeUsage {
   id          String   @id @default(cuid())
   fingerprint String
