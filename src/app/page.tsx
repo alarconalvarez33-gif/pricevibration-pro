@@ -370,13 +370,13 @@ export default function HomePage() {
                   className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
                   style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
                 >
-                  <div className="overflow-hidden" style={{ minHeight: '340px', backgroundColor: '#0d0d0d' }}>
+                  <div className="overflow-hidden" style={{ backgroundColor: '#0d0d0d' }}>
                     <img
                       src="/flyer1.jpg"
                       alt="Genesis"
                       onClick={() => setZoomedFlyer({ src: '/flyer1.jpg', alt: 'Genesis' })}
-                      className="w-full h-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ height: 'auto', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <div className="flex flex-col flex-1 p-4 gap-3">
@@ -430,7 +430,7 @@ export default function HomePage() {
                   className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
                   style={{ backgroundColor: C.card, border: `1px solid ${C.gold}50`, boxShadow: `0 0 40px ${C.gold}15` }}
                 >
-                  <div className="relative overflow-hidden" style={{ minHeight: '340px', backgroundColor: '#0d0d0d' }}>
+                  <div className="relative overflow-hidden" style={{ backgroundColor: '#0d0d0d' }}>
                     <div className="absolute top-3 left-3 z-10">
                       <span
                         className="text-[8px] font-bold uppercase tracking-[0.25em] px-2 py-1"
@@ -443,8 +443,8 @@ export default function HomePage() {
                       src="/cuadradex.png"
                       alt="Frecuencia"
                       onClick={() => setZoomedFlyer({ src: '/cuadradex.png', alt: 'Frecuencia' })}
-                      className="w-full h-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ height: 'auto', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <div className="flex flex-col flex-1 p-4 gap-3">
@@ -497,13 +497,13 @@ export default function HomePage() {
                   className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
                   style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
                 >
-                  <div className="overflow-hidden" style={{ minHeight: '340px', backgroundColor: '#0d0d0d' }}>
+                  <div className="overflow-hidden" style={{ backgroundColor: '#0d0d0d' }}>
                     <img
                       src="/vaso.png"
                       alt="Estrategia ADX"
                       onClick={() => setZoomedFlyer({ src: '/vaso.png', alt: 'Estrategia ADX' })}
-                      className="w-full h-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ objectFit: 'contain', display: 'block', cursor: 'zoom-in' }}
+                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
+                      style={{ height: 'auto', display: 'block', cursor: 'zoom-in' }}
                     />
                   </div>
                   <div className="flex flex-col flex-1 p-4 gap-3">
@@ -771,18 +771,18 @@ export default function HomePage() {
                   className="group flex flex-col transition-all duration-200"
                   style={{ backgroundColor: C.card }}
                 >
-                  {/* Flyer — siempre completo, sin recorte */}
+                  {/* Flyer — altura natural, sin recorte */}
                   <div
                     className="w-full overflow-hidden"
-                    style={{ height: '260px', backgroundColor: '#0d0d0d' }}
+                    style={{ backgroundColor: '#0d0d0d' }}
                   >
                     <Image
                       src={course.flyer}
                       alt={course.name}
                       width={400}
-                      height={260}
-                      className="w-full h-full transition-transform duration-500 group-hover:scale-105"
-                      style={{ objectFit: 'contain' }}
+                      height={600}
+                      className="w-full transition-transform duration-500 group-hover:scale-105"
+                      style={{ height: 'auto', display: 'block' }}
                     />
                   </div>
                   <div className="p-6 flex flex-col flex-1">
