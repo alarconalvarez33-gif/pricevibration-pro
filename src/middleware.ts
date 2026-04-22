@@ -33,12 +33,18 @@ const PUBLIC_PREFIXES = [
   '/api/results',    // Public proof results (landing page)
   '/api/user/',      // Purchases/subscription info needed by course-only users
   '/courses/',       // Course pages handle their own access (ProductPurchase check)
+  '/cursos/',        // Public course catalog + marketing pages
+  '/cursos',         // /cursos index
   '/curso',          // /curso and /curso/* handle their own access (cursoPurchased check)
   '/api/curso/',     // check-access must be reachable by course-only users
   '/api/proofs',     // proof images shown publicly on home page
   '/api/reservations', // reservation form is public
   '/admin/',         // Admin pages handle their own auth internally
   '/api/admin/',     // Admin API routes handle their own auth internally (check session + ADMIN_EMAILS internally)
+  '/metalevels/',    // MetaLevels pages handle their own access (License check)
+  '/metalevels',     // /metalevels index
+  '/dashboard/',     // Dashboard and sub-pages handle their own auth via getServerSession
+  '/dashboard',      // /dashboard index
   '/_next/',
 ]
 
