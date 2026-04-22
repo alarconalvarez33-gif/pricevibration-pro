@@ -57,6 +57,7 @@ export default function DashboardPage() {
   type CourseItem = { productId: string; title: string; url: string; icon: string; pricePYG: number; priceUSD: number; paidAt: string | null }
   const [ownedCourses,     setOwnedCourses]     = useState<CourseItem[]>([])
   const [availableCourses, setAvailableCourses] = useState<CourseItem[]>([])
+  const [purchasesLoaded,  setPurchasesLoaded]  = useState(false)
   const [clasicaGuideOpen, setClasicaGuideOpen] = useState(false)
 
   // Admin state
@@ -80,8 +81,9 @@ export default function DashboardPage() {
         .then((data) => {
           if (data.owned)     setOwnedCourses(data.owned)
           if (data.available) setAvailableCourses(data.available)
+          setPurchasesLoaded(true)
         })
-        .catch(() => {})
+        .catch(() => { setPurchasesLoaded(true) })
     }
   }, [status])
 
@@ -159,8 +161,9 @@ export default function DashboardPage() {
   const trialUses = session.user.trialUses || 0
   const trialExpired = session.user.trialExpired || false
 
-  // Trial system for non-premium users
-  if (!isPremium) {
+  // Trial system for non-premium users — skip block if they have paid products
+  const hasPaidProducts = ownedCourses.length > 0
+  if (!isPremium && !hasPaidProducts && purchasesLoaded) {
     if (trialExpired || trialUses >= 3) {
       return (
         <main className="min-h-screen bg-terminal-bg">

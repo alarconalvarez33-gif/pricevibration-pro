@@ -6,12 +6,13 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 const COURSE_META: Record<string, { title: string; url: string; icon: string; pricePYG: number; priceUSD: number }> = {
-  'frecuencia':         { title: 'Frecuencia',         url: '/dashboard/cursos/frecuencia', icon: '🌀', pricePYG: 200000, priceUSD: 27 },
-  'canal-paralelo':     { title: 'Canal Paralelo',     url: '/courses/canal-paralelo',      icon: '🎓', pricePYG: 320000, priceUSD: 48 },
-  'expansion-matematica': { title: 'Genesis',          url: '/courses/expansion-matematica', icon: '👑', pricePYG: 500000, priceUSD: 77 },
-  'fibonacci':          { title: 'Fibonacci',          url: '/courses/fibonacci',           icon: '📊', pricePYG: 499000, priceUSD: 75 },
-  'super-estrategia':   { title: 'Super Estrategia',   url: '/curso',                       icon: '🏆', pricePYG:  65000, priceUSD: 10 },
-  'adx':               { title: 'Estrategia ADX',      url: '/courses/adx',                 icon: '📈', pricePYG: 220000, priceUSD: 30 },
+  'frecuencia':           { title: 'Frecuencia',         url: '/dashboard/cursos/frecuencia', icon: '🌀', pricePYG: 200000, priceUSD: 27 },
+  'metalevels':           { title: 'MetaLevels',          url: '/metalevels/acceso',           icon: '📈', pricePYG: 150000, priceUSD: 20 },
+  'canal-paralelo':       { title: 'Canal Paralelo',      url: '/courses/canal-paralelo',      icon: '🎓', pricePYG: 320000, priceUSD: 48 },
+  'expansion-matematica': { title: 'Genesis',             url: '/courses/expansion-matematica', icon: '👑', pricePYG: 500000, priceUSD: 77 },
+  'fibonacci':            { title: 'Fibonacci',           url: '/courses/fibonacci',           icon: '📊', pricePYG: 499000, priceUSD: 75 },
+  'super-estrategia':     { title: 'Super Estrategia',    url: '/curso',                       icon: '🏆', pricePYG:  65000, priceUSD: 10 },
+  'adx':                  { title: 'Estrategia ADX',      url: '/courses/adx',                 icon: '📈', pricePYG: 220000, priceUSD: 30 },
 }
 
 type CourseEntry = {
