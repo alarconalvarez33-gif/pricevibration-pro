@@ -183,7 +183,7 @@ export default function MetaLevelsPage() {
 
                 Por qué funciona: Los traders pierden NO por señales malas, sino por mala gestión. Un sistema que obliga a operar con R:R 1:3 mínimo hace ganar incluso con 40% de acierto.
 Complejidad: Baja-Media.
-Posicionamiento: "El indicador que te hace rentable aunque aciertes el 40%" (ángulo único, contraintuitivo)
+Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángulo único, contraintuitivo)
               </p>
               <p>
                 Cada nivel generado por el indicador representa una zona de alta probabilidad de
