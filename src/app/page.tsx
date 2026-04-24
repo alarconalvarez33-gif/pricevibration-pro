@@ -316,7 +316,7 @@ export default function HomePage() {
                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.green }} />
                   <span className="text-[10px] font-semibold uppercase tracking-[0.3em]"
                     style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Sacred Levels — Plataforma Cuántica de Trading
+                    Sacred Levels — Plataforma única de Trading - Por qué funciona: Los traders pierden NO por señales malas, sino por mala gestión. Un sistema que obliga a operar con R:R 1:3 mínimo hace ganar incluso con 40% de acierto.
                   </span>
                 </div>
 
