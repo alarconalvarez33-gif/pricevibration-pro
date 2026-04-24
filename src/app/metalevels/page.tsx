@@ -177,6 +177,13 @@ export default function MetaLevelsPage() {
                 retrocesos estándar, MetaLevels calcula estructuras de precio invisibles para el
                 trader promedio — las mismas que utilizan las instituciones para posicionarse antes
                 de los movimientos más importantes del mercado.
+
+                Este indicador no promete milagros, reduce señales falsas si, pero depende en un 90 % de 
+                tu disciplina, vision y conocimiento para operar.
+
+                Por qué funciona: Los traders pierden NO por señales malas, sino por mala gestión. Un sistema que obliga a operar con R:R 1:3 mínimo hace ganar incluso con 40% de acierto.
+Complejidad: Baja-Media.
+Posicionamiento: "El indicador que te hace rentable aunque aciertes el 40%" (ángulo único, contraintuitivo)
               </p>
               <p>
                 Cada nivel generado por el indicador representa una zona de alta probabilidad de
