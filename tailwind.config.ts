@@ -9,20 +9,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // New Professional Gold Palette
+        // ── Existing palettes (preserved for dashboard/admin) ──
         gold: {
           50: '#fef9e7',
           100: '#fcf0c3',
           200: '#f9e08a',
           300: '#e8c84a',
           400: '#d4af37',
-          500: '#c9a227', // Primary elegant gold
+          500: '#c9a227',
           600: '#a88820',
           700: '#86691a',
           800: '#6b5215',
           900: '#503d10',
         },
-        // Institutional Navy Palette
         navy: {
           50: '#e8eef5',
           100: '#c8d6e8',
@@ -32,29 +31,25 @@ const config: Config = {
           500: '#4778b4',
           600: '#3a5f8f',
           700: '#2d4a6e',
-          800: '#1e3a5f',  // PRIMARY navy institucional
+          800: '#1e3a5f',
           900: '#142840',
         },
-        // Professional Dark Theme (Institutional)
         terminal: {
-          bg: '#0f1419',       // Slightly lighter for better visibility
-          card: '#2d3748',     // Institutional dark gray
-          border: '#4a5568',   // More visible gray border
-          text: '#ffffff',     // Pure white for maximum contrast
-          muted: '#a0aec0',    // Lighter muted text
+          bg: '#0f1419',
+          card: '#2d3748',
+          border: '#4a5568',
+          text: '#ffffff',
+          muted: '#a0aec0',
         },
-        // Trading Colors
         gann: {
-          support: '#10b981',    // Emerald green
-          resistance: '#ef4444', // Classic red
-          neutral: '#c9a227',    // Elegant gold
+          support: '#10b981',
+          resistance: '#ef4444',
+          neutral: '#c9a227',
         },
-        // Professional accent
         accent: {
-          blue: '#1a73e8',    // Professional blue
-          gold: '#c9a227',    // Elegant gold
+          blue: '#1a73e8',
+          gold: '#c9a227',
         },
-        // Planet colors
         planet: {
           sun: '#FFD700',
           moon: '#C0C0C0',
@@ -66,12 +61,42 @@ const config: Config = {
           uranus: '#40E0D0',
           neptune: '#4169E1',
           pluto: '#8B4513',
-        }
+        },
+
+        // ── New Corporate Fintech/EdTech design system ──
+        'bg-dark': '#000000',
+        'bg-dark-blue': '#0F172A',
+        'bg-dark-blue-2': '#1A2845',
+        'bg-light': '#F5F7FA',
+        'accent-cyan': '#00D4FF',
+        'accent-cyan-hover': '#00B8E6',
+        'accent-cyan-dark': '#0EA5E9',
+        'accent-blue-deep': '#1E40AF',
+        'accent-orange': '#F58220',
+        'accent-gold-bright': '#FFD700',
+        'text-light-secondary': '#CBD5E1',
+        'text-dark': '#0F172A',
+        'text-dark-secondary': '#475569',
+        'text-muted-slate': '#64748B',
       },
       fontFamily: {
+        // Existing (preserved for dashboard/admin)
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
         display: ['Outfit', 'Inter', 'sans-serif'],
         cursive: ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
+        // New fonts
+        montserrat: ['Montserrat', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+      },
+      backgroundImage: {
+        'gradient-dark': 'linear-gradient(180deg, #0F172A 0%, #1A2845 100%)',
+        'gradient-cyan': 'linear-gradient(135deg, #00D4FF, #0EA5E9)',
+        'gradient-hero': 'linear-gradient(135deg, #0F172A 0%, #1A2845 50%, #0F172A 100%)',
+      },
+      boxShadow: {
+        'cyan-glow': '0 8px 24px rgba(0, 212, 255, 0.4)',
+        'card-hover': '0 20px 40px rgba(0, 0, 0, 0.15)',
+        'card-light': '0 4px 20px rgba(0, 0, 0, 0.08)',
       },
       animation: {
         'pulse-gold': 'pulse-gold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -83,6 +108,7 @@ const config: Config = {
         'blur-reveal': 'blur-reveal 4s ease-in-out infinite',
         'slide-in': 'slide-in 0.5s ease-out',
         'notification': 'notification 0.5s ease-out',
+        'fade-up': 'fade-up 0.6s ease-out forwards',
       },
       keyframes: {
         'pulse-gold': {
@@ -119,7 +145,11 @@ const config: Config = {
           '90%': { transform: 'translateX(0)', opacity: '1' },
           '100%': { transform: 'translateX(100%)', opacity: '0' },
         },
-      }
+        'fade-up': {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+      },
     },
   },
   plugins: [],

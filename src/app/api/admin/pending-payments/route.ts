@@ -13,18 +13,30 @@ export async function GET() {
 
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   const since48h = new Date(Date.now() - 48 * 60 * 60 * 1000)
+  // Only show payments older than 1 hour: gives the webhook time to auto-activate real payments
+  const since1h = new Date(Date.now() - 60 * 60 * 1000)
 
   const [pendingPayments, pendingPurchases, failedWebhooks] = await Promise.all([
-    // Pending subscriptions (paidAt is null)
+    // Pending subscriptions: must have a PagoPar hash and be older than 1 hour
     prisma.payment.findMany({
-      where: { paidAt: null, status: 'pending', createdAt: { gte: since7d } },
+      where: {
+        paidAt: null,
+        status: 'pending',
+        pagoparHash: { not: null },
+        createdAt: { gte: since7d, lte: since1h },
+      },
       orderBy: { createdAt: 'desc' },
       include: { user: { select: { email: true, name: true } } },
     }),
 
-    // Pending product purchases (paidAt is null)
+    // Pending product purchases: must have a PagoPar hash and be older than 1 hour
     prisma.productPurchase.findMany({
-      where: { paidAt: null, status: 'pending', createdAt: { gte: since7d } },
+      where: {
+        paidAt: null,
+        status: 'pending',
+        pagoparHash: { not: null },
+        createdAt: { gte: since7d, lte: since1h },
+      },
       orderBy: { createdAt: 'desc' },
       include: { user: { select: { email: true, name: true } } },
     }),

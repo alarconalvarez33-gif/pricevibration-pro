@@ -1,1045 +1,973 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import Navbar from '@/components/Navbar';
-import PromoPopup from '@/components/PromoPopup';
-import MentorProfile from '@/components/MentorProfile';
-import FormasDePago from '@/components/FormasDePago';
-import MetaLevelsPromoCard from '@/components/MetaLevelsPromoCard';
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/Footer'
 
-/* ── Design tokens ── */
-const C = {
-  bg:     '#0A0A0B',
-  card:   '#141415',
-  border: '#222222',
-  cyan:   '#00E5FF',
-  gold:   '#c9a227',
-  green:  '#00D26A',
-  red:    '#FF4757',
-  muted:  '#555555',
-  subtle: '#333333',
-} as const;
+// ── Design tokens ──────────────────────────────
+const CYAN      = '#00D4FF'
+const CYAN_DARK = '#0EA5E9'
+const DARK_BG   = '#0F172A'
+const DARK_BG2  = '#1A2845'
+const LIGHT_BG  = '#F5F7FA'
+const GOLD      = '#FFD700'
 
-interface ProofResult {
-  id: string
-  description: string
-  date: string | null
+// ── Course data ─────────────────────────────────
+const COURSES = [
+  {
+    id:        'super-estrategia',
+    name:      'Super Estrategia',
+    level:     'Básico',
+    icon:      '📊',
+    flyer:     '/recursos.png',
+    priceGs:   150000,
+    priceUsd:  23,
+    popular:   false,
+    features:  [
+      'Estrategia de entrada de alta probabilidad',
+      'Gestión de riesgo profesional',
+      'Aplicable en cualquier mercado',
+      'Acceso de por vida sin cuotas',
+    ],
+    action: 'api' as const,
+    productId: 'super-estrategia',
+  },
+  {
+    id:        'genesis',
+    name:      'Génesis',
+    level:     'Intermedio',
+    icon:      '⚡',
+    flyer:     '/flyer1.jpg',
+    priceGs:   500000,
+    priceUsd:  78,
+    popular:   true,
+    features:  [
+      'Método de raíz cuadrada de W.D. Gann',
+      'Cálculo de niveles exactos de precio',
+      'Proyecciones de precio y tiempo',
+      'Acceso de por vida sin cuotas',
+    ],
+    action: 'api' as const,
+    productId: 'expansion-matematica',
+  },
+  {
+    id:        'frecuencia',
+    name:      'Frecuencia',
+    level:     'Avanzado',
+    icon:      '🔮',
+    flyer:     '/cuadradex.png',
+    priceGs:   200000,
+    priceUsd:  31,
+    popular:   false,
+    features:  [
+      'Estructura fractal del mercado',
+      'Sincronización de tiempo y precio',
+      'Zonas geométricas de reversión',
+      'Acceso de por vida sin cuotas',
+    ],
+    action: 'link' as const,
+    href:      '/cursos/frecuencia',
+  },
+]
+
+function formatGs(n: number) {
+  return 'Gs. ' + new Intl.NumberFormat('es-PY').format(n)
 }
 
-function ResultsGrid({ results }: { results: ProofResult[] }) {
-  const [selected, setSelected] = useState<ProofResult | null>(null)
-
-  const cols =
-    results.length === 1 ? 'max-w-md mx-auto' :
-    results.length === 2 ? 'grid sm:grid-cols-2' :
-    'grid sm:grid-cols-2 lg:grid-cols-3'
-
+// ── Small stat card for hero photo ───────────────
+function StatBubble({ value, label, position }: { value: string; label: string; position: string }) {
   return (
-    <>
-      <div className={cols} style={{ gap: 16, display: results.length === 1 ? 'block' : undefined }}>
-        {results.map((r) => (
-          <div
-            key={r.id}
-            onClick={() => setSelected(r)}
-            className="rounded-xl overflow-hidden cursor-zoom-in transition-all duration-200 hover:scale-[1.02]"
-            style={{ border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.03)' }}
-          >
-            <div style={{ aspectRatio: '16/9', overflow: 'hidden', backgroundColor: '#0a0a0b' }}>
-              <img
-                src={`/api/results/image/${r.id}`}
-                alt={r.description}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                loading="lazy"
-              />
-            </div>
-            <div className="p-3">
-              <p style={{ color: '#aaa', fontSize: 12, fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
-                {r.description}
-              </p>
-              {r.date && (
-                <p style={{ color: '#555', fontSize: 11, marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>
-                  {r.date}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {selected && (
-        <div
-          onClick={() => setSelected(null)}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
-            backgroundColor: 'rgba(0,0,0,0.92)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            padding: '20px', cursor: 'zoom-out',
-          }}
-        >
-          <img
-            src={`/api/results/image/${selected.id}`}
-            alt={selected.description}
-            style={{ maxWidth: '95vw', maxHeight: '82vh', objectFit: 'contain', boxShadow: '0 0 60px rgba(0,229,255,0.1)' }}
-          />
-          <p style={{ color: '#aaa', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 14 }}>
-            {selected.description}
-          </p>
-          {selected.date && (
-            <p style={{ color: '#555', fontSize: 11, marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>
-              {selected.date}
-            </p>
-          )}
-          <p style={{ color: '#555', fontSize: 11, marginTop: 8 }}>Toca para cerrar</p>
-        </div>
-      )}
-    </>
+    <div
+      className={`absolute ${position} z-10 rounded-xl px-4 py-3 text-left`}
+      style={{
+        backgroundColor: 'rgba(15,23,42,0.92)',
+        border: '1px solid rgba(0,212,255,0.25)',
+        backdropFilter: 'blur(12px)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        minWidth: '160px',
+      }}
+    >
+      <p className="font-black text-white text-base leading-none" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        {value}
+      </p>
+      <p className="text-xs mt-1" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
+        {label}
+      </p>
+    </div>
   )
 }
 
+// ── Course card ──────────────────────────────────
+function CourseCard({
+  course,
+  onBuy,
+  loading,
+}: {
+  course: typeof COURSES[0]
+  onBuy: (c: typeof COURSES[0]) => void
+  loading: boolean
+}) {
+  return (
+    <div
+      className="flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-300 hover:-translate-y-1"
+      style={{
+        boxShadow: course.popular
+          ? '0 0 0 2px #00D4FF, 0 20px 40px rgba(0,212,255,0.12)'
+          : '0 4px 20px rgba(0,0,0,0.08)',
+      }}
+    >
+      {/* Popular badge */}
+      {course.popular && (
+        <div
+          className="text-center py-1.5 text-[11px] font-bold uppercase tracking-[0.15em]"
+          style={{ backgroundColor: CYAN, color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
+        >
+          ⭐ MÁS POPULAR
+        </div>
+      )}
+
+      {/* Flyer */}
+      <div
+        className="relative overflow-hidden flex items-center justify-center p-4"
+        style={{ aspectRatio: '3/4', background: 'linear-gradient(135deg, #0F172A 0%, #1A2845 100%)' }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={course.flyer}
+          alt={course.name}
+          className="w-full h-full object-contain"
+          style={{ filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.35))' }}
+        />
+        <div
+          className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.1em]"
+          style={{ backgroundColor: 'rgba(0,0,0,0.6)', color: CYAN_DARK, border: '1px solid rgba(0,212,255,0.3)', backdropFilter: 'blur(8px)' }}
+        >
+          {course.icon} {course.level}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-6">
+        <h3
+          className="text-xl font-bold mb-3 leading-tight"
+          style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif" }}
+        >
+          {course.name}
+        </h3>
+
+        <ul className="space-y-2 mb-5 flex-1">
+          {course.features.map(f => (
+            <li key={f} className="flex items-start gap-2 text-sm" style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}>
+              <span className="mt-0.5 shrink-0" style={{ color: CYAN_DARK }}>✓</span>
+              {f}
+            </li>
+          ))}
+        </ul>
+
+        {/* Price */}
+        <div className="pt-4 mb-4" style={{ borderTop: '1px solid #F1F5F9' }}>
+          <p
+            className="text-2xl font-bold leading-none"
+            style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif" }}
+          >
+            {formatGs(course.priceGs)}
+          </p>
+          <p className="text-sm mt-1" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+            ≈ USD {course.priceUsd}
+          </p>
+        </div>
+
+        {/* Buy button */}
+        <button
+          onClick={() => onBuy(course)}
+          disabled={loading}
+          className="w-full py-3.5 text-sm font-bold uppercase tracking-[0.1em] rounded-lg transition-all duration-200 disabled:opacity-60 hover:-translate-y-0.5"
+          style={{
+            backgroundColor: course.popular ? CYAN : CYAN_DARK,
+            color: '#000',
+            fontFamily: "'Space Grotesk', sans-serif",
+            boxShadow: course.popular ? `0 4px 16px rgba(0,212,255,0.35)` : 'none',
+          }}
+        >
+          {loading ? 'Procesando...' : 'COMPRAR CURSO →'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ── Main page ────────────────────────────────────
 export default function HomePage() {
-  const [formLoading, setFormLoading] = useState(false);
-  const [formSuccess, setFormSuccess] = useState(false);
-  const [formError, setFormError] = useState('');
-  const [cursoLoading, setCursoLoading] = useState(false);
-  const [proofResults, setProofResults] = useState<ProofResult[]>([]);
-  const [zoomedFlyer, setZoomedFlyer] = useState<{ src: string; alt: string } | null>(null);
+  const { data: session } = useSession()
+  const [buyingId, setBuyingId] = useState<string | null>(null)
+  const [chartResults, setChartResults] = useState<{ id: string; description: string; date: string }[]>([])
 
   useEffect(() => {
     fetch('/api/results')
       .then(r => r.json())
-      .then(data => { if (Array.isArray(data.results)) setProofResults(data.results) })
+      .then(d => { if (d.results) setChartResults(d.results) })
       .catch(() => {})
-  }, []);
+  }, [])
 
-  const handleBuyCurso = async () => {
-    setCursoLoading(true);
-    try {
-      const res = await fetch('/api/pagopar/curso-order', { method: 'POST' });
-      const data = await res.json();
-      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
-      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
-    } catch { alert('Error al procesar el pago'); }
-    setCursoLoading(false);
-  };
-
-  const [flyer1Loading, setFlyer1Loading] = useState(false);
-  const [adxLoading, setAdxLoading] = useState(false);
-  const [frecuenciaLoading, setFrecuenciaLoading] = useState(false);
-
-  const handleBuyFrecuencia = async () => {
-    setFrecuenciaLoading(true);
+  const handleBuy = async (course: typeof COURSES[0]) => {
+    if (course.action === 'link' && course.href) {
+      window.location.href = course.href
+      return
+    }
+    if (!session) {
+      window.location.href = `/login?callbackUrl=${encodeURIComponent('/')}`
+      return
+    }
+    setBuyingId(course.id)
     try {
       const res = await fetch('/api/pagopar/create-product-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: 'frecuencia' }),
-      });
-      const data = await res.json();
-      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
-      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
-    } catch { alert('Error al procesar el pago'); }
-    setFrecuenciaLoading(false);
-  };
-
-  const handleBuyAdx = async () => {
-    setAdxLoading(true);
-    try {
-      const res = await fetch('/api/pagopar/create-product-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: 'adx' }),
-      });
-      const data = await res.json();
-      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
-      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
-    } catch { alert('Error al procesar el pago'); }
-    setAdxLoading(false);
-  };
-
-  const handleBuyFlyer1 = async () => {
-    setFlyer1Loading(true);
-    try {
-      const res = await fetch('/api/pagopar/create-product-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: 'expansion-matematica' }),
-      });
-      const data = await res.json();
-      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
-      else alert('Error: ' + (data.error || data.pagoparError || 'No se pudo generar el pago'));
-    } catch { alert('Error al procesar el pago'); }
-    setFlyer1Loading(false);
-  };
-
-  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setFormLoading(true);
-    setFormError('');
-    setFormSuccess(false);
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const json = await response.json();
-      if (response.ok && json.success) {
-        setFormSuccess(true);
-        form.reset();
+        body: JSON.stringify({ productId: course.productId }),
+      })
+      const data = await res.json()
+      if (data.success && data.paymentUrl) {
+        window.location.href = data.paymentUrl
       } else {
-        setFormError(json.error || 'Error al enviar. Intenta de nuevo.');
+        alert('Error: ' + (data.error || 'No se pudo generar el pago'))
       }
     } catch {
-      setFormError('Error al enviar. Escribinos a info@sacredlevels.com');
+      alert('Error al procesar el pago.')
     }
-    setFormLoading(false);
-  };
+    setBuyingId(null)
+  }
 
   return (
-    <>
-      <Navbar />
-      <PromoPopup />
-      {/* pb-20 md:pb-0 accounts for mobile sticky CTA bar */}
-      <main className="min-h-screen pb-20 md:pb-0" style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif" }}>
+    <main style={{ fontFamily: "'Inter', sans-serif" }}>
+      <Header />
 
-        {/* ── QUANTUM ACCESS PRICING ───────────────────────────────── */}
-        <section className="px-4 sm:px-6 pt-28 sm:pt-36 pb-10" style={{ backgroundColor: C.bg, borderBottom: `1px solid ${C.border}` }}>
-          <div className="max-w-6xl mx-auto">
-            {/* Label */}
-            <div className="flex items-center gap-3 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.cyan }} />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em]"
-                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                Quantum Access — Suscripción mensual
-              </span>
+      {/* ════════════════════════════════════════
+          HERO
+      ════════════════════════════════════════ */}
+      <section
+        style={{
+          background: `linear-gradient(135deg, ${DARK_BG} 0%, ${DARK_BG2} 60%, ${DARK_BG} 100%)`,
+          paddingTop: '96px',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+            {/* Left — copy */}
+            <div>
+              <p
+                className="text-xs font-bold uppercase tracking-[0.35em] mb-5"
+                style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                Educación · Trading · Tecnología
+              </p>
+
+              <h1
+                className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight mb-6"
+                style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px', color: '#FFFFFF' }}
+              >
+                Opera con la{' '}
+                <span style={{ color: CYAN }}>precisión</span>
+                {' '}que el mercado exige.
+              </h1>
+
+              <p
+                className="text-lg mb-4 leading-relaxed"
+                style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}
+              >
+                Tecnología de precisión al servicio de tu operativa.
+              </p>
+              <p
+                className="text-base mb-10 leading-relaxed"
+                style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}
+              >
+                Accedé a herramientas de análisis técnico avanzado, cursos probados
+                y comunidad de traders profesionales.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/billing"
+                  className="px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] rounded-lg text-center transition-all duration-300 hover:-translate-y-0.5"
+                  style={{
+                    backgroundColor: CYAN,
+                    color: '#000',
+                    boxShadow: '0 8px 24px rgba(0,212,255,0.4)',
+                    fontFamily: "'Space Grotesk', sans-serif",
+                  }}
+                >
+                  COMENZAR AHORA
+                </Link>
+                <Link
+                  href="/cursos"
+                  className="px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] rounded-lg text-center transition-all duration-300 hover:border-white hover:text-white"
+                  style={{
+                    border: '2px solid rgba(255,255,255,0.2)',
+                    color: '#CBD5E1',
+                    fontFamily: "'Space Grotesk', sans-serif",
+                  }}
+                >
+                  VER CURSOS
+                </Link>
+              </div>
             </div>
 
-            <div className="border" style={{ borderColor: C.border, backgroundColor: C.card }}>
-              {/* Cyan top line */}
-              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)` }} />
-
-              <div className="flex flex-col md:flex-row">
-                {/* Flyer */}
-                <div className="md:w-72 shrink-0 border-b md:border-b-0 md:border-r" style={{ borderColor: C.border, backgroundColor: '#0e0e0f' }}>
+            {/* Right — photo + stat bubbles */}
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative" style={{ maxWidth: '380px', width: '100%' }}>
+                {/* Photo */}
+                <div
+                  className="relative overflow-hidden rounded-2xl"
+                  style={{
+                    border: '2px solid rgba(0,212,255,0.2)',
+                    boxShadow: '0 0 60px rgba(0,212,255,0.1)',
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/signal.png"
-                    alt="Quantum Access"
-                    className="w-full h-full block"
-                    style={{ objectFit: 'cover', maxHeight: '320px' }}
+                    src="/raultrader2.jpg"
+                    alt="Raúl Alarcón — Fundador Sacred Levels"
+                    className="w-full object-cover"
+                    style={{ aspectRatio: '4/5', display: 'block', objectPosition: 'top center' }}
                   />
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: 'linear-gradient(180deg, transparent 60%, rgba(15,23,42,0.6) 100%)' }}
+                  />
+                </div>
+
+                {/* Stat bubble — top right */}
+                <StatBubble
+                  value="+68% Win Rate"
+                  label="Operaciones rentables"
+                  position="-top-4 -right-4 sm:-right-8"
+                />
+
+                {/* Stat bubble — bottom left */}
+                <StatBubble
+                  value="170 + Traders"
+                  label="clientes activos"
+                  position="-bottom-4 -left-4 sm:-left-8"
+                />
+
+                {/* Name tag below photo */}
+                <div className="mt-5 text-center">
+                  <p
+                    className="text-sm font-bold uppercase tracking-[0.15em]"
+                    style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Fundador &amp; CEO
+                  </p>
+                  <p
+                    className="text-xs mt-0.5 uppercase tracking-[0.2em]"
+                    style={{ color: '#475569', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Trading PY
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          STATS BAR
+      ════════════════════════════════════════ */}
+      <section style={{ backgroundColor: '#000', borderTop: '1px solid #1a1a1a', borderBottom: '1px solid #1a1a1a' }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            {[
+              { value: '200+',  label: 'Traders formados' },
+              { value: '15+',    label: 'Años de experiencia' },
+              { value: '3',     label: 'Niveles de formación' },
+              { value: '24/7',  label: 'Acceso al contenido' },
+            ].map(stat => (
+              <div key={stat.label} className="text-center">
+                <p
+                  className="text-3xl font-black mb-1"
+                  style={{ color: CYAN, fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  {stat.value}
+                </p>
+                <p className="text-sm" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          CURSOS
+      ════════════════════════════════════════ */}
+      <section style={{ backgroundColor: LIGHT_BG }} id="cursos">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+
+          {/* Header */}
+          <div className="text-center mb-12">
+            <p
+              className="text-xs font-bold uppercase tracking-[0.35em] mb-4"
+              style={{ color: CYAN_DARK, fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Formación
+            </p>
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 leading-tight"
+              style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
+            >
+              Sepa como ganarle al mercado con estas metodologías de Trading
+            </h2>
+            <p
+              className="text-base max-w-xl mx-auto"
+              style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}
+            >
+              Comprás una vez, accedés de por vida. Sin suscripción requerida.
+            </p>
+          </div>
+
+          {/* Course grid */}
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {COURSES.map(course => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                onBuy={handleBuy}
+                loading={buyingId === course.id}
+              />
+            ))}
+          </div>
+
+          {/* Notice */}
+          <div
+            className="mt-10 flex items-start gap-3 px-5 py-4 rounded-xl max-w-2xl mx-auto"
+            style={{ backgroundColor: 'rgba(14,165,233,0.06)', border: '1px solid rgba(14,165,233,0.15)' }}
+          >
+            <span className="text-lg shrink-0">ℹ️</span>
+            <p className="text-sm" style={{ color: '#0369A1', fontFamily: "'Inter', sans-serif" }}>
+              Al comprar cualquier curso, accedés al contenido completo desde la sección{' '}
+              <strong>CURSOS</strong> en tu cuenta. Acceso de por vida garantizado.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          RESULTADOS / GRÁFICOS DE ESTRATEGIAS
+      ════════════════════════════════════════ */}
+      <section style={{ background: `linear-gradient(180deg, ${DARK_BG} 0%, #111827 100%)` }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+
+          <div className="text-center mb-14">
+            <p
+              className="text-xs font-bold uppercase tracking-[0.35em] mb-4"
+              style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Operaciones Reales
+            </p>
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight mb-4"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
+            >
+              Estrategias en el{' '}
+              <span style={{ color: CYAN }}>gráfico real</span>
+            </h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+              Resultados verificables aplicando la metodología Sacred Levels en mercados reales.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[0, 1, 2].map(i => {
+              const result = chartResults[i]
+              return (
+                <div
+                  key={i}
+                  className="rounded-2xl overflow-hidden"
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.03)',
+                    border: result ? '1px solid rgba(0,212,255,0.2)' : '1px solid #1E293B',
+                    boxShadow: result ? '0 0 40px rgba(0,212,255,0.05)' : 'none',
+                  }}
+                >
+                  {/* Chart image */}
+                  <div
+                    className="relative overflow-hidden"
+                    style={{ aspectRatio: '16/9', backgroundColor: '#0A0F1C' }}
+                  >
+                    {result ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={`/api/results/image/${result.id}`}
+                        alt={result.description}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full flex flex-col items-center justify-center"
+                        style={{ border: '2px dashed #1E293B' }}
+                      >
+                        <svg className="w-10 h-10 mb-3 opacity-20" fill="none" stroke="#00D4FF" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                        </svg>
+                        <p className="text-xs uppercase tracking-[0.2em]" style={{ color: '#1E293B', fontFamily: "'Space Grotesk', sans-serif" }}>
+                          Próximamente
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info bar */}
+                  <div className="px-4 py-3.5">
+                    {result ? (
+                      <>
+                        <p
+                          className="text-sm font-semibold text-white leading-snug"
+                          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                        >
+                          {result.description}
+                        </p>
+                        {result.date && (
+                          <p
+                            className="text-xs mt-1"
+                            style={{ color: '#475569', fontFamily: "'JetBrains Mono', monospace" }}
+                          >
+                            {new Date(result.date).toLocaleDateString('es-PY', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-xs" style={{ color: '#1E293B', fontFamily: "'Space Grotesk', sans-serif" }}>
+                        — Resultado {i + 1}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="mt-10 text-center">
+            <p className="text-xs" style={{ color: '#374151', fontFamily: "'Inter', sans-serif" }}>
+              Los gráficos son capturas reales de operaciones cerradas. Los resultados pasados no garantizan rendimientos futuros.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          TESTIMONIOS
+      ════════════════════════════════════════ */}
+      <section style={{ backgroundColor: LIGHT_BG }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+
+          <div className="text-center mb-14">
+            <p
+              className="text-xs font-bold uppercase tracking-[0.35em] mb-4"
+              style={{ color: CYAN_DARK, fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Historias Reales
+            </p>
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4"
+              style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
+            >
+              Resultados de nuestros{' '}
+              <span style={{ color: CYAN_DARK }}>clientes</span>
+            </h2>
+            <p className="text-base max-w-2xl mx-auto" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+              Personas reales aplicando la metodología Sacred Levels con resultados verificables.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                image: '/esdra.jpg',
+                name: 'Esdra',
+                profit: '$30–40 USD/día',
+                quote: 'Soy de Brasil, empecé hace poco en el mundo del trading, buscando obtener un ingreso extra, y me ha ido bien por el momento. Con mucha humildad voy ganando entre 30-40 USD por día. Claro, hay días que no se gana, pero la consistencia y disciplina es la clave. ',
+              },
+              {
+                image: '/erwin.jpeg',
+                name: 'Erwin',
+                role: 'Abogado independiente',
+                profit: '$400 USD primer retiro',
+                quote: 'Soy abogado, ya hice el retiro de aproximadamente 400 USD en una cuenta fondeada.',
+              },
+              {
+                image: '/virgilio.jpg',
+                name: 'Virgilio',
+                profit: '$380 USD/semana',
+                quote: 'Soy independiente y con estas estrategias ya voy alcanzando la suma de 380 USD en una semana.',
+              },
+            ].map((t) => (
+              <div
+                key={t.name}
+                className="bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.07)' }}
+              >
+                {/* Photo */}
+                <div
+                  className="relative overflow-hidden"
+                  style={{ aspectRatio: '4/5', background: 'linear-gradient(135deg, #0F172A, #1A2845)' }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={t.image}
+                    alt={t.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div
+                    className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full text-xs font-bold"
+                    style={{ backgroundColor: CYAN_DARK, color: '#fff', boxShadow: '0 4px 12px rgba(14,165,233,0.4)', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    💰 {t.profit}
+                  </div>
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col flex-1 p-6 sm:p-8 gap-6">
-                  {/* Price */}
-                  <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                      Quantum Access
-                    </h2>
-                    <p className="text-sm mb-4" style={{ color: C.muted }}>
-                      Todo lo que necesitás para operar con precisión matemática
+                <div className="p-6">
+                  <h3
+                    className="text-xl font-black mb-0.5"
+                    style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {t.name}
+                  </h3>
+                  {t.role && (
+                    <p className="text-xs mb-3" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
+                      {t.role}
                     </p>
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-3xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                        Gs. 180.000
-                      </span>
-                      <span className="text-sm" style={{ color: C.muted }}>/ $25 USD</span>
-                      <span className="text-sm" style={{ color: C.muted }}>/mes</span>
-                    </div>
+                  )}
+
+                  <div className="relative mt-3">
+                    <span
+                      className="absolute -top-3 -left-1 font-black leading-none select-none"
+                      style={{ color: `${CYAN_DARK}30`, fontSize: '60px', fontFamily: "'Montserrat', sans-serif" }}
+                    >
+                      "
+                    </span>
+                    <p className="text-sm leading-relaxed pl-5 italic" style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}>
+                      {t.quote}
+                    </p>
                   </div>
 
-                  {/* Features */}
-                  <div className="grid sm:grid-cols-2 gap-2">
-                    {[
-                      'Calculadora Cuadrática (ilimitada)',
-                      'Signal Hub (todas las señales)',
-                      'Forex, Crypto, Oro e Índices',
-                      'Análisis IA en tiempo real',
-                      'Dashboard Quantum Levels',
-                      'Acceso 24/7',
-                    ].map((f) => (
-                      <div key={f} className="flex items-center gap-2">
-                        <span className="w-1 h-1 shrink-0" style={{ backgroundColor: C.cyan }} />
-                        <span className="text-sm" style={{ color: '#666' }}>{f}</span>
-                      </div>
+                  <div className="flex gap-0.5 mt-4">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} style={{ color: GOLD, fontSize: '14px' }}>★</span>
                     ))}
                   </div>
-
-                  {/* CTA */}
-                  <div className="flex flex-col sm:flex-row gap-3 items-start">
-                    <Link href="/billing"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 font-bold text-sm uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90"
-                      style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                      Suscribirme Ahora
-                      <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </Link>
-                    <span className="text-[10px] mt-1 sm:mt-2.5 uppercase tracking-[0.15em]"
-                      style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}>
-                      Cancelá cuando quieras · Pago seguro
-                    </span>
-                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        </section>
 
-        {/* ── HERO ─────────────────────────────────────────────────── */}
-        <section className="relative pt-16 sm:pt-20 pb-16 sm:pb-28 px-4 sm:px-6 overflow-hidden">
-          {/* Subtle grid texture */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.03]"
-            style={{
-              backgroundImage: `linear-gradient(${C.border} 1px, transparent 1px), linear-gradient(90deg, ${C.border} 1px, transparent 1px)`,
-              backgroundSize: '60px 60px',
-            }}
-          />
-          {/* Top glow — restrained */}
-          <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[min(600px,100vw)] h-[1px]"
-            style={{ background: `linear-gradient(90deg, transparent, ${C.cyan}40, transparent)` }}
-          />
+          <p
+            className="text-center text-xs mt-10 max-w-3xl mx-auto"
+            style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}
+          >
+            * Los resultados mostrados son experiencias individuales. El trading conlleva riesgos y los resultados
+            pasados no garantizan resultados futuros. Cada persona puede obtener resultados diferentes.
+          </p>
+        </div>
+      </section>
 
-          <div className="relative max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-[5fr_6fr] gap-8 items-start">
+      {/* ════════════════════════════════════════
+          QUANTUM ACCESS
+      ════════════════════════════════════════ */}
+      <section style={{ background: `linear-gradient(180deg, ${DARK_BG} 0%, ${DARK_BG2} 100%)` }} id="quantum">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-              {/* ── Left: hero copy ── */}
-              <div>
-                <div className="flex items-center gap-3 mb-8">
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.green }} />
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.3em]"
-                    style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Sacred Levels — Plataforma única de Trading - Por qué funciona: Los traders pierden NO por señales malas, sino por mala gestión. Un sistema que obliga a operar con R:R 1:3 mínimo hace ganar incluso con 40% de acierto.
-                  </span>
-                </div>
-
-                <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-6 sm:mb-8 text-white"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Opera con la precisión que el mercado exige.{' '}
-                  <span style={{ color: C.cyan }}>— Tecnología de precisión al servicio de tu operativa.</span>
-                </h1>
-
-                <p className="text-base sm:text-lg text-[#666] mb-8 sm:mb-12 leading-relaxed">
-                  Soportes/resistencias en segundos para XAUUSD, Bitcoin y los principales pares de Forex.Zonas de alta probabilidad calculadas en segundos. Sin experiencia previa. Sin tarjeta de crédito.
-               
-                </p>
-
-                <div className="flex flex-col gap-3 mb-8 sm:mb-12">
-                  <Link href="/quantum"
-                    className="flex items-center justify-center gap-2 px-6 py-4 font-bold text-sm uppercase tracking-[0.12em] text-black transition-all duration-200 w-full sm:w-auto min-h-[52px]"
-                    style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Probar Gratis — Sin Registro
-                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
-                  <div className="flex flex-col gap-1">
-                    <Link href="/billing"
-                      className="flex items-center justify-center gap-2 px-6 py-4 font-bold text-sm uppercase tracking-[0.12em] text-white border transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] w-full sm:w-auto min-h-[52px]"
-                      style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}>
-                      Ver Precios
-                    </Link>
-                    <span className="text-[10px] text-center" style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}>Desde Gs. 65.000 / $10 USD</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-4 sm:gap-6 text-[#444] text-xs">
-                  {['3 cálculos gratis sin crear cuenta', 'Resultados en 2 segundos', 'Oro · Forex · Crypto · Índices'].map((t) => (
-                    <span key={t} className="flex items-center gap-2">
-                      <svg className="w-3 h-3 shrink-0" fill="none" stroke={C.green} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* ── Right: course flyers ── */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-
-                {/* Card 1 — Genesis */}
-                <div
-                  className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
-                  style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
-                >
-                  <div className="overflow-hidden" style={{ backgroundColor: '#0d0d0d' }}>
-                    <img
-                      src="/flyer1.jpg"
-                      alt="Genesis"
-                      onClick={() => setZoomedFlyer({ src: '/flyer1.jpg', alt: 'Genesis' })}
-                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ height: 'auto', display: 'block', cursor: 'zoom-in' }}
-                    />
-                  </div>
-                  <div className="flex flex-col flex-1 p-4 gap-3">
-                    <span
-                      className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
-                      style={{ backgroundColor: '#c9a22718', color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      Premium
-                    </span>
-                    <h3
-                      className="text-xl font-bold text-white leading-tight"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
-                      Genesis
-                    </h3>
-                    <p
-                      className="text-xs italic leading-relaxed"
-                      style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}
-                    >
-                      Expansión matemática del precio
-                    </p>
-                    <p className="text-sm font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      Gs. 500.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $77 USD</span>
-                    </p>
-                    <p className="text-[0.77rem] leading-relaxed" style={{ color: '#888', fontWeight: 300 }}>
-                      El método de raíz cuadrada aplicado con precisión quirúrgica. Aprende a calcular los niveles exactos donde el precio reacciona con mayor probabilidad.
-                    </p>
-                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: '3px solid #c9a227', backgroundColor: '#c9a22708' }}>
-                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
-                      <ul className="flex flex-col gap-1">
-                        {['Identificar soportes y resistencias de alta probabilidad', 'Aplicar la raíz cuadrada de Gann en tiempo real', 'Operar con un plan claro y sin improvisación'].map((item) => (
-                          <li key={item} className="flex items-start gap-1.5 text-[0.72rem]" style={{ color: '#777', fontWeight: 300 }}>
-                            <span style={{ color: '#c9a227', flexShrink: 0 }}>›</span> {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <button
-                      onClick={handleBuyFlyer1}
-                      disabled={flyer1Loading}
-                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded transition-all duration-200 hover:bg-[#c9a227] hover:text-black disabled:opacity-50"
-                      style={{ border: '1px solid #c9a227', color: '#c9a227', backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      {flyer1Loading ? 'Procesando...' : 'Adquirir Ahora'}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Card 2 — Frecuencia (NUEVO) */}
-                <div
-                  className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
-                  style={{ backgroundColor: C.card, border: `1px solid ${C.gold}50`, boxShadow: `0 0 40px ${C.gold}15` }}
-                >
-                  <div className="relative overflow-hidden" style={{ backgroundColor: '#0d0d0d' }}>
-                    <div className="absolute top-3 left-3 z-10">
-                      <span
-                        className="text-[8px] font-bold uppercase tracking-[0.25em] px-2 py-1"
-                        style={{ backgroundColor: '#c9a22720', color: '#c9a227', border: '1px solid #c9a22740', fontFamily: "'Space Grotesk', sans-serif" }}
-                      >
-                        NUEVO
-                      </span>
-                    </div>
-                    <img
-                      src="/cuadradex.png"
-                      alt="Frecuencia"
-                      onClick={() => setZoomedFlyer({ src: '/cuadradex.png', alt: 'Frecuencia' })}
-                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ height: 'auto', display: 'block', cursor: 'zoom-in' }}
-                    />
-                  </div>
-                  <div className="flex flex-col flex-1 p-4 gap-3">
-                    <span
-                      className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
-                      style={{ backgroundColor: '#c9a22718', color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      Avanzado
-                    </span>
-                    <h3
-                      className="text-xl font-bold text-white leading-tight"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
-                      Frecuencia
-                    </h3>
-                    <p
-                      className="text-xs italic leading-relaxed"
-                      style={{ color: C.gold, fontFamily: "'Playfair Display', serif" }}
-                    >
-                      Decodificá la estructura fractal del mercado
-                    </p>
-                    <p className="text-sm font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      Gs. 200.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $27 USD</span>
-                    </p>
-                    <p className="text-[0.77rem] leading-relaxed" style={{ color: '#888', fontWeight: 300 }}>
-                      Sincronización de tiempo y precio para proyectar zonas geométricas exactas donde el ciclo del mercado tiende a revertir o acelerar.
-                    </p>
-                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: `3px solid ${C.gold}`, backgroundColor: '#c9a22708' }}>
-                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: C.gold, fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
-                      <ul className="flex flex-col gap-1">
-                        {['Decodificar la estructura fractal del mercado', 'Proyectar zonas de reversión con precisión', 'Identificar ciclos de aceleración y consolidación'].map((item) => (
-                          <li key={item} className="flex items-start gap-1.5 text-[0.72rem]" style={{ color: '#777', fontWeight: 300 }}>
-                            <span style={{ color: C.gold, flexShrink: 0 }}>›</span> {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <Link
-                      href="/cursos/frecuencia"
-                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded text-center transition-all duration-200 hover:opacity-90"
-                      style={{ backgroundColor: C.gold, color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      Ver curso →
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Card 3 — Estrategia ADX */}
-                <div
-                  className="group flex flex-col flex-1 min-w-0 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
-                  style={{ backgroundColor: C.card, border: '1px solid #c9a22730', boxShadow: '0 0 30px #c9a22710' }}
-                >
-                  <div className="overflow-hidden" style={{ backgroundColor: '#0d0d0d' }}>
-                    <img
-                      src="/vaso.png"
-                      alt="Estrategia ADX"
-                      onClick={() => setZoomedFlyer({ src: '/vaso.png', alt: 'Estrategia ADX' })}
-                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ height: 'auto', display: 'block', cursor: 'zoom-in' }}
-                    />
-                  </div>
-                  <div className="flex flex-col flex-1 p-4 gap-3">
-                    <span
-                      className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
-                      style={{ backgroundColor: '#c9a22718', color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      Avanzado
-                    </span>
-                    <h3
-                      className="text-xl font-bold text-white leading-tight"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
-                      Estrategia ADX
-                    </h3>
-                    <p
-                      className="text-xs italic leading-relaxed"
-                      style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}
-                    >
-                      Tendencia con confirmación cuantitativa
-                    </p>
-                    <p className="text-sm font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      Gs. 220.000 <span style={{ color: C.muted, fontWeight: 400, fontSize: '0.75rem' }}>/ $30 USD</span>
-                    </p>
-                    <p className="text-[0.77rem] leading-relaxed" style={{ color: '#888', fontWeight: 300 }}>
-                      Domina el indicador ADX para filtrar tendencias reales y eliminar el ruido del mercado. Incluye guía PDF descargable exclusiva.
-                    </p>
-                    <div className="pl-3 py-2 mt-1" style={{ borderLeft: '3px solid #c9a227', backgroundColor: '#c9a22708' }}>
-                      <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-2" style={{ color: '#c9a227', fontFamily: "'Space Grotesk', sans-serif" }}>Lo que lograrás</p>
-                      <ul className="flex flex-col gap-1">
-                        {['Detectar tendencias fuertes antes de que exploten', 'Filtrar señales falsas con precisión', 'Operar solo en condiciones de mercado favorables'].map((item) => (
-                          <li key={item} className="flex items-start gap-1.5 text-[0.72rem]" style={{ color: '#777', fontWeight: 300 }}>
-                            <span style={{ color: '#c9a227', flexShrink: 0 }}>›</span> {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <button
-                      onClick={handleBuyAdx}
-                      disabled={adxLoading}
-                      className="mt-auto w-full py-2.5 text-xs font-bold uppercase tracking-[0.15em] rounded transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
-                      style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      {adxLoading ? 'Procesando...' : 'Adquirir Ahora'}
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* ── SUPER ESTRATEGIA ─────────────────────────────────────── */}
-        <section className="py-12 px-4 sm:px-6" style={{ borderTop: `1px solid ${C.border}` }}>
-          <div className="max-w-6xl mx-auto">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-6" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-              Curso de entrada
-            </p>
-            <div
-              className="flex flex-col sm:flex-row gap-0 overflow-hidden rounded-xl"
-              style={{ border: `1px solid ${C.cyan}30`, backgroundColor: C.card }}
-            >
-              {/* Flyer */}
-              <div className="sm:w-56 shrink-0" style={{ backgroundColor: '#0d0d0d' }}>
-                <img
-                  src="/recursos.png"
-                  alt="Super Estrategia"
-                  onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
-                  className="w-full h-full cursor-zoom-in"
-                  style={{ objectFit: 'contain', display: 'block', maxHeight: '220px' }}
-                />
-              </div>
-              {/* Content */}
-              <div className="flex flex-col flex-1 p-5 sm:p-6 gap-3 justify-center">
-                <span
-                  className="self-start text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-1 rounded"
-                  style={{ backgroundColor: `${C.cyan}18`, color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Fundamentos
-                </span>
-                <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Super Estrategia
-                </h3>
-                <p className="text-xs italic" style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}>
-                  El punto de partida definitivo
-                </p>
-                <p className="text-sm leading-relaxed" style={{ color: '#777' }}>
-                  La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad.
-                </p>
-                <div className="flex items-center gap-4 mt-1 flex-wrap">
-                  <div>
-                    <span className="text-lg font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Gs. 65.000</span>
-                    <span className="ml-2 text-xs" style={{ color: C.muted }}>/ $10 USD · pago único</span>
-                  </div>
-                  <button
-                    onClick={handleBuyCurso}
-                    disabled={cursoLoading}
-                    className="py-2.5 px-5 text-xs font-bold uppercase tracking-[0.15em] transition-all duration-200 hover:bg-[#00E5FF] hover:text-black disabled:opacity-50"
-                    style={{ border: `1px solid ${C.cyan}`, color: C.cyan, backgroundColor: 'transparent', fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    {cursoLoading ? 'Procesando...' : 'Adquirir Ahora'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── FORMAS DE PAGO ───────────────────────────────────────── */}
-        <FormasDePago />
-
-
-
-        {/* ── TRUST BANNER ─────────────────────────────────────────── */}
-        <section className="py-3 px-4 border-y" style={{ borderColor: C.border, backgroundColor: '#0d0d0e' }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-              {['24,000+ visitas mensuales', 'Desde 2023', 'Método W.D. Gann', 'Paraguay 🇵🇾'].map((item, i) => (
-                <span key={i} className="text-[10px] tracking-[0.2em] uppercase" style={{ color: C.muted, fontFamily: "'JetBrains Mono', monospace" }}>
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── METALEVELS PROMO ─────────────────────────────────────── */}
-        <MetaLevelsPromoCard />
-
- {/* ── VIDEO TUTORIAL ───────────────────────────────────────── */}
-        <section className="py-20 px-6" style={{ backgroundColor: C.bg }}>
-          <div className="max-w-[800px] mx-auto">
-            <div className="text-center mb-8">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
+            {/* Left — features */}
+            <div>
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-[0.15em] mb-6"
+                style={{ backgroundColor: 'rgba(0,212,255,0.1)', color: CYAN, border: '1px solid rgba(0,212,255,0.2)' }}
               >
-                Tutorial
-              </p>
+                ⚡ ACCESO PREMIUM
+              </div>
+
               <h2
-                className="text-3xl font-bold text-white mb-3"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight"
+                style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
               >
-                Cómo Usar Sacred Levels
+                Quantum Access
               </h2>
-              <p className="text-sm" style={{ color: C.muted }}>
-                Mirá este tutorial rápido para comenzar
+
+              <p
+                className="text-base mb-8 leading-relaxed"
+                style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}
+              >
+                La herramienta más poderosa para traders profesionales.
+                Acceso ilimitado a todo el ecosistema Sacred Levels.
               </p>
+
+              <ul className="space-y-4">
+                {[
+                  'Calculador ilimitado sin restricciones',
+                  'Niveles diarios actualizados automáticamente',
+                  'Confluencias cuánticas en tiempo real',
+                  'Alertas de niveles clave configurables',
+                  'Acceso a comunidad privada de traders',
+                ].map(f => (
+                  <li key={f} className="flex items-center gap-3">
+                    <span
+                      className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0"
+                      style={{ backgroundColor: 'rgba(0,212,255,0.15)', color: CYAN }}
+                    >
+                      ⚡
+                    </span>
+                    <span className="text-sm" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
+                      {f}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            {/* Video container */}
-            <div
-              className="relative w-full overflow-hidden rounded-xl"
+            {/* Right — price card */}
+            <div className="flex justify-center lg:justify-end">
+              <div
+                className="w-full rounded-2xl p-8"
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(0,212,255,0.2)',
+                  maxWidth: '380px',
+                  boxShadow: '0 0 60px rgba(0,212,255,0.08)',
+                }}
+              >
+                <p
+                  className="text-xs font-bold uppercase tracking-[0.2em] mb-6 text-center"
+                  style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Suscripción Mensual
+                </p>
+
+                <div className="text-center mb-2">
+                  <p
+                    className="text-4xl font-black text-white leading-none"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    Gs. 180.000
+                  </p>
+                  <p className="text-sm mt-2" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+                    ≈ USD 28 · por mes
+                  </p>
+                </div>
+
+                <p
+                  className="text-center text-xs mb-8"
+                  style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}
+                >
+                  Cancelable cuando quieras
+                </p>
+
+                <div
+                  className="h-px mb-8"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+                />
+
+                <ul className="space-y-3 mb-8">
+                  {[
+                    'Todo incluido sin límites',
+                    'Sin permanencia mínima',
+                    'Renovación automática opcional',
+                    'Soporte prioritario',
+                  ].map(f => (
+                    <li key={f} className="flex items-center gap-2.5 text-sm" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
+                      <span style={{ color: '#00D26A' }}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/billing"
+                  className="flex items-center justify-center w-full py-4 text-sm font-bold uppercase tracking-[0.1em] rounded-xl transition-all duration-300 hover:-translate-y-0.5"
+                  style={{
+                    backgroundColor: CYAN,
+                    color: '#000',
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    boxShadow: '0 8px 24px rgba(0,212,255,0.4)',
+                  }}
+                >
+                  ACTIVAR QUANTUM ACCESS
+                </Link>
+
+                <p
+                  className="text-center text-xs mt-4"
+                  style={{ color: '#374151', fontFamily: "'Inter', sans-serif" }}
+                >
+                  Sin permanencia · Renovación automática opcional
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          MENTOR / METALEVELS
+      ════════════════════════════════════════ */}
+      <section style={{ backgroundColor: '#FFFFFF' }} id="mentor">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+          <div className="grid lg:grid-cols-3 gap-12 items-start">
+
+            {/* Left 1/3 — photo */}
+            <div className="flex justify-center lg:justify-start">
+              <div className="relative" style={{ maxWidth: '320px', width: '100%' }}>
+                <div
+                  className="overflow-hidden rounded-2xl"
+                  style={{
+                    border: '3px solid rgba(14,165,233,0.2)',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/raultrader2.jpg"
+                    alt="Raúl Alarcón"
+                    className="w-full object-cover"
+                  />
+                </div>
+                {/* MetaLevels badge */}
+                <div
+                  className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-[0.15em] whitespace-nowrap"
+                  style={{
+                    backgroundColor: '#0F172A',
+                    color: CYAN_DARK,
+                    border: '1px solid rgba(14,165,233,0.3)',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                    fontFamily: "'Space Grotesk', sans-serif",
+                  }}
+                >
+                  MetaLevels ✦
+                </div>
+              </div>
+            </div>
+
+            {/* Right 2/3 — bio */}
+            <div className="lg:col-span-2 pt-8 lg:pt-0">
+              <p
+                className="text-xs font-bold uppercase tracking-[0.35em] mb-3"
+                style={{ color: CYAN_DARK, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                FUNDADOR & MENTOR
+              </p>
+
+              <h2
+                className="text-3xl sm:text-4xl font-black mb-5 leading-tight"
+                style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
+              >
+                Raúl Alarcón
+              </h2>
+
+              <p
+                className="text-base leading-relaxed mb-6"
+                style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}
+              >
+                Analista técnico y educador de trading con más de 14 años de experiencia
+                en mercados financieros internacionales. Especialista en el método de W.D. Gann
+                y en el desarrollo de herramientas de análisis cuantitativo para traders.
+              </p>
+              <p
+                className="text-base leading-relaxed mb-8"
+                style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}
+              >
+                Fundador de Sacred Levels y Trading.com.py, plataformas líderes de educación
+                en trading en Paraguay y América Latina. Su metodología combina análisis técnico
+                clásico con tecnología moderna para maximizar la precisión operativa.
+              </p>
+
+              {/* Credentials grid */}
+              <div className="grid sm:grid-cols-2 gap-4 mb-8">
+                {[
+                  { icon: '📈', text: 'Más de 300 traders formados en América Latina' },
+                  { icon: '🎓', text: 'Especialista en método W.D. Gann y análisis técnico' },
+                  { icon: '⚡', text: 'Creador de la tecnología Quantum de Sacred Levels' },
+                  { icon: '🌎', text: 'Referente de trading en Paraguay desde 2019' },
+                ].map(cred => (
+                  <div
+                    key={cred.text}
+                    className="flex items-start gap-3 px-4 py-3 rounded-lg"
+                    style={{ borderLeft: `3px solid ${CYAN_DARK}`, backgroundColor: '#F8FAFC' }}
+                  >
+                    <span className="text-lg shrink-0">{cred.icon}</span>
+                    <p className="text-sm leading-snug" style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}>
+                      {cred.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <Link
+                href="/metalevels"
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold uppercase tracking-[0.1em] rounded-lg transition-all hover:-translate-y-0.5"
+                style={{
+                  backgroundColor: CYAN_DARK,
+                  color: '#fff',
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  boxShadow: '0 4px 16px rgba(14,165,233,0.3)',
+                }}
+              >
+                Ver perfil completo →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          CTA FINAL
+      ════════════════════════════════════════ */}
+      <section style={{ background: `linear-gradient(135deg, ${DARK_BG} 0%, ${DARK_BG2} 100%)` }}>
+        <div className="max-w-3xl mx-auto px-4 md:px-8 py-16 text-center">
+          <h2
+            className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight"
+            style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
+          >
+            ¿Listo para operar con{' '}
+            <span style={{ color: CYAN }}>precisión</span>?
+          </h2>
+          <p
+            className="text-base mb-8"
+            style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}
+          >
+            Unite a más de 300 traders que ya usan Sacred Levels para mejorar sus operaciones.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/billing"
+              className="px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] rounded-lg transition-all duration-300 hover:-translate-y-0.5"
               style={{
-                paddingBottom: '56.25%', /* 16:9 */
-                backgroundColor: '#000',
-                boxShadow: '0 0 40px rgba(196, 167, 125, 0.08), 0 0 80px rgba(196, 167, 125, 0.04)',
-                border: `1px solid ${C.border}`,
+                backgroundColor: CYAN,
+                color: '#000',
+                boxShadow: '0 8px 24px rgba(0,212,255,0.4)',
+                fontFamily: "'Space Grotesk', sans-serif",
               }}
             >
-              <iframe
-                className="absolute top-0 left-0 w-full h-full rounded-xl"
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/n2UHGeKKH_o"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </section>
-       
-
-
-        {/* ── NIVELES EN ACCIÓN — solo visible cuando hay resultados ── */}
-        {proofResults.length > 0 && (
-          <section className="py-20 px-4 sm:px-6 border-y" style={{ borderColor: C.border }}>
-            <div className="max-w-5xl mx-auto">
-              <div className="mb-10 text-center">
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                  style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Resultados
-                </p>
-                <h2
-                  className="text-3xl sm:text-4xl font-bold text-white mb-3"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Niveles en Acción — Resultados Reales
-                </h2>
-                <p className="text-sm" style={{ color: C.muted }}>
-                  Capturas reales de nuestros niveles funcionando en el mercado
-                </p>
-              </div>
-
-              <ResultsGrid results={proofResults} />
-            </div>
-          </section>
-        )}
-
-        {/* ── COURSES ──────────────────────────────────────────────── */}
-        <section className="py-24 px-6" style={{ backgroundColor: C.bg }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-14">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Formación
-              </p>
-              <h2
-                className="text-4xl font-bold text-white"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Cursos de Trading
-              </h2>
-            </div>
-
-            {/* Course access notice */}
-            <div
-              className="flex items-start gap-3 mb-8 px-4 py-3 rounded-xl"
-              style={{ background: `${C.cyan}10`, border: `1px solid ${C.cyan}25` }}
+              ACTIVAR QUANTUM ACCESS
+            </Link>
+            <Link
+              href="/cursos"
+              className="px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] rounded-lg transition-all duration-300 hover:border-white hover:text-white"
+              style={{
+                border: '2px solid rgba(255,255,255,0.2)',
+                color: '#CBD5E1',
+                fontFamily: "'Space Grotesk', sans-serif",
+              }}
             >
-              <span className="text-lg shrink-0 mt-0.5">ℹ️</span>
-              <p className="text-sm" style={{ color: C.cyan }}>
-                Al comprar cualquier curso, accedé al contenido completo desde la sección <strong>CURSOS</strong> en tu cuenta.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-px" style={{ backgroundColor: C.border }}>
-              {[
-                {
-                  id: 'canal-paralelo',
-                  name: 'Canal Paralelo',
-                  price: 'Gs. 320.000',
-                  usd: '$50 USD',
-                  flyer: '/canal1.png',
-                  desc: 'Técnica del canal paralelo para identificar tendencias y puntos de entrada precisos.',
-                },
-                {
-                  id: 'fibonacci',
-                  name: 'Fibonacci Avanzado',
-                  price: 'Gs. 320.000',
-                  usd: '$50 USD',
-                  flyer: '/desbloquea el poder de forex.png',
-                  desc: 'Retrocesos y extensiones de Fibonacci aplicados al trading profesional.',
-                },
-                {
-                  id: 'expansion-matematica',
-                  name: 'Genesis',
-                  price: 'Gs. 500.000',
-                  usd: '$77 USD',
-                  flyer: '/flyer1.jpg',
-                  desc: 'Técnicas de trading avanzadas nunca antes vistas, sumamente eficientes y demostrables.',
-                },
-              ].map((course) => (
-                <div
-                  key={course.id}
-                  className="group flex flex-col transition-all duration-200"
-                  style={{ backgroundColor: C.card }}
-                >
-                  {/* Flyer — altura natural, sin recorte */}
-                  <div
-                    className="w-full overflow-hidden"
-                    style={{ backgroundColor: '#0d0d0d' }}
-                  >
-                    <Image
-                      src={course.flyer}
-                      alt={course.name}
-                      width={400}
-                      height={600}
-                      className="w-full transition-transform duration-500 group-hover:scale-105"
-                      style={{ height: 'auto', display: 'block' }}
-                    />
-                  </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3
-                      className="text-white font-bold text-base mb-2"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      {course.name}
-                    </h3>
-                    <p className="text-[#444] text-sm mb-5 leading-relaxed flex-1">{course.desc}</p>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span
-                          className="text-white font-bold text-sm"
-                          style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                        >
-                          {course.price}
-                        </span>
-                        <p className="text-[#444] text-[10px] mt-0.5">{course.usd} · pago único</p>
-                      </div>
-                      <Link
-                        href="/billing"
-                        className="flex items-center justify-center border px-4 min-h-[44px] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] text-[#555]"
-                        style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}
-                      >
-                        Comprar
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-[#333] text-[10px] mt-4 text-center uppercase tracking-[0.2em]">
-              Cursos independientes del plan · suscripción mensual renovable
-            </p>
+              VER CURSOS
+            </Link>
           </div>
-        </section>
-
-        {/* ── MENTOR PROFILE ───────────────────────────────────────── */}
-        <MentorProfile />
-
-        {/* ── EXNESS AFFILIATION ───────────────────────────────────── */}
-        <section
-          className="py-16 px-6 border-b"
-          style={{ backgroundColor: C.card, borderColor: C.border }}
-        >
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-            <div>
-              <p
-                className="text-[9px] font-semibold uppercase tracking-[0.3em] mb-2"
-                style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Broker Recomendado
-              </p>
-              <h3
-                className="text-3xl font-bold text-white mb-2"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Exness
-              </h3>
-              <p className="text-[#444] text-sm max-w-md">
-                El broker de confianza de la comunidad Sacred Levels. Spreads ultra-bajos, ejecución rápida y retiros instantáneos.
-              </p>
-            </div>
-            <a
-              href="#exness"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 border px-8 py-4 text-sm font-bold uppercase tracking-[0.12em] transition-all duration-200 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] text-[#555] whitespace-nowrap"
-              style={{ borderColor: C.border, fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Abrir Cuenta en Exness
-            </a>
-          </div>
-        </section>
-
-        {/* ── CONTACTO ─────────────────────────────────────────────── */}
-        <section id="contacto" className="py-24 px-6">
-          <div className="max-w-lg mx-auto">
-            <div className="mb-10">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-4"
-                style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Contacto
-              </p>
-              <h2
-                className="text-4xl font-bold text-white"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Hablemos
-              </h2>
-            </div>
-
-            {formSuccess ? (
-              <div
-                className="border p-10 text-center"
-                style={{ backgroundColor: C.card, borderColor: `${C.green}30` }}
-              >
-                <div
-                  className="w-10 h-10 border flex items-center justify-center mx-auto mb-4"
-                  style={{ borderColor: `${C.green}40` }}
-                >
-                  <svg className="w-5 h-5" fill="none" stroke={C.green} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <p
-                  className="text-white font-semibold mb-1"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  ¡Mensaje enviado correctamente!
-                </p>
-                <p className="text-[#444] text-sm">Te contactaremos pronto.</p>
-              </div>
-            ) : (
-              <form
-                onSubmit={handleContactSubmit}
-                className="border space-y-5 p-8"
-                style={{ backgroundColor: C.card, borderColor: C.border }}
-              >
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-[10px] uppercase tracking-[0.2em] mb-2"
-                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    Nombre
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    className="w-full border px-4 py-3 text-white text-sm focus:outline-none transition-colors duration-200 focus:border-[#00E5FF]/40"
-                    style={{ backgroundColor: '#0d0d0e', borderColor: C.border, fontFamily: "'Inter', sans-serif" }}
-                    placeholder="Tu nombre"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-[10px] uppercase tracking-[0.2em] mb-2"
-                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    className="w-full border px-4 py-3 text-white text-sm focus:outline-none transition-colors duration-200 focus:border-[#00E5FF]/40"
-                    style={{ backgroundColor: '#0d0d0e', borderColor: C.border, fontFamily: "'Inter', sans-serif" }}
-                    placeholder="tu@email.com"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-[10px] uppercase tracking-[0.2em] mb-2"
-                    style={{ color: C.muted, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    Mensaje
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={5}
-                    className="w-full border px-4 py-3 text-white text-sm focus:outline-none transition-colors duration-200 focus:border-[#00E5FF]/40 resize-none"
-                    style={{ backgroundColor: '#0d0d0e', borderColor: C.border, fontFamily: "'Inter', sans-serif" }}
-                    placeholder="¿En qué podemos ayudarte?"
-                  />
-                </div>
-                {formError && <p className="text-[#FF4757] text-xs">{formError}</p>}
-                <button
-                  type="submit"
-                  disabled={formLoading}
-                  className="w-full py-3.5 text-sm font-bold uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90 disabled:opacity-50"
-                  style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  {formLoading ? 'Enviando...' : 'Enviar Mensaje'}
-                </button>
-              </form>
-            )}
-          </div>
-        </section>
-
-        {/* ── FOOTER ───────────────────────────────────────────────── */}
-        <footer
-          className="border-t py-10 px-6"
-          style={{ borderColor: C.border, backgroundColor: C.card }}
-        >
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-4">
-              <Image src="/logosacred.png" alt="Sacred Levels" width={36} height={36} className="rounded" />
-              <div>
-                <span
-                  className="text-white font-semibold text-sm"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Sacred Levels
-                </span>
-                <p className="text-[#333] text-[10px] mt-0.5">© 2025 Todos los derechos reservados</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-6 text-[#333] text-[10px] uppercase tracking-[0.2em]">
-              <Link href="/quantum" className="hover:text-[#00E5FF] transition-colors duration-200">Calculadora Gratis</Link>
-              <Link href="/courses" className="hover:text-[#00E5FF] transition-colors duration-200">Cursos</Link>
-              <Link href="/billing" className="hover:text-[#00E5FF] transition-colors duration-200">Precios</Link>
-              <Link href="/hub" className="hover:text-[#00E5FF] transition-colors duration-200">Signal Hub</Link>
-              <a href="mailto:soporte@sacredlevels.com" className="hover:text-[#00E5FF] transition-colors duration-200">Contacto</a>
-            </div>
-          </div>
-        </footer>
-
-      </main>
-
-      {/* ── Flyer lightbox ── */}
-      {zoomedFlyer && (
-        <div
-          onClick={() => setZoomedFlyer(null)}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
-            backgroundColor: 'rgba(0,0,0,0.93)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '20px', cursor: 'zoom-out',
-          }}
-        >
-          <img
-            src={zoomedFlyer.src}
-            alt={zoomedFlyer.alt}
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              maxWidth: '90vw',
-              maxHeight: '88vh',
-              objectFit: 'contain',
-              borderRadius: 12,
-              boxShadow: `0 0 80px ${C.cyan}18`,
-              cursor: 'default',
-            }}
-          />
-          <button
-            onClick={() => setZoomedFlyer(null)}
-            style={{
-              position: 'fixed', top: 20, right: 24,
-              background: 'none', border: 'none',
-              color: '#555', fontSize: 28, cursor: 'pointer', lineHeight: 1,
-            }}
-            aria-label="Cerrar"
-          >
-            ✕
-          </button>
         </div>
-      )}
-    </>
-  );
+      </section>
+
+      <Footer />
+    </main>
+  )
 }

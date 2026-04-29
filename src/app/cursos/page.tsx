@@ -1,262 +1,339 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Navbar from '@/components/Navbar';
+import { useState } from 'react'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/Footer'
 
-const C = {
-  bg:     '#0A0A0B',
-  card:   '#141415',
-  border: '#222222',
-  cyan:   '#00E5FF',
-  gold:   '#c9a227',
-  muted:  '#555555',
-} as const;
+const CYAN      = '#00D4FF'
+const CYAN_DARK = '#0EA5E9'
+const DARK_BG   = '#0F172A'
+const LIGHT_BG  = '#F5F7FA'
 
-interface Course {
-  id:          string;
-  slug:        string;
-  name:        string;
-  subtitle:    string;
-  description: string;
-  price:       string;
-  priceUSD:    string;
-  flyer:       string;
-  badge:       string;
-  badgeColor:  string;
-  isNew?:      boolean;
-  buyPath:     string;
+const COURSES = [
+  {
+    id:        'super-estrategia',
+    productId: 'super-estrategia',
+    name:      'Super Estrategia',
+    level:     'Básico',
+    icon:      '📊',
+    flyer:     '/recursos.png',
+    priceGs:   150000,
+    priceUsd:  23,
+    popular:   false,
+    action:    'api' as const,
+    subtitle:  'El punto de partida definitivo',
+    description:
+      'La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad en cualquier mercado.',
+    features: [
+      'Estrategia de entrada de alta probabilidad',
+      'Gestión de riesgo y capital profesional',
+      'Aplicable en Forex, Oro y Crypto',
+      'Disciplina operativa y psicología del trading',
+      'Acceso de por vida sin cuotas adicionales',
+    ],
+  },
+  {
+    id:        'genesis',
+    productId: 'expansion-matematica',
+    name:      'Génesis',
+    level:     'Intermedio',
+    icon:      '⚡',
+    flyer:     '/flyer1.jpg',
+    priceGs:   500000,
+    priceUsd:  78,
+    popular:   true,
+    action:    'api' as const,
+    subtitle:  'Expansión matemática del precio',
+    description:
+      'El método de raíz cuadrada de W.D. Gann aplicado con precisión quirúrgica. Aprendé a calcular los niveles exactos donde el precio reacciona en cualquier temporalidad.',
+    features: [
+      'Método de raíz cuadrada de W.D. Gann',
+      'Cálculo de niveles exactos de precio',
+      'Proyecciones combinadas de precio y tiempo',
+      'Técnicas nunca antes vistas públicamente',
+      'Acceso de por vida sin cuotas adicionales',
+    ],
+  },
+  {
+    id:        'frecuencia',
+    productId: 'frecuencia',
+    name:      'Frecuencia',
+    level:     'Avanzado',
+    icon:      '🔮',
+    flyer:     '/cuadradex.png',
+    priceGs:   200000,
+    priceUsd:  31,
+    popular:   false,
+    action:    'link' as const,
+    href:      '/cursos/frecuencia',
+    subtitle:  'Decodificá la estructura fractal del mercado',
+    description:
+      'Herramienta de análisis técnico avanzado que sincroniza tiempo y precio para proyectar zonas geométricas exactas de reversión, aceleración o consolidación.',
+    features: [
+      'Estructura fractal del mercado en profundidad',
+      'Sincronización precisa de tiempo y precio',
+      'Zonas geométricas de reversión exactas',
+      'Confluencias multi-temporalidad',
+      'Acceso de por vida sin cuotas adicionales',
+    ],
+  },
+]
+
+function formatGs(n: number) {
+  return 'Gs. ' + new Intl.NumberFormat('es-PY').format(n)
 }
 
-const COURSES: Course[] = [
-  {
-    id:          'frecuencia',
-    slug:        'frecuencia',
-    name:        'Frecuencia',
-    subtitle:    'Decodificá la estructura fractal del mercado',
-    description: 'Herramienta de análisis técnico avanzado que sincroniza tiempo y precio para proyectar zonas geométricas exactas de reversión, aceleración o consolidación.',
-    price:       'Gs. 200.000',
-    priceUSD:    '$27 USD',
-    flyer:       '/cuadradex.png',
-    badge:       'Nuevo',
-    badgeColor:  C.gold,
-    isNew:       true,
-    buyPath:     '/cursos/frecuencia',
-  },
-  {
-    id:          'super-estrategia',
-    slug:        'super-estrategia',
-    name:        'Super Estrategia',
-    subtitle:    'El punto de partida definitivo',
-    description: 'La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad.',
-    price:       'Gs. 65.000',
-    priceUSD:    '$10 USD',
-    flyer:       '/super-estrategia.jpg.png',
-    badge:       'Básico',
-    badgeColor:  C.cyan,
-    buyPath:     '/curso',
-  },
-  {
-    id:          'adx',
-    slug:        'adx',
-    name:        'Estrategia ADX',
-    subtitle:    'Tendencia con confirmación cuantitativa',
-    description: 'Domina el indicador ADX para filtrar tendencias reales y eliminar el ruido del mercado. Incluye guía PDF descargable exclusiva.',
-    price:       'Gs. 220.000',
-    priceUSD:    '$30 USD',
-    flyer:       '/vaso.png',
-    badge:       'Avanzado',
-    badgeColor:  C.gold,
-    buyPath:     '/',
-  },
-  {
-    id:          'expansion-matematica',
-    slug:        'expansion-matematica',
-    name:        'Genesis',
-    subtitle:    'Expansión matemática del precio',
-    description: 'El método de raíz cuadrada aplicado con precisión quirúrgica. Aprende a calcular los niveles exactos donde el precio reacciona.',
-    price:       'Gs. 500.000',
-    priceUSD:    '$77 USD',
-    flyer:       '/flyer1.jpg',
-    badge:       'Premium',
-    badgeColor:  C.gold,
-    buyPath:     '/',
-  },
-];
-
 export default function CursosPage() {
-  const [buyLoading, setBuyLoading] = useState<string | null>(null);
+  const { data: session } = useSession()
+  const [buyingId, setBuyingId] = useState<string | null>(null)
 
-  const handleBuy = async (productId: string, redirectPath: string) => {
-    // For courses with a dedicated page, navigate there
-    if (redirectPath !== '/') {
-      window.location.href = redirectPath;
-      return;
+  const handleBuy = async (course: typeof COURSES[0]) => {
+    if (course.action === 'link' && 'href' in course && course.href) {
+      window.location.href = course.href
+      return
     }
-    setBuyLoading(productId);
+    if (!session) {
+      window.location.href = `/login?callbackUrl=${encodeURIComponent('/cursos')}`
+      return
+    }
+    setBuyingId(course.id)
     try {
       const res = await fetch('/api/pagopar/create-product-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId }),
-      });
-      const data = await res.json();
-      if (res.status === 401) {
-        window.location.href = `/login?callbackUrl=${encodeURIComponent('/cursos')}`;
-        return;
-      }
+        body: JSON.stringify({ productId: course.productId }),
+      })
+      const data = await res.json()
       if (data.success && data.paymentUrl) {
-        window.location.href = data.paymentUrl;
+        window.location.href = data.paymentUrl
       } else {
-        alert('Error: ' + (data.error || 'No se pudo generar el pago'));
+        alert('Error: ' + (data.error || 'No se pudo generar el pago'))
       }
     } catch {
-      alert('Error al procesar el pago.');
+      alert('Error al procesar el pago.')
     }
-    setBuyLoading(null);
-  };
+    setBuyingId(null)
+  }
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen pb-20 md:pb-0" style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif" }}>
+    <main>
+      <Header />
 
-        {/* ── HEADER ── */}
-        <section className="pt-28 sm:pt-36 pb-12 px-4 sm:px-6" style={{ borderBottom: `1px solid ${C.border}` }}>
-          <div className="max-w-6xl mx-auto">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] mb-4" style={{ color: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}>
-              Formación
-            </p>
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Cursos de Trading
-            </h1>
-            <p className="text-base max-w-xl" style={{ color: C.muted }}>
-              Comprás una vez, accedés para siempre. Sin suscripción.
+      {/* ── Page header ── */}
+      <section
+        style={{
+          background: `linear-gradient(180deg, ${DARK_BG} 0%, #0c1529 100%)`,
+          paddingTop: '96px',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-20">
+          <p
+            className="text-xs font-bold uppercase tracking-[0.35em] mb-4"
+            style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Formación Profesional
+          </p>
+          <h1
+            className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight"
+            style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
+          >
+            Cursos de Trading
+          </h1>
+          <p className="text-base max-w-xl" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+            Comprás una vez, accedés de por vida. Métodos probados en mercados reales.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Course list ── */}
+      <section style={{ backgroundColor: LIGHT_BG }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16">
+
+          {/* Info banner */}
+          <div
+            className="flex items-start gap-3 mb-10 px-5 py-4 rounded-xl max-w-2xl"
+            style={{ backgroundColor: 'rgba(14,165,233,0.06)', border: '1px solid rgba(14,165,233,0.15)' }}
+          >
+            <span className="text-lg shrink-0 mt-0.5">ℹ️</span>
+            <p className="text-sm" style={{ color: '#0369A1', fontFamily: "'Inter', sans-serif" }}>
+              Al comprar cualquier curso accedés al contenido completo desde la sección{' '}
+              <strong>CURSOS</strong> en tu dashboard. Acceso de por vida garantizado.
             </p>
           </div>
-        </section>
 
-        {/* ── GRID ── */}
-        <section className="py-12 px-4 sm:px-6">
-          <div className="max-w-6xl mx-auto">
+          <div className="space-y-8">
+            {COURSES.map((course) => (
+              <div
+                key={course.id}
+                className="grid md:grid-cols-5 overflow-hidden rounded-2xl bg-white transition-all duration-300 hover:shadow-lg"
+                style={{
+                  boxShadow: course.popular
+                    ? '0 0 0 2px #00D4FF, 0 8px 32px rgba(0,212,255,0.08)'
+                    : '0 4px 20px rgba(0,0,0,0.06)',
+                }}
+              >
+                {/* Popular bar */}
+                {course.popular && (
+                  <div
+                    className="md:hidden text-center py-1.5 text-[11px] font-bold uppercase tracking-[0.15em]"
+                    style={{ backgroundColor: CYAN, color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    ⭐ MÁS POPULAR
+                  </div>
+                )}
 
-            {/* Course access notice */}
-            <div
-              className="flex items-start gap-3 mb-10 px-4 py-3 rounded-xl"
-              style={{ background: `${C.cyan}10`, border: `1px solid ${C.cyan}25` }}
-            >
-              <span className="text-lg shrink-0 mt-0.5">ℹ️</span>
-              <p className="text-sm" style={{ color: C.cyan }}>
-                Al comprar cualquier curso, accedé al contenido completo desde la sección <strong>CURSOS</strong> en tu cuenta.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 xl:grid-cols-2 gap-6">
-              {COURSES.map((course) => (
+                {/* Flyer — col 1 of 5 */}
                 <div
-                  key={course.id}
-                  className="group flex flex-col overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1"
-                  style={{
-                    backgroundColor: C.card,
-                    border: `1px solid ${course.badgeColor}30`,
-                    boxShadow: `0 0 30px ${course.badgeColor}08`,
-                  }}
+                  className="md:col-span-2 relative overflow-hidden flex items-stretch"
+                  style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1A2845 100%)' }}
                 >
-                  {/* Flyer */}
-                  <div className="relative overflow-hidden" style={{ backgroundColor: '#0e0e0f', minHeight: '220px' }}>
-                    {course.isNew && (
-                      <div className="absolute top-3 left-3 z-10">
-                        <span
-                          className="text-[9px] font-bold uppercase tracking-[0.25em] px-2.5 py-1"
-                          style={{
-                            backgroundColor: `${C.gold}18`,
-                            color: C.gold,
-                            fontFamily: "'Space Grotesk', sans-serif",
-                            border: `1px solid ${C.gold}40`,
-                          }}
-                        >
-                          NUEVO
-                        </span>
-                      </div>
-                    )}
+                  {course.popular && (
+                    <div
+                      className="hidden md:block absolute top-0 left-0 right-0 text-center py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] z-10"
+                      style={{ backgroundColor: CYAN, color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      ⭐ MÁS POPULAR
+                    </div>
+                  )}
+                  <div
+                    className="relative w-full flex items-center justify-center p-4"
+                    style={{ aspectRatio: '3/4', minHeight: '280px', maxHeight: '500px' }}
+                  >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={course.flyer}
                       alt={course.name}
-                      className="w-full transition-transform duration-300 group-hover:scale-[1.03]"
-                      style={{ objectFit: 'cover', display: 'block', maxHeight: '260px', width: '100%' }}
+                      className="w-full h-full object-contain transition-transform duration-500 hover:scale-105"
+                      style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.35))' }}
                     />
                   </div>
+                  <div
+                    className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.1em]"
+                    style={{
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      color: CYAN,
+                      border: '1px solid rgba(0,212,255,0.3)',
+                      backdropFilter: 'blur(8px)',
+                      fontFamily: "'Space Grotesk', sans-serif",
+                    }}
+                  >
+                    {course.icon} {course.level}
+                  </div>
+                </div>
 
-                  {/* Content */}
-                  <div className="flex flex-col flex-1 p-5 gap-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <span
-                          className="text-[9px] font-bold uppercase tracking-[0.25em] px-2 py-0.5 rounded"
-                          style={{ backgroundColor: `${course.badgeColor}18`, color: course.badgeColor, fontFamily: "'Space Grotesk', sans-serif" }}
-                        >
-                          {course.badge}
-                        </span>
-                        <h2
-                          className="text-xl font-bold text-white mt-2 leading-tight"
-                          style={{ fontFamily: "'Playfair Display', serif" }}
-                        >
-                          {course.name}
-                        </h2>
-                        <p
-                          className="text-xs italic mt-0.5"
-                          style={{ color: C.cyan, fontFamily: "'Playfair Display', serif" }}
-                        >
-                          {course.subtitle}
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-base font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                          {course.price}
-                        </p>
-                        <p className="text-[11px]" style={{ color: C.muted }}>{course.priceUSD}</p>
-                      </div>
-                    </div>
+                {/* Content — col 3 of 5 */}
+                <div className="md:col-span-3 p-6 md:p-8 flex flex-col">
+                  <div className="flex-1">
+                    <h2
+                      className="text-2xl font-black mb-1 leading-tight"
+                      style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif" }}
+                    >
+                      {course.name}
+                    </h2>
+                    <p
+                      className="text-sm italic mb-4"
+                      style={{ color: CYAN_DARK, fontFamily: "'Inter', sans-serif" }}
+                    >
+                      {course.subtitle}
+                    </p>
 
-                    <p className="text-sm leading-relaxed" style={{ color: '#777' }}>
+                    <p
+                      className="text-sm leading-relaxed mb-5"
+                      style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}
+                    >
                       {course.description}
                     </p>
 
-                    {/* Actions */}
-                    <div className="flex gap-2 mt-auto pt-2">
-                      <Link
-                        href={course.buyPath === '/' ? `/cursos/${course.slug}` : course.buyPath}
-                        className="flex-1 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-center transition-all duration-200 hover:opacity-80"
-                        style={{
-                          border: `1px solid ${course.badgeColor}`,
-                          color: course.badgeColor,
-                          fontFamily: "'Space Grotesk', sans-serif",
-                        }}
+                    <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-2 mb-6">
+                      {course.features.map(f => (
+                        <li key={f} className="flex items-start gap-2 text-sm" style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}>
+                          <span className="mt-0.5 shrink-0 font-bold" style={{ color: CYAN_DARK }}>✓</span>
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Price + CTA */}
+                  <div
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-5"
+                    style={{ borderTop: '1px solid #F1F5F9' }}
+                  >
+                    <div>
+                      <p
+                        className="text-2xl font-black leading-none"
+                        style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif" }}
                       >
-                        Más Info
-                      </Link>
-                      <button
-                        onClick={() => handleBuy(course.id, course.buyPath)}
-                        disabled={buyLoading === course.id}
-                        className="flex-1 py-2.5 text-xs font-bold uppercase tracking-[0.12em] transition-all duration-200 hover:opacity-90 disabled:opacity-50"
-                        style={{
-                          backgroundColor: course.badgeColor === C.gold ? C.gold : C.cyan,
-                          color: '#000',
-                          fontFamily: "'Space Grotesk', sans-serif",
-                        }}
-                      >
-                        {buyLoading === course.id ? 'Procesando...' : 'Comprar Ahora'}
-                      </button>
+                        {formatGs(course.priceGs)}
+                      </p>
+                      <p className="text-sm mt-1" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+                        ≈ USD {course.priceUsd} · pago único
+                      </p>
                     </div>
+
+                    <button
+                      onClick={() => handleBuy(course)}
+                      disabled={buyingId === course.id}
+                      className="px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] rounded-lg transition-all duration-200 hover:-translate-y-0.5 disabled:opacity-60 whitespace-nowrap"
+                      style={{
+                        backgroundColor: course.popular ? CYAN : CYAN_DARK,
+                        color: '#fff',
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        boxShadow: course.popular ? '0 4px 16px rgba(0,212,255,0.35)' : '0 4px 12px rgba(14,165,233,0.25)',
+                      }}
+                    >
+                      {buyingId === course.id ? 'Procesando...' : 'COMPRAR CURSO →'}
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-      </main>
-    </>
-  );
+      {/* ── Quantum upsell ── */}
+      <section
+        style={{
+          background: `linear-gradient(135deg, ${DARK_BG} 0%, #1A2845 100%)`,
+          borderTop: '1px solid #1a1a1a',
+        }}
+      >
+        <div className="max-w-3xl mx-auto px-4 md:px-8 py-12 text-center">
+          <p
+            className="text-xs font-bold uppercase tracking-[0.3em] mb-3"
+            style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            ¿Querés más?
+          </p>
+          <h3
+            className="text-2xl sm:text-3xl font-black text-white mb-3"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
+            Quantum Access — Todo incluido
+          </h3>
+          <p className="text-sm mb-6" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
+            Calculador ilimitado, niveles diarios, alertas en tiempo real y mucho más.{' '}
+            <strong style={{ color: CYAN }}>Gs. 180.000/mes</strong>.
+          </p>
+          <Link
+            href="/billing"
+            className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] rounded-lg transition-all hover:-translate-y-0.5"
+            style={{
+              backgroundColor: CYAN,
+              color: '#000',
+              fontFamily: "'Space Grotesk', sans-serif",
+              boxShadow: '0 8px 24px rgba(0,212,255,0.35)',
+            }}
+          >
+            ACTIVAR QUANTUM ACCESS →
+          </Link>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
+  )
 }

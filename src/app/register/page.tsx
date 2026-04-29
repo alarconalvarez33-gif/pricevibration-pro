@@ -3,8 +3,11 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
+import Header from '@/components/layout/Header'
 import Footer from '@/components/Footer'
+
+const CYAN    = '#00D4FF'
+const DARK_BG = '#0F172A'
 
 const COUNTRIES = [
   { code: '+595', flag: '🇵🇾', name: 'Paraguay' },
@@ -23,28 +26,26 @@ const COUNTRIES = [
 ]
 
 export default function RegisterPage() {
-  const [name, setName]                     = useState('')
-  const [email, setEmail]                   = useState('')
-  const [password, setPassword]             = useState('')
+  const [name, setName]                       = useState('')
+  const [email, setEmail]                     = useState('')
+  const [password, setPassword]               = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [countryCode, setCountryCode]       = useState('+595')
-  const [phone, setPhone]                   = useState('')
-  const [acceptedTerms, setAcceptedTerms]   = useState(false)
-  const [error, setError]                   = useState('')
-  const [isLoading, setIsLoading]           = useState(false)
+  const [countryCode, setCountryCode]         = useState('+595')
+  const [phone, setPhone]                     = useState('')
+  const [acceptedTerms, setAcceptedTerms]     = useState(false)
+  const [error, setError]                     = useState('')
+  const [loading, setLoading]                 = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-
-    if (!acceptedTerms) { setError('Debés aceptar los Términos y Condiciones'); return }
+    if (!acceptedTerms)              { setError('Debés aceptar los Términos y Condiciones'); return }
     if (password !== confirmPassword) { setError('Las contraseñas no coinciden'); return }
-    if (password.length < 6) { setError('La contraseña debe tener al menos 6 caracteres'); return }
-    if (!phone.trim()) { setError('El número de WhatsApp es obligatorio'); return }
+    if (password.length < 6)          { setError('La contraseña debe tener al menos 6 caracteres'); return }
+    if (!phone.trim())                { setError('El número de WhatsApp es obligatorio'); return }
 
-    setIsLoading(true)
+    setLoading(true)
     const whatsapp = `${countryCode}${phone.trim().replace(/\D/g, '')}`
-
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
@@ -52,137 +53,238 @@ export default function RegisterPage() {
         body: JSON.stringify({ name, email, password, whatsapp }),
       })
       const data = await res.json()
-      if (!res.ok) { setError(data.error || 'Error al registrar'); setIsLoading(false); return }
+      if (!res.ok) { setError(data.error || 'Error al registrar'); setLoading(false); return }
 
       const loginResult = await signIn('credentials', { email, password, redirect: false })
       if (loginResult?.error) { window.location.href = '/login?registered=true'; return }
       window.location.href = '/dashboard'
     } catch {
       setError('Error inesperado. Intentá de nuevo.')
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  const inputCls = 'w-full bg-[#0a0a0a] border border-[#222] rounded-lg px-4 py-3 text-white placeholder-[#444] focus:border-[#00E5FF] focus:outline-none transition-colors'
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    border: '1px solid #1E293B',
+    borderRadius: '8px',
+    padding: '14px 16px',
+    color: '#FFFFFF',
+    fontSize: '14px',
+    fontFamily: "'Inter', sans-serif",
+    outline: 'none',
+    transition: 'border-color 0.2s',
+  }
+
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: '11px',
+    fontWeight: 600,
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.15em',
+    color: '#64748B',
+    marginBottom: '8px',
+    fontFamily: "'Space Grotesk', sans-serif",
+  }
 
   return (
-    <main className="min-h-screen bg-[#0A0A0B]">
-      <Navbar />
-      <div className="pt-24 pb-20 px-4">
-        <div className="max-w-md mx-auto">
+    <main style={{ backgroundColor: DARK_BG, minHeight: '100vh' }}>
+      <Header />
+
+      <div
+        className="flex items-start justify-center px-4"
+        style={{ paddingTop: '120px', paddingBottom: '64px' }}
+      >
+        <div className="w-full max-w-md">
+
+          {/* Heading */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div className="flex items-center justify-center gap-1.5 mb-6">
+              <span
+                className="text-2xl font-black italic text-white"
+                style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
+              >
+                SACRED
+              </span>
+              <span
+                className="text-xs font-bold tracking-[0.25em]"
+                style={{ fontFamily: "'Montserrat', sans-serif", color: 'rgba(255,255,255,0.4)' }}
+              >
+                LEVELS
+              </span>
+            </div>
+            <h1
+              className="text-3xl font-black text-white mb-2"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
+            >
               Crear Cuenta
             </h1>
-            <p className="text-[#555] text-sm">Unite a Sacred Levels</p>
+            <p className="text-sm" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+              Unite a Sacred Levels — Es gratis
+            </p>
           </div>
 
-          <div className="bg-[#111112] rounded-xl p-8 border border-[#1e1e1f]">
+          {/* Card */}
+          <div
+            className="rounded-2xl p-8"
+            style={{
+              backgroundColor: 'rgba(255,255,255,0.03)',
+              border: '1px solid #1E293B',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+            }}
+          >
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm">
+                <div
+                  className="px-4 py-3 rounded-lg text-sm"
+                  style={{
+                    backgroundColor: 'rgba(239,68,68,0.08)',
+                    border: '1px solid rgba(239,68,68,0.25)',
+                    color: '#FCA5A5',
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
                   {error}
                 </div>
               )}
 
               {/* Nombre */}
               <div>
-                <label className="block text-[#555] text-xs uppercase tracking-[0.15em] mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Nombre completo
-                </label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)}
-                  className={inputCls} placeholder="Tu nombre" required />
+                <label style={labelStyle}>Nombre completo</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="Tu nombre"
+                  required
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = CYAN)}
+                  onBlur={e => (e.target.style.borderColor = '#1E293B')}
+                />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-[#555] text-xs uppercase tracking-[0.15em] mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Email
-                </label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                  className={inputCls} placeholder="tu@email.com" required />
+                <label style={labelStyle}>Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="tu@email.com"
+                  required
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = CYAN)}
+                  onBlur={e => (e.target.style.borderColor = '#1E293B')}
+                />
               </div>
 
               {/* WhatsApp */}
               <div>
-                <label className="block text-xs uppercase tracking-[0.15em] mb-2" style={{ color: '#00E5FF', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  WhatsApp <span className="normal-case tracking-normal text-[#555]">(obligatorio)</span>
+                <label style={{ ...labelStyle, color: CYAN }}>
+                  WhatsApp <span style={{ color: '#475569', textTransform: 'none', letterSpacing: 'normal', fontWeight: 400 }}>(obligatorio)</span>
                 </label>
                 <div className="flex gap-2">
-                  {/* Country selector */}
                   <div className="relative">
                     <select
                       value={countryCode}
                       onChange={e => setCountryCode(e.target.value)}
-                      className="h-full bg-[#0a0a0a] border border-[#00E5FF30] rounded-lg px-3 py-3 text-white text-sm focus:border-[#00E5FF] focus:outline-none appearance-none pr-8 cursor-pointer transition-colors"
-                      style={{ fontFamily: "'JetBrains Mono', monospace", minWidth: '110px' }}
+                      style={{
+                        ...inputStyle,
+                        width: 'auto',
+                        minWidth: '110px',
+                        paddingRight: '28px',
+                        cursor: 'pointer',
+                        appearance: 'none',
+                        fontFamily: "'JetBrains Mono', monospace",
+                        borderColor: `rgba(0,212,255,0.2)`,
+                      }}
                     >
                       {COUNTRIES.map(c => (
-                        <option key={c.code} value={c.code}>
+                        <option key={c.code} value={c.code} style={{ backgroundColor: '#0F172A' }}>
                           {c.flag} {c.code}
                         </option>
                       ))}
                     </select>
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-3 h-3" fill="none" stroke="#00E5FF" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3" fill="none" stroke={CYAN} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
                   </div>
-                  {/* Phone number */}
                   <input
                     type="tel"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                     placeholder="981 123 456"
                     required
-                    className="flex-1 bg-[#0a0a0a] border border-[#00E5FF30] rounded-lg px-4 py-3 text-white placeholder-[#444] focus:border-[#00E5FF] focus:outline-none transition-colors"
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                    style={{ ...inputStyle, flex: 1, fontFamily: "'JetBrains Mono', monospace", borderColor: `rgba(0,212,255,0.2)` }}
+                    onFocus={e => (e.target.style.borderColor = CYAN)}
+                    onBlur={e => (e.target.style.borderColor = `rgba(0,212,255,0.2)`)}
                   />
                 </div>
-                <p className="text-[10px] mt-1.5" style={{ color: '#333', fontFamily: "'JetBrains Mono', monospace" }}>
+                <p className="text-[10px] mt-1.5" style={{ color: '#374151', fontFamily: "'JetBrains Mono', monospace" }}>
                   Se guardará como: {countryCode}{phone.trim().replace(/\D/g, '') || 'XXXXXXXXX'}
                 </p>
               </div>
 
               {/* Contraseña */}
               <div>
-                <label className="block text-[#555] text-xs uppercase tracking-[0.15em] mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Contraseña
-                </label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                  className={inputCls} placeholder="Mínimo 6 caracteres" required minLength={6} />
+                <label style={labelStyle}>Contraseña</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                  minLength={6}
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = CYAN)}
+                  onBlur={e => (e.target.style.borderColor = '#1E293B')}
+                />
               </div>
 
+              {/* Confirmar */}
               <div>
-                <label className="block text-[#555] text-xs uppercase tracking-[0.15em] mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Confirmar contraseña
-                </label>
-                <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-                  className={inputCls} placeholder="Repetir contraseña" required />
+                <label style={labelStyle}>Confirmar contraseña</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  placeholder="Repetir contraseña"
+                  required
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = CYAN)}
+                  onBlur={e => (e.target.style.borderColor = '#1E293B')}
+                />
               </div>
 
               {/* Términos */}
               <div className="flex items-start gap-3">
-                <input type="checkbox" id="terms" checked={acceptedTerms}
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={acceptedTerms}
                   onChange={e => setAcceptedTerms(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded border-[#333] bg-[#0a0a0a] cursor-pointer accent-[#00E5FF]"
-                  required />
-                <label htmlFor="terms" className="text-[#555] text-sm cursor-pointer">
+                  required
+                  className="mt-1 w-4 h-4 cursor-pointer rounded"
+                  style={{ accentColor: CYAN }}
+                />
+                <label htmlFor="terms" className="text-sm cursor-pointer" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
                   Acepto los{' '}
-                  <Link href="/terms" target="_blank" className="text-[#00E5FF] hover:underline">Términos y Condiciones</Link>
+                  <Link href="/terms" target="_blank" className="hover:underline" style={{ color: CYAN }}>Términos y Condiciones</Link>
                   {' '}y el{' '}
-                  <Link href="/disclaimer" target="_blank" className="text-[#00E5FF] hover:underline">Aviso de Riesgo</Link>
+                  <Link href="/disclaimer" target="_blank" className="hover:underline" style={{ color: CYAN }}>Aviso de Riesgo</Link>
                 </label>
               </div>
 
               <button
                 type="submit"
-                disabled={isLoading || !acceptedTerms}
-                className="w-full disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                style={{ backgroundColor: '#00E5FF', fontFamily: "'Space Grotesk', sans-serif" }}
+                disabled={loading || !acceptedTerms}
+                className="w-full py-4 text-sm font-bold uppercase tracking-[0.1em] rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                style={{ backgroundColor: CYAN, color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                {isLoading ? (
+                {loading ? (
                   <>
                     <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -190,19 +292,22 @@ export default function RegisterPage() {
                     </svg>
                     Creando cuenta...
                   </>
-                ) : 'Crear Cuenta'}
+                ) : 'CREAR CUENTA'}
               </button>
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-[#555] text-sm">
+              <p className="text-sm" style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}>
                 ¿Ya tenés cuenta?{' '}
-                <Link href="/login" className="text-[#00E5FF] hover:underline">Iniciar Sesión</Link>
+                <Link href="/login" className="font-semibold hover:underline" style={{ color: CYAN }}>
+                  Iniciar Sesión
+                </Link>
               </p>
             </div>
           </div>
         </div>
       </div>
+
       <Footer />
     </main>
   )

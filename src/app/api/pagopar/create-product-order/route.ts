@@ -9,7 +9,7 @@ const products: Record<string, { name: string; price: number; pricePYG: number; 
   'expansion-matematica': { name: 'Genesis', price: 77, pricePYG: 500000, courseUrl: '/courses/expansion-matematica' },
   'fisica-cuantica': { name: 'Física Cuántica - Niveles de Probabilidad', price: 100, pricePYG: 650000, courseUrl: '/quantum' },
   'fibonacci': { name: 'Curso de Fibonacci - Potencial Oculto', price: 75, pricePYG: 499000, courseUrl: '/courses/fibonacci' },
-  'super-estrategia': { name: 'Super Estrategia - Curso Exclusivo', price: 10, pricePYG: 65000, courseUrl: '/curso' },
+  'super-estrategia': { name: 'Super Estrategia - Curso Exclusivo', price: 23, pricePYG: 150000, courseUrl: '/curso' },
   'adx': { name: 'Estrategia ADX - Manual Completo', price: 30, pricePYG: 220000, courseUrl: '/courses/adx' },
   'metalevels':  { name: 'MetaLevels - Indicador Pine Script', price: 20, pricePYG: 150000, courseUrl: '/metalevels/acceso' },
   'frecuencia':  { name: 'Frecuencia - Curso de Trading Avanzado', price: 27, pricePYG: 200000, courseUrl: '/cursos/frecuencia' },
@@ -64,17 +64,6 @@ export async function POST(request: Request) {
     console.log('🆔 OrderId:', orderId)
     console.log('🔐 Token string:', tokenString)
     console.log('🔐 Token SHA1:', token)
-
-    // Guardar registro antes de llamar a Pagopar
-    const purchase = await prisma.productPurchase.create({
-      data: {
-        orderId,
-        userId: user.id,
-        productId,
-        price: product.price,
-        status: 'pending',
-      },
-    })
 
     // Fecha máxima: 7 días
     const fechaMaxima = new Date()
@@ -158,11 +147,6 @@ export async function POST(request: Request) {
     if (!pagoparHash) {
       console.error('❌ No se pudo extraer hash. Respuesta completa:', JSON.stringify(result))
 
-      await prisma.productPurchase.update({
-        where: { id: purchase.id },
-        data: { status: 'failed' },
-      })
-
       return NextResponse.json({
         error: 'No se pudo generar la sesión de pago',
         pagoparError: pagoparErrorMsg,
@@ -170,9 +154,16 @@ export async function POST(request: Request) {
       }, { status: 500 })
     }
 
-    await prisma.productPurchase.update({
-      where: { id: purchase.id },
-      data: { pagoparHash },
+    // Only save to DB once we have a valid hash (user is actually being redirected to pay)
+    await prisma.productPurchase.create({
+      data: {
+        orderId,
+        userId: user.id,
+        productId,
+        price: product.price,
+        status: 'pending',
+        pagoparHash,
+      },
     })
 
     return NextResponse.json({

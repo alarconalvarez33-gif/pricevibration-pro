@@ -67,20 +67,6 @@ export async function POST(request: Request) {
     console.log('🔐 Token string:', tokenString)
     console.log('🔐 Token SHA1:', token)
 
-    // Save payment record
-    const payment = await prisma.payment.create({
-      data: {
-        orderId,
-        userId: user.id,
-        planType,
-        billingPeriod,
-        amount: monto,
-        currency: 'PYG',
-        amountUsd: prices.usd,
-        status: 'pending',
-      },
-    })
-
     const periodLabel = billingPeriod === 'yearly' ? 'Anual' : 'Mensual'
     const planLabel = planType.charAt(0).toUpperCase() + planType.slice(1)
     const descripcion = `Plan ${planLabel} - Sacred Levels`
@@ -189,12 +175,6 @@ export async function POST(request: Request) {
       console.error('❌ Error de Pagopar:', result.error || result.mensaje || 'Sin mensaje')
       console.error('❌'.repeat(40) + '\n')
 
-      // Mark payment as failed
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: { status: 'failed' },
-      })
-
       return NextResponse.json({
         error: 'No se pudo generar la sesión de pago',
         pagoparError: result.error || result.mensaje || result.message || 'Error desconocido de Pagopar',
@@ -202,13 +182,21 @@ export async function POST(request: Request) {
       }, { status: 500 })
     }
 
-    // Update payment with Pagopar hash
-    await prisma.payment.update({
-      where: { id: payment.id },
-      data: { pagoparHash },
+    // Only save to DB once we have a valid hash (user is actually being redirected to pay)
+    await prisma.payment.create({
+      data: {
+        orderId,
+        userId: user.id,
+        planType,
+        billingPeriod,
+        amount: monto,
+        currency: 'PYG',
+        amountUsd: prices.usd,
+        status: 'pending',
+        pagoparHash,
+      },
     })
 
-    // Return payment URL
     return NextResponse.json({
       success: true,
       hash: pagoparHash,

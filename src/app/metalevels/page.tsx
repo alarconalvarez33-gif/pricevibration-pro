@@ -5,17 +5,17 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import Navbar from '@/components/Navbar'
+import Header from '@/components/layout/Header'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 
 const C = {
-  bg:     '#0A0A0B',
-  card:   '#141415',
-  border: '#222222',
-  cyan:   '#00E5FF',
+  bg:     '#0F172A',
+  card:   '#0D1B2E',
+  border: '#1E293B',
+  cyan:   '#00D4FF',
   gold:   '#c9a227',
   red:    '#FF4757',
-  muted:  '#555555',
+  muted:  '#64748B',
 } as const
 
 export default function MetaLevelsPage() {
@@ -49,16 +49,16 @@ export default function MetaLevelsPage() {
 
   return (
     <>
-      <Navbar />
+      <Header />
       <main
         className="min-h-screen pb-20 md:pb-0"
-        style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif" }}
+        style={{ backgroundColor: C.bg, fontFamily: "'Inter', sans-serif", overflowX: 'hidden' }}
       >
 
         {/* ── SECCIÓN 1: HERO ── */}
         <section
-          className="pt-28 sm:pt-36 pb-20 px-6 text-center"
-          style={{ borderBottom: `1px solid ${C.border}` }}
+          className="pb-20 px-6 text-center"
+          style={{ paddingTop: '120px', borderBottom: `1px solid ${C.border}` }}
         >
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-8">
@@ -91,15 +91,15 @@ export default function MetaLevelsPage() {
 
           {/* Title */}
           <h1
-            className="text-5xl sm:text-6xl font-bold text-white mb-3 leading-tight"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            className="text-5xl sm:text-6xl font-black text-white mb-3 leading-tight"
+            style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
           >
             MetaLevels
           </h1>
 
           <p
             className="text-lg sm:text-xl mb-4"
-            style={{ color: C.cyan, fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}
+            style={{ color: C.cyan, fontFamily: "'Inter', sans-serif" }}
           >
             Geometría Cuántica y Armonía de Precio
           </p>
@@ -129,7 +129,7 @@ export default function MetaLevelsPage() {
           <button
             onClick={handleBuy}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-12 py-4 font-bold text-sm uppercase tracking-[0.15em] text-black transition-all duration-200 hover:opacity-90 disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-8 sm:px-12 py-4 font-bold text-sm uppercase tracking-[0.15em] text-black transition-all duration-200 hover:opacity-90 disabled:opacity-50"
             style={{ backgroundColor: C.cyan, fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {loading ? 'PROCESANDO...' : 'ADQUIRIR AHORA'}
@@ -161,12 +161,12 @@ export default function MetaLevelsPage() {
               Descripción General
             </p>
             <h2
-              className="text-3xl sm:text-4xl font-bold text-white mb-8 leading-tight"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="text-3xl sm:text-4xl font-black text-white mb-8 leading-tight"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
             >
               Un sistema de niveles construido sobre la geometría del precio
             </h2>
-            <div className="space-y-5 text-base leading-relaxed" style={{ color: '#888' }}>
+            <div className="space-y-5 text-base leading-relaxed" style={{ color: '#94A3B8' }}>
               <p>
                 MetaLevels es un indicador Pine Script diseñado para TradingView que proyecta zonas
                 futuras de soporte y resistencia utilizando principios de geometría de precio derivados
@@ -208,12 +208,12 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
               Mecánica del Algoritmo
             </p>
             <h2
-              className="text-3xl sm:text-4xl font-bold text-white mb-8 leading-tight"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="text-3xl sm:text-4xl font-black text-white mb-8 leading-tight"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
             >
               Motor analítico propietario de The Mentor Pro
             </h2>
-            <div className="space-y-5 text-base leading-relaxed" style={{ color: '#888' }}>
+            <div className="space-y-5 text-base leading-relaxed" style={{ color: '#94A3B8' }}>
               <p>
                 El núcleo de MetaLevels opera sobre un motor de cálculo propietario que combina tres
                 principios fundamentales: la cuadratura del tiempo y el precio según W.D. Gann, la
@@ -272,8 +272,8 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
               Interpretación Visual
             </p>
             <h2
-              className="text-3xl sm:text-4xl font-bold text-white mb-12 text-center leading-tight"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="text-3xl sm:text-4xl font-black text-white mb-12 text-center leading-tight"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
             >
               Tres tipos de niveles, tres lecturas de mercado
             </h2>
@@ -306,7 +306,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
                 >
                   Señal Alcista · Bull Zone
                 </p>
-                <p className="text-sm leading-relaxed" style={{ color: '#888' }}>
+                <p className="text-sm leading-relaxed" style={{ color: '#94A3B8' }}>
                   Proyectan zonas donde la estructura de precio anticipa demanda institucional.
                   Actúan como soporte dinámico de alta probabilidad en el contexto del ciclo
                   geométrico activo.
@@ -340,7 +340,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
                 >
                   Señal Bajista · Bear Zone
                 </p>
-                <p className="text-sm leading-relaxed" style={{ color: '#888' }}>
+                <p className="text-sm leading-relaxed" style={{ color: '#94A3B8' }}>
                   Indican zonas de presión de oferta institucional proyectada. Actúan como
                   resistencia dinámica donde el precio históricamente encuentra rechazo
                   dentro del ciclo geométrico.
@@ -374,7 +374,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
                 >
                   Masters Level · Confluencia Máxima
                 </p>
-                <p className="text-sm leading-relaxed" style={{ color: '#888' }}>
+                <p className="text-sm leading-relaxed" style={{ color: '#94A3B8' }}>
                   Representan la confluencia más alta del sistema: zonas donde geometría cuántica,
                   armonía de precio e impulso institucional convergen simultáneamente. Las de mayor
                   peso operativo.
@@ -397,8 +397,8 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
               Regla Operativa Fundamental
             </p>
             <h2
-              className="text-3xl sm:text-4xl font-bold text-white mb-10 text-center leading-tight"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="text-3xl sm:text-4xl font-black text-white mb-10 text-center leading-tight"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
             >
               El nivel proyecta. La vela confirma.
             </h2>
@@ -427,13 +427,13 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
                     no un sistema de señales automáticas de entrada. Su función es indicar con anticipación
                     dónde el precio tiene mayor probabilidad de reaccionar.
                   </p>
-                  <p className="text-base leading-relaxed" style={{ color: '#888' }}>
+                  <p className="text-base leading-relaxed" style={{ color: '#94A3B8' }}>
                     La <strong style={{ color: 'white' }}>confirmación de la vela</strong> sobre el nivel
                     proyectado es condición obligatoria antes de ejecutar cualquier operación. Ingresar
                     sin confirmación equivale a operar por anticipación, lo que invalida la ventaja
                     estadística del sistema.
                   </p>
-                  <p className="text-base leading-relaxed" style={{ color: '#888' }}>
+                  <p className="text-base leading-relaxed" style={{ color: '#94A3B8' }}>
                     El trader que respeta esta regla opera con el mercado. El que no, opera contra él.
                   </p>
                 </div>
@@ -475,7 +475,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
             <div
               className="rounded-xl p-7"
               style={{
-                backgroundColor: '#0f0e08',
+                backgroundColor: C.card,
                 borderLeft: `4px solid ${C.gold}`,
                 border: `1px solid ${C.gold}25`,
                 borderLeftWidth: 4,
@@ -491,7 +491,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
                 </h3>
               </div>
 
-              <p className="text-sm leading-relaxed mb-6" style={{ color: '#888' }}>
+              <p className="text-sm leading-relaxed mb-6" style={{ color: '#94A3B8' }}>
                 MetaLevels se instala en TradingView a través del Editor Pine Script. Por
                 limitaciones técnicas del editor móvil (bugs de indentación), la instalación
                 inicial requiere una <strong className="text-white">computadora (PC o Mac)</strong>.
@@ -566,8 +566,8 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
               Acceso Inmediato · Licencia Personal
             </p>
             <h2
-              className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
             >
               Comenzá a operar con MetaLevels hoy
             </h2>
@@ -592,16 +592,21 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
             <button
               onClick={handleBuy}
               disabled={loading}
-              className="inline-flex items-center gap-3 px-14 py-5 font-bold text-base uppercase tracking-[0.15em] text-black transition-all duration-200 hover:opacity-90 disabled:opacity-50 animate-pulse"
+              className="flex items-center justify-center gap-3 w-full sm:w-auto sm:inline-flex px-8 sm:px-14 py-5 font-bold text-sm sm:text-base uppercase tracking-[0.1em] sm:tracking-[0.15em] text-black transition-all duration-200 hover:opacity-90 disabled:opacity-50 animate-pulse"
               style={{
                 backgroundColor: C.cyan,
                 fontFamily: "'Space Grotesk', sans-serif",
                 animationDuration: '2.5s',
               }}
             >
-              {loading ? 'PROCESANDO...' : 'ADQUIRIR METALEVELS — Gs. 150.000'}
+              {loading ? 'PROCESANDO...' : (
+                <>
+                  <span className="sm:hidden">ADQUIRIR METALEVELS</span>
+                  <span className="hidden sm:inline">ADQUIRIR METALEVELS — Gs. 150.000</span>
+                </>
+              )}
               {!loading && (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               )}
@@ -677,7 +682,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
         >
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-xs" style={{ color: C.muted }}>
-              © 2025 Sacred Levels · The Mentor Pro
+              © 2026 Sacred Levels · The Mentor Pro
             </p>
             <div className="flex gap-6 text-xs" style={{ color: C.muted }}>
               <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
