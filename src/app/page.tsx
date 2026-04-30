@@ -571,7 +571,7 @@ export default function HomePage() {
               {/* Flyer */}
               <div className="sm:w-56 shrink-0" style={{ backgroundColor: '#0d0d0d' }}>
                 <img
-                  src="/Super estrategia.jpg"
+                  src="/recursos.png"
                   alt="Super Estrategia"
                   onClick={() => setZoomedFlyer({ src: '/Super estrategia.jpg', alt: 'Super Estrategia' })}
                   className="w-full h-full cursor-zoom-in"
