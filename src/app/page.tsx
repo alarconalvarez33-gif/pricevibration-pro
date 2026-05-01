@@ -648,7 +648,7 @@ export default function HomePage() {
                       className="absolute -top-3 -left-1 font-black leading-none select-none"
                       style={{ color: `${CYAN_DARK}30`, fontSize: '60px', fontFamily: "'Montserrat', sans-serif" }}
                     >
-                      "
+                      &ldquo;
                     </span>
                     <p className="text-sm leading-relaxed pl-5 italic" style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}>
                       {t.quote}
