@@ -16,7 +16,7 @@ const COURSES = [
     id:        'super-estrategia',
     productId: 'super-estrategia',
     name:      'Super Estrategia',
-    level:     'Básico',
+    level:     'ULTIMATE',
     icon:      '📊',
     flyer:     '/recursos.png',
     priceGs:   150000,
@@ -25,7 +25,7 @@ const COURSES = [
     action:    'api' as const,
     subtitle:  'El punto de partida definitivo',
     description:
-      'La estrategia base que todo trader debe dominar antes de cualquier otro método. Estructura, disciplina y entradas de alta probabilidad en cualquier mercado.',
+      'La estrategia base que todo trader debe dominar antes de cualquier otro método. Fácil y directa. Estructura, disciplina y entradas de alta probabilidad en cualquier mercado.',
     features: [
       'Estrategia de entrada de alta probabilidad',
       'Gestión de riesgo y capital profesional',
@@ -38,7 +38,7 @@ const COURSES = [
     id:        'genesis',
     productId: 'expansion-matematica',
     name:      'Génesis',
-    level:     'Intermedio',
+    level:     'Avanzado',
     icon:      '⚡',
     flyer:     '/flyer1.jpg',
     priceGs:   500000,
