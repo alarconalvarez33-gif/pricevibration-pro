@@ -15,21 +15,31 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
     const form = e.currentTarget
-    const formData = new FormData(form)
+    const fd = new FormData(form)
+    const payload = {
+      name: fd.get('name') as string,
+      email: fd.get('email') as string,
+      subject: fd.get('subject') as string,
+      message: fd.get('message') as string,
+    }
     try {
-      const response = await fetch(form.action, {
+      const response = await fetch('https://formspree.io/f/xreapnkb', {
         method: 'POST',
-        body: formData,
-        headers: { Accept: 'application/json' },
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       })
       if (response.ok) {
         setSubmitted(true)
         form.reset()
       } else {
-        alert('Error al enviar el mensaje. Por favor intentá de nuevo.')
+        const err = await response.json().catch(() => ({}))
+        alert('Error: ' + (err.error || 'No se pudo enviar. Intentá de nuevo.'))
       }
     } catch {
-      alert('Error al enviar el mensaje. Por favor intentá de nuevo.')
+      alert('Error de red. Verificá tu conexión e intentá de nuevo.')
     } finally {
       setIsSubmitting(false)
     }
@@ -186,8 +196,6 @@ export default function ContactPage() {
                     onSubmit={handleSubmit}
                     className="space-y-5"
                   >
-                    <input type="hidden" name="_subject" value="Sacred Levels - Nuevo mensaje de contacto" />
-
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div>
                         <label htmlFor="name" style={labelStyle}>Nombre *</label>
@@ -207,7 +215,7 @@ export default function ContactPage() {
                         <input
                           type="email"
                           id="email"
-                          name="_replyto"
+                          name="email"
                           required
                           placeholder="tu@email.com"
                           style={inputStyle}
@@ -222,7 +230,7 @@ export default function ContactPage() {
                       <input
                         type="text"
                         id="subject"
-                        name="_formsubject"
+                        name="subject"
                         required
                         placeholder="¿En qué podemos ayudarte?"
                         style={inputStyle}
