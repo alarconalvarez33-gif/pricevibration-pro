@@ -1,5 +1,5 @@
 'use client'
-
+import ContactSection from '@/components/home/ContactSection'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
@@ -966,7 +966,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
+<ContactSection />
       <Footer />
     </main>
   )
