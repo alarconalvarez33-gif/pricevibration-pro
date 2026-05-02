@@ -347,8 +347,8 @@ export default function HomePage() {
 
                 {/* Stat bubble — bottom left */}
                 <StatBubble
-                  value="170 + Traders"
-                  label="clientes activos"
+                  value="CEO "
+                  label="TMT"
                   position="-bottom-4 -left-4 sm:-left-8"
                 />
 
@@ -358,7 +358,7 @@ export default function HomePage() {
                     className="text-sm font-bold uppercase tracking-[0.15em]"
                     style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    Fundador &amp; CEO
+                 
                   </p>
                   <p
                     className="text-xs mt-0.5 uppercase tracking-[0.2em]"
