@@ -349,7 +349,7 @@ export default function HomePage() {
                 <StatBubble
                   value="CEO "
                   label="TMT"
-                  position="-bottom-4 -left-3 sm:-left-6"
+                  position="-bottom-4 -left-6 sm:-left-8"
                 />
 
                 {/* Name tag below photo */}
