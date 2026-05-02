@@ -342,14 +342,14 @@ export default function HomePage() {
                 <StatBubble
                   value="+68% Win Rate"
                   label="Operaciones rentables"
-                  position="-top-4 -right-4 sm:-right-8"
+                  position="-top-4 -right-6 sm:-right-10"
                 />
 
                 {/* Stat bubble — bottom left */}
                 <StatBubble
                   value="CEO "
                   label="TMT"
-                  position="-bottom-4 -left-6 sm:-left-8"
+                  position="-bottom-4 -left-8 sm:-left-10"
                 />
 
                 {/* Name tag below photo */}
