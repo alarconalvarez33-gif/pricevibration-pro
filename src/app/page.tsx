@@ -402,6 +402,29 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════
+          EXNESS BANNER 1
+      ════════════════════════════════════════ */}
+      <section style={{ backgroundColor: '#080F1A', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <a
+            href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://d3dpet1g0ty5ed.cloudfront.net/ES_Take_control_728x90.png"
+              width={728}
+              height={90}
+              alt="Exness - Take Control"
+              style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </a>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
           CURSOS
       ════════════════════════════════════════ */}
       <section style={{ backgroundColor: LIGHT_BG }} id="cursos">
@@ -672,6 +695,29 @@ export default function HomePage() {
             * Los resultados mostrados son experiencias individuales. El trading conlleva riesgos y los resultados
             pasados no garantizan resultados futuros. Cada persona puede obtener resultados diferentes.
           </p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          EXNESS BANNER 2
+      ════════════════════════════════════════ */}
+      <section style={{ backgroundColor: '#080F1A', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <a
+            href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://d3dpet1g0ty5ed.cloudfront.net/ES_Take_control_728x90.png"
+              width={728}
+              height={90}
+              alt="Exness - Take Control"
+              style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </a>
         </div>
       </section>
 
