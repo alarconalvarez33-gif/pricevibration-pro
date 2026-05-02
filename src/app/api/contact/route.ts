@@ -4,7 +4,7 @@ const FORMSPREE_URL = 'https://formspree.io/f/xreapnkb'
 
 export async function POST(request: Request) {
   try {
-    const { name, email, message } = await request.json()
+    const { name, email, subject, message } = await request.json()
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 })
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, email, message }),
+      body: JSON.stringify({ name, email, subject: subject || '', message }),
     })
 
     const data = await res.json()

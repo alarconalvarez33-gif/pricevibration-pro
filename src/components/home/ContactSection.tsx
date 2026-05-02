@@ -21,20 +21,17 @@ export default function ContactSection() {
       message: fd.get('message') as string,
     }
     try {
-      const response = await fetch('https://formspree.io/f/xreapnkb', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
+      const data = await response.json()
       if (response.ok) {
         setSubmitted(true)
         form.reset()
       } else {
-        const err = await response.json().catch(() => ({}))
-        alert('Error: ' + (err.error || 'No se pudo enviar. Intentá de nuevo.'))
+        alert('Error: ' + (data.error || 'No se pudo enviar. Intentá de nuevo.'))
       }
     } catch {
       alert('Error de red. Verificá tu conexión e intentá de nuevo.')
