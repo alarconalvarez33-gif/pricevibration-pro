@@ -362,9 +362,9 @@ export default function HomePage() {
                   </p>
                   <p
                     className="text-xs mt-0.5 uppercase tracking-[0.2em]"
-                    style={{ color: '#475569', fontFamily: "'Space Grotesk', sans-serif" }}
+                    style={{ color: 'CYAN', fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    Trading PY
+                    Raúl Alarcón
                   </p>
                 </div>
               </div>
