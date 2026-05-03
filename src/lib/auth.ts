@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 import { prisma } from './prisma'
 import bcrypt from 'bcryptjs'
 
@@ -7,6 +8,10 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -24,6 +29,10 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) {
           throw new Error('User not found')
+        }
+
+        if (!user.password) {
+          throw new Error('Esta cuenta usa Google. Iniciá sesión con Google.')
         }
 
         const isValid = await bcrypt.compare(credentials.password, user.password)
@@ -70,8 +79,22 @@ export const authOptions: NextAuthOptions = {
     error: '/login'
   },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === 'google') {
+        const existing = await prisma.user.findUnique({ where: { email: user.email! } })
+        if (!existing) {
+          await prisma.user.create({
+            data: {
+              email: user.email!,
+              name: user.name || '',
+              password: null,
+            },
+          })
+        }
+      }
+      return true
+    },
     async redirect({ url, baseUrl }) {
-      // After login/register always go to dashboard
       if (url.includes('/login') || url.includes('/register') || url.includes('/api/auth')) {
         return `${baseUrl}/dashboard`
       }
@@ -79,8 +102,24 @@ export const authOptions: NextAuthOptions = {
       if (url.startsWith(baseUrl)) return url
       return `${baseUrl}/dashboard`
     },
-    async jwt({ token, user }) {
-      if (user) {
+    async jwt({ token, user, account }) {
+      if (user && account?.provider === 'google') {
+        // For Google OAuth, fetch the DB user to get custom fields
+        const dbUser = await prisma.user.findUnique({ where: { email: token.email! } })
+        if (dbUser) {
+          token.sub = dbUser.id
+          token.isPremium = dbUser.isPremium
+          token.premiumUntil = dbUser.premiumUntil?.toISOString() || null
+          token.plan = dbUser.plan
+          token.role = dbUser.role
+          token.trialUses = dbUser.trialUses
+          token.trialExpired = dbUser.trialExpired
+          token.cursoPurchased = dbUser.cursoPurchased
+          token.subscriptionStatus = dbUser.subscriptionStatus
+          token.autoRenew = dbUser.autoRenew
+          token.nextBillingDate = dbUser.nextBillingDate?.toISOString() || null
+        }
+      } else if (user) {
         token.isPremium = (user as any).isPremium
         token.premiumUntil = (user as any).premiumUntil
         token.plan = (user as any).plan
