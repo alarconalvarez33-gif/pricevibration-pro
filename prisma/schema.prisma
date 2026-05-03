@@ -32,6 +32,7 @@ model User {
   purchases          ProductPurchase[]
   subscriptionLogs   SubscriptionLog[]
   licenses           License[]
+  menteComments      MenteComment[]
 }
 
 model License {
@@ -300,4 +301,50 @@ model ProofResult {
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// ── La Mente del Trader ─────────────────────────────────────────────────────
+
+model MenteArticle {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  topic           String
+  description     String    @db.Text
+  content         String    @db.Text
+  imageUrl        String?
+  imageData       String?   @db.Text
+  imageMime       String?
+  authorName      String    @default("Raúl Alarcón")
+  isPublished     Boolean   @default(false)
+  isFeatured      Boolean   @default(false)
+  metaTitle       String?
+  metaDescription String?
+  tags            String[]
+  viewCount       Int       @default(0)
+  readingTime     Int?
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  comments        MenteComment[]
+
+  @@index([isPublished, publishedAt])
+  @@index([topic])
+  @@index([slug])
+}
+
+model MenteComment {
+  id          String    @id @default(cuid())
+  articleId   String
+  userId      String
+  content     String    @db.Text
+  isApproved  Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  article     MenteArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId    String?
+
+  @@index([articleId])
+  @@index([userId])
 }

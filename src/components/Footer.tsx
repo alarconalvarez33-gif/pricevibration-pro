@@ -64,6 +64,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5">
               {[
+                { href: '/la-mente-del-trader', label: 'La Mente del Trader' },
                 { href: '/login', label: 'Iniciar Sesión' },
                 { href: '/register', label: 'Registro' },
                 { href: '/quantum', label: 'Calculador' },

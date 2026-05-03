@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import MenteAdmin from '@/components/admin/MenteAdmin'
 
 const ADMIN_EMAILS = ['raul@sacredlevels.com', 'alarconalvarez33@gmail.com']
 const MAX_SIZE_MB = 2
@@ -279,6 +280,7 @@ function SlotCard({
 export default function AdminResultsPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [activeTab, setActiveTab] = useState<'resultados' | 'mente'>('resultados')
   const [slots, setSlots] = useState<SlotState[]>([emptySlot(), emptySlot(), emptySlot()])
   const [loading, setLoading] = useState(true)
   const [globalError, setGlobalError] = useState('')
@@ -426,13 +428,8 @@ export default function AdminResultsPage() {
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Gestionar Resultados Reales</h1>
-            <p className="text-xs mt-1" style={{ color: MUTED }}>
-              Máximo 3 resultados activos a la vez · aparecen en la landing automáticamente
-            </p>
-          </div>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-white">Panel Admin</h1>
           <Link
             href="/dashboard"
             className="text-xs uppercase tracking-widest px-4 py-2 border rounded transition-colors hover:text-white"
@@ -441,6 +438,32 @@ export default function AdminResultsPage() {
             ← Dashboard
           </Link>
         </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1 mb-8 border-b" style={{ borderColor: BORDER }}>
+          {([
+            { key: 'resultados', label: '📊 Resultados Reales' },
+            { key: 'mente',      label: '🧠 La Mente del Trader' },
+          ] as const).map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 -mb-px"
+              style={{
+                borderColor: activeTab === tab.key ? AMBER : 'transparent',
+                color: activeTab === tab.key ? AMBER : MUTED,
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab: La Mente del Trader */}
+        {activeTab === 'mente' && <MenteAdmin />}
+
+        {/* Tab: Resultados */}
+        {activeTab === 'resultados' && (<>
 
         {/* Active count indicator */}
         <div
@@ -492,6 +515,7 @@ export default function AdminResultsPage() {
           Formatos: JPG, PNG, WebP. Tamaño máx: 2 MB por imagen.
           Después de subir, aparecen en la landing en menos de 1 minuto.
         </div>
+        </>)}
       </div>
     </div>
   )

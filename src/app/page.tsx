@@ -1,5 +1,6 @@
 'use client'
 import ContactSection from '@/components/home/ContactSection'
+import MenteTraderPreview from '@/components/home/MenteTraderPreview'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
@@ -697,6 +698,11 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════
+          LA MENTE DEL TRADER PREVIEW
+      ════════════════════════════════════════ */}
+      <MenteTraderPreview />
 
       {/* ════════════════════════════════════════
           EXNESS BANNER 2

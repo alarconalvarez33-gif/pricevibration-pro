@@ -36,7 +36,8 @@ export default function Header() {
   const navLinks = [
     { href: '/', label: 'INICIO' },
     { href: '/cursos', label: 'CURSOS' },
-    { href: '/metalevels', label: 'METALEVELS', badge: 'NUEVO' },
+    { href: '/la-mente-del-trader', label: 'LA MENTE', badge: 'NUEVO' },
+    { href: '/metalevels', label: 'METALEVELS' },
     ...(session ? [{ href: '/dashboard', label: 'DASHBOARD' }] : []),
   ]
 
