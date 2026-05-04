@@ -305,6 +305,15 @@ model ProofResult {
 
 // ── La Mente del Trader ─────────────────────────────────────────────────────
 
+model MenteImage {
+  id        String   @id @default(cuid())
+  imageData String   @db.Text
+  imageMime String   @default("image/png")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 model MenteArticle {
   id              String    @id @default(cuid())
   slug            String    @unique

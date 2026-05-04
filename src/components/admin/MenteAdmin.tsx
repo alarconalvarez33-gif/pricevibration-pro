@@ -51,6 +51,9 @@ export default function MenteAdmin() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const contentImageRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [imageUploading, setImageUploading] = useState(false)
 
   const loadArticles = useCallback(async () => {
     setLoading(true)
@@ -100,6 +103,74 @@ export default function MenteAdmin() {
     if (!file.type.startsWith('image/')) { setSaveErr('Solo imágenes'); return }
     if (file.size > 5 * 1024 * 1024) { setSaveErr('Máx 5 MB'); return }
     setImageFile(file); setImagePreview(URL.createObjectURL(file)); setSaveErr('')
+  }
+
+  const uploadContentImage = async (file: File): Promise<string | null> => {
+    if (!file.type.startsWith('image/')) { setSaveErr('Solo imágenes'); return null }
+    if (file.size > 10 * 1024 * 1024) { setSaveErr('Máx 10 MB por imagen de contenido'); return null }
+    setSaveErr('')
+    setImageUploading(true)
+    try {
+      const b64 = await new Promise<string>((res, rej) => {
+        const reader = new FileReader()
+        reader.onload = () => res(reader.result as string)
+        reader.onerror = rej
+        reader.readAsDataURL(file)
+      })
+      const resp = await fetch('/api/mente/images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageData: b64, imageMime: file.type }),
+      })
+      const data = await resp.json()
+      if (!resp.ok) { setSaveErr('Error al subir imagen'); return null }
+      return data.url as string
+    } catch { setSaveErr('Error de conexión'); return null }
+    finally { setImageUploading(false) }
+  }
+
+  const insertAtCursor = (text: string) => {
+    const ta = textareaRef.current
+    if (!ta) { patchF('content', form.content + text); return }
+    const s = ta.selectionStart
+    const val = ta.value.substring(0, s) + text + ta.value.substring(ta.selectionEnd)
+    patchF('content', val)
+    setTimeout(() => { ta.selectionStart = ta.selectionEnd = s + text.length; ta.focus() }, 0)
+  }
+
+  const wrapSelection = (open: string, close?: string) => {
+    const ta = textareaRef.current
+    if (!ta) return
+    const s = ta.selectionStart; const e = ta.selectionEnd
+    const sel = ta.value.substring(s, e) || 'texto'
+    const end = close ?? open
+    const val = ta.value.substring(0, s) + open + sel + end + ta.value.substring(e)
+    patchF('content', val)
+    setTimeout(() => { ta.selectionStart = s + open.length; ta.selectionEnd = s + open.length + sel.length; ta.focus() }, 0)
+  }
+
+  const handleContentPaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = Array.from(e.clipboardData?.items || [])
+    const imgItem = items.find(i => i.type.startsWith('image/'))
+    if (!imgItem) return
+    e.preventDefault()
+    const file = imgItem.getAsFile()
+    if (!file) return
+    const ta = e.currentTarget
+    const selStart = ta.selectionStart
+    const before = ta.value.substring(0, selStart)
+    const after = ta.value.substring(ta.selectionEnd)
+    const url = await uploadContentImage(file)
+    if (url) {
+      const md = `\n![imagen](${url})\n`
+      patchF('content', before + md + after)
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.selectionStart = textareaRef.current.selectionEnd = selStart + md.length
+          textareaRef.current.focus()
+        }
+      }, 10)
+    }
   }
 
   const handleSave = async (publish?: boolean) => {
@@ -275,14 +346,74 @@ export default function MenteAdmin() {
                   <div dangerouslySetInnerHTML={{ __html: renderMarkdown(form.content) }} />
                 </div>
               ) : (
-                <textarea value={form.content} onChange={e => patchF('content', e.target.value)}
-                  placeholder={`# Título del artículo\n\nEscribí el contenido en Markdown...\n\n## Subtítulo\n\n**Negrita** · *Itálica* · \`código\`\n\n- Lista 1\n- Lista 2\n\n> Cita`}
-                  rows={18}
-                  className={inputCls + ' resize-y font-mono text-xs'} style={{ ...inputStyle, lineHeight: '1.6' }}
-                  onFocus={focusStyle} onBlur={blurStyle} />
+                <>
+                  {/* Toolbar */}
+                  <div className="flex items-center gap-1 flex-wrap mb-1.5 p-1.5 rounded-t-lg" style={{ backgroundColor: '#0d0d0e', border: `1px solid ${BORDER}`, borderBottom: 'none' }}>
+                    {([
+                      { label: 'H2', title: 'Título 2', action: () => insertAtCursor('\n## ') },
+                      { label: 'H3', title: 'Título 3', action: () => insertAtCursor('\n### ') },
+                      { label: 'B', title: 'Negrita', action: () => wrapSelection('**'), extra: { fontWeight: 'bold' as const } },
+                      { label: 'I', title: 'Itálica', action: () => wrapSelection('*'), extra: { fontStyle: 'italic' as const } },
+                      { label: '`code`', title: 'Código inline', action: () => wrapSelection('`') },
+                      { label: '— sep', title: 'Separador', action: () => insertAtCursor('\n\n---\n\n') },
+                      { label: '> cita', title: 'Cita', action: () => insertAtCursor('\n> ') },
+                      { label: '• lista', title: 'Lista', action: () => insertAtCursor('\n- ') },
+                      { label: '🔗 link', title: 'Link', action: () => wrapSelection('[', '](url)') },
+                    ] as const).map(btn => (
+                      <button key={btn.label} type="button" title={btn.title} onClick={btn.action}
+                        className="text-[10px] px-2 py-1 border rounded transition-colors hover:text-white hover:border-gray-500"
+                        style={{ borderColor: '#2a2a2a', color: '#666', fontFamily: 'monospace', ...('extra' in btn ? btn.extra : {}) }}>
+                        {btn.label}
+                      </button>
+                    ))}
+                    <div className="w-px h-4 mx-1" style={{ backgroundColor: '#2a2a2a' }} />
+                    <button
+                      type="button"
+                      title="Insertar imagen (o pegá con Ctrl+V)"
+                      onClick={() => contentImageRef.current?.click()}
+                      disabled={imageUploading}
+                      className="text-[10px] px-2.5 py-1 border rounded transition-colors hover:border-cyan-600 disabled:opacity-40"
+                      style={{ borderColor: `${CYAN}35`, color: CYAN }}
+                    >
+                      {imageUploading ? '⏳ Subiendo...' : '🖼️ Insertar imagen'}
+                    </button>
+                    <input ref={contentImageRef} type="file" accept="image/*" className="hidden"
+                      onChange={async e => {
+                        const f = e.target.files?.[0]
+                        if (f) { const url = await uploadContentImage(f); if (url) insertAtCursor(`\n![imagen](${url})\n`) }
+                        e.target.value = ''
+                      }} />
+                  </div>
+
+                  {/* Textarea with paste support */}
+                  <div className="relative">
+                    <textarea
+                      ref={textareaRef}
+                      value={form.content}
+                      onChange={e => patchF('content', e.target.value)}
+                      onPaste={handleContentPaste}
+                      placeholder={`# Título del artículo\n\nEscribí el contenido en Markdown...\n\n## Subtítulo\n\n**Negrita** · *Itálica* · \`código\`\n\n- Lista 1\n- Lista 2\n\n> Cita\n\n💡 Pegá imágenes con Ctrl+V directamente aquí`}
+                      rows={18}
+                      className={inputCls + ' resize-y font-mono text-xs rounded-t-none'}
+                      style={{ ...inputStyle, lineHeight: '1.6', borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
+                      onFocus={focusStyle} onBlur={blurStyle}
+                    />
+                    {imageUploading && (
+                      <div className="absolute inset-0 rounded-b-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}>
+                        <div className="flex items-center gap-2.5 text-sm font-semibold" style={{ color: CYAN }}>
+                          <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Subiendo imagen...
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
               <p className="text-[10px] mt-1" style={{ color: '#333' }}>
-                Soporta: # títulos, **negrita**, *itálica*, `código`, - listas, &gt; citas, [link](url), ![img](url)
+                Ctrl+V para pegar imagen · 🖼️ para subir desde archivo · Las imágenes quedan almacenadas en la nube
               </p>
             </div>
           </div>
