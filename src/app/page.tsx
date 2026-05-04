@@ -204,6 +204,7 @@ export default function HomePage() {
   const { data: session } = useSession()
   const [buyingId, setBuyingId] = useState<string | null>(null)
   const [chartResults, setChartResults] = useState<{ id: string; description: string; date: string }[]>([])
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
 
   useEffect(() => {
     fetch('/api/results')
@@ -211,6 +212,13 @@ export default function HomePage() {
       .then(d => { if (d.results) setChartResults(d.results) })
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    if (!lightbox) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(null) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox])
 
   const handleBuy = async (course: typeof COURSES[0]) => {
     if (course.action === 'link' && course.href) {
@@ -523,12 +531,25 @@ export default function HomePage() {
                     style={{ aspectRatio: '16/9', backgroundColor: '#0A0F1C' }}
                   >
                     {result ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={`/api/results/image/${result.id}`}
-                        alt={result.description}
-                        className="w-full h-full object-contain"
-                      />
+                      <button
+                        className="w-full h-full block group relative cursor-zoom-in"
+                        onClick={() => setLightbox({ src: `/api/results/image/${result.id}`, alt: result.description })}
+                        aria-label="Ver imagen completa"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={`/api/results/image/${result.id}`}
+                          alt={result.description}
+                          className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          style={{ backgroundColor: 'rgba(0,0,0,0.35)' }}>
+                          <span className="text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full"
+                            style={{ backgroundColor: 'rgba(0,212,255,0.2)', border: '1px solid rgba(0,212,255,0.4)', fontFamily: "'Space Grotesk', sans-serif" }}>
+                            🔍 Ampliar
+                          </span>
+                        </div>
+                      </button>
                     ) : (
                       <div
                         className="w-full h-full flex flex-col items-center justify-center"
@@ -1020,6 +1041,56 @@ export default function HomePage() {
       </section>
 <ContactSection />
       <Footer />
+
+      {/* ── Lightbox ── */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease]"
+          style={{ backgroundColor: 'rgba(0,0,0,0.93)', backdropFilter: 'blur(6px)' }}
+          onClick={() => setLightbox(null)}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setLightbox(null)}
+            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full transition-colors hover:bg-white/10 z-10"
+            style={{ color: '#fff', fontSize: '18px', border: '1px solid rgba(255,255,255,0.15)' }}
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+
+          {/* Image — stop propagation so clicking it doesn't close */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightbox.src}
+            alt={lightbox.alt}
+            onClick={e => e.stopPropagation()}
+            className="rounded-xl select-none"
+            style={{
+              maxWidth: '92vw',
+              maxHeight: '86vh',
+              objectFit: 'contain',
+              boxShadow: '0 0 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,212,255,0.15)',
+            }}
+          />
+
+          {/* Caption */}
+          {lightbox.alt && (
+            <p
+              className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center text-xs px-4 py-2 rounded-lg pointer-events-none"
+              style={{
+                color: '#94A3B8',
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                fontFamily: "'Inter', sans-serif",
+                maxWidth: '80vw',
+                backdropFilter: 'blur(4px)',
+              }}
+            >
+              {lightbox.alt} · <span style={{ color: '#475569' }}>ESC o clic fuera para cerrar</span>
+            </p>
+          )}
+        </div>
+      )}
     </main>
   )
 }
