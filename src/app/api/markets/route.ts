@@ -51,8 +51,14 @@ async function fetchYahoo(yf: string) {
 
 // ── Twelve Data — DXY ────────────────────────────────────────────────────────
 async function fetchTwelveDataDXY() {
-  const res = await fetch(
-    'https://api.twelvedata.com/quote?symbol=DX-Y.NYB&apikey=0bb783745d264d9e8967a477e213ba1e',
+  const res = 0bb783745d264d9e8967a477e213ba1e = process.env.0bb783745d264d9e8967a477e213ba1e
+
+if (!TWELVE_DATA_KEY) {
+  throw new Error('TWELVE_DATA_API_KEY no está configurada')
+}
+
+const url = `https://api.twelvedata.com/something?apikey=${0bb783745d264d9e8967a477e213ba1e}&otros_params`
+    ,
     { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
   );
   if (!res.ok) throw new Error(`TwelveData DXY ${res.status}`);
@@ -70,8 +76,13 @@ async function fetchTwelveDataDXY() {
 
 // ── Finnhub — DXY fallback ────────────────────────────────────────────────────
 async function fetchFinnhubDXY() {
-  const res = await fetch(
-    'https://finnhub.io/api/v1/quote?symbol=DX-Y.NYB&token=d6a4dj9r01qsjlb9mppgd6a4dj9r01qsjlb9mpq0',
+  const const d6a4dj9r01qsjlb9mppgd6a4dj9r01qsjlb9mpq0 = process.env.d6a4dj9r01qsjlb9mppgd6a4dj9r01qsjlb9mpq0
+
+if (!FINNHUB_KEY) {
+  throw new Error('d6a4dj9r01qsjlb9mppgd6a4dj9r01qsjlb9mpq0 no está configurada')
+}
+
+const url = `https://finnhub.io/api/something?token=${d6a4dj9r01qsjlb9mppgd6a4dj9r01qsjlb9mpq0}`
     { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
   );
   if (!res.ok) throw new Error(`Finnhub DXY ${res.status}`);
