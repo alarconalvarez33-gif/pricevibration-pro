@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+const TWELVE_DATA_API_KEY = process.env.TWELVE_DATA_API_KEY
+const FINNHUB_API_KEY     = process.env.FINNHUB_API_KEY
+
 const CACHE_TTL = 62_000;
 
 let cache: { markets: object[]; timestamp: number } | null = null;
@@ -51,8 +54,9 @@ async function fetchYahoo(yf: string) {
 
 // ── Twelve Data — DXY ────────────────────────────────────────────────────────
 async function fetchTwelveDataDXY() {
+  if (!TWELVE_DATA_API_KEY) throw new Error('TWELVE_DATA_API_KEY not configured')
   const res = await fetch(
-    'https://api.twelvedata.com/quote?symbol=DX-Y.NYB&apikey=0bb783745d264d9e8967a477e213ba1e',
+    `https://api.twelvedata.com/quote?symbol=DX-Y.NYB&apikey=${TWELVE_DATA_API_KEY}`,
     { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
   );
   if (!res.ok) throw new Error(`TwelveData DXY ${res.status}`);
@@ -70,8 +74,9 @@ async function fetchTwelveDataDXY() {
 
 // ── Finnhub — DXY fallback ────────────────────────────────────────────────────
 async function fetchFinnhubDXY() {
+  if (!FINNHUB_API_KEY) throw new Error('FINNHUB_API_KEY not configured')
   const res = await fetch(
-    'https://finnhub.io/api/v1/quote?symbol=DX-Y.NYB&token=d6a4dj9r01qsjlb9mppgd6a4dj9r01qsjlb9mpq0',
+    `https://finnhub.io/api/v1/quote?symbol=DX-Y.NYB&token=${FINNHUB_API_KEY}`,
     { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
   );
   if (!res.ok) throw new Error(`Finnhub DXY ${res.status}`);
