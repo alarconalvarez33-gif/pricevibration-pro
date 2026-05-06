@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
+const ADMIN_EMAIL = 'raul@sacredlevels.com'
+
 export async function POST() {
   const session = await getServerSession(authOptions)
 
@@ -12,19 +14,30 @@ export async function POST() {
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-    select: { id: true, plan: true, role: true, signalsViewed: true },
+    select: { id: true, plan: true, role: true, signalsViewed: true, isPremium: true, premiumUntil: true, subscriptionStatus: true, email: true },
   })
 
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 })
   }
 
-  // Don't increment for Quantum, Signal Hub Pro users or admins
-  if (user.plan === 'quantum' || user.plan === 'signal_hub' || user.plan === 'pro' || user.plan === 'whale' || user.role === 'admin') {
+  // No incrementar para admin
+  if (user.email === ADMIN_EMAIL || user.role === 'admin') {
     return NextResponse.json({ success: true, viewed: user.signalsViewed })
   }
 
-  // Don't increment beyond limit
+  // No incrementar para usuarios Quantum Access activos
+  const hasPlanFlag = ['quantum', 'signal_hub', 'pro', 'whale'].includes(user.plan)
+  const hasPremiumFlag = user.isPremium === true
+  const isStillValid = user.premiumUntil ? user.premiumUntil > new Date() : false
+  const isNotExpired = user.subscriptionStatus !== 'expired' && user.subscriptionStatus !== 'inactive'
+  const isPro = (hasPlanFlag || hasPremiumFlag) && isStillValid && isNotExpired
+
+  if (isPro) {
+    return NextResponse.json({ success: true, viewed: user.signalsViewed })
+  }
+
+  // No incrementar si ya llegó al límite
   if (user.signalsViewed >= 3) {
     return NextResponse.json({ success: true, viewed: user.signalsViewed })
   }

@@ -38,6 +38,8 @@ export default function Header() {
     { href: '/cursos', label: 'CURSOS' },
     { href: '/metalevels', label: 'METALEVELS', badge: 'NUEVO' },
     { href: '/la-mente-del-trader', label: 'LA MENTE', badge: 'NUEVO' },
+    { href: '/ser', label: 'SER', ser: true },
+    { href: '/hub', label: 'SIGNAL HUB', hub: true },
     ...(session ? [{ href: '/dashboard', label: 'DASHBOARD' }] : []),
   ]
 
@@ -82,28 +84,58 @@ export default function Header() {
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center">
               {navLinks.map(link => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="relative flex items-center gap-1.5 px-4 py-2 text-[11px] font-semibold tracking-[0.12em] transition-colors hover:text-white"
-                  style={{ color: isActive(link.href) ? CYAN : '#CBD5E1' }}
-                >
-                  {isActive(link.href) && (
-                    <span
-                      className="absolute bottom-0 left-3 right-3 h-px"
-                      style={{ backgroundColor: CYAN }}
-                    />
-                  )}
-                  {link.label}
-                  {link.badge && (
-                    <span
-                      className="text-[8px] font-bold px-1.5 py-0.5 rounded"
-                      style={{ backgroundColor: '#FFD70018', color: '#FFD700', border: '1px solid #FFD70030' }}
-                    >
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
+                (link as any).ser ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="relative flex items-center gap-1.5 px-3 py-1.5 mx-1 rounded-full text-[11px] font-bold tracking-[0.12em] transition-all hover:opacity-90"
+                    style={{
+                      backgroundColor: isActive(link.href) ? CYAN : 'rgba(0,212,255,0.12)',
+                      color: isActive(link.href) ? '#000' : CYAN,
+                      border: `1px solid ${isActive(link.href) ? CYAN : 'rgba(0,212,255,0.4)'}`,
+                    }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />
+                    {link.label}
+                  </Link>
+                ) : (link as any).hub ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="relative flex items-center gap-1.5 px-3 py-1.5 mx-1 rounded-full text-[11px] font-bold tracking-[0.12em] transition-all hover:opacity-90"
+                    style={{
+                      backgroundColor: isActive(link.href) ? '#00E5FF' : 'rgba(0,229,255,0.1)',
+                      color: isActive(link.href) ? '#000' : '#00E5FF',
+                      border: `1px solid ${isActive(link.href) ? '#00E5FF' : 'rgba(0,229,255,0.35)'}`,
+                    }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0" style={{ backgroundColor: '#00E5FF' }} />
+                    {link.label}
+                  </Link>
+                ) : (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="relative flex items-center gap-1.5 px-4 py-2 text-[11px] font-semibold tracking-[0.12em] transition-colors hover:text-white"
+                    style={{ color: isActive(link.href) ? CYAN : '#CBD5E1' }}
+                  >
+                    {isActive(link.href) && (
+                      <span
+                        className="absolute bottom-0 left-3 right-3 h-px"
+                        style={{ backgroundColor: CYAN }}
+                      />
+                    )}
+                    {link.label}
+                    {link.badge && (
+                      <span
+                        className="text-[8px] font-bold px-1.5 py-0.5 rounded"
+                        style={{ backgroundColor: '#FFD70018', color: '#FFD700', border: '1px solid #FFD70030' }}
+                      >
+                        {link.badge}
+                      </span>
+                    )}
+                  </Link>
+                )
               ))}
             </nav>
 
@@ -176,10 +208,12 @@ export default function Header() {
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-2 px-3 py-3.5 text-sm font-semibold uppercase tracking-[0.1em] border-l-2 transition-colors"
                 style={{
-                  borderColor: isActive(link.href) ? CYAN : 'transparent',
-                  color: isActive(link.href) ? CYAN : '#CBD5E1',
+                  borderColor: isActive(link.href) ? CYAN : (link as any).ser ? 'rgba(0,212,255,0.4)' : (link as any).hub ? 'rgba(0,229,255,0.35)' : 'transparent',
+                  color: isActive(link.href) ? CYAN : (link as any).ser ? CYAN : (link as any).hub ? '#00E5FF' : '#CBD5E1',
                 }}
               >
+                {(link as any).ser && <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />}
+                {(link as any).hub && <span className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0" style={{ backgroundColor: '#00E5FF' }} />}
                 {link.label}
                 {link.badge && (
                   <span
