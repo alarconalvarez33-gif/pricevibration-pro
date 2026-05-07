@@ -75,6 +75,29 @@ export async function activatePayment(
     },
   })
 
+  // Para planes SER/SER+: crear o actualizar SerSubscription con límites correctos
+  if (['ser', 'ser-plus'].includes(payment.planType)) {
+    const serPlan = payment.planType === 'ser-plus' ? 'SER_PLUS' : 'SER'
+    await prisma.serSubscription.upsert({
+      where: { userId: payment.userId },
+      create: {
+        userId: payment.userId,
+        plan: serPlan,
+        isActive: true,
+        startedAt: new Date(),
+        expiresAt: premiumUntil,
+        autoRenew: true,
+      },
+      update: {
+        plan: serPlan,
+        isActive: true,
+        startedAt: new Date(),
+        expiresAt: premiumUntil,
+        autoRenew: true,
+      },
+    })
+  }
+
   await prisma.subscriptionLog.create({
     data: {
       userId: payment.userId,

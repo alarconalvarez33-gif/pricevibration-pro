@@ -30,6 +30,7 @@ const PUBLIC_PREFIXES = [
   '/api/trial/',     // Trial use API must be reachable by free users
   '/api/quantum/',   // Quantum access API reachable by free/guest users
   '/api/free-usage', // Anti-abuse free usage tracking (called by unauthenticated users)
+  '/api/markets',    // Market prices — public data, used internally by SER
   '/api/results',    // Public proof results (landing page)
   '/api/user/',      // Purchases/subscription info needed by course-only users
   '/courses/',       // Course pages handle their own access (ProductPurchase check)
@@ -41,6 +42,7 @@ const PUBLIC_PREFIXES = [
   '/api/reservations', // reservation form is public
   '/admin/',         // Admin pages handle their own auth internally
   '/api/admin/',     // Admin API routes handle their own auth internally (check session + ADMIN_EMAILS internally)
+  '/api/ser/guest',  // SER guest mode — 4 free questions without registration, rate-limited by IP
   '/metalevels/',    // MetaLevels pages handle their own access (License check)
   '/metalevels',     // /metalevels index
   '/dashboard/',     // Dashboard and sub-pages handle their own auth via getServerSession
@@ -48,7 +50,7 @@ const PUBLIC_PREFIXES = [
   '/_next/',
 ]
 
-const PAID_PLANS = ['quantum']
+const PAID_PLANS = ['quantum', 'ser', 'ser-plus']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

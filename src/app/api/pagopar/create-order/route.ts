@@ -9,6 +9,14 @@ const PLAN_PRICES: Record<string, { monthly: { pyg: number; usd: number }; yearl
     monthly: { pyg: 180000, usd: 25 },
     yearly: { pyg: 1800000, usd: 250 },
   },
+  ser: {
+    monthly: { pyg: 130000, usd: 20 },
+    yearly: { pyg: 1300000, usd: 200 },
+  },
+  'ser-plus': {
+    monthly: { pyg: 260000, usd: 40 },
+    yearly: { pyg: 2600000, usd: 400 },
+  },
 }
 
 export async function POST(request: Request) {
@@ -21,7 +29,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { planType, billingPeriod = 'monthly' } = body
 
-    if (!planType || !['quantum'].includes(planType)) {
+    if (!planType || !['quantum', 'ser', 'ser-plus'].includes(planType)) {
       return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
     }
 
@@ -68,8 +76,13 @@ export async function POST(request: Request) {
     console.log('🔐 Token SHA1:', token)
 
     const periodLabel = billingPeriod === 'yearly' ? 'Anual' : 'Mensual'
-    const planLabel = planType.charAt(0).toUpperCase() + planType.slice(1)
-    const descripcion = `Plan ${planLabel} - Sacred Levels`
+    const PLAN_LABELS: Record<string, string> = {
+      quantum: 'Quantum Access',
+      ser: 'Plan SER',
+      'ser-plus': 'Plan SER+',
+    }
+    const planLabel = PLAN_LABELS[planType] || planType
+    const descripcion = `${planLabel} - THE MENTOR`
 
     // Fecha máxima de pago: 7 días desde ahora
     const fechaMaxima = new Date()
