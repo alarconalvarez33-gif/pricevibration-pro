@@ -313,7 +313,7 @@ export function SerHeroSection() {
             </div>
 
             <p className="text-lg font-semibold mb-3 text-white" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-              "La técnica se transforma en abundancia"
+              &ldquo;La técnica se transforma en abundancia&rdquo;
             </p>
             <p className="text-sm mb-8 leading-relaxed" style={{ color: '#64748B', maxWidth: '400px', margin: '0 auto 32px', fontFamily: "'Inter', sans-serif" }}>
               Creada en los laboratorios de <span style={{ color: '#94A3B8', fontWeight: 600 }}>THE MENTOR</span>. Calcula niveles cuánticos, interpreta el mercado y simplifica tus operaciones en tiempo real.
