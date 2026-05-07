@@ -33,6 +33,10 @@ model User {
   subscriptionLogs   SubscriptionLog[]
   licenses           License[]
   menteComments      MenteComment[]
+  serSubscription    SerSubscription?
+  serDailyQuotas     SerDailyQuota[]
+  serPacks           SerQuestionPack[]
+  serConversations   SerConversation[]
 }
 
 model License {
@@ -356,4 +360,104 @@ model MenteComment {
 
   @@index([articleId])
   @@index([userId])
+}
+
+// ── SER - Sistema de Econofísica Resonante ─────────────────────────────────
+
+model SerSubscription {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  plan          String    @default("QUANTUM") // QUANTUM | SER_PLUS
+  isActive      Boolean   @default(false)
+  startedAt     DateTime  @default(now())
+  expiresAt     DateTime?
+  cancelledAt   DateTime?
+  lastPaymentId String?
+  autoRenew     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isActive])
+  @@index([expiresAt])
+}
+
+model SerDailyQuota {
+  id              String   @id @default(cuid())
+  userId          String
+  date            String
+  questionsUsed   Int      @default(0)
+  questionsLimit  Int
+  extraQuestions  Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model SerQuestionPack {
+  id              String   @id @default(cuid())
+  userId          String
+  questionsAdded  Int      @default(10)
+  amountPaidUSD   Float?
+  amountPaidGs    Int?
+  paymentMethod   String?
+  paymentId       String?
+  questionsUsed   Int      @default(0)
+  isExpired       Boolean  @default(false)
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isExpired, expiresAt])
+}
+
+model SerConversation {
+  id              String   @id @default(cuid())
+  userId          String
+  conversationId  String
+  role            String
+  content         String   @db.Text
+  hasImage        Boolean  @default(false)
+  modelUsed       String?
+  tokensInput     Int?
+  tokensOutput    Int?
+  marketDataUsed  Json?
+  ipAddressHash   String?
+  userAgent       String?
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([conversationId])
+}
+
+model SerAuditLog {
+  id            String   @id @default(cuid())
+  userId        String?
+  event         String
+  severity      String
+  ipAddressHash String?
+  userAgent     String?
+  endpoint      String?
+  details       Json?
+  createdAt     DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([event, severity])
+  @@index([ipAddressHash])
+}
+
+model BlockedIP {
+  id             String    @id @default(cuid())
+  ipAddressHash  String    @unique
+  reason         String
+  blockedUntil   DateTime?
+  attempts       Int       @default(0)
+  lastAttempt    DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+
+  @@index([ipAddressHash, blockedUntil])
 }
