@@ -301,7 +301,7 @@ export default function SerPlanesPage() {
             className="text-2xl font-black mb-3"
             style={{ color: '#fff', fontFamily: "'Montserrat', sans-serif" }}
           >
-            "La técnica se transforma en abundancia"
+            &ldquo;La técnica se transforma en abundancia&rdquo;
           </h2>
           <p className="text-sm mb-6" style={{ color: '#64748B' }}>
             Creado por Raúl Alarcón · Sacred Levels · Paraguay
