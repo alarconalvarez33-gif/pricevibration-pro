@@ -11,17 +11,20 @@ const PRODUCTS: Record<string, {
   displayName: string
   dbProductId: string
   price: number
-  isQuantum: boolean
+  priceUsd?: number
+  planType?: string   // set for subscription plans (quantum, ser, ser-plus)
   setCursoPurchased: boolean
 }> = {
-  'genesis':          { displayName: 'Genesis',            dbProductId: 'expansion-matematica', price: 500000, isQuantum: false, setCursoPurchased: false },
-  'canal-paralelo':   { displayName: 'Canal Paralelo',     dbProductId: 'canal-paralelo',        price: 320000, isQuantum: false, setCursoPurchased: false },
-  'fibonacci':        { displayName: 'Fibonacci Avanzado', dbProductId: 'fibonacci',             price: 320000, isQuantum: false, setCursoPurchased: false },
-  'super-estrategia': { displayName: 'Super Estrategia',   dbProductId: 'super-estrategia',      price: 65000,  isQuantum: false, setCursoPurchased: true  },
-  'quantum-access':   { displayName: 'Quantum Access',     dbProductId: 'quantum-access',        price: 180000, isQuantum: true,  setCursoPurchased: false },
-  'metalevels':       { displayName: 'MetaLevels',         dbProductId: 'metalevels',            price: 150000, isQuantum: false, setCursoPurchased: false },
-  'adx':              { displayName: 'Estrategia ADX',     dbProductId: 'adx',                   price: 150000, isQuantum: false, setCursoPurchased: false },
-  'frecuencia':       { displayName: 'Frecuencia',         dbProductId: 'frecuencia',            price: 200000, isQuantum: false, setCursoPurchased: false },
+  'genesis':          { displayName: 'Genesis',            dbProductId: 'expansion-matematica', price: 500000, setCursoPurchased: false },
+  'canal-paralelo':   { displayName: 'Canal Paralelo',     dbProductId: 'canal-paralelo',        price: 320000, setCursoPurchased: false },
+  'fibonacci':        { displayName: 'Fibonacci Avanzado', dbProductId: 'fibonacci',             price: 320000, setCursoPurchased: false },
+  'super-estrategia': { displayName: 'Super Estrategia',   dbProductId: 'super-estrategia',      price: 65000,  setCursoPurchased: true  },
+  'quantum-access':   { displayName: 'Quantum Access',     dbProductId: '',                      price: 180000, priceUsd: 25, planType: 'quantum',   setCursoPurchased: false },
+  'ser':              { displayName: 'Plan SER',           dbProductId: '',                      price: 130000, priceUsd: 20, planType: 'ser',        setCursoPurchased: false },
+  'ser-plus':         { displayName: 'Plan SER+',          dbProductId: '',                      price: 260000, priceUsd: 40, planType: 'ser-plus',   setCursoPurchased: false },
+  'metalevels':       { displayName: 'MetaLevels',         dbProductId: 'metalevels',            price: 150000, setCursoPurchased: false },
+  'adx':              { displayName: 'Estrategia ADX',     dbProductId: 'adx',                   price: 150000, setCursoPurchased: false },
+  'frecuencia':       { displayName: 'Frecuencia',         dbProductId: 'frecuencia',            price: 200000, setCursoPurchased: false },
 }
 
 function isAdmin(email: string | null | undefined) {
@@ -74,31 +77,31 @@ export async function POST(request: NextRequest) {
 
     const params = { source: 'admin_manual' as const, triggeredBy: adminEmail }
 
-    if (product.isQuantum) {
-      const alreadyQuantum = user.plan === 'quantum' && user.isPremium
-      if (alreadyQuantum) {
+    if (product.planType) {
+      const alreadyActive = user.plan === product.planType && user.isPremium
+      if (alreadyActive) {
         return NextResponse.json({
-          warning: `${email} ya tiene Quantum Access activo.`,
+          warning: `${email} ya tiene ${product.displayName} activo.`,
           alreadyHad: true,
         })
       }
-      // For manual quantum: create a synthetic Payment record so activation service can work
+      // Subscription plans: create a synthetic Payment record → activatePayment handles SerSubscription too
       const syntheticPayment = await prisma.payment.create({
         data: {
           orderId: `MANUAL-ADMIN-${Date.now()}`,
           userId: user.id,
-          planType: 'quantum',
+          planType: product.planType,
           billingPeriod: 'monthly',
           amount: product.price,
           currency: 'PYG',
-          amountUsd: 25,
+          amountUsd: product.priceUsd ?? 0,
           status: 'pending',
         },
       })
-      const result = await activatePayment(syntheticPayment.id, params)
+      await activatePayment(syntheticPayment.id, params)
       return NextResponse.json({
         success: true,
-        message: `✓ Quantum Access activado para ${email} (30 días)`,
+        message: `✓ ${product.displayName} activado para ${email} (30 días)`,
       })
     }
 
@@ -170,7 +173,7 @@ export async function GET() {
       id: l.id,
       date: l.createdAt,
       email: l.user.email,
-      product: 'quantum-access',
+      product: l.plan ?? 'quantum',
       type: 'subscription',
       source: l.note?.includes('admin_manual') ? 'manual' : 'pagopar',
     }))

@@ -17,11 +17,13 @@ const GREEN  = '#00D26A'
 const CYAN   = '#00E5FF'
 
 const PRODUCTS = [
+  { key: 'ser',               label: 'Plan SER — $20/mes',               badge: '🤖' },
+  { key: 'ser-plus',          label: 'Plan SER+ — $40/mes',              badge: '🧠' },
+  { key: 'quantum-access',    label: 'Quantum Access — Gs. 180.000',     badge: '⚡' },
   { key: 'genesis',           label: 'Genesis — Gs. 500.000',            badge: '👑' },
   { key: 'canal-paralelo',    label: 'Canal Paralelo — Gs. 320.000',     badge: '🎓' },
   { key: 'fibonacci',         label: 'Fibonacci Avanzado — Gs. 320.000', badge: '📊' },
   { key: 'super-estrategia',  label: 'Super Estrategia — Gs. 65.000',    badge: '🏆' },
-  { key: 'quantum-access',    label: 'Quantum Access — Gs. 180.000',     badge: '⚡' },
   { key: 'metalevels',        label: 'MetaLevels — Gs. 150.000',         badge: '📈' },
   { key: 'adx',               label: 'Estrategia ADX — Gs. 150.000',     badge: '📉' },
   { key: 'frecuencia',        label: 'Frecuencia — Gs. 200.000',         badge: '🌀' },
@@ -34,8 +36,11 @@ const PRODUCT_LABEL: Record<string, string> = {
   'super-estrategia':     'Super Estrategia',
   'quantum-access':       'Quantum Access',
   'quantum':              'Quantum Access',
+  'ser':                  'Plan SER',
+  'ser-plus':             'Plan SER+',
   'adx':                  'Estrategia ADX',
   'metalevels':           'MetaLevels',
+  'frecuencia':           'Frecuencia',
 }
 
 interface Activation {
@@ -78,7 +83,7 @@ export default function AdminActivatePage() {
 
   // Quick activation form
   const [email, setEmail]         = useState('')
-  const [productKey, setProductKey] = useState('genesis')
+  const [productKey, setProductKey] = useState('ser')
   const [suggestions, setSuggestions] = useState<{ email: string; name: string | null; plan: string }[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [loading, setLoading]     = useState(false)
