@@ -1,22 +1,41 @@
 import { prisma } from '@/lib/prisma'
 
 const ADMIN_EMAIL = 'raul@sacredlevels.com'
+const FREE_TRIAL_LIMIT = 5
+const SER_FEATURE = 'ser'
+
+function userFingerprint(userId: string) {
+  return `user_${userId}`
+}
 
 export async function canUserAskQuestion(userId: string): Promise<{
   allowed: boolean
   remaining: number
+  isTrial?: boolean
   reason?: string
   upgradeUrl?: string
 }> {
   const subscription = await prisma.serSubscription.findUnique({ where: { userId } })
 
+  // No active subscription → free trial (5 questions, one-time per user)
   if (!subscription || !subscription.isActive) {
-    return {
-      allowed: false,
-      remaining: 0,
-      reason: 'Necesitas Quantum Access para usar SER',
-      upgradeUrl: '/billing',
+    const fp = userFingerprint(userId)
+    const usage = await prisma.freeUsage.findUnique({
+      where: { fingerprint_feature: { fingerprint: fp, feature: SER_FEATURE } },
+    })
+    const used = usage?.usageCount ?? 0
+    const remaining = Math.max(0, FREE_TRIAL_LIMIT - used)
+
+    if (remaining <= 0) {
+      return {
+        allowed: false,
+        remaining: 0,
+        reason: 'Agotaste tus 5 preguntas gratuitas. Suscribite al Plan SER para continuar.',
+        upgradeUrl: '/billing#planes-ser',
+      }
     }
+
+    return { allowed: true, remaining, isTrial: true }
   }
 
   if (subscription.expiresAt && subscription.expiresAt < new Date()) {
@@ -24,7 +43,7 @@ export async function canUserAskQuestion(userId: string): Promise<{
       allowed: false,
       remaining: 0,
       reason: 'Tu suscripción SER ha expirado',
-      upgradeUrl: '/billing',
+      upgradeUrl: '/billing#planes-ser',
     }
   }
 
@@ -60,9 +79,21 @@ export async function canUserAskQuestion(userId: string): Promise<{
 }
 
 export async function decrementQuota(userId: string): Promise<void> {
-  const today = new Date().toISOString().split('T')[0]
   const subscription = await prisma.serSubscription.findUnique({ where: { userId } })
-  const dailyLimit = subscription?.plan === 'SER_PLUS' ? 20 : 10
+
+  // Free trial: increment FreeUsage by userId fingerprint
+  if (!subscription || !subscription.isActive) {
+    const fp = userFingerprint(userId)
+    await prisma.freeUsage.upsert({
+      where: { fingerprint_feature: { fingerprint: fp, feature: SER_FEATURE } },
+      create: { fingerprint: fp, ip: 'user-account', feature: SER_FEATURE, usageCount: 1 },
+      update: { usageCount: { increment: 1 }, lastUsedAt: new Date() },
+    })
+    return
+  }
+
+  const today = new Date().toISOString().split('T')[0]
+  const dailyLimit = subscription.plan === 'SER_PLUS' ? 20 : 10
 
   const quota = await prisma.serDailyQuota.upsert({
     where: { userId_date: { userId, date: today } },

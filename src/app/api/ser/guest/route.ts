@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import Anthropic from '@anthropic-ai/sdk'
+import { prisma } from '@/lib/prisma'
 import { SER_SYSTEM_PROMPT } from '@/lib/ser/prompts'
 import { getMarketContext } from '@/lib/ser/marketData'
 
@@ -8,43 +9,84 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
 export const dynamic = 'force-dynamic'
 
-// In-memory guest usage tracker: IP hash → { count, resetAt }
-const guestUsage = new Map<string, { count: number; resetAt: number }>()
-const GUEST_MAX = 4
-const GUEST_WINDOW_MS = 24 * 60 * 60 * 1000 // 24h window
+const GUEST_MAX = 5
 
-function getIpHash(ip: string): string {
-  let hash = 0
+function getIp(req: NextRequest): string {
+  return (
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip') ||
+    'unknown'
+  )
+}
+
+// fingerprint = ip hash used as DB key (no in-memory — survives restarts)
+function hashIp(ip: string): string {
+  let h = 0
   for (let i = 0; i < ip.length; i++) {
-    hash = ((hash << 5) - hash) + ip.charCodeAt(i)
-    hash |= 0
+    h = ((h << 5) - h) + ip.charCodeAt(i)
+    h |= 0
   }
-  return 'g_' + Math.abs(hash).toString(36)
+  return 'g_' + Math.abs(h).toString(36)
+}
+
+async function checkAndIncrementGuest(ip: string): Promise<{ allowed: boolean; remaining: number }> {
+  const fp = hashIp(ip)
+  const feature = 'ser'
+
+  try {
+    const existing = await prisma.freeUsage.findUnique({
+      where: { fingerprint_feature: { fingerprint: fp, feature } },
+    })
+
+    if (existing && existing.usageCount >= GUEST_MAX) {
+      return { allowed: false, remaining: 0 }
+    }
+
+    // Also check by raw IP (covers IP changes for same device)
+    if (!existing && ip !== 'unknown') {
+      const byIp = await prisma.freeUsage.findFirst({
+        where: { ip, feature },
+        orderBy: { usageCount: 'desc' },
+      })
+      if (byIp && byIp.usageCount >= GUEST_MAX) {
+        return { allowed: false, remaining: 0 }
+      }
+    }
+
+    if (!existing) {
+      await prisma.freeUsage.create({ data: { fingerprint: fp, ip, feature, usageCount: 1 } })
+      return { allowed: true, remaining: GUEST_MAX - 1 }
+    }
+
+    const newCount = existing.usageCount + 1
+    await prisma.freeUsage.update({
+      where: { fingerprint_feature: { fingerprint: fp, feature } },
+      data: { usageCount: newCount, lastUsedAt: new Date() },
+    })
+    return { allowed: true, remaining: Math.max(0, GUEST_MAX - newCount) }
+  } catch {
+    return { allowed: true, remaining: 1 }
+  }
 }
 
 export async function POST(req: NextRequest) {
-  const headersList = headers()
-  const ip = (headersList.get('x-forwarded-for') || 'unknown').split(',')[0].trim()
-  const ipHash = getIpHash(ip)
-  const now = Date.now()
+  const ip = getIp(req)
 
-  // Clean stale entries periodically
-  if (Math.random() < 0.05) {
-    for (const [key, val] of Array.from(guestUsage.entries())) {
-      if (val.resetAt < now) guestUsage.delete(key)
-    }
-  }
+  // Pre-check quota before calling AI (avoid wasting tokens)
+  const fp = hashIp(ip)
+  const feature = 'ser'
+  const preCheck = await prisma.freeUsage.findUnique({
+    where: { fingerprint_feature: { fingerprint: fp, feature } },
+  }).catch(() => null)
 
-  // Check server-side guest quota
-  const usage = guestUsage.get(ipHash)
-  if (usage && usage.resetAt > now && usage.count >= GUEST_MAX) {
+  if (preCheck && preCheck.usageCount >= GUEST_MAX) {
     return NextResponse.json(
-      { error: 'Agotaste tus 4 preguntas gratuitas. Registrate para continuar.', guestLimitReached: true },
+      { error: 'Agotaste tus 5 preguntas gratuitas. Registrate para continuar.', guestLimitReached: true },
       { status: 403 }
     )
   }
 
-  let body: any
+  let body: { message?: string; imageBase64?: string }
   try {
     body = await req.json()
   } catch {
@@ -71,12 +113,12 @@ export async function POST(req: NextRequest) {
       messages.push({
         role: 'user',
         content: [
-          { type: 'image', source: { type: 'base64', media_type: mediaType as any, data: raw } },
+          { type: 'image', source: { type: 'base64', media_type: mediaType as 'image/png' | 'image/jpeg', data: raw } },
           { type: 'text', text: (message || 'Analizá este gráfico aplicando la metodología SER.') + marketContext },
         ],
       })
     } else {
-      messages.push({ role: 'user', content: message + marketContext })
+      messages.push({ role: 'user', content: (message ?? '') + marketContext })
     }
 
     const response = await Promise.race([
@@ -94,16 +136,8 @@ export async function POST(req: NextRequest) {
       .map(c => (c as Anthropic.Messages.TextBlock).text)
       .join('\n')
 
-    // Increment server-side counter
-    const current = guestUsage.get(ipHash)
-    if (!current || current.resetAt <= now) {
-      guestUsage.set(ipHash, { count: 1, resetAt: now + GUEST_WINDOW_MS })
-    } else {
-      guestUsage.set(ipHash, { count: current.count + 1, resetAt: current.resetAt })
-    }
-
-    const newCount = guestUsage.get(ipHash)!.count
-    const remaining = Math.max(0, GUEST_MAX - newCount)
+    // Increment counter AFTER successful response
+    const { remaining } = await checkAndIncrementGuest(ip)
 
     return NextResponse.json({
       response: aiResponse,
@@ -111,9 +145,8 @@ export async function POST(req: NextRequest) {
       guestMode: true,
       isLast: remaining === 0,
     })
-
-  } catch (error: any) {
-    const isTimeout = error?.message === 'TIMEOUT'
+  } catch (error: unknown) {
+    const isTimeout = (error as Error)?.message === 'TIMEOUT'
     return NextResponse.json(
       { error: isTimeout ? 'La respuesta tardó demasiado. Intentá de nuevo.' : 'Hubo un problema. Intentá de nuevo.' },
       { status: isTimeout ? 504 : 500 }

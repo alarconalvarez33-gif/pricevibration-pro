@@ -241,7 +241,7 @@ export default function DashboardPage() {
 
           {/* Calculadora Cuántica */}
           {activeModule === 'quantica' && (
-            <QuantumCalcDash />
+            <QuantumCalcDash isPremium={isPro || isWhale || isQuantum} />
           )}
 
           {/* Gann Clásica */}
@@ -257,7 +257,7 @@ export default function DashboardPage() {
 
           {/* Calculadora Áurea */}
           {activeModule === 'aurea' && (
-            <GannAurea />
+            <GannAurea isPremium={isPro || isWhale || isQuantum} />
           )}
 
           {/* Quick Stats (Gann Clásica results) */}

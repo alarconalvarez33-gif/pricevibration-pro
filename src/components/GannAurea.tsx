@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import CalcGuide from '@/components/CalcGuide'
 import { GUIDE_AUREA } from '@/lib/calcGuides'
 
 const STEPS = [0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5]
+const CALC_LIMIT = 3
 
 const ASSETS = [
   { id: 'XAUUSD', label: 'XAU/USD', decimals: 2 },
@@ -24,15 +26,50 @@ interface AureaResult {
   decimals: number
 }
 
-export default function GannAurea() {
+function getOrCreateFp(): string {
+  const KEY = '_gzfp'
+  let fp = localStorage.getItem(KEY)
+  if (!fp) {
+    fp = Math.random().toString(36).slice(2) + Date.now().toString(36)
+    localStorage.setItem(KEY, fp)
+  }
+  return fp
+}
+
+interface Props {
+  isPremium?: boolean
+}
+
+export default function GannAurea({ isPremium = false }: Props) {
   const [asset, setAsset] = useState(ASSETS[0])
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [result, setResult] = useState<AureaResult | null>(null)
   const [error, setError] = useState('')
   const [guideOpen, setGuideOpen] = useState(false)
+  const [usesLeft, setUsesLeft] = useState<number | null>(null)
+  const [trialBlocked, setTrialBlocked] = useState(false)
+  const [checking, setChecking] = useState(false)
+  const fpRef = useRef<string | null>(null)
 
-  const handleCalc = () => {
+  useEffect(() => {
+    if (isPremium) return
+    fpRef.current = getOrCreateFp()
+    // Pre-check remaining uses on mount (read-only: just query DB without incrementing)
+    fetch('/api/free-usage/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fingerprint: fpRef.current, feature: 'gann-aurea' }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        setUsesLeft(d.remaining ?? CALC_LIMIT)
+        setTrialBlocked(!d.allowed && d.remaining === 0)
+      })
+      .catch(() => setUsesLeft(CALC_LIMIT))
+  }, [isPremium])
+
+  const handleCalc = async () => {
     const min = parseFloat(minPrice.replace(',', '.'))
     const max = parseFloat(maxPrice.replace(',', '.'))
 
@@ -45,6 +82,26 @@ export default function GannAurea() {
       return
     }
     setError('')
+
+    if (!isPremium) {
+      if (trialBlocked) return
+      setChecking(true)
+      try {
+        const res = await fetch('/api/free-usage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fingerprint: fpRef.current, feature: 'gann-aurea' }),
+        })
+        const d = await res.json()
+        if (!d.allowed) {
+          setTrialBlocked(true)
+          setChecking(false)
+          return
+        }
+        setUsesLeft(d.remaining)
+      } catch { /* allow on error */ }
+      setChecking(false)
+    }
 
     const sqrtMin = Math.sqrt(min)
     const sqrtMax = Math.sqrt(max)
@@ -69,13 +126,20 @@ export default function GannAurea() {
           <h2 className="text-white font-bold text-lg flex items-center gap-2">
             <span className="text-[#fbbf24]">◈</span> Calculadora Áurea de Gann
           </h2>
-          <button
-            onClick={() => setGuideOpen(true)}
-            className="w-8 h-8 rounded-full border border-[#2a2a2a] flex items-center justify-center text-sm font-bold text-[#555] hover:text-white hover:border-[#444] transition-colors"
-            title="Guía de uso"
-          >
-            ?
-          </button>
+          <div className="flex items-center gap-2">
+            {!isPremium && usesLeft !== null && !trialBlocked && (
+              <span className="text-[10px] px-2 py-0.5 rounded border font-bold" style={{ color: usesLeft === 0 ? '#FF4757' : '#fbbf24', borderColor: usesLeft === 0 ? '#FF475740' : '#fbbf2440' }}>
+                {usesLeft}/{CALC_LIMIT} usos
+              </span>
+            )}
+            <button
+              onClick={() => setGuideOpen(true)}
+              className="w-8 h-8 rounded-full border border-[#2a2a2a] flex items-center justify-center text-sm font-bold text-[#555] hover:text-white hover:border-[#444] transition-colors"
+              title="Guía de uso"
+            >
+              ?
+            </button>
+          </div>
         </div>
 
         {/* Asset selector */}
@@ -126,13 +190,28 @@ export default function GannAurea() {
 
         {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
-        <button
-          onClick={handleCalc}
-          className="w-full min-h-[52px] font-bold text-sm uppercase tracking-[0.12em] rounded-lg transition-all hover:opacity-90 active:scale-[0.99]"
-          style={{ backgroundColor: '#fbbf24', color: '#000' }}
-        >
-          Calcular Niveles Áureos
-        </button>
+        {trialBlocked ? (
+          <div className="border rounded-lg p-5 text-center" style={{ borderColor: '#333', backgroundColor: '#0d0d0e' }}>
+            <p className="text-white font-bold mb-1">Pruebas gratuitas agotadas</p>
+            <p className="text-[#555] text-xs mb-4">Usaste tus {CALC_LIMIT} cálculos gratuitos en la Calculadora Áurea.</p>
+            <Link
+              href="/billing"
+              className="inline-block px-6 py-2.5 rounded-lg text-sm font-bold uppercase tracking-wider text-black transition-opacity hover:opacity-90"
+              style={{ backgroundColor: '#fbbf24' }}
+            >
+              Ver Planes
+            </Link>
+          </div>
+        ) : (
+          <button
+            onClick={handleCalc}
+            disabled={checking}
+            className="w-full min-h-[52px] font-bold text-sm uppercase tracking-[0.12em] rounded-lg transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-60"
+            style={{ backgroundColor: '#fbbf24', color: '#000' }}
+          >
+            {checking ? 'Verificando...' : 'Calcular Niveles Áureos'}
+          </button>
+        )}
       </div>
 
       {/* Results */}

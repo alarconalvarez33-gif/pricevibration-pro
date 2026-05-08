@@ -42,7 +42,8 @@ const PUBLIC_PREFIXES = [
   '/api/reservations', // reservation form is public
   '/admin/',         // Admin pages handle their own auth internally
   '/api/admin/',     // Admin API routes handle their own auth internally (check session + ADMIN_EMAILS internally)
-  '/api/ser/guest',  // SER guest mode — 4 free questions without registration, rate-limited by IP
+  '/api/ser/guest',  // SER guest mode — 5 free questions per IP, one-time
+  '/api/signals/',   // Signal Hub check-limit and increment handle their own auth (guests allowed)
   '/metalevels/',    // MetaLevels pages handle their own access (License check)
   '/metalevels',     // /metalevels index
   '/dashboard/',     // Dashboard and sub-pages handle their own auth via getServerSession

@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import CalcGuide from '@/components/CalcGuide'
 import { GUIDE_QUANTICA } from '@/lib/calcGuides'
 
-// ── Design tokens ─────────────────────────────────────────────────────────────
 const CARD   = '#141415'
 const BORDER = '#222222'
 const CYAN   = '#00E5FF'
@@ -12,10 +12,9 @@ const GREEN  = '#00D26A'
 const RED    = '#FF4757'
 const MUTED  = '#555555'
 const DARK   = '#0d0d0e'
-
+const CALC_LIMIT = 3
 const N = 8
 
-// ── Types ─────────────────────────────────────────────────────────────────────
 interface QuantumLevel {
   n: number
   price: number
@@ -24,7 +23,6 @@ interface QuantumLevel {
   strength: 'extreme' | 'strong' | 'moderate'
 }
 
-// ── Calculation ───────────────────────────────────────────────────────────────
 function calculateQuantumLevels(max: number, min: number): QuantumLevel[] {
   const range = max - min
   return Array.from({ length: N + 1 }, (_, n) => {
@@ -109,21 +107,75 @@ function LevelCard({ level }: { level: QuantumLevel }) {
   )
 }
 
-// ── Main component ─────────────────────────────────────────────────────────────
-export default function QuantumCalcDash() {
+function getOrCreateFp(): string {
+  const KEY = '_gzfp'
+  let fp = localStorage.getItem(KEY)
+  if (!fp) {
+    fp = Math.random().toString(36).slice(2) + Date.now().toString(36)
+    localStorage.setItem(KEY, fp)
+  }
+  return fp
+}
+
+interface Props {
+  isPremium?: boolean
+}
+
+export default function QuantumCalcDash({ isPremium = false }: Props) {
   const [maxVal, setMaxVal]   = useState('')
   const [minVal, setMinVal]   = useState('')
   const [levels, setLevels]   = useState<QuantumLevel[]>([])
   const [error, setError]     = useState('')
   const [guideOpen, setGuideOpen] = useState(false)
+  const [usesLeft, setUsesLeft] = useState<number | null>(null)
+  const [trialBlocked, setTrialBlocked] = useState(false)
+  const [checking, setChecking] = useState(false)
+  const fpRef = useRef<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (isPremium) return
+    fpRef.current = getOrCreateFp()
+    fetch('/api/free-usage/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fingerprint: fpRef.current, feature: 'gann-quantum' }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        setUsesLeft(d.remaining ?? CALC_LIMIT)
+        setTrialBlocked(!d.allowed && d.remaining === 0)
+      })
+      .catch(() => setUsesLeft(CALC_LIMIT))
+  }, [isPremium])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     const max = parseFloat(maxVal)
     const min = parseFloat(minVal)
     if (isNaN(max) || isNaN(min)) { setError('Ingresá valores numéricos válidos.'); return }
     if (min >= max) { setError('El máximo debe ser mayor al mínimo.'); return }
+
+    if (!isPremium) {
+      if (trialBlocked) return
+      setChecking(true)
+      try {
+        const res = await fetch('/api/free-usage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fingerprint: fpRef.current, feature: 'gann-quantum' }),
+        })
+        const d = await res.json()
+        if (!d.allowed) {
+          setTrialBlocked(true)
+          setChecking(false)
+          return
+        }
+        setUsesLeft(d.remaining)
+      } catch { /* allow on error */ }
+      setChecking(false)
+    }
+
     setLevels(calculateQuantumLevels(max, min))
   }
 
@@ -141,64 +193,81 @@ export default function QuantumCalcDash() {
                 Niveles E=n² · distribución cuántica
               </p>
             </div>
-            <button
-              onClick={() => setGuideOpen(true)}
-              className="w-8 h-8 rounded-full border flex items-center justify-center text-sm font-bold transition-colors hover:text-white"
-              style={{ borderColor: '#2a2a2a', color: '#555' }}
-              title="Guía de uso"
-            >
-              ?
-            </button>
+            <div className="flex items-center gap-2">
+              {!isPremium && usesLeft !== null && !trialBlocked && (
+                <span className="text-[10px] px-2 py-0.5 rounded border font-bold" style={{ color: usesLeft === 0 ? RED : CYAN, borderColor: usesLeft === 0 ? `${RED}40` : `${CYAN}40` }}>
+                  {usesLeft}/{CALC_LIMIT} usos
+                </span>
+              )}
+              <button
+                onClick={() => setGuideOpen(true)}
+                className="w-8 h-8 rounded-full border flex items-center justify-center text-sm font-bold transition-colors hover:text-white"
+                style={{ borderColor: '#2a2a2a', color: '#555' }}
+                title="Guía de uso"
+              >
+                ?
+              </button>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              {[
-                { label: 'Máximo (High)', val: maxVal, set: setMaxVal, ph: '3100' },
-                { label: 'Mínimo (Low)',  val: minVal, set: setMinVal, ph: '2800' },
-              ].map(f => (
-                <div key={f.label}>
-                  <label
-                    className="block text-[9px] uppercase tracking-[0.25em] mb-2"
-                    style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    {f.label}
-                  </label>
-                  <input
-                    type="number"
-                    value={f.val}
-                    onChange={e => f.set(e.target.value)}
-                    placeholder={f.ph}
-                    step="0.01"
-                    className="w-full border px-4 text-white text-lg focus:outline-none transition-colors min-h-[56px] rounded-lg"
-                    style={{
-                      backgroundColor: DARK,
-                      borderColor: BORDER,
-                      fontFamily: "'JetBrains Mono', monospace",
-                    }}
-                    onFocus={e => { (e.target as HTMLInputElement).style.borderColor = `${CYAN}40` }}
-                    onBlur={e  => { (e.target as HTMLInputElement).style.borderColor = BORDER }}
-                  />
-                </div>
-              ))}
+          {trialBlocked ? (
+            <div className="border rounded-lg p-5 text-center" style={{ borderColor: '#333', backgroundColor: DARK }}>
+              <p className="text-white font-bold mb-1">Pruebas gratuitas agotadas</p>
+              <p className="text-sm mb-4" style={{ color: MUTED }}>Usaste tus {CALC_LIMIT} cálculos gratuitos en la Calculadora Cuántica.</p>
+              <Link
+                href="/billing"
+                className="inline-block px-6 py-2.5 rounded-lg text-sm font-bold uppercase tracking-wider text-black transition-opacity hover:opacity-90"
+                style={{ backgroundColor: CYAN }}
+              >
+                Ver Planes
+              </Link>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                {[
+                  { label: 'Máximo (High)', val: maxVal, set: setMaxVal, ph: '3100' },
+                  { label: 'Mínimo (Low)',  val: minVal, set: setMinVal, ph: '2800' },
+                ].map(f => (
+                  <div key={f.label}>
+                    <label
+                      className="block text-[9px] uppercase tracking-[0.25em] mb-2"
+                      style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      {f.label}
+                    </label>
+                    <input
+                      type="number"
+                      value={f.val}
+                      onChange={e => f.set(e.target.value)}
+                      placeholder={f.ph}
+                      step="0.01"
+                      className="w-full border px-4 text-white text-lg focus:outline-none transition-colors min-h-[56px] rounded-lg"
+                      style={{ backgroundColor: DARK, borderColor: BORDER, fontFamily: "'JetBrains Mono', monospace" }}
+                      onFocus={e => { (e.target as HTMLInputElement).style.borderColor = `${CYAN}40` }}
+                      onBlur={e  => { (e.target as HTMLInputElement).style.borderColor = BORDER }}
+                    />
+                  </div>
+                ))}
+              </div>
 
-            {error && <p className="text-sm mb-3" style={{ color: RED }}>{error}</p>}
+              {error && <p className="text-sm mb-3" style={{ color: RED }}>{error}</p>}
 
-            <button
-              type="submit"
-              className="w-full min-h-[52px] text-sm font-bold uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90 rounded-lg"
-              style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Generar Niveles Quantum
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={checking}
+                className="w-full min-h-[52px] text-sm font-bold uppercase tracking-[0.12em] text-black transition-opacity hover:opacity-90 rounded-lg disabled:opacity-60"
+                style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                {checking ? 'Verificando...' : 'Generar Niveles Quantum'}
+              </button>
+            </form>
+          )}
         </div>
 
         {/* Results */}
         {levels.length > 0 && (
           <>
-            {/* n² curve */}
             <div
               className="border rounded-xl p-4 relative overflow-hidden"
               style={{ backgroundColor: CARD, borderColor: BORDER, height: '152px' }}
@@ -228,12 +297,10 @@ export default function QuantumCalcDash() {
               </svg>
             </div>
 
-            {/* Level cards */}
             <div className="space-y-2">
               {levels.map(level => <LevelCard key={level.n} level={level} />)}
             </div>
 
-            {/* Legend */}
             <div className="grid grid-cols-3 gap-px" style={{ backgroundColor: BORDER }}>
               {[
                 { col: GREEN, label: 'Acumulación', sub: 'n=0-3 · Alcista' },

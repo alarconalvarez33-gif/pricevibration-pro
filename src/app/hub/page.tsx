@@ -385,8 +385,7 @@ export default function QuantumSignalHub() {
 
   useEffect(() => {
     if (authStatus === 'loading') return;
-    if (!session) { setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3, reason: 'unauthenticated' }); return; }
-    fetch('/api/signals/check-limit').then(r => r.json()).then((d: SignalAccess) => setSignalAccess(d)).catch(() => setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3 }));
+    fetch('/api/signals/check-limit').then(r => r.json()).then((d: SignalAccess) => setSignalAccess(d)).catch(() => setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3, reason: 'limit_reached' }));
   }, [authStatus, session]);
 
   useEffect(() => {

@@ -285,14 +285,14 @@ model FreeUsage {
   id          String   @id @default(cuid())
   fingerprint String
   ip          String
+  feature     String   @default("gann")
   usageCount  Int      @default(1)
   lastUsedAt  DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([fingerprint, ip])
-  @@index([fingerprint])
-  @@index([ip])
+  @@unique([fingerprint, feature])
+  @@index([ip, feature])
 }
 
 model ProofResult {
