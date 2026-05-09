@@ -119,7 +119,7 @@ export default function ContactPage() {
                 {
                   icon: '📧',
                   label: 'Email',
-                  value: 'contacto@sacredlevels.com',
+                  value: 'tradingcompy@trading.com.py',
                 },
                 {
                   icon: '⏱️',
