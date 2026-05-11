@@ -847,9 +847,7 @@ export default function QuantumSignalHub() {
                   const priceStr = mkt ? fmt(mkt, sig.price) : sig.price.toFixed(2);
                   const isBuy   = sig.type === 'BUY';
                   const col     = isBuy ? GREEN : RED;
-                  const hint    = isBuy
-                    ? `Si toca ${priceStr} comprá, esperá la vela de confirmación`
-                    : `Si toca ${priceStr} vendé, esperá la vela de confirmación`;
+                  const hint    = `Atención en ${priceStr} — esperá la vela de confirmación`;
                   return (
                     <div key={`${sig.symbol}-${sig.type}-${i}`} className="px-4 py-3 border-b" style={{ borderColor: '#111' }}>
                       <div className="flex items-center gap-2 mb-1.5">

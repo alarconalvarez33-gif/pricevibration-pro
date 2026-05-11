@@ -796,7 +796,7 @@ export function SerHeroSection() {
         </div>
       </div>
 
-      <style>{`
+      <style suppressHydrationWarning>{`
         .ser-pulse-dot {
           width: 8px; height: 8px;
           background: #10B981; border-radius: 50%;

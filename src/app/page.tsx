@@ -1,6 +1,5 @@
 'use client'
 import ContactSection from '@/components/home/ContactSection'
-import MenteTraderPreview from '@/components/home/MenteTraderPreview'
 import { SerHeroSection } from '@/components/home/SerHeroSection'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -299,6 +298,74 @@ export default function HomePage() {
                   VER CURSOS
                 </Link>
               </div>
+
+              {/* ── Banner Quantum Access Master ── */}
+              <div
+                className="mt-6 rounded-2xl overflow-hidden"
+                style={{
+                  border: '1px solid rgba(0,212,255,0.25)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                  background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1a2e 100%)',
+                }}
+              >
+                {/* Imagen flyer — completa al ~60% del tamaño original */}
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 16px 0' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/master.png"
+                    alt="Quantum Access"
+                    style={{ width: '60%', height: 'auto', display: 'block' }}
+                  />
+                </div>
+
+                {/* Contenido */}
+                <div className="px-5 py-4">
+                  {/* Badge + precio */}
+                  <div className="flex items-center justify-between mb-3">
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full"
+                      style={{ backgroundColor: 'rgba(0,212,255,0.12)', color: CYAN, border: '1px solid rgba(0,212,255,0.25)' }}
+                    >
+                      ⚡ Quantum Access
+                    </span>
+                    <div className="text-right">
+                      <p className="text-sm font-black text-white leading-none" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                        Gs. 180.000
+                      </p>
+                      <p className="text-[10px] mt-0.5" style={{ color: '#475569' }}>≈ USD 28 / mes</p>
+                    </div>
+                  </div>
+
+                  {/* Features */}
+                  <ul className="space-y-1.5 mb-4">
+                    {[
+                      'Calculador ilimitado sin restricciones',
+                      'Niveles diarios actualizados automáticamente',
+                      'Confluencias cuánticas en tiempo real',
+                      'Alertas de niveles clave configurables',
+                    ].map(f => (
+                      <li key={f} className="flex items-center gap-2 text-xs" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
+                        <span style={{ color: CYAN, fontSize: 10 }}>✓</span> {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA */}
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center justify-center w-full py-2.5 text-xs font-bold uppercase tracking-[0.12em] rounded-xl transition-all duration-300 hover:-translate-y-0.5"
+                    style={{
+                      backgroundColor: CYAN,
+                      color: '#000',
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      boxShadow: '0 4px 16px rgba(0,212,255,0.35)',
+                    }}
+                  >
+                    Ir a las Calculadoras →
+                  </Link>
+                </div>
+              </div>
+
             </div>
 
             {/* Right — SER flyer */}
@@ -436,7 +503,7 @@ export default function HomePage() {
                   <p className="text-xs mt-1" style={{ color: '#475569' }}>≈ Gs. 130.000</p>
                 </div>
                 <ul className="space-y-2 mb-6 flex-1">
-                  {['10 preguntas / día', 'Análisis de gráficos', 'Niveles cuánticos', 'Modelo avanzado', 'En español 24/7'].map(f => (
+                  {['10 preguntas / día', 'Análisis de gráficos', 'Niveles cuánticos', 'Modelo avanzado', 'Acceso a Signal Hub', 'En español 24/7'].map(f => (
                     <li key={f} className="flex items-center gap-2 text-sm" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
                       <span style={{ color: CYAN }}>✓</span> {f}
                     </li>
@@ -476,7 +543,7 @@ export default function HomePage() {
                   <p className="text-xs mt-1" style={{ color: '#475569' }}>≈ Gs. 260.000</p>
                 </div>
                 <ul className="space-y-2 mb-6 flex-1">
-                  {['20 preguntas / día', 'Análisis multi-timeframe', '5 escenarios por análisis', 'Mentor · razonamiento profundo', 'En español 24/7'].map(f => (
+                  {['20 preguntas / día', 'Análisis multi-timeframe', '5 escenarios por análisis', 'Mentor · razonamiento profundo', 'Acceso a Signal Hub', 'En español 24/7'].map(f => (
                     <li key={f} className="flex items-center gap-2 text-sm" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
                       <span style={{ color: CYAN }}>✓</span> {f}
                     </li>
@@ -973,11 +1040,6 @@ export default function HomePage() {
           </p>
         </div>
       </section>
-
-      {/* ════════════════════════════════════════
-          LA MENTE DEL TRADER PREVIEW
-      ════════════════════════════════════════ */}
-      <MenteTraderPreview />
 
       {/* ════════════════════════════════════════
           EXNESS BANNER 2

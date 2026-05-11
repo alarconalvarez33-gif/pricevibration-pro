@@ -91,7 +91,7 @@ export default function ContactSection() {
             </div>
 
             {[
-              { icon: '📧', label: 'Email', value: 'contacto@sacredlevels.com' },
+              { icon: '📧', label: 'Email', value: 'tradingcompy@trading.com.py' },
               { icon: '⏱️', label: 'Tiempo de respuesta', value: 'Menos de 24 horas hábiles' },
               { icon: '🌎', label: 'Idioma', value: 'Español (Paraguay)' },
             ].map(item => (

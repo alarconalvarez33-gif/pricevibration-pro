@@ -193,10 +193,34 @@ export default function DashboardPage() {
     }
   }
 
-  const modules: { id: ModuleType; label: string; shortLabel: string; icon: string }[] = [
-    { id: 'quantica', label: 'Cuántica',     shortLabel: 'Cuántica', icon: '⚡' },
-    { id: 'clasica',  label: 'Gann Clásica', shortLabel: 'Gann',     icon: '📊' },
-    { id: 'aurea',    label: 'Áurea',        shortLabel: 'Áurea',    icon: '◈'  },
+  const modules = [
+    {
+      id: 'quantica' as ModuleType,
+      name: 'SER QUANTUM',
+      sub: 'Distribución E=n²',
+      icon: '⚡',
+      accent: '#00D4FF',
+      glow: 'rgba(0,212,255,0.35)',
+      bg: 'rgba(0,212,255,0.06)',
+    },
+    {
+      id: 'clasica' as ModuleType,
+      name: 'SER SUPER',
+      sub: 'Raíz cuadrada Gann',
+      icon: '◆',
+      accent: '#fbbf24',
+      glow: 'rgba(251,191,36,0.35)',
+      bg: 'rgba(251,191,36,0.06)',
+    },
+    {
+      id: 'aurea' as ModuleType,
+      name: 'SER AUREX',
+      sub: 'Proporción áurea φ',
+      icon: '✦',
+      accent: '#a855f7',
+      glow: 'rgba(168,85,247,0.35)',
+      bg: 'rgba(168,85,247,0.06)',
+    },
   ]
 
   return (
@@ -206,49 +230,121 @@ export default function DashboardPage() {
       <div className="pt-[110px] pb-20 px-4">
         <div className="max-w-7xl mx-auto">
 
-          {/* ══ CALCULADORAS — primera sección visible ══ */}
+          {/* ══ LAYOUT PRINCIPAL: Sidebar + Calculadora ══ */}
+          <div className="flex gap-5 items-start">
 
-          {/* Module Tabs */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            {modules.map((mod) => (
-              <div key={mod.id} className="flex items-center gap-1">
-                <button
-                  onClick={() => { setActiveModule(mod.id); setLevels(null) }}
-                  className={`px-4 sm:px-6 rounded-full font-semibold transition-all text-sm min-h-[48px] flex items-center gap-2 ${
-                    activeModule === mod.id
-                      ? 'text-black'
-                      : 'bg-[#141415] border border-[#222] text-[#666] hover:border-[#444] hover:text-white'
-                  }`}
-                  style={activeModule === mod.id ? { backgroundColor: '#fbbf24' } : {}}
-                >
-                  <span>{mod.icon}</span>
-                  <span className="hidden sm:inline">{mod.label}</span>
-                  <span className="sm:hidden">{mod.shortLabel}</span>
-                </button>
-                {/* "?" guide button for Gann Clásica */}
-                {mod.id === 'clasica' && activeModule === 'clasica' && (
+            {/* ── SIDEBAR DE CALCULADORAS ── */}
+            <div className="hidden lg:flex flex-col gap-3 shrink-0" style={{ width: '200px' }}>
+              <p className="text-[9px] uppercase tracking-[0.3em] font-bold mb-1" style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}>
+                Calculadoras
+              </p>
+              {modules.map((mod) => {
+                const active = activeModule === mod.id
+                return (
                   <button
-                    onClick={() => setClasicaGuideOpen(true)}
-                    className="w-8 h-8 rounded-full border border-[#2a2a2a] flex items-center justify-center text-sm font-bold text-[#555] hover:text-white hover:border-[#444] transition-colors"
-                    title="Guía de uso"
+                    key={mod.id}
+                    onClick={() => { setActiveModule(mod.id); setLevels(null) }}
+                    className="w-full text-left transition-all duration-200 rounded-xl"
+                    style={{
+                      padding: '14px 16px',
+                      backgroundColor: active ? mod.bg : '#0e0e0f',
+                      border: `1.5px solid ${active ? mod.accent : '#1e1e1e'}`,
+                      boxShadow: active ? `0 0 20px ${mod.glow}, inset 0 0 20px ${mod.bg}` : 'none',
+                      transform: active ? 'translateX(4px)' : 'none',
+                    }}
                   >
-                    ?
+                    <div className="flex items-center gap-3 mb-1.5">
+                      <span
+                        className="flex items-center justify-center rounded-lg shrink-0"
+                        style={{
+                          width: 34, height: 34,
+                          fontSize: 16,
+                          backgroundColor: active ? `${mod.accent}20` : '#1a1a1a',
+                          border: `1px solid ${active ? mod.accent : '#2a2a2a'}`,
+                          color: active ? mod.accent : '#444',
+                        }}
+                      >
+                        {mod.icon}
+                      </span>
+                      <div className="min-w-0">
+                        <p
+                          className="font-bold text-xs leading-tight truncate"
+                          style={{
+                            color: active ? mod.accent : '#777',
+                            fontFamily: "'Space Grotesk', sans-serif",
+                            letterSpacing: '0.04em',
+                          }}
+                        >
+                          {mod.name}
+                        </p>
+                        <p className="text-[9px] mt-0.5 truncate" style={{ color: active ? `${mod.accent}99` : '#333' }}>
+                          {mod.sub}
+                        </p>
+                      </div>
+                    </div>
+                    {active && (
+                      <div
+                        className="h-0.5 rounded-full mt-1"
+                        style={{ background: `linear-gradient(90deg, ${mod.accent}, transparent)` }}
+                      />
+                    )}
                   </button>
-                )}
+                )
+              })}
+
+              {/* Guía Gann */}
+              {activeModule === 'clasica' && (
+                <button
+                  onClick={() => setClasicaGuideOpen(true)}
+                  className="w-full py-2 rounded-lg text-[10px] font-bold transition-colors"
+                  style={{ border: '1px solid #2a2a2a', color: '#555', fontFamily: "'Space Grotesk', sans-serif" }}
+                  onMouseEnter={e => { (e.target as HTMLElement).style.color = '#fff'; (e.target as HTMLElement).style.borderColor = '#444' }}
+                  onMouseLeave={e => { (e.target as HTMLElement).style.color = '#555'; (e.target as HTMLElement).style.borderColor = '#2a2a2a' }}
+                >
+                  ? Guía de uso
+                </button>
+              )}
+            </div>
+
+            {/* ── SELECTOR MOBILE (se oculta en lg) ── */}
+            <div className="lg:hidden w-full mb-4">
+              <div className="grid grid-cols-3 gap-2">
+                {modules.map((mod) => {
+                  const active = activeModule === mod.id
+                  return (
+                    <button
+                      key={mod.id}
+                      onClick={() => { setActiveModule(mod.id); setLevels(null) }}
+                      className="flex flex-col items-center gap-1 py-3 px-2 rounded-xl transition-all"
+                      style={{
+                        backgroundColor: active ? mod.bg : '#0e0e0f',
+                        border: `1.5px solid ${active ? mod.accent : '#1e1e1e'}`,
+                        boxShadow: active ? `0 0 16px ${mod.glow}` : 'none',
+                      }}
+                    >
+                      <span style={{ fontSize: 20, color: active ? mod.accent : '#444' }}>{mod.icon}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider leading-tight text-center" style={{ color: active ? mod.accent : '#555', fontFamily: "'Space Grotesk', sans-serif" }}>
+                        {mod.name.split(' ')[1]}
+                      </span>
+                    </button>
+                  )
+                })}
               </div>
-            ))}
-          </div>
+            </div>
+
+            {/* ── ÁREA DE CALCULADORA ── */}
+            <div className="flex-1 min-w-0">
 
           {/* Calculadora Cuántica */}
           {activeModule === 'quantica' && (
-            <QuantumCalcDash isPremium={isPro || isWhale || isQuantum} />
+            <QuantumCalcDash isPremium={isPremium} />
           )}
 
           {/* Gann Clásica */}
           {activeModule === 'clasica' && (
             <GannCalculator
               onCalculate={setLevels}
-              isPremium={isPro || isWhale || isQuantum}
+              isPremium={isPremium}
               userEmail={email}
               trialUses={trialUses}
               trialExpired={trialExpired}
@@ -257,8 +353,11 @@ export default function DashboardPage() {
 
           {/* Calculadora Áurea */}
           {activeModule === 'aurea' && (
-            <GannAurea isPremium={isPro || isWhale || isQuantum} />
+            <GannAurea isPremium={isPremium} />
           )}
+
+            </div>{/* fin área calculadora */}
+          </div>{/* fin layout sidebar+calc */}
 
           {/* Quick Stats (Gann Clásica results) */}
           {levels && activeModule === 'clasica' && (

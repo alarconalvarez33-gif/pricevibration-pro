@@ -6,7 +6,14 @@ import { useSession } from 'next-auth/react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/Footer'
 
-const CYAN = '#00D4FF'
+// ── Design tokens — PowerShell / DOS terminal ─────────────────────────────────
+const FONT   = "'Courier New', Consolas, 'Lucida Console', monospace"
+const PS_BG  = '#012456'   // PowerShell header blue
+const CHAT_BG = '#ffffff'  // white chat area
+const AI_COLOR = '#006400' // dark green for AI output (classic terminal)
+const USR_COLOR = '#00008B' // dark blue for user input line
+const SYS_COLOR = '#8B0000' // dark red for system/error messages
+const TEXT_DIM = '#555'
 
 interface Message {
   role: 'user' | 'assistant' | 'system'
@@ -18,7 +25,7 @@ interface Message {
 
 const INITIAL_MESSAGE: Message = {
   role: 'assistant',
-  content: 'Hola, soy SER — Sistema de Econofísica Resonante.\n\nEstás en modo avanzado. Puedo:\n• Analizar gráficos que me envíes (imagen)\n• Calcular niveles cuánticos Sacred Levels\n• Multi-timeframe H1 + H4 + D1\n• Correlaciones inter-mercado\n\n¿Con qué activo empezamos hoy?',
+  content: 'Bienvenido al sistema SER — Sacred Levels · Econofísica Resonante\nVersión 2.0  Copyright (C) Sacred Levels Corp. Todos los derechos reservados.\n\nCapacidades disponibles:\n  [1] Análisis de gráficos (imagen)\n  [2] Niveles cuánticos Sacred Levels\n  [3] Multi-timeframe H1 + H4 + D1\n  [4] Correlaciones inter-mercado\n\nEscriba su consulta o presione ENTER para continuar_',
 }
 
 const QUICK_SUGGESTIONS = [
@@ -42,10 +49,16 @@ export default function SerPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [blink, setBlink] = useState(true)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
+
+  useEffect(() => {
+    const t = setInterval(() => setBlink(b => !b), 530)
+    return () => clearInterval(t)
+  }, [])
 
   const handleImageFile = (file: File) => {
     if (!file.type.startsWith('image/')) return
@@ -84,7 +97,7 @@ export default function SerPage() {
     }
 
     const userContent = imageBase64
-      ? `${msg || ''}${imagePreview ? ' [Imagen adjunta]' : ''}`.trim() || '[Imagen subida para análisis]'
+      ? `${msg || ''}${imagePreview ? ' [IMAGEN ADJUNTA]' : ''}`.trim() || '[IMAGEN CARGADA PARA ANÁLISIS]'
       : msg
 
     setMessages(prev => [...prev, { role: 'user', content: userContent }])
@@ -113,12 +126,12 @@ export default function SerPage() {
       } else {
         setMessages(prev => [...prev, {
           role: 'system',
-          content: data.error || 'Error al procesar tu mensaje',
+          content: data.error || 'ERROR: No se pudo procesar la solicitud.',
           upgradeUrl: data.upgradeUrl,
         }])
       }
     } catch {
-      setMessages(prev => [...prev, { role: 'system', content: 'No pude conectar con SER. Intentá de nuevo.' }])
+      setMessages(prev => [...prev, { role: 'system', content: 'ERROR: No se pudo conectar con SER. Verifique la conexión.' }])
     } finally {
       setLoading(false)
     }
@@ -140,13 +153,7 @@ export default function SerPage() {
       <main style={{ backgroundColor: '#000', minHeight: '100vh' }}>
         <Header />
         <div className="flex items-center justify-center min-h-[80vh]">
-          <div className="text-center">
-            <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center text-sm font-black animate-pulse"
-              style={{ background: `linear-gradient(135deg, ${CYAN}, #0EA5E9)`, color: '#000' }}>
-              SER
-            </div>
-            <p className="text-sm" style={{ color: '#64748B' }}>Cargando...</p>
-          </div>
+          <p style={{ fontFamily: FONT, color: '#0f0', fontSize: 14 }}>Cargando SER.EXE...</p>
         </div>
       </main>
     )
@@ -157,23 +164,14 @@ export default function SerPage() {
       <main style={{ backgroundColor: '#000', minHeight: '100vh' }}>
         <Header />
         <div className="flex items-center justify-center min-h-[80vh] px-4">
-          <div className="text-center max-w-md">
-            <div className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center text-lg font-black"
-              style={{ background: `linear-gradient(135deg, ${CYAN}, #0EA5E9)`, color: '#000' }}>
-              SER
-            </div>
-            <h1 className="text-2xl font-black text-white mb-3" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-              Acceso requerido
-            </h1>
-            <p className="text-sm mb-6" style={{ color: '#64748B' }}>
-              Iniciá sesión para interactuar con SER — Sistema de Econofísica Resonante.
-            </p>
+          <div style={{ fontFamily: FONT, color: '#fff', textAlign: 'center', maxWidth: 440 }}>
+            <p style={{ color: '#0f0', marginBottom: 8 }}>SER.EXE — v2.0</p>
+            <p style={{ color: '#aaa', marginBottom: 24, fontSize: 13 }}>Acceso requerido. Inicie sesión para continuar.</p>
             <Link
               href={`/login?callbackUrl=${encodeURIComponent('/ser')}`}
-              className="inline-block px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-[0.1em]"
-              style={{ backgroundColor: CYAN, color: '#000' }}
+              style={{ display: 'inline-block', padding: '10px 24px', backgroundColor: PS_BG, color: '#fff', fontFamily: FONT, fontSize: 13, textDecoration: 'none', border: '1px solid #fff' }}
             >
-              Iniciar sesión
+              &gt; INICIAR SESIÓN
             </Link>
           </div>
         </div>
@@ -183,114 +181,106 @@ export default function SerPage() {
   }
 
   return (
-    <main style={{ backgroundColor: '#000', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
+    <main style={{ backgroundColor: '#1a1a1a', minHeight: '100vh', fontFamily: FONT }}>
       <Header />
 
       <div style={{ paddingTop: '64px', height: '100vh', display: 'flex', flexDirection: 'column' }}>
 
-        {/* Top bar */}
-        <div
-          className="flex items-center justify-between px-4 md:px-6 py-3 shrink-0"
-          style={{ backgroundColor: 'rgba(15,23,42,0.95)', borderBottom: '1px solid rgba(0,212,255,0.15)', backdropFilter: 'blur(20px)' }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black"
-              style={{ background: `linear-gradient(135deg, ${CYAN}, #0EA5E9)`, color: '#000' }}
-            >
-              SER
+        {/* PowerShell-style title bar */}
+        <div style={{ backgroundColor: PS_BG, padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {/* Window control dots */}
+            <div style={{ display: 'flex', gap: 6 }}>
+              <span style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ff5f57', display: 'inline-block' }} />
+              <span style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#febc2e', display: 'inline-block' }} />
+              <span style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#28c840', display: 'inline-block' }} />
             </div>
-            <div>
-              <p className="text-sm font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                SER · Sistema de Econofísica Resonante
-              </p>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <p className="text-[10px]" style={{ color: '#64748B' }}>Online · Sacred Levels</p>
-              </div>
-            </div>
+            <span style={{ color: '#fff', fontSize: 13, letterSpacing: 1 }}>
+              SER.EXE — Sistema de Econofísica Resonante · Sacred Levels
+            </span>
           </div>
-
-          <div className="flex items-center gap-3">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {remaining !== null && (
-              <span
-                className="text-[10px] px-2.5 py-1 rounded"
-                style={{ color: '#64748B', backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', fontFamily: "'JetBrains Mono', monospace" }}
-              >
-                {remaining === 999 ? '∞' : remaining} preguntas
+              <span style={{ color: '#a8d8ff', fontSize: 11, fontFamily: FONT }}>
+                [{remaining === 999 ? '∞' : remaining} queries restantes]
               </span>
             )}
             <button
               onClick={resetConversation}
-              className="text-[10px] px-2.5 py-1 rounded transition-all hover:text-white"
-              style={{ color: '#64748B', border: '1px solid rgba(255,255,255,0.08)' }}
+              style={{ color: '#a8d8ff', fontSize: 11, background: 'none', border: '1px solid rgba(168,216,255,0.3)', padding: '3px 10px', cursor: 'pointer', fontFamily: FONT }}
             >
-              Nueva conversación
+              cls
             </button>
             <Link
               href="/ser/planes"
-              className="text-[10px] px-3 py-1.5 rounded font-bold uppercase tracking-[0.08em] transition-all"
-              style={{ backgroundColor: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.3)', color: CYAN }}
+              style={{ color: '#febc2e', fontSize: 11, textDecoration: 'none', border: '1px solid rgba(254,188,46,0.4)', padding: '3px 10px', fontFamily: FONT }}
             >
-              SER+ Planes
+              PLANES →
             </Link>
           </div>
         </div>
 
-        {/* Messages area */}
-        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 flex flex-col gap-5" style={{ scrollbarWidth: 'thin', scrollbarColor: '#1E293B transparent' }}>
-          <div className="max-w-4xl mx-auto w-full flex flex-col gap-5">
+        {/* Chat area — white background, DOS output */}
+        <div
+          style={{ flex: 1, overflowY: 'auto', backgroundColor: CHAT_BG, padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 0 }}
+        >
+          <div style={{ maxWidth: 860, margin: '0 auto', width: '100%' }}>
+
+            {/* Session header line */}
+            <p style={{ color: TEXT_DIM, fontSize: 11, marginBottom: 16, borderBottom: '1px solid #e0e0e0', paddingBottom: 8 }}>
+              Microsoft Windows [SER Quantum Terminal 2.0.0]
+              <br />(c) Sacred Levels Corporation. All rights reserved.
+            </p>
+
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                {msg.role !== 'system' && (
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-black shrink-0"
-                    style={msg.role === 'user'
-                      ? { backgroundColor: 'rgba(255,255,255,0.08)', color: '#fff' }
-                      : { background: `linear-gradient(135deg, ${CYAN}, #0EA5E9)`, color: '#000' }
-                    }
-                  >
-                    {msg.role === 'user' ? '👤' : 'S'}
-                  </div>
+              <div key={idx} style={{ marginBottom: 14, fontFamily: FONT }}>
+                {msg.role === 'user' && (
+                  <>
+                    <span style={{ color: USR_COLOR, fontSize: 13, fontWeight: 'bold' }}>
+                      C:\TRADING\SER&gt;&nbsp;
+                    </span>
+                    <span style={{ color: '#111', fontSize: 13 }}>{msg.content}</span>
+                  </>
                 )}
-                <div style={{ maxWidth: msg.role === 'system' ? '100%' : '75%' }}>
-                  <div
-                    className="rounded-2xl px-4 py-3 text-sm leading-relaxed"
-                    style={{
-                      whiteSpace: 'pre-wrap',
-                      fontFamily: "'Inter', sans-serif",
-                      ...(msg.role === 'user'
-                        ? { backgroundColor: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.2)', color: '#E2E8F0' }
-                        : msg.role === 'system'
-                        ? { backgroundColor: 'rgba(255,215,0,0.08)', border: '1px solid rgba(255,215,0,0.25)', color: '#FCD34D', width: '100%' }
-                        : { backgroundColor: 'rgba(15,23,42,0.8)', border: '1px solid rgba(0,212,255,0.1)', color: '#E2E8F0' }
-                      ),
-                    }}
-                  >
-                    {msg.content}
-                    {msg.upgradeUrl && (
-                      <div className="mt-3">
-                        <Link href={msg.upgradeUrl} className="font-bold underline text-xs" style={{ color: CYAN }}>
-                          Ver planes →
-                        </Link>
-                      </div>
+                {msg.role === 'assistant' && (
+                  <div>
+                    <div style={{ color: AI_COLOR, fontSize: 12, marginBottom: 2 }}>
+                      [MENTOR] —————————————————————————————————————
+                    </div>
+                    <pre style={{ color: '#111', fontSize: 13, whiteSpace: 'pre-wrap', margin: 0, fontFamily: FONT, lineHeight: 1.7 }}>
+                      {msg.content}
+                    </pre>
+                    {msg.model && (
+                      <p style={{ color: TEXT_DIM, fontSize: 10, marginTop: 4 }}>
+                        &lt;{msg.model}&gt;
+                      </p>
                     )}
                   </div>
-                  {msg.model && msg.role === 'assistant' && (
-                    <p className="text-[10px] mt-1 ml-1" style={{ color: '#334155' }}>{msg.model}</p>
-                  )}
-                </div>
+                )}
+                {msg.role === 'system' && (
+                  <div>
+                    <span style={{ color: SYS_COLOR, fontSize: 13 }}>
+                      [ERROR] {msg.content}
+                    </span>
+                    {msg.upgradeUrl && (
+                      <span style={{ marginLeft: 8 }}>
+                        <Link href={msg.upgradeUrl} style={{ color: USR_COLOR, fontSize: 12 }}>
+                          → Ver planes
+                        </Link>
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
 
+            {/* Loading indicator */}
             {loading && (
-              <div className="flex gap-3">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-black shrink-0" style={{ background: `linear-gradient(135deg, ${CYAN}, #0EA5E9)`, color: '#000' }}>S</div>
-                <div className="px-4 py-3.5 rounded-2xl flex gap-2 items-center" style={{ backgroundColor: 'rgba(15,23,42,0.8)', border: '1px solid rgba(0,212,255,0.1)' }}>
-                  {[0, 150, 300].map(delay => (
-                    <div key={delay} className="w-2 h-2 rounded-full" style={{ backgroundColor: CYAN, animation: `bounce 1.2s ${delay}ms infinite` }} />
-                  ))}
-                </div>
+              <div style={{ marginBottom: 14 }}>
+                <span style={{ color: AI_COLOR, fontSize: 12 }}>[MENTOR] procesando</span>
+                <span style={{ color: AI_COLOR, fontSize: 13, marginLeft: 4 }}>
+                  {blink ? '█' : ' '}
+                </span>
               </div>
             )}
 
@@ -299,17 +289,21 @@ export default function SerPage() {
         </div>
 
         {/* Quick suggestions */}
-        <div className="px-4 md:px-8 py-2 shrink-0" style={{ borderTop: '1px solid rgba(0,212,255,0.05)' }}>
-          <div className="max-w-4xl mx-auto flex flex-wrap gap-2">
+        <div style={{ backgroundColor: '#f5f5f5', borderTop: '1px solid #ddd', padding: '6px 20px', flexShrink: 0 }}>
+          <div style={{ maxWidth: 860, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {QUICK_SUGGESTIONS.map((s, i) => (
               <button
                 key={i}
                 onClick={() => sendMessage(s)}
                 disabled={loading}
-                className="text-[11px] px-3 py-1.5 rounded-full transition-all hover:text-white disabled:opacity-40"
-                style={{ backgroundColor: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.15)', color: '#94A3B8' }}
+                style={{
+                  fontFamily: FONT, fontSize: 11, color: USR_COLOR,
+                  background: 'none', border: '1px solid #bbb',
+                  padding: '3px 10px', cursor: 'pointer',
+                  opacity: loading ? 0.4 : 1,
+                }}
               >
-                {s}
+                &gt; {s}
               </button>
             ))}
           </div>
@@ -317,91 +311,82 @@ export default function SerPage() {
 
         {/* Image preview */}
         {imagePreview && (
-          <div className="px-4 md:px-8 py-2 shrink-0">
-            <div className="max-w-4xl mx-auto flex items-center gap-3">
+          <div style={{ backgroundColor: '#f5f5f5', borderTop: '1px solid #ddd', padding: '8px 20px', flexShrink: 0 }}>
+            <div style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imagePreview} alt="preview" className="h-14 w-auto rounded-lg object-contain" style={{ border: '1px solid rgba(0,212,255,0.3)' }} />
-              <div>
-                <p className="text-xs text-white">Imagen adjunta</p>
-                <p className="text-[10px]" style={{ color: '#64748B' }}>Se enviará con tu mensaje</p>
-              </div>
-              <button onClick={clearImage} className="ml-auto text-xs px-2 py-1 rounded" style={{ color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)' }}>✕ Quitar</button>
+              <img src={imagePreview} alt="preview" style={{ height: 48, width: 'auto', objectFit: 'contain', border: '1px solid #ccc' }} />
+              <span style={{ fontFamily: FONT, fontSize: 12, color: '#333' }}>CHART.PNG cargado</span>
+              <button onClick={clearImage} style={{ marginLeft: 'auto', fontFamily: FONT, fontSize: 11, color: SYS_COLOR, background: 'none', border: '1px solid rgba(139,0,0,0.3)', padding: '2px 8px', cursor: 'pointer' }}>
+                DEL
+              </button>
             </div>
           </div>
         )}
 
-        {/* Input area */}
-        <div
-          className="px-4 md:px-8 py-4 shrink-0"
-          style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderTop: '1px solid rgba(0,212,255,0.1)', backdropFilter: 'blur(20px)' }}
-        >
-          <div className="max-w-4xl mx-auto flex gap-3 items-end">
-            {/* Image upload button */}
+        {/* Input — command prompt style */}
+        <div style={{ backgroundColor: CHAT_BG, borderTop: '2px solid #ddd', padding: '10px 20px', flexShrink: 0 }}>
+          <div style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+
+            {/* Upload */}
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={loading}
-              className="p-2.5 rounded-xl transition-all hover:opacity-80 disabled:opacity-40 shrink-0"
-              style={{ border: '1px solid rgba(0,212,255,0.2)', color: CYAN, backgroundColor: 'rgba(0,212,255,0.05)' }}
-              title="Subir imagen de gráfico"
+              title="Subir imagen"
+              style={{ fontFamily: FONT, fontSize: 11, color: USR_COLOR, background: '#eef', border: '1px solid #99b', padding: '8px 10px', cursor: 'pointer', flexShrink: 0, opacity: loading ? 0.4 : 1 }}
             >
-              📊
+              [IMG]
             </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={e => { if (e.target.files?.[0]) handleImageFile(e.target.files[0]) }}
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { if (e.target.files?.[0]) handleImageFile(e.target.files[0]) }} />
 
+            {/* Prompt prefix */}
+            <span style={{ color: USR_COLOR, fontSize: 14, fontWeight: 'bold', whiteSpace: 'nowrap', paddingBottom: 10 }}>
+              C:\TRADING\SER&gt;
+            </span>
+
+            {/* Input */}
             <textarea
               ref={textareaRef}
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
-              placeholder="Preguntá a SER... o pegá un gráfico con Ctrl+V"
+              placeholder="escriba su consulta aquí..."
               disabled={loading}
               rows={1}
-              className="flex-1 text-sm resize-none rounded-xl px-4 py-3 focus:outline-none"
               style={{
-                backgroundColor: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(0,212,255,0.15)',
-                color: '#fff',
-                minHeight: '48px',
-                maxHeight: '120px',
-                fontFamily: "'Inter', sans-serif",
+                flex: 1, fontFamily: FONT, fontSize: 14, color: '#111',
+                backgroundColor: CHAT_BG, border: 'none', outline: 'none',
+                resize: 'none', minHeight: 36, maxHeight: 120,
+                paddingTop: 8, paddingBottom: 8,
               }}
-              onFocus={e => (e.target.style.borderColor = CYAN)}
-              onBlur={e => (e.target.style.borderColor = 'rgba(0,212,255,0.15)')}
             />
 
+            {/* Blinking cursor when idle */}
+            {!loading && !input && (
+              <span style={{ color: '#111', fontSize: 14, paddingBottom: 10, opacity: blink ? 1 : 0 }}>█</span>
+            )}
+
+            {/* Send */}
             <button
               onClick={() => sendMessage()}
               disabled={loading || (!input.trim() && !imageBase64)}
-              className="px-5 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
-              style={{ background: `linear-gradient(135deg, ${CYAN}, #0EA5E9)`, color: '#000', minWidth: '52px' }}
+              style={{
+                fontFamily: FONT, fontSize: 12, fontWeight: 'bold',
+                backgroundColor: PS_BG, color: '#fff',
+                border: 'none', padding: '8px 16px', cursor: 'pointer',
+                opacity: (loading || (!input.trim() && !imageBase64)) ? 0.4 : 1,
+                flexShrink: 0,
+              }}
             >
-              {loading ? (
-                <svg className="animate-spin h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-              ) : '➤'}
+              ENTER
             </button>
           </div>
-          <p className="text-center text-[10px] mt-2" style={{ color: '#1E293B' }}>
-            SER no constituye asesoría financiera · Sacred Levels · Quantum Access requerido
+          <p style={{ fontFamily: FONT, fontSize: 10, color: '#bbb', marginTop: 4, paddingLeft: 0 }}>
+            SER no constituye asesoría financiera · Sacred Levels · Shift+Enter para nueva línea
           </p>
         </div>
-      </div>
 
-      <style>{`
-        @keyframes bounce {
-          0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-          30% { transform: translateY(-5px); opacity: 1; }
-        }
-      `}</style>
+      </div>
     </main>
   )
 }
