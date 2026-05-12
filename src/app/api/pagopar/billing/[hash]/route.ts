@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
 
-const PRIVATE_KEY = '85ece630fff92520e3943f1f2a8d3c60'
-const PUBLIC_KEY = '8ca1a050e7f2f5d2e0d1f4de644ae562'
+const PRIVATE_KEY = (process.env.PAGOPAR_PRIVATE_KEY || '').trim()
+const PUBLIC_KEY  = (process.env.PAGOPAR_PUBLIC_KEY  || '').trim()
 const PAGOPAR_CHECK_ORDER_URL = 'https://api.pagopar.com/api/pedidos/1.1/traer'
 
 export async function GET(
