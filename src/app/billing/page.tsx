@@ -226,10 +226,10 @@ export default function BillingPage() {
                 <div className="p-5 sm:p-6">
                   <div className="flex items-baseline gap-2 mb-1">
                     <span className="text-3xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      {Gs(130000)}
+                      {Gs(89000)}
                     </span>
                   </div>
-                  <p className="text-[#444] text-xs mb-5">/ $20 USD · por mes</p>
+                  <p className="text-[#444] text-xs mb-5">/ $13 USD · por mes</p>
                   <ul className="space-y-2.5 mb-6">
                     {[
                       '10 preguntas por día',
@@ -276,10 +276,10 @@ export default function BillingPage() {
                 <div className="p-5 sm:p-6">
                   <div className="flex items-baseline gap-2 mb-1">
                     <span className="text-3xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      {Gs(260000)}
+                      {Gs(249000)}
                     </span>
                   </div>
-                  <p className="text-[#444] text-xs mb-5">/ $40 USD · por mes</p>
+                  <p className="text-[#444] text-xs mb-5">/ $38 USD · por mes</p>
                   <ul className="space-y-2.5 mb-6">
                     {[
                       '20 preguntas por día',
@@ -400,9 +400,9 @@ export default function BillingPage() {
                     className="text-3xl sm:text-4xl font-bold text-white"
                     style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   >
-                    {Gs(180000)}
+                    {Gs(149000)}
                   </span>
-                  <span className="text-[#444] text-sm">/ $25 USD</span>
+                  <span className="text-[#444] text-sm">/ $22 USD</span>
                   <span className="text-[#444] text-sm">/mes</span>
                 </div>
               </div>

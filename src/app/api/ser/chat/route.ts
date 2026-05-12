@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     const subscription = await prisma.serSubscription.findUnique({ where: { userId } })
     const isPlus = subscription?.plan === 'SER_PLUS' || isAdmin
 
-    const model = isPlus ? 'claude-opus-4-7' : 'claude-sonnet-4-6'
+    const model = isAdmin ? 'claude-opus-4-7' : 'claude-sonnet-4-6'
     const systemPrompt = isPlus ? SER_PLUS_SYSTEM_PROMPT : SER_SYSTEM_PROMPT
     const maxTokens = isPlus ? 3000 : 2048
 
