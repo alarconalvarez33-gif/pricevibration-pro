@@ -1,48 +1,126 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
-const ACTIVITIES = [
-  { icon: '⚡', title: 'SER analizó XAUUSD', detail: 'Nivel detectado · hace 2 min' },
-  { icon: '📊', title: 'Un trader activó Quantum Access', detail: 'Asunción · hace 8 min' },
-  { icon: '🎯', title: 'Signal Hub: EURUSD señal activa', detail: 'Confluencia H4 · hace 15 min' },
-  { icon: '💎', title: 'SER procesó 47 consultas hoy', detail: 'XAUUSD más consultado' },
-  { icon: '🧠', title: 'Análisis BTCUSD completado', detail: 'D1 · hace 22 min' },
-  { icon: '📈', title: 'Nuevo trader se unió desde CDE', detail: 'Quantum Access · hace 4 min' },
-  { icon: '⚡', title: 'Calculadora Quantum usada', detail: 'XAUUSD · hace 11 min' },
-  { icon: '🔥', title: 'SER detectó confluencia fuerte', detail: 'GBPUSD H4 · hace 6 min' },
-  { icon: '🇵🇾', title: 'Trader de San Lorenzo activó SER', detail: 'hace 19 min' },
-  { icon: '📊', title: '3 señales activas en Signal Hub', detail: 'XAUUSD · EURUSD · BTCUSD' },
-  { icon: '⚡', title: 'SER analizó NAS100', detail: 'Soporte clave · hace 7 min' },
-  { icon: '💰', title: 'Trader renovó SER+ Pro', detail: 'Razonamiento profundo · hace 33 min' },
+// Plantillas base — sin tiempo hardcodeado
+const BASE_EVENTS = [
+  // SER IA
+  { icon: '⚡', title: 'SER analizó XAUUSD', detail: 'Nivel de soporte detectado' },
+  { icon: '🧠', title: 'SER detectó confluencia fuerte', detail: 'GBPUSD H4' },
+  { icon: '🎯', title: 'SER respondió análisis de gráfico', detail: 'D1 XAUUSD' },
+  { icon: '⚡', title: 'SER analizó NAS100', detail: 'Soporte clave identificado' },
+  { icon: '🔥', title: 'SER detectó nivel de reversión', detail: 'EURUSD H4' },
+  { icon: '📊', title: 'SER procesó consulta multi-timeframe', detail: 'XAUUSD M15·H1·H4' },
+  { icon: '🧠', title: 'SER respondió sobre BTCUSD', detail: 'Resistencia en D1' },
+  { icon: '⚡', title: 'SER identificó zona de demanda', detail: 'XAUUSD H1' },
+  // Quantum / SER suscripciones
+  { icon: '📈', title: 'Trader activó Quantum Access', detail: 'Asunción, Paraguay' },
+  { icon: '💎', title: 'Trader renovó Quantum Access', detail: 'Pago confirmado' },
+  { icon: '📈', title: 'Trader de CDE activó SER+', detail: 'Plan Pro activado' },
+  { icon: '🇵🇾', title: 'Trader de Encarnación activó SER', detail: 'Suscripción mensual' },
+  { icon: '💰', title: 'Nuevo miembro con Quantum Access', detail: 'Luque, Paraguay' },
+  { icon: '🇵🇾', title: 'Trader de San Lorenzo activó SER', detail: 'Suscripción mensual' },
+  { icon: '📈', title: 'Trader de Lambaré activó Quantum', detail: 'Pago confirmado' },
+  { icon: '🇧🇷', title: 'Trader de Brasil activó SER', detail: 'Suscripción mensual' },
+  { icon: '💎', title: 'Trader renovó SER+ Pro', detail: 'Tercer mes consecutivo' },
+  // Cursos
+  { icon: '🎓', title: 'Compró el curso Génesis', detail: 'Método W.D. Gann' },
+  { icon: '📚', title: 'Compró Super Estrategia', detail: 'Pago único confirmado' },
+  { icon: '🔮', title: 'Accedió al curso Frecuencia', detail: 'Estructura fractal del mercado' },
+  { icon: '⭐', title: 'Completó el curso Super Estrategia', detail: 'Acceso de por vida activado' },
+  { icon: '🎓', title: 'Compró Génesis desde Brasil', detail: 'Método W.D. Gann' },
+  { icon: '📚', title: 'Compró Super Estrategia desde Chile', detail: 'Pago único confirmado' },
+  { icon: '🔮', title: 'Nuevo acceso al curso Frecuencia', detail: 'Zonas geométricas de reversión' },
+  // Signal Hub
+  { icon: '🎯', title: 'Signal Hub: EURUSD señal activa', detail: 'Confluencia H4' },
+  { icon: '📊', title: 'Signal Hub: 3 señales activas', detail: 'XAUUSD · EURUSD · BTC' },
+  { icon: '⚡', title: 'Signal Hub: XAUUSD nivel clave', detail: 'Confluencia D1' },
+  { icon: '🎯', title: 'Signal Hub: GBPUSD en zona crítica', detail: 'H4 + D1 confluencia' },
 ]
 
-export function ActivityToast() {
-  const [visible, setVisible] = useState(false)
-  const [index, setIndex] = useState(0)
-  const [dismissed, setDismissed] = useState(false)
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
 
-  const showToast = useCallback(() => {
+type Event = typeof BASE_EVENTS[0] & { happenedAt: number }
+
+function buildQueue(): Event[] {
+  return shuffle(BASE_EVENTS).map(e => ({
+    ...e,
+    // Cada evento "ocurrió" entre 1 y 20 minutos antes de que el usuario cargara la página
+    happenedAt: Date.now() - (Math.floor(Math.random() * 19) + 1) * 60_000,
+  }))
+}
+
+function formatMinutes(ms: number): string {
+  const min = Math.floor(ms / 60_000)
+  if (min < 1)  return 'hace un momento'
+  if (min < 60) return `hace ${min} min`
+  const h = Math.floor(min / 60)
+  return `hace ${h}h`
+}
+
+export function ActivityToast() {
+  const [visible,   setVisible]   = useState(false)
+  const [dismissed, setDismissed] = useState(false)
+  const [event,     setEvent]     = useState<Event | null>(null)
+
+  const queueRef = useRef<Event[]>([])
+  const idxRef   = useRef(0)
+
+  const showNext = useCallback(() => {
     if (dismissed) return
-    setIndex(prev => (prev + 1) % ACTIVITIES.length)
+
+    // Reshuffliar cuando se acaba la cola
+    if (idxRef.current >= queueRef.current.length) {
+      queueRef.current = buildQueue()
+      idxRef.current   = 0
+    }
+
+    const next = queueRef.current[idxRef.current++]
+    setEvent(next)
     setVisible(true)
     setTimeout(() => setVisible(false), 5000)
   }, [dismissed])
 
+  // Inicializar cola en el cliente (evita hydration mismatch)
   useEffect(() => {
-    const firstTimer = setTimeout(showToast, 8000)
-    const interval = setInterval(() => {
-      showToast()
-    }, 25000 + Math.random() * 15000)
-    return () => {
-      clearTimeout(firstTimer)
-      clearInterval(interval)
+    queueRef.current = buildQueue()
+  }, [])
+
+  useEffect(() => {
+    if (dismissed) return
+
+    // Primer toast: entre 7 y 12 segundos después de cargar
+    const delay = 7000 + Math.random() * 5000
+    const first = setTimeout(showNext, delay)
+
+    // Siguientes: cada 22-42 segundos (aleatorio, no periódico)
+    let timer: ReturnType<typeof setTimeout>
+    const schedule = () => {
+      timer = setTimeout(() => {
+        showNext()
+        schedule()
+      }, 22_000 + Math.random() * 20_000)
     }
-  }, [showToast])
+    const kickoff = setTimeout(schedule, delay + 6000)
 
-  if (dismissed) return null
+    return () => {
+      clearTimeout(first)
+      clearTimeout(kickoff)
+      clearTimeout(timer)
+    }
+  }, [showNext, dismissed])
 
-  const activity = ACTIVITIES[index]
+  if (dismissed || !event) return null
+
+  const elapsed = Date.now() - event.happenedAt
+  const timeLabel = formatMinutes(elapsed)
 
   return (
     <div
@@ -50,30 +128,39 @@ export function ActivityToast() {
         position: 'fixed',
         bottom: 24,
         left: 24,
-        background: 'rgba(10,10,15,0.92)',
+        background: 'rgba(10,10,15,0.93)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(0,212,255,0.2)',
         borderRadius: 10,
-        padding: '14px 18px',
+        padding: '13px 16px',
         display: 'flex',
         alignItems: 'center',
-        gap: 12,
+        gap: 11,
         zIndex: 1000,
-        maxWidth: 360,
-        boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-        transform: visible ? 'translateX(0)' : 'translateX(-120%)',
+        maxWidth: 340,
+        boxShadow: '0 16px 40px rgba(0,0,0,0.55)',
+        transform: visible ? 'translateX(0)' : 'translateX(-130%)',
         opacity: visible ? 1 : 0,
-        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.45s ease',
         pointerEvents: visible ? 'auto' : 'none',
       }}
     >
-      <span style={{ fontSize: 20, flexShrink: 0 }}>{activity.icon}</span>
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2, fontFamily: "'Inter', sans-serif" }}>
-          {activity.title}
+      <span style={{ fontSize: 19, flexShrink: 0 }}>{event.icon}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: '#e2e8f0',
+          marginBottom: 3,
+          fontFamily: "'Inter', sans-serif",
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>
+          {event.title}
         </div>
-        <div style={{ fontSize: 11, color: '#64748b', fontFamily: "'JetBrains Mono', monospace" }}>
-          {activity.detail}
+        <div style={{ fontSize: 10, color: '#475569', fontFamily: "'JetBrains Mono', monospace" }}>
+          {event.detail} · {timeLabel}
         </div>
       </div>
       <button
@@ -81,13 +168,14 @@ export function ActivityToast() {
         style={{
           background: 'none',
           border: 'none',
-          color: '#475569',
+          color: '#334155',
           cursor: 'pointer',
-          fontSize: 14,
-          padding: 4,
+          fontSize: 13,
+          padding: '2px 4px',
           flexShrink: 0,
           lineHeight: 1,
         }}
+        aria-label="Cerrar"
       >
         ✕
       </button>
