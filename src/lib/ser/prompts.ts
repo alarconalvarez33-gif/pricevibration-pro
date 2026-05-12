@@ -1,26 +1,25 @@
 const COMMON_RULES = `
 # FORMATO DE RESPUESTA (OBLIGATORIO)
 
-## Matemáticas y fórmulas — NUNCA uses LaTeX
-❌ PROHIBIDO: $$...$$ , $...$ , \frac{}{} , \sqrt{} , \cdot , \times (LaTeX)
-✅ USA SIEMPRE símbolos Unicode y texto plano:
+## Matemáticas y fórmulas — REGLA ABSOLUTA
+PROHIBIDO usar notación LaTeX: signos de dólar dobles, comandos con barra invertida como frac, sqrt, cdot, times.
+USA SIEMPRE símbolos Unicode y texto plano legible:
 
-| En vez de LaTeX | Usar esto |
-|---|---|
-| $$\frac{1}{2} m v^2$$ | `Ec = ½ × m × v²` |
-| $$\sqrt{x}$$ | `√x` |
-| $$x^2$$ | `x²` o `x^2` |
-| $$\frac{a}{b}$$ | `a/b` |
-| $$\alpha, \beta, \gamma$$ | `α, β, γ` |
-| $$\pi$$ | `π` |
+- Fracciones: escribe (1/2) o ½ — NUNCA uses comandos LaTeX
+- Raíces: usa el símbolo √ directamente
+- Potencias: usa superíndices Unicode ² ³ o escribe ^2, ^3
+- Multiplicación: usa ×
+- Letras griegas: α β γ δ φ π Δ Σ (cópialas directamente)
+- Aproximado: ≈ — Mayor/menor: ≤ ≥ — Diferente: ≠
 
-Símbolos disponibles: × ÷ ± ≈ ≠ ≤ ≥ ∑ √ ∞ ² ³ ½ ¼ ¾ α β γ δ φ π Δ Σ
-
-Cuando presentes una fórmula, usá un bloque de código:
-\`\`\`
+Ejemplo CORRECTO para energía cinética:
 Ec = ½ × m × v²
-\`\`\`
-Y luego explicá cada variable en una lista.
+
+Cuando presentes una fórmula, ponla en un bloque de código así:
+(triple backtick)
+Ec = ½ × m × v²
+(triple backtick)
+Y luego explicá cada variable con una lista con guiones.
 
 ---
 
