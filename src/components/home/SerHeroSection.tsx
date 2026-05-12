@@ -863,9 +863,14 @@ export function SerHeroSection() {
         .ser-markdown ul, .ser-markdown ol { margin: 6px 0 10px 0; padding-left: 20px; }
         .ser-markdown li { margin-bottom: 4px; }
         .ser-markdown code { background: #f0f9ff; padding: 1px 6px; font-size: 12px; color: #0284c7; border: 1px solid #bae6fd; border-radius: 3px; font-family:'JetBrains Mono',monospace; }
+        .ser-markdown pre { background: #0f172a; border: 1px solid #1e3a5f; border-radius: 8px; padding: 12px 16px; margin: 10px 0; overflow-x: auto; }
+        .ser-markdown pre code { background: transparent; border: none; padding: 0; color: #38bdf8; font-size: 13px; font-family:'JetBrains Mono',monospace; letter-spacing: 0.03em; }
         .ser-markdown h1, .ser-markdown h2, .ser-markdown h3 { color: #0f172a; margin: 14px 0 6px 0; font-weight: 700; font-family:'Inter',sans-serif; }
         .ser-markdown blockquote { border-left: 3px solid #0EA5E9; padding-left: 12px; margin: 8px 0; color: #475569; font-style: italic; }
         .ser-markdown hr { border: none; border-top: 1px solid #e2e8f0; margin: 12px 0; }
+        .ser-markdown table { border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+        .ser-markdown th { background: #f0f9ff; color: #0284c7; font-weight: 700; padding: 6px 12px; border: 1px solid #bae6fd; }
+        .ser-markdown td { padding: 5px 12px; border: 1px solid #e2e8f0; color: #334155; }
         .ser-copy-btn { display: flex; opacity: 0; transition: opacity 0.15s; }
         div:hover .ser-copy-btn { opacity: 1; }
       `}</style>
