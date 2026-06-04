@@ -27,11 +27,6 @@ const nextConfig = {
         destination: '/billing',
         permanent: false,
       },
-      {
-        source: '/hub',
-        destination: '/dashboard',
-        permanent: false,
-      },
     ]
   },
   async headers() {
