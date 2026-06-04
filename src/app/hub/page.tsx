@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import LegalDisclaimer from '@/components/LegalDisclaimer';
@@ -265,82 +265,7 @@ function RefreshIcon({ className }: { className?: string }) {
   );
 }
 
-// ── Paywalls ──────────────────────────────────────────────────────────────────
-
-function SignalPaywall({ viewed, limit }: { viewed: number; limit: number }) {
-  return (
-    <div className="absolute inset-0 z-20 flex items-center justify-center">
-      <div className="absolute inset-0" style={{ backdropFilter: 'blur(4px)', backgroundColor: `${BG}cc` }} />
-      <div className="relative z-10 w-full max-w-[280px] mx-auto">
-        <div className="border p-6" style={{ backgroundColor: CARD, borderColor: BORDER }}>
-          <div className="mb-4">
-            <p className="text-[9px] uppercase tracking-[0.25em] mb-1" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
-              Acceso Restringido
-            </p>
-            <h3 className="text-white text-base font-bold" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              {limit} señales gratuitas usadas
-            </h3>
-          </div>
-          <div className="border-t pt-4 mb-4" style={{ borderColor: BORDER }}>
-            <p className="text-[#444] text-xs leading-relaxed mb-3">
-              Suscribite a Quantum Access para señales ilimitadas, todos los mercados, DXY y análisis cuántico.
-            </p>
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-bold text-lg" style={{ color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}>
-                Gs. 180.000
-              </span>
-              <span className="text-[#333] text-xs">/ mes</span>
-            </div>
-            <p className="text-[#333] text-xs">$25 USD equivalente</p>
-          </div>
-          <Link
-            href="/billing"
-            className="block w-full py-2.5 px-4 text-sm font-bold uppercase tracking-[0.1em] text-black text-center transition-opacity hover:opacity-90"
-            style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            Suscribirse
-          </Link>
-          <p className="text-[#333] text-[9px] text-center mt-3">{viewed} / {limit} señales gratuitas usadas</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LoginGate() {
-  return (
-    <div className="absolute inset-0 z-20 flex items-center justify-center">
-      <div className="absolute inset-0" style={{ backdropFilter: 'blur(4px)', backgroundColor: `${BG}cc` }} />
-      <div className="relative z-10 w-full max-w-[280px] mx-auto">
-        <div className="border p-6" style={{ backgroundColor: CARD, borderColor: BORDER }}>
-          <p className="text-[9px] uppercase tracking-[0.25em] mb-1" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
-            Autenticación Requerida
-          </p>
-          <h3 className="text-white text-base font-bold mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            Iniciá sesión para ver señales
-          </h3>
-          <p className="text-[#444] text-xs leading-relaxed mb-4">
-            Cuentas gratuitas tienen 3 señales de por vida. Sin tarjeta.
-          </p>
-          <Link
-            href="/login?redirect=/hub"
-            className="block w-full py-2.5 px-4 text-sm font-bold uppercase tracking-[0.1em] text-black text-center transition-opacity hover:opacity-90 mb-2"
-            style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            Iniciar Sesión
-          </Link>
-          <Link
-            href="/register"
-            className="block w-full border py-2.5 px-4 text-sm font-medium text-center transition-colors duration-200 hover:border-[#333] text-[#555]"
-            style={{ borderColor: BORDER, fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            Crear Cuenta
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
+// ── Paywalls removed — using inline blur/CTA teaser model ─────────────────────
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
@@ -355,7 +280,6 @@ export default function QuantumSignalHub() {
   const [fetchError, setFetchError] = useState(false);
   const [signalAccess, setSignalAccess] = useState<SignalAccess | null>(null);
   const [timeframe, setTimeframe]       = useState<string>('H1');
-  const incrementedRef = useRef(false);
 
   const fetchMarkets = useCallback(async () => {
     try {
@@ -388,11 +312,6 @@ export default function QuantumSignalHub() {
     fetch('/api/signals/check-limit').then(r => r.json()).then((d: SignalAccess) => setSignalAccess(d)).catch(() => setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3, reason: 'limit_reached' }));
   }, [authStatus, session]);
 
-  useEffect(() => {
-    if (!signalAccess?.canView || signalAccess.isPro || incrementedRef.current) return;
-    incrementedRef.current = true;
-    fetch('/api/signals/increment-view', { method: 'POST' }).then(r => r.json()).then(d => setSignalAccess(p => p ? { ...p, viewed: d.viewed } : p)).catch(() => {});
-  }, [signalAccess]);
 
   // Niveles recalculados con el H/L del timeframe elegido (Áurea de Gann).
   // priceBucket discretiza el precio en pasos de ~0.3%: los niveles solo se
@@ -440,9 +359,7 @@ export default function QuantumSignalHub() {
     if (filter === 'INDEX')  return ['SPX500', 'NAS100', 'DXY'].includes(m.symbol);
     return true;
   });
-  const showGate       = signalAccess !== null && !signalAccess.canView;
-  const isUnauthed     = signalAccess?.reason === 'unauthenticated';
-  const isLimitReached = signalAccess?.reason === 'limit_reached';
+  const isPro = signalAccess?.isPro === true;
 
   if (isLoading || authStatus === 'loading') {
     return (
@@ -498,15 +415,7 @@ export default function QuantumSignalHub() {
             <button onClick={fetchMarkets} title="Refresh" className="transition-colors duration-200 hover:text-white" style={{ color: MUTED }}>
               <RefreshIcon className="w-3.5 h-3.5" />
             </button>
-            {signalAccess && !signalAccess.isPro && session && (
-              <span className="hidden md:block text-[10px]" style={{ color: MUTED, fontFamily: "'JetBrains Mono', monospace" }}>
-                SIG{' '}
-                <span style={{ color: signalAccess.viewed >= signalAccess.limit ? RED : CYAN }}>
-                  {signalAccess.limit - signalAccess.viewed}
-                </span>/{signalAccess.limit}
-              </span>
-            )}
-            {signalAccess?.isPro && (
+            {isPro && (
               <span className="hidden md:block text-[10px] font-bold uppercase tracking-widest" style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}>
                 PRO
               </span>
@@ -737,11 +646,20 @@ export default function QuantumSignalHub() {
                 </div>
 
                 {/* AI Analysis */}
-                <div className="border-b border-l-2 p-4" style={{ borderColor: BORDER, borderLeftColor: CYAN }}>
+                <div className="border-b border-l-2 p-4" style={{ borderColor: BORDER, borderLeftColor: isPro ? CYAN : '#F59E0B' }}>
                   <p className="text-[8px] uppercase tracking-[0.25em] mb-2" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
                     Análisis Cuántico IA
                   </p>
-                  <p className="text-xs leading-relaxed" style={{ color: '#555' }}>{detailAI}</p>
+                  <div className="relative">
+                    <p className="text-xs leading-relaxed" style={{ color: '#555', filter: isPro ? 'none' : 'blur(4px)', userSelect: isPro ? 'auto' : 'none' }}>{detailAI}</p>
+                    {!isPro && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[9px] font-bold uppercase tracking-[0.15em] px-2 py-1" style={{ backgroundColor: '#F59E0B15', color: '#F59E0B', border: '1px solid #F59E0B30', fontFamily: "'Space Grotesk', sans-serif" }}>
+                          🔒 Quantum Access
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Levels table */}
@@ -770,42 +688,61 @@ export default function QuantumSignalHub() {
                     ))}
                   </div>
 
-                  <div>
-                    {detailLevels.map(lv => {
-                      const near     = Math.abs(lv.price - selected.price) / selected.price < 0.008;
-                      const col      = lv.type === 'soporte' ? CYAN : '#F59E0B';
-                      const srcBadge = lv.source === 'confluencia' ? '⬡' : lv.source === 'gann' ? 'G' : 'F';
-                      return (
-                        <div
-                          key={lv.level}
-                          className="grid gap-2 items-center px-1 py-2 border-b"
-                          style={{
-                            gridTemplateColumns: '44px 1fr 72px',
-                            borderBottomColor: '#1a1a1a',
-                            backgroundColor: near ? `${col}08` : 'transparent',
-                          }}
-                        >
-                          <div className="flex items-center gap-1">
-                            <span className="font-bold text-[11px]" style={{ color: near ? col : '#444', fontFamily: "'JetBrains Mono', monospace" }}>
-                              {lv.level}
-                            </span>
-                            {lv.isCardinal && <span className="text-[8px]" style={{ color: '#F59E0B' }} title="Ángulo cardinal">°</span>}
-                            {near && <span className="w-1 h-1 rounded-full animate-pulse ml-0.5" style={{ backgroundColor: col }} />}
-                          </div>
-                          <div className="flex flex-col gap-0.5">
-                            <div className="h-0.5 rounded-full overflow-hidden" style={{ backgroundColor: '#1a1a1a' }}>
-                              <div className="h-full rounded-full" style={{ width: `${lv.strength}%`, backgroundColor: col }} />
+                  <div className="relative">
+                    <div>
+                      {detailLevels.map(lv => {
+                        const near     = Math.abs(lv.price - selected.price) / selected.price < 0.008;
+                        const col      = lv.type === 'soporte' ? CYAN : '#F59E0B';
+                        const srcBadge = lv.source === 'confluencia' ? '⬡' : lv.source === 'gann' ? 'G' : 'F';
+                        return (
+                          <div
+                            key={lv.level}
+                            className="grid gap-2 items-center px-1 py-2 border-b"
+                            style={{
+                              gridTemplateColumns: '44px 1fr 72px',
+                              borderBottomColor: '#1a1a1a',
+                              backgroundColor: near ? `${col}08` : 'transparent',
+                            }}
+                          >
+                            <div className="flex items-center gap-1">
+                              <span className="font-bold text-[11px]" style={{ color: near ? col : '#444', fontFamily: "'JetBrains Mono', monospace" }}>
+                                {lv.level}
+                              </span>
+                              {lv.isCardinal && <span className="text-[8px]" style={{ color: '#F59E0B' }} title="Ángulo cardinal">°</span>}
+                              {near && <span className="w-1 h-1 rounded-full animate-pulse ml-0.5" style={{ backgroundColor: col }} />}
                             </div>
-                            <span className="text-[8px]" style={{ color: '#333', fontFamily: "'JetBrains Mono', monospace" }}>
-                              {srcBadge} {lv.strength}%
+                            <div className="flex flex-col gap-0.5">
+                              <div className="h-0.5 rounded-full overflow-hidden" style={{ backgroundColor: '#1a1a1a' }}>
+                                <div className="h-full rounded-full" style={{ width: `${lv.strength}%`, backgroundColor: col }} />
+                              </div>
+                              <span className="text-[8px]" style={{ color: '#333', fontFamily: "'JetBrains Mono', monospace" }}>
+                                {srcBadge} {lv.strength}%
+                              </span>
+                            </div>
+                            <span className="text-[11px] text-right font-bold" style={{ color: near ? col : '#555', fontFamily: "'JetBrains Mono', monospace", filter: isPro ? 'none' : 'blur(6px)', userSelect: isPro ? 'auto' : 'none' }}>
+                              {fmt(selected, lv.price)}
                             </span>
                           </div>
-                          <span className="text-[11px] text-right font-bold" style={{ color: near ? col : '#555', fontFamily: "'JetBrains Mono', monospace" }}>
-                            {fmt(selected, lv.price)}
-                          </span>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
+                    {!isPro && (
+                      <div
+                        className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end gap-3 pb-5 pt-16"
+                        style={{ background: `linear-gradient(to bottom, transparent, ${CARD})` }}
+                      >
+                        <p className="text-xs font-bold text-center px-4" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>
+                          Para desbloquear los niveles, accedé a Quantum Access
+                        </p>
+                        <Link
+                          href="/billing"
+                          className="px-5 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-black transition-opacity hover:opacity-90"
+                          style={{ backgroundColor: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
+                        >
+                          Quantum Access →
+                        </Link>
+                      </div>
+                    )}
                   </div>
 
                   {/* Metodología */}
@@ -832,12 +769,8 @@ export default function QuantumSignalHub() {
                 <p className="text-[8px] uppercase tracking-[0.25em]" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
                   Señales en Vivo
                 </p>
-                {signalAccess && !signalAccess.isPro && session && !showGate && (
-                  <span className="text-[8px]" style={{ color: MUTED, fontFamily: "'JetBrains Mono', monospace" }}>
-                    <span style={{ color: signalAccess.viewed >= signalAccess.limit ? RED : CYAN }}>
-                      {signalAccess.limit - signalAccess.viewed}
-                    </span>/{signalAccess.limit}
-                  </span>
+                {isPro && (
+                  <span className="text-[8px] font-bold uppercase tracking-widest" style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}>PRO</span>
                 )}
               </div>
 
@@ -865,10 +798,10 @@ export default function QuantumSignalHub() {
                           {sig.symbol}
                         </span>
                       </div>
-                      <p className="text-[10px] leading-relaxed mb-1.5" style={{ color: '#666', fontFamily: "'Inter', sans-serif" }}>
+                      <p className="text-[10px] leading-relaxed mb-1.5" style={{ color: '#666', fontFamily: "'Inter', sans-serif", filter: isPro ? 'none' : 'blur(4px)', userSelect: isPro ? 'auto' : 'none' }}>
                         {hint}
                       </p>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5" style={{ filter: isPro ? 'none' : 'blur(4px)' }}>
                         <div className="flex-1 h-0.5 overflow-hidden" style={{ backgroundColor: '#1a1a1a' }}>
                           <div className="h-full" style={{ width: `${sig.strength}%`, backgroundColor: col }} />
                         </div>
@@ -881,8 +814,20 @@ export default function QuantumSignalHub() {
                 })}
               </div>
 
-              {showGate && isUnauthed    && <LoginGate />}
-              {showGate && isLimitReached && <SignalPaywall viewed={signalAccess!.viewed} limit={signalAccess!.limit} />}
+              {!isPro && (
+                <div className="px-4 py-4 border-t" style={{ borderColor: '#F59E0B30', backgroundColor: '#F59E0B08' }}>
+                  <p className="text-[10px] font-semibold mb-2.5 leading-snug" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>
+                    Para desbloquear los niveles, accedé a Quantum Access
+                  </p>
+                  <Link
+                    href="/billing"
+                    className="inline-block px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
+                    style={{ backgroundColor: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    Desbloquear →
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Actions */}
@@ -898,7 +843,7 @@ export default function QuantumSignalHub() {
                 <span>Calculadora Cuadrática</span>
                 <span style={{ color: MUTED }}>→</span>
               </Link>
-              {!signalAccess?.isPro && (
+              {!isPro && (
                 <Link
                   href="/billing"
                   className="flex items-center justify-between w-full px-4 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
