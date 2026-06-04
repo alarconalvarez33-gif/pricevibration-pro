@@ -280,6 +280,8 @@ export default function QuantumSignalHub() {
   const [fetchError, setFetchError] = useState(false);
   const [signalAccess, setSignalAccess] = useState<SignalAccess | null>(null);
   const [timeframe, setTimeframe]       = useState<string>('H1');
+  const [guestCanView, setGuestCanView] = useState(false);
+  const [guestSecondsLeft, setGuestSecondsLeft] = useState(0);
 
   const fetchMarkets = useCallback(async () => {
     try {
@@ -312,6 +314,33 @@ export default function QuantumSignalHub() {
     fetch('/api/signals/check-limit').then(r => r.json()).then((d: SignalAccess) => setSignalAccess(d)).catch(() => setSignalAccess({ canView: false, isPro: false, viewed: 0, limit: 3, reason: 'limit_reached' }));
   }, [authStatus, session]);
 
+  // Daily 5-minute guest window — tracked via localStorage, resets each calendar day.
+  useEffect(() => {
+    const WINDOW_MS = 5 * 60 * 1000;
+    const KEY = 'hub_daily_access';
+
+    const today = new Date().toDateString();
+    let stored: { date: string; startedAt: number } | null = null;
+    try { stored = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { stored = null; }
+
+    if (!stored || stored.date !== today) {
+      stored = { date: today, startedAt: Date.now() };
+      localStorage.setItem(KEY, JSON.stringify(stored));
+    }
+
+    const startedAt = stored.startedAt;
+
+    const tick = () => {
+      const elapsed = Date.now() - startedAt;
+      const remaining = Math.max(0, WINDOW_MS - elapsed);
+      setGuestSecondsLeft(Math.ceil(remaining / 1000));
+      setGuestCanView(remaining > 0);
+    };
+
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   // Niveles recalculados con el H/L del timeframe elegido (Áurea de Gann).
   // priceBucket discretiza el precio en pasos de ~0.3%: los niveles solo se
@@ -360,6 +389,7 @@ export default function QuantumSignalHub() {
     return true;
   });
   const isPro = signalAccess?.isPro === true;
+  const canSeeDetails = isPro || guestCanView;
 
   if (isLoading || authStatus === 'loading') {
     return (
@@ -646,13 +676,13 @@ export default function QuantumSignalHub() {
                 </div>
 
                 {/* AI Analysis */}
-                <div className="border-b border-l-2 p-4" style={{ borderColor: BORDER, borderLeftColor: isPro ? CYAN : '#F59E0B' }}>
+                <div className="border-b border-l-2 p-4" style={{ borderColor: BORDER, borderLeftColor: canSeeDetails ? CYAN : '#F59E0B' }}>
                   <p className="text-[8px] uppercase tracking-[0.25em] mb-2" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
                     Análisis Cuántico IA
                   </p>
                   <div className="relative">
-                    <p className="text-xs leading-relaxed" style={{ color: '#555', filter: isPro ? 'none' : 'blur(4px)', userSelect: isPro ? 'auto' : 'none' }}>{detailAI}</p>
-                    {!isPro && (
+                    <p className="text-xs leading-relaxed" style={{ color: '#555', filter: canSeeDetails ? 'none' : 'blur(4px)', userSelect: canSeeDetails ? 'auto' : 'none' }}>{detailAI}</p>
+                    {!canSeeDetails && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-[9px] font-bold uppercase tracking-[0.15em] px-2 py-1" style={{ backgroundColor: '#F59E0B15', color: '#F59E0B', border: '1px solid #F59E0B30', fontFamily: "'Space Grotesk', sans-serif" }}>
                           🔒 Quantum Access
@@ -719,14 +749,14 @@ export default function QuantumSignalHub() {
                                 {srcBadge} {lv.strength}%
                               </span>
                             </div>
-                            <span className="text-[11px] text-right font-bold" style={{ color: near ? col : '#555', fontFamily: "'JetBrains Mono', monospace", filter: isPro ? 'none' : 'blur(6px)', userSelect: isPro ? 'auto' : 'none' }}>
+                            <span className="text-[11px] text-right font-bold" style={{ color: near ? col : '#555', fontFamily: "'JetBrains Mono', monospace", filter: canSeeDetails ? 'none' : 'blur(6px)', userSelect: canSeeDetails ? 'auto' : 'none' }}>
                               {fmt(selected, lv.price)}
                             </span>
                           </div>
                         );
                       })}
                     </div>
-                    {!isPro && (
+                    {!canSeeDetails && (
                       <div
                         className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end gap-3 pb-5 pt-16"
                         style={{ background: `linear-gradient(to bottom, transparent, ${CARD})` }}
@@ -798,10 +828,10 @@ export default function QuantumSignalHub() {
                           {sig.symbol}
                         </span>
                       </div>
-                      <p className="text-[10px] leading-relaxed mb-1.5" style={{ color: '#666', fontFamily: "'Inter', sans-serif", filter: isPro ? 'none' : 'blur(4px)', userSelect: isPro ? 'auto' : 'none' }}>
+                      <p className="text-[10px] leading-relaxed mb-1.5" style={{ color: '#666', fontFamily: "'Inter', sans-serif", filter: canSeeDetails ? 'none' : 'blur(4px)', userSelect: canSeeDetails ? 'auto' : 'none' }}>
                         {hint}
                       </p>
-                      <div className="flex items-center gap-1.5" style={{ filter: isPro ? 'none' : 'blur(4px)' }}>
+                      <div className="flex items-center gap-1.5" style={{ filter: canSeeDetails ? 'none' : 'blur(4px)' }}>
                         <div className="flex-1 h-0.5 overflow-hidden" style={{ backgroundColor: '#1a1a1a' }}>
                           <div className="h-full" style={{ width: `${sig.strength}%`, backgroundColor: col }} />
                         </div>
@@ -814,7 +844,15 @@ export default function QuantumSignalHub() {
                 })}
               </div>
 
-              {!isPro && (
+              {!isPro && guestCanView && (
+                <div className="px-4 py-2 border-t flex items-center justify-between" style={{ borderColor: '#F59E0B20', backgroundColor: '#F59E0B06' }}>
+                  <p className="text-[8px] uppercase tracking-[0.2em]" style={{ color: '#F59E0B80', fontFamily: "'Space Grotesk', sans-serif" }}>Vista completa hoy</p>
+                  <span className="text-[9px] font-bold" style={{ color: '#F59E0B', fontFamily: "'JetBrains Mono', monospace" }}>
+                    {Math.floor(guestSecondsLeft / 60)}:{String(guestSecondsLeft % 60).padStart(2, '0')}
+                  </span>
+                </div>
+              )}
+              {!canSeeDetails && (
                 <div className="px-4 py-4 border-t" style={{ borderColor: '#F59E0B30', backgroundColor: '#F59E0B08' }}>
                   <p className="text-[10px] font-semibold mb-2.5 leading-snug" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>
                     Para desbloquear los niveles, accedé a Quantum Access
