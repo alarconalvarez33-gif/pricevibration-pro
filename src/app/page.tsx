@@ -264,21 +264,21 @@ export default function HomePage() {
                 className="text-lg mb-10 leading-relaxed"
                 style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}
               >
-                Calculá niveles exactos de soporte y resistencia con el método de W.D. Gann. Herramienta profesional para Oro, Forex y Crypto.
+                Calculá niveles exactos de soporte y resistencia con el método de W.D. Gann. Cursos, herramientas profesionales y señales verificadas para Oro, Forex y Crypto.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
-                  href="/quantum"
+                  href="/hub"
                   className="px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] rounded-lg text-center transition-all duration-300 hover:-translate-y-0.5"
                   style={{
-                    backgroundColor: CYAN,
+                    backgroundColor: '#F59E0B',
                     color: '#000',
-                    boxShadow: '0 8px 24px rgba(0,212,255,0.4)',
+                    boxShadow: '0 8px 24px rgba(245,158,11,0.35)',
                     fontFamily: "'Space Grotesk', sans-serif",
                   }}
                 >
-                  PROBAR CALCULADORA GRATIS →
+                  VER SIGNAL HUB →
                 </Link>
                 <Link
                   href="/cursos"
@@ -362,6 +362,188 @@ export default function HomePage() {
 
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SIGNAL HUB — PREVIEW HOMEPAGE
+      ════════════════════════════════════════ */}
+      <section
+        id="signal-hub"
+        className="relative py-20 px-4 overflow-hidden"
+        style={{ background: 'linear-gradient(180deg, #0a0f1e 0%, #080E1A 50%, #0a0f1e 100%)' }}
+      >
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(245,158,11,0.04) 0%, transparent 70%)' }} />
+
+        <div className="max-w-6xl mx-auto relative">
+
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-semibold tracking-wider uppercase mb-6"
+              style={{ backgroundColor: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.2)', color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#F59E0B' }} />
+              Signal Hub · En vivo
+            </div>
+
+            <h2
+              className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight"
+              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.5px' }}
+            >
+              Señales de trading verificadas.{' '}
+              <span style={{ color: '#F59E0B' }}>En tiempo real.</span>
+            </h2>
+
+            <p className="max-w-xl mx-auto text-base leading-relaxed" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
+              Confluencia de niveles Gann, estructura de mercado y momentum —
+              todo filtrado en un solo panel. Probalo gratis, 3 veces.
+            </p>
+          </div>
+
+          {/* Card */}
+          <div className="max-w-4xl mx-auto">
+            <div
+              className="relative rounded-2xl overflow-hidden"
+              style={{ border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(0,0,0,0.5)' }}
+            >
+              {/* Terminal top bar */}
+              <div
+                className="flex items-center justify-between px-5 py-3 border-b"
+                style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.03)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'rgba(239,68,68,0.7)' }} />
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'rgba(234,179,8,0.7)' }} />
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'rgba(34,197,94,0.7)' }} />
+                  </div>
+                  <span className="text-xs" style={{ color: '#475569', fontFamily: "'JetBrains Mono', monospace" }}>Signal Hub · Sacred Levels</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#00D26A' }} />
+                  <span className="text-xs font-bold" style={{ color: '#00D26A', fontFamily: "'JetBrains Mono', monospace" }}>LIVE</span>
+                </div>
+              </div>
+
+              <div className="p-6 md:p-8">
+
+                {/* Señales preview */}
+                <div className="space-y-3 mb-8">
+
+                  {/* Señal 1 — BUY */}
+                  <div className="flex items-center gap-4 p-4 rounded-xl" style={{ backgroundColor: 'rgba(0,210,106,0.05)', border: '1px solid rgba(0,210,106,0.12)' }}>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shrink-0" style={{ backgroundColor: 'rgba(0,210,106,0.15)', color: '#00D26A', fontFamily: "'Space Grotesk', sans-serif" }}>
+                      BUY
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-semibold text-sm text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>XAUUSD</span>
+                        <span className="text-xs" style={{ color: '#475569' }}>H4 · Confluencia Gann</span>
+                      </div>
+                      <div className="text-xs" style={{ color: '#64748B' }}>Nivel √ 2,683 — Soporte armónico + estructura alcista</div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-bold text-sm" style={{ color: '#00D26A', fontFamily: "'JetBrains Mono', monospace" }}>⬆ 2,683</div>
+                      <div className="text-xs mt-0.5" style={{ color: '#475569' }}>TP: 2,712</div>
+                    </div>
+                  </div>
+
+                  {/* Señal 2 — SELL */}
+                  <div className="flex items-center gap-4 p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,71,87,0.05)', border: '1px solid rgba(255,71,87,0.1)' }}>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shrink-0" style={{ backgroundColor: 'rgba(255,71,87,0.15)', color: '#FF4757', fontFamily: "'Space Grotesk', sans-serif" }}>
+                      SELL
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-semibold text-sm text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>EURUSD</span>
+                        <span className="text-xs" style={{ color: '#475569' }}>H1 · Ruptura de nivel</span>
+                      </div>
+                      <div className="text-xs" style={{ color: '#64748B' }}>Rechazo en 1.0845 — Resistencia Gann + divergencia</div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-bold text-sm" style={{ color: '#FF4757', fontFamily: "'JetBrains Mono', monospace" }}>⬇ 1.0845</div>
+                      <div className="text-xs mt-0.5" style={{ color: '#475569' }}>TP: 1.0790</div>
+                    </div>
+                  </div>
+
+                  {/* Señal 3 — Bloqueada */}
+                  <div className="relative">
+                    <div
+                      className="flex items-center gap-4 p-4 rounded-xl select-none"
+                      style={{ filter: 'blur(5px)', backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}
+                    >
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shrink-0" style={{ backgroundColor: 'rgba(0,212,255,0.15)', color: CYAN }}>BUY</div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm text-white">BTCUSD · D1</div>
+                        <div className="text-xs" style={{ color: '#64748B' }}>Nivel cuántico de acumulación...</div>
+                      </div>
+                      <div className="font-bold text-sm" style={{ color: CYAN, fontFamily: "'JetBrains Mono', monospace" }}>⬆ 68,450</div>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-full" style={{ backgroundColor: 'rgba(0,0,0,0.85)', border: '1px solid rgba(245,158,11,0.3)' }}>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: '#F59E0B' }}>
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M7 11V7a5 5 0 0110 0v4" />
+                        </svg>
+                        <span className="text-xs font-semibold" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>Quantum Access</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row items-center gap-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  {session ? (
+                    <Link
+                      href="/hub"
+                      className="flex-1 w-full sm:w-auto text-center px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 hover:-translate-y-0.5"
+                      style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#000', boxShadow: '0 8px 24px rgba(245,158,11,0.25)', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Ir al Signal Hub →
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/register"
+                      className="flex-1 w-full sm:w-auto text-center px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 hover:-translate-y-0.5"
+                      style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#000', boxShadow: '0 8px 24px rgba(245,158,11,0.25)', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      Crear cuenta gratis · 3 señales de prueba →
+                    </Link>
+                  )}
+                  <Link
+                    href="/billing"
+                    className="flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:bg-amber-500/10"
+                    style={{ border: '1px solid rgba(245,158,11,0.3)', color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    ⚡ Quantum Access · Señales ilimitadas
+                  </Link>
+                </div>
+
+                {/* Trust indicators */}
+                <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-xs" style={{ color: '#475569' }}>
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: '#00D26A' }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Señales verificadas
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: '#F59E0B' }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Actualizadas en tiempo real
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: CYAN }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Método W.D. Gann
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
