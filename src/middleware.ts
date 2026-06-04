@@ -12,6 +12,7 @@ const PUBLIC_PATHS = new Set([
   '/billing',
   '/pricing',
   '/quantum',
+  '/hub',        // Signal Hub handles its own auth/paywall internally
   '/courses',
   '/contact',
   '/terms',
