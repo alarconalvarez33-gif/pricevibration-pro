@@ -15,6 +15,25 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/ser',
+        destination: '/dashboard',
+        permanent: false,
+      },
+      {
+        source: '/ser/planes',
+        destination: '/billing',
+        permanent: false,
+      },
+      {
+        source: '/hub',
+        destination: '/dashboard',
+        permanent: false,
+      },
+    ]
+  },
   async headers() {
     return [
       {

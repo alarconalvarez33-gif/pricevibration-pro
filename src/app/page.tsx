@@ -1,7 +1,5 @@
 'use client'
 import ContactSection from '@/components/home/ContactSection'
-import { SerHeroSection } from '@/components/home/SerHeroSection'
-import { ActivityToast } from '@/components/ui/ActivityToast'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -230,7 +228,6 @@ export default function HomePage() {
   return (
     <main style={{ fontFamily: "'Inter', sans-serif" }}>
       <Header />
-      <ActivityToast />
       <WhatsAppFloat />
 
       {/* ════════════════════════════════════════
@@ -243,7 +240,7 @@ export default function HomePage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="max-w-2xl">
 
             {/* Left — copy */}
             <div>
@@ -264,22 +261,15 @@ export default function HomePage() {
               </h1>
 
               <p
-                className="text-lg mb-4 leading-relaxed"
+                className="text-lg mb-10 leading-relaxed"
                 style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}
               >
-                SER analiza XAUUSD en 3 segundos y te indica exactamente dónde están los niveles clave. Sin emociones. Sin adivinar.
-              </p>
-              <p
-                className="text-base mb-10 leading-relaxed"
-                style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}
-              >
-                Accedé a herramientas de análisis técnico avanzado, cursos probados
-                y comunidad de traders profesionales.
+                Calculá niveles exactos de soporte y resistencia con el método de W.D. Gann. Herramienta profesional para Oro, Forex y Crypto.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
-                  href="/ser"
+                  href="/quantum"
                   className="px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] rounded-lg text-center transition-all duration-300 hover:-translate-y-0.5"
                   style={{
                     backgroundColor: CYAN,
@@ -288,10 +278,10 @@ export default function HomePage() {
                     fontFamily: "'Space Grotesk', sans-serif",
                   }}
                 >
-                  VER SER EN ACCIÓN →
+                  PROBAR CALCULADORA GRATIS →
                 </Link>
                 <Link
-                  href="/billing"
+                  href="/cursos"
                   className="px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] rounded-lg text-center transition-all duration-300 hover:border-white hover:text-white"
                   style={{
                     border: '2px solid rgba(255,255,255,0.2)',
@@ -299,7 +289,7 @@ export default function HomePage() {
                     fontFamily: "'Space Grotesk', sans-serif",
                   }}
                 >
-                  VER PLANES
+                  VER CURSOS
                 </Link>
               </div>
 
@@ -372,258 +362,6 @@ export default function HomePage() {
 
             </div>
 
-            {/* Right — SER flyer */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div style={{ maxWidth: '400px', width: '100%' }}>
-
-                {/* Flyer frame */}
-                <div
-                  className="relative overflow-hidden rounded-2xl"
-                  style={{
-                    border: '1px solid rgba(0,212,255,0.18)',
-                    boxShadow: '0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,212,255,0.06)',
-                    background: '#0D1117',
-                  }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/presenta.png"
-                    alt="SER — Sistema de Econofísica Resonante"
-                    className="w-full block"
-                    style={{ display: 'block' }}
-                  />
-                  {/* Subtle top bar overlay */}
-                  <div
-                    className="absolute top-0 inset-x-0 h-12"
-                    style={{ background: 'linear-gradient(180deg, rgba(13,17,23,0.4) 0%, transparent 100%)' }}
-                  />
-                </div>
-
-                {/* Stats below flyer — replacing CEO / 68% win rate */}
-                <div className="grid grid-cols-3 gap-2 mt-4">
-                  {[
-                    { value: 'IA 24/7', label: 'Siempre disponible' },
-                    { value: '100%', label: 'En español' },
-                    { value: 'Tiempo real', label: 'Datos reales' },
-                  ].map(s => (
-                    <div
-                      key={s.label}
-                      className="rounded-xl px-3 py-3 text-center"
-                      style={{
-                        backgroundColor: 'rgba(0,212,255,0.06)',
-                        border: '1px solid rgba(0,212,255,0.2)',
-                      }}
-                    >
-                      <p className="font-black text-sm leading-none mb-1" style={{ color: '#FFFFFF', fontFamily: "'Montserrat', sans-serif" }}>
-                        {s.value}
-                      </p>
-                      <p className="text-[10px] font-medium" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
-                        {s.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════
-          SER — INTELIGENCIA FINANCIERA
-      ════════════════════════════════════════ */}
-      <SerHeroSection />
-
-      {/* ════════════════════════════════════════
-          PLANES SER IA
-      ════════════════════════════════════════ */}
-      <section style={{ background: `linear-gradient(180deg, #080E1A 0%, ${DARK_BG} 100%)` }} id="planes-ser">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
-
-          <div className="text-center mb-12">
-            <p
-              className="text-xs font-bold uppercase tracking-[0.35em] mb-4"
-              style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Inteligencia Artificial
-            </p>
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 leading-tight"
-              style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
-            >
-              Planes SER IA
-            </h2>
-            <p
-              className="text-base max-w-xl mx-auto"
-              style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}
-            >
-              Acceso a la primera IA trader, creada en los laboratorios de THE MENTOR.
-            </p>
-          </div>
-
-          {/* Flyer presenta.png — centrado encima de los planes */}
-          <div className="flex justify-center mb-10">
-            <div
-              className="rounded-2xl overflow-hidden"
-              style={{ maxWidth: '240px', width: '100%', border: '1px solid rgba(0,212,255,0.18)', boxShadow: '0 0 60px rgba(0,212,255,0.08)' }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/presenta.png"
-                alt="SER Inteligencia Artificial"
-                className="w-full block"
-                style={{ objectFit: 'contain' }}
-              />
-            </div>
-          </div>
-
-          {/* 3 plan cards — efecto señuelo */}
-          <div className="grid md:grid-cols-3 gap-6">
-
-            {/* Plan SER - Señuelo bajo */}
-            <div
-              className="rounded-2xl p-6 flex flex-col"
-              style={{
-                backgroundColor: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(0,212,255,0.15)',
-              }}
-            >
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.15em] mb-4 self-start"
-                style={{ backgroundColor: 'rgba(0,212,255,0.1)', color: CYAN, border: '1px solid rgba(0,212,255,0.2)' }}
-              >
-                Plan SER
-              </div>
-              <div className="mb-4">
-                <p className="text-3xl font-black text-white leading-none" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                  Gs. 89.000<span className="text-sm font-normal text-slate-400">/mes</span>
-                </p>
-                <p className="text-xs mt-1" style={{ color: '#475569' }}>≈ USD 13 · Cancelá cuando quieras</p>
-              </div>
-              <ul className="space-y-2 mb-6 flex-1">
-                {['5 consultas SER / día', 'Análisis en H1', 'Niveles en tiempo real', 'Sube gráficos para análisis', 'En español 24/7'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-sm" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
-                    <span style={{ color: CYAN }}>✓</span> {f}
-                  </li>
-                ))}
-                {['Calculadoras Gann y Áurea', 'Signal Hub', 'Multi-timeframe'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-sm line-through" style={{ color: '#334155', fontFamily: "'Inter', sans-serif" }}>
-                    <span style={{ color: '#334155' }}>✗</span> {f}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/billing"
-                className="block text-center py-3 text-sm font-bold uppercase tracking-[0.1em] border rounded-xl transition-all hover:border-[#00D4FF]/60 hover:text-[#00D4FF]"
-                style={{ borderColor: 'rgba(0,212,255,0.25)', color: '#64748B', fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Empezar a detectar niveles →
-              </Link>
-            </div>
-
-            {/* Quantum Access - Más elegido */}
-            <div
-              className="rounded-2xl p-6 flex flex-col relative"
-              style={{
-                backgroundColor: 'rgba(0,212,255,0.05)',
-                border: '1px solid rgba(0,212,255,0.3)',
-                boxShadow: '0 0 40px rgba(0,212,255,0.06)',
-              }}
-            >
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] whitespace-nowrap"
-                style={{ backgroundColor: CYAN, color: '#000', fontFamily: "'Space Grotesk', sans-serif", boxShadow: '0 4px 12px rgba(0,212,255,0.4)' }}
-              >
-                ⭐ MÁS ELEGIDO
-              </div>
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.15em] mb-4 self-start mt-2"
-                style={{ backgroundColor: 'rgba(0,212,255,0.15)', color: CYAN, border: '1px solid rgba(0,212,255,0.3)' }}
-              >
-                ⚡ Quantum Access
-              </div>
-              <div className="mb-4">
-                <p className="text-3xl font-black text-white leading-none" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                  Gs. 149.000<span className="text-sm font-normal text-slate-400">/mes</span>
-                </p>
-                <p className="text-xs mt-1" style={{ color: '#475569' }}>≈ USD 22 · El plan más completo</p>
-              </div>
-              <ul className="space-y-2 mb-6 flex-1">
-                {[
-                  '10 consultas SER / día',
-                  'Multi-timeframe (M15·H1·H4·D1)',
-                  'Calculadora Áurea ilimitada',
-                  'Calculadora Quantum Levels',
-                  'Calculadora Gann Clásica',
-                  'Signal Hub · Señales verificadas',
-                  'Análisis de gráficos completo',
-                  'En español 24/7',
-                ].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-sm" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
-                    <span style={{ color: CYAN }}>✓</span> <strong>{f}</strong>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/billing"
-                className="block text-center py-3 text-sm font-bold uppercase tracking-[0.1em] rounded-xl transition-all duration-300 hover:-translate-y-0.5"
-                style={{
-                  backgroundColor: CYAN,
-                  color: '#000',
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  boxShadow: '0 8px 24px rgba(0,212,255,0.3)',
-                }}
-              >
-                ACTIVAR MI VENTAJA ✦
-              </Link>
-              <p className="text-center text-xs mt-3" style={{ color: '#475569' }}>Elegido por el 72% de nuestros traders</p>
-            </div>
-
-            {/* SER+ Pro - Ancla alta */}
-            <div
-              className="rounded-2xl p-6 flex flex-col"
-              style={{
-                backgroundColor: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(0,212,255,0.15)',
-              }}
-            >
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.15em] mb-4 self-start"
-                style={{ backgroundColor: 'rgba(0,212,255,0.1)', color: CYAN, border: '1px solid rgba(0,212,255,0.2)' }}
-              >
-                🔥 SER+ Pro
-              </div>
-              <div className="mb-4">
-                <p className="text-3xl font-black text-white leading-none" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                  Gs. 249.000<span className="text-sm font-normal text-slate-400">/mes</span>
-                </p>
-                <p className="text-xs mt-1" style={{ color: '#475569' }}>≈ USD 38 · Para traders serios</p>
-              </div>
-              <ul className="space-y-2 mb-6 flex-1">
-                {[
-                  'TODO lo de Quantum Access',
-                  '20 consultas SER / día',
-                  'Razonamiento profundo',
-                  'Análisis multi-mercado cruzado',
-                  'Correlación DXY + Oro',
-                  'Hasta 5 escenarios por análisis',
-                  'Soporte directo por WhatsApp',
-                  'Acceso anticipado a features',
-                ].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-sm" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
-                    <span style={{ color: CYAN }}>✓</span> {f}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/billing"
-                className="block text-center py-3 text-sm font-bold uppercase tracking-[0.1em] border rounded-xl transition-all hover:border-[#00D4FF]/60 hover:text-[#00D4FF] hover:bg-[rgba(0,212,255,0.05)]"
-                style={{ borderColor: 'rgba(0,212,255,0.25)', color: '#64748B', fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                Desbloquear razonamiento profundo →
-              </Link>
-            </div>
-
           </div>
         </div>
       </section>
@@ -635,7 +373,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {[
-              { value: '490+',  label: 'Traders registrados' },
+              { value: '700+',  label: 'Traders registrados' },
               { value: '15+',    label: 'Años de experiencia' },
               { value: '3',     label: 'Niveles de formación' },
               { value: '24/7',  label: 'Acceso al contenido' },
@@ -985,123 +723,6 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════
-          TESTIMONIOS
-      ════════════════════════════════════════ */}
-      <section style={{ backgroundColor: LIGHT_BG }}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
-
-          <div className="text-center mb-14">
-            <p
-              className="text-xs font-bold uppercase tracking-[0.35em] mb-4"
-              style={{ color: CYAN_DARK, fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Historias Reales
-            </p>
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4"
-              style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
-            >
-              Resultados de nuestros{' '}
-              <span style={{ color: CYAN_DARK }}>clientes</span>
-            </h2>
-            <p className="text-base max-w-2xl mx-auto" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
-              Personas reales aplicando la metodología Sacred Levels con resultados verificables.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                image: '/esdra.jpg',
-                name: 'Esdra',
-                profit: '$30–40 USD/día',
-                quote: 'Soy de Brasil, empecé hace poco en el mundo del trading, buscando obtener un ingreso extra, y me ha ido bien por el momento. Con mucha humildad voy ganando entre 30-40 USD por día. Claro, hay días que no se gana, pero la consistencia y disciplina es la clave. ',
-              },
-              {
-                image: '/erwin.jpeg',
-                name: 'Erwin',
-                role: 'Abogado independiente',
-                profit: '$400 USD primer retiro',
-                quote: 'Soy abogado, ya hice el retiro de aproximadamente 400 USD en una cuenta fondeada.',
-              },
-              {
-                image: '/virgilio.jpg',
-                name: 'Virgilio',
-                profit: '$380 USD/semana',
-                quote: 'Soy independiente y con estas estrategias ya voy alcanzando la suma de 380 USD en una semana.',
-              },
-            ].map((t) => (
-              <div
-                key={t.name}
-                className="bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
-                style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.07)' }}
-              >
-                {/* Photo */}
-                <div
-                  className="relative overflow-hidden"
-                  style={{ aspectRatio: '4/5', background: 'linear-gradient(135deg, #0F172A, #1A2845)' }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={t.image}
-                    alt={t.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div
-                    className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full text-xs font-bold"
-                    style={{ backgroundColor: CYAN_DARK, color: '#fff', boxShadow: '0 4px 12px rgba(14,165,233,0.4)', fontFamily: "'Space Grotesk', sans-serif" }}
-                  >
-                    💰 {t.profit}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <h3
-                    className="text-xl font-black mb-0.5"
-                    style={{ color: '#0F172A', fontFamily: "'Montserrat', sans-serif" }}
-                  >
-                    {t.name}
-                  </h3>
-                  {t.role && (
-                    <p className="text-xs mb-3" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
-                      {t.role}
-                    </p>
-                  )}
-
-                  <div className="relative mt-3">
-                    <span
-                      className="absolute -top-3 -left-1 font-black leading-none select-none"
-                      style={{ color: `${CYAN_DARK}30`, fontSize: '60px', fontFamily: "'Montserrat', sans-serif" }}
-                    >
-                      &ldquo;
-                    </span>
-                    <p className="text-sm leading-relaxed pl-5 italic" style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}>
-                      {t.quote}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-0.5 mt-4">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} style={{ color: GOLD, fontSize: '14px' }}>★</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p
-            className="text-center text-xs mt-10 max-w-3xl mx-auto"
-            style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}
-          >
-            * Los resultados mostrados son experiencias individuales. El trading conlleva riesgos y los resultados
-            pasados no garantizan resultados futuros. Cada persona puede obtener resultados diferentes.
-          </p>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════
           EXNESS BANNER 2
       ════════════════════════════════════════ */}
       <section style={{ backgroundColor: '#080F1A', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}>
@@ -1251,7 +872,7 @@ export default function HomePage() {
             className="text-base mb-8"
             style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}
           >
-            El oro se mueve $50 por hora. 490+ traders ya usan SER para detectar niveles antes que el mercado se mueva.
+            700+ traders registrados calculan niveles antes que el mercado se mueva.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

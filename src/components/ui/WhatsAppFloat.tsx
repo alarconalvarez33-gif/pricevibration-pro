@@ -3,7 +3,7 @@
 export function WhatsAppFloat() {
   return (
     <a
-      href="https://wa.me/595981234128?text=Hola%2C%20me%20interesa%20SER%20IA"
+      href="https://wa.me/595981234128?text=Hola%2C%20me%20interesa%20Sacred%20Levels"
       target="_blank"
       rel="noopener noreferrer"
       title="¿Dudas? Escribinos por WhatsApp"
