@@ -37,6 +37,7 @@ export default function Header() {
     { href: '/', label: 'INICIO' },
     { href: '/cursos', label: 'CURSOS' },
     { href: '/metalevels', label: 'METALEVELS', badge: 'NUEVO' },
+    { href: '/hub', label: 'SIGNAL HUB', hub: true },
     { href: '/dashboard', label: 'QUANTUM ACCESS', quantum: true },
     ...(session ? [{ href: '/dashboard', label: 'DASHBOARD' }] : []),
   ]
@@ -82,7 +83,21 @@ export default function Header() {
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center">
               {navLinks.map(link => (
-                (link as any).quantum ? (
+                (link as any).hub ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="relative flex items-center gap-1.5 px-3 py-1.5 mx-1 rounded-full text-[11px] font-bold tracking-[0.12em] transition-all hover:opacity-90"
+                    style={{
+                      backgroundColor: isActive(link.href) ? '#F59E0B' : 'rgba(245,158,11,0.12)',
+                      color: isActive(link.href) ? '#000' : '#F59E0B',
+                      border: `1px solid ${isActive(link.href) ? '#F59E0B' : 'rgba(245,158,11,0.4)'}`,
+                    }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0" style={{ backgroundColor: '#F59E0B' }} />
+                    {link.label}
+                  </Link>
+                ) : (link as any).quantum ? (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -191,10 +206,11 @@ export default function Header() {
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-2 px-3 py-3.5 text-sm font-semibold uppercase tracking-[0.1em] border-l-2 transition-colors"
                 style={{
-                  borderColor: isActive(link.href) ? CYAN : 'transparent',
-                  color: isActive(link.href) ? CYAN : '#CBD5E1',
+                  borderColor: isActive(link.href) ? CYAN : (link as any).hub ? 'rgba(245,158,11,0.4)' : 'transparent',
+                  color: isActive(link.href) ? CYAN : (link as any).hub ? '#F59E0B' : '#CBD5E1',
                 }}
               >
+                {(link as any).hub && <span className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0" style={{ backgroundColor: '#F59E0B' }} />}
                 {link.label}
                 {link.badge && (
                   <span
