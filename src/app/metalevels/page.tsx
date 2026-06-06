@@ -7,6 +7,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
+import CryptoPayment from '@/components/CryptoPayment'
 
 const C = {
   bg:     '#0F172A',
@@ -149,6 +150,10 @@ export default function MetaLevelsPage() {
               para comprar
             </p>
           )}
+
+          <div className="mt-10 w-full max-w-lg">
+            <CryptoPayment productName="MetaLevels · Indicador TradingView" priceGs="150.000" priceUsd="20" />
+          </div>
         </section>
 
         {/* ── SECCIÓN 2: DESCRIPCIÓN GENERAL ── */}
@@ -640,6 +645,10 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
                   {t}
                 </span>
               ))}
+            </div>
+
+            <div className="mt-10 max-w-lg mx-auto">
+              <CryptoPayment productName="MetaLevels · Indicador TradingView" priceGs="150.000" priceUsd="20" />
             </div>
           </div>
         </section>

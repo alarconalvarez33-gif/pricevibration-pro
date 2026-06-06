@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import CryptoPayment from '@/components/CryptoPayment';
 
 const C = {
   bg:     '#0A0A0B',
@@ -299,6 +300,11 @@ export default function FrecuenciaPage() {
                 />
               </div>
 
+            </div>
+
+            {/* Crypto option */}
+            <div className="mt-6 max-w-xl mx-auto">
+              <CryptoPayment productName="Frecuencia · Estructura fractal del mercado" priceGs="200.000" priceUsd="31" />
             </div>
           </div>
         </section>

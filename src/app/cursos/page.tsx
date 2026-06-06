@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/Footer'
+import CryptoPayment from '@/components/CryptoPayment'
 
 const CYAN      = '#00D4FF'
 const CYAN_DARK = '#0EA5E9'
@@ -291,6 +292,13 @@ export default function CursosPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Crypto payment option ── */}
+      <section style={{ backgroundColor: '#0A0A0B', borderTop: '1px solid #1a1a1a' }}>
+        <div className="max-w-2xl mx-auto px-4 md:px-8 py-12">
+          <CryptoPayment productName="Cursos Sacred Levels · USDT TRC-20" priceUsd="según el curso seleccionado" />
         </div>
       </section>
 

@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import LegalDisclaimer from '@/components/LegalDisclaimer'
+import CryptoPayment from '@/components/CryptoPayment'
 
 type CourseAction = { action: 'api'; id: string } | { action: 'link'; href: string }
 
@@ -274,6 +275,11 @@ export default function BillingPage() {
               <p className="text-center text-[10px] mt-3 uppercase tracking-[0.15em]" style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}>
                 Cancelá cuando quieras · Pago seguro con Visa/Mastercard
               </p>
+
+              {/* Crypto alternative */}
+              <div className="mt-6">
+                <CryptoPayment productName="Quantum Access · Mensual" priceGs="149.000" priceUsd="22" />
+              </div>
             </div>
           </div>
 
