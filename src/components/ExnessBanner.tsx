@@ -1,7 +1,5 @@
 'use client'
 
-const EXNESS_URL = 'https://one.exnessonelink.com/intl/es/a/xwx0gc598n'
-const BANNER_IMG = 'https://d3dpek1g0ty5ed.cloudfront.net/ES_Take_control_720x90.png'
 const WA_TEXT = encodeURIComponent('Hola, abrí una cuenta en Exness con el código xwx0gc598n y adjunto el comprobante para activar 1 mes gratis de Sacred Levels')
 const WA_URL = `https://wa.me/595981234128?text=${WA_TEXT}`
 
@@ -10,21 +8,11 @@ export default function ExnessBanner() {
     <div style={{ backgroundColor: '#04040a', borderBottom: '1px solid #14120a' }}>
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-5 flex flex-col items-center gap-3">
 
-        {/* Banner image */}
-        <a
-          href={EXNESS_URL}
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="block w-full max-w-[720px] hover:opacity-90 transition-opacity"
-        >
+        {/* Embed exacto provisto por Exness */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="noopener noreferrer sponsored" style={{ display: 'block', maxWidth: '720px', width: '100%' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={BANNER_IMG}
-            alt="Exness — Tomá el control de tu trading"
-            width={720}
-            height={90}
-            className="w-full h-auto block"
-          />
+          <img src="https://d3dpek1g0ty5ed.cloudfront.net/ES_Take_control_720x90.png" width="720" height="90" alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />
         </a>
 
         {/* Promo strip */}
@@ -32,24 +20,19 @@ export default function ExnessBanner() {
           className="w-full max-w-[720px] flex flex-col sm:flex-row items-start sm:items-center gap-4 px-4 py-3"
           style={{ backgroundColor: '#090800', border: '1px solid #1e1a06' }}
         >
-          {/* Text */}
           <p className="flex-1 text-[11px] leading-relaxed" style={{ color: '#7a6a28', fontFamily: "'Inter', sans-serif" }}>
             <span className="font-bold" style={{ color: '#F3BA2F' }}>⚡ 1 mes GRATIS</span>
-            {' '}— Abrí cuenta en Exness usando el enlace de arriba y accedés a todas las herramientas más poderosas de Sacred Levels.
-            Si ya tenés cuenta, pedí el cambio de socio en el chat de Exness con el código{' '}
-            <code
-              className="px-1.5 py-0.5 text-[10px] font-bold"
-              style={{ backgroundColor: '#181200', color: '#F3BA2F', fontFamily: "'JetBrains Mono', monospace" }}
-            >
+            {' '}— Abrí cuenta en Exness usando el enlace de arriba y accedés a todas las herramientas más poderosas.
+            Si ya tenés cuenta, solicitá el cambio de socio en el chat de Exness con el código{' '}
+            <code className="px-1.5 py-0.5 text-[10px] font-bold" style={{ backgroundColor: '#181200', color: '#F3BA2F', fontFamily: "'JetBrains Mono', monospace" }}>
               xwx0gc598n
             </code>
             {' '}y enviá el comprobante por WhatsApp.
           </p>
 
-          {/* CTAs */}
           <div className="flex items-center gap-2 shrink-0">
             <a
-              href={EXNESS_URL}
+              href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n"
               target="_blank"
               rel="noopener noreferrer sponsored"
               className="px-4 py-2 text-[10px] font-bold uppercase tracking-[0.1em] transition-opacity hover:opacity-80"
