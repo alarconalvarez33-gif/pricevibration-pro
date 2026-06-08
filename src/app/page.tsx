@@ -293,73 +293,6 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* ── Banner Quantum Access Master ── */}
-              <div
-                className="mt-6 rounded-2xl overflow-hidden"
-                style={{
-                  border: '1px solid rgba(0,212,255,0.25)',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-                  background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1a2e 100%)',
-                }}
-              >
-                {/* Imagen flyer — completa al ~60% del tamaño original */}
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 16px 0' }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/master.png"
-                    alt="Quantum Access"
-                    style={{ width: '60%', height: 'auto', display: 'block' }}
-                  />
-                </div>
-
-                {/* Contenido */}
-                <div className="px-5 py-4">
-                  {/* Badge + precio */}
-                  <div className="flex items-center justify-between mb-3">
-                    <span
-                      className="text-[10px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full"
-                      style={{ backgroundColor: 'rgba(0,212,255,0.12)', color: CYAN, border: '1px solid rgba(0,212,255,0.25)' }}
-                    >
-                      ⚡ Quantum Access
-                    </span>
-                    <div className="text-right">
-                      <p className="text-sm font-black text-white leading-none" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                        Gs. 149.000
-                      </p>
-                      <p className="text-[10px] mt-0.5" style={{ color: '#475569' }}>≈ USD 22 / mes</p>
-                    </div>
-                  </div>
-
-                  {/* Features */}
-                  <ul className="space-y-1.5 mb-4">
-                    {[
-                      'Calculador ilimitado sin restricciones',
-                      'Niveles diarios actualizados automáticamente',
-                      'Confluencias cuánticas en tiempo real',
-                      'Alertas de niveles clave configurables',
-                    ].map(f => (
-                      <li key={f} className="flex items-center gap-2 text-xs" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
-                        <span style={{ color: CYAN, fontSize: 10 }}>✓</span> {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* CTA */}
-                  <Link
-                    href="/billing"
-                    className="flex items-center justify-center w-full py-2.5 text-xs font-bold uppercase tracking-[0.12em] rounded-xl transition-all duration-300 hover:-translate-y-0.5"
-                    style={{
-                      backgroundColor: CYAN,
-                      color: '#000',
-                      fontFamily: "'Space Grotesk', sans-serif",
-                      boxShadow: '0 4px 16px rgba(0,212,255,0.35)',
-                    }}
-                  >
-                    Activar Quantum Access →
-                  </Link>
-                </div>
-              </div>
-
             </div>
 
           </div>
@@ -656,133 +589,149 @@ export default function HomePage() {
       {/* ════════════════════════════════════════
           QUANTUM ACCESS
       ════════════════════════════════════════ */}
-      <section style={{ background: `linear-gradient(180deg, ${DARK_BG} 0%, ${DARK_BG2} 100%)` }} id="quantum">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section style={{ backgroundColor: '#0A0A0B', borderTop: '1px solid #1a1a1a' }} id="quantum">
+        <div className="max-w-5xl mx-auto px-4 md:px-8 py-20 md:py-28">
 
-            {/* Left — features */}
+          {/* Section label */}
+          <div className="flex items-center gap-4 mb-16">
+            <div className="h-px flex-1" style={{ backgroundColor: '#1a1a1a' }} />
+            <span
+              className="text-[10px] font-bold uppercase tracking-[0.4em]"
+              style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Quantum Access · Suscripción mensual
+            </span>
+            <div className="h-px flex-1" style={{ backgroundColor: '#1a1a1a' }} />
+          </div>
+
+          <div className="grid lg:grid-cols-[1fr_340px] gap-12 lg:gap-20 items-start">
+
+            {/* LEFT — pitch */}
             <div>
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-[0.15em] mb-6"
-                style={{ backgroundColor: 'rgba(0,212,255,0.1)', color: CYAN, border: '1px solid rgba(0,212,255,0.2)' }}
-              >
-                ⚡ ACCESO PREMIUM
-              </div>
-
               <h2
-                className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight"
-                style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
+                className="text-4xl md:text-5xl font-black text-white leading-tight mb-6"
+                style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1.5px' }}
               >
-                Quantum Access
+                Todo el ecosistema.<br />
+                <span style={{ color: CYAN }}>Un solo precio.</span>
               </h2>
 
-              <p
-                className="text-base mb-8 leading-relaxed"
-                style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}
-              >
-                La herramienta más poderosa para traders profesionales.
-                Acceso ilimitado a todo el ecosistema Sacred Levels.
+              <p className="text-base mb-10 leading-relaxed" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
+                Acceso completo a Sacred Levels — Signal Hub sin restricciones,
+                calculadora ilimitada, niveles cuánticos diarios y más.
               </p>
 
-              <ul className="space-y-4">
+              <ul className="space-y-5">
                 {[
-                  'Calculador ilimitado sin restricciones',
-                  'Niveles diarios actualizados automáticamente',
-                  'Confluencias cuánticas en tiempo real',
-                  'Alertas de niveles clave configurables',
-                  'Acceso a comunidad privada de traders',
-                ].map(f => (
-                  <li key={f} className="flex items-center gap-3">
-                    <span
-                      className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0"
-                      style={{ backgroundColor: 'rgba(0,212,255,0.15)', color: CYAN }}
-                    >
-                      ⚡
-                    </span>
-                    <span className="text-sm" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
-                      {f}
-                    </span>
+                  ['Signal Hub', 'señales en tiempo real, todos los mercados'],
+                  ['Calculadora Cuadrática', 'usos ilimitados, sin restricciones'],
+                  ['Niveles Gann diarios', 'actualizados automáticamente cada sesión'],
+                  ['Dashboard de confluencias', 'análisis cuántico en tiempo real'],
+                  ['Acceso 24/7', 'sin cortes, sin límites de uso'],
+                ].map(([title, desc]) => (
+                  <li key={title} className="flex items-start gap-4">
+                    <span className="mt-1 shrink-0 w-px h-4 block" style={{ backgroundColor: CYAN }} />
+                    <div>
+                      <span className="text-sm font-semibold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                        {title}
+                      </span>
+                      <span className="text-sm ml-2" style={{ color: '#475569' }}>— {desc}</span>
+                    </div>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Right — price card */}
-            <div className="flex justify-center lg:justify-end">
-              <div
-                className="w-full rounded-2xl p-8"
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(0,212,255,0.2)',
-                  maxWidth: '380px',
-                  boxShadow: '0 0 60px rgba(0,212,255,0.08)',
-                }}
-              >
-                <p
-                  className="text-xs font-bold uppercase tracking-[0.2em] mb-6 text-center"
-                  style={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  Suscripción Mensual
-                </p>
+            {/* RIGHT — pricing */}
+            <div style={{ borderTop: `2px solid ${CYAN}`, paddingTop: '24px' }}>
 
-                <div className="text-center mb-2">
-                  <p
-                    className="text-4xl font-black text-white leading-none"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+              {/* Price block */}
+              <div className="mb-8">
+                <div className="flex items-end gap-3 mb-1">
+                  <span
+                    className="text-[80px] font-black text-white leading-none"
+                    style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-4px' }}
                   >
-                    Gs. 149.000
-                  </p>
-                  <p className="text-sm mt-2" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
-                    ≈ USD 22 · por mes
-                  </p>
+                    $12
+                  </span>
+                  <div className="pb-3">
+                    <p className="text-base font-bold text-white leading-tight">USD</p>
+                    <p className="text-sm leading-tight" style={{ color: '#444' }}>por mes</p>
+                  </div>
                 </div>
-
-                <p
-                  className="text-center text-xs mb-8"
-                  style={{ color: '#475569', fontFamily: "'Inter', sans-serif" }}
-                >
-                  Cancelable cuando quieras
+                <p className="text-sm font-medium" style={{ color: '#555', fontFamily: "'JetBrains Mono', monospace" }}>
+                  Gs. 72.000 &nbsp;·&nbsp; equivalente local
                 </p>
-
-                <div
-                  className="h-px mb-8"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
-                />
-
-                <ul className="space-y-3 mb-8">
-                  {[
-                    'Todo incluido sin límites',
-                    'Sin permanencia mínima',
-                    'Renovación automática opcional',
-                    'Soporte prioritario',
-                  ].map(f => (
-                    <li key={f} className="flex items-center gap-2.5 text-sm" style={{ color: '#94A3B8', fontFamily: "'Inter', sans-serif" }}>
-                      <span style={{ color: '#00D26A' }}>✓</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/billing"
-                  className="flex items-center justify-center w-full py-4 text-sm font-bold uppercase tracking-[0.1em] rounded-xl transition-all duration-300 hover:-translate-y-0.5"
-                  style={{
-                    backgroundColor: CYAN,
-                    color: '#000',
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    boxShadow: '0 8px 24px rgba(0,212,255,0.4)',
-                  }}
-                >
-                  ACTIVAR MI VENTAJA ✦
-                </Link>
-
-                <p
-                  className="text-center text-xs mt-4"
-                  style={{ color: '#374151', fontFamily: "'Inter', sans-serif" }}
-                >
-                  Sin permanencia · Renovación automática opcional
+                <p className="text-xs mt-1" style={{ color: '#2d2d2d' }}>
+                  Cancelá cuando quieras · sin permanencia
                 </p>
               </div>
+
+              {/* Divider */}
+              <div className="h-px mb-6" style={{ backgroundColor: '#1a1a1a' }} />
+
+              {/* Payment methods */}
+              <div className="mb-6">
+                <p
+                  className="text-[9px] font-bold uppercase tracking-[0.35em] mb-3"
+                  style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  Métodos de pago
+                </p>
+                <div className="flex flex-wrap gap-2 mb-2.5">
+                  {['Visa', 'Mastercard', 'Bancard', 'Ueno'].map(card => (
+                    <span
+                      key={card}
+                      className="px-2.5 py-1 text-[11px] font-bold border"
+                      style={{ borderColor: '#242424', color: '#555', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      {card}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-[11px]" style={{ color: '#333', fontFamily: "'Inter', sans-serif" }}>
+                  Cuotas sin interés disponibles con Banco Familiar
+                </p>
+              </div>
+
+              {/* Crypto / USDT */}
+              <div
+                className="mb-7 px-3 py-3.5"
+                style={{ borderLeft: '2px solid #F59E0B', backgroundColor: 'rgba(245,158,11,0.04)' }}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: '#F59E0B' }} />
+                  <p
+                    className="text-[9px] font-bold uppercase tracking-[0.35em]"
+                    style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    USDT · Tron TRC-20
+                  </p>
+                </div>
+                <p className="text-[11px] mb-2 leading-relaxed" style={{ color: '#555', fontFamily: "'Inter', sans-serif" }}>
+                  Pagá con cripto y mandá el comprobante por WhatsApp — acceso activado en menos de 1 hora.
+                </p>
+                <code
+                  className="text-[10px] block select-all leading-relaxed break-all"
+                  style={{ color: '#7a6030', fontFamily: "'JetBrains Mono', monospace" }}
+                >
+                  TAh8pftt2kszhrJyUMXZt3vfbctmWPFgaL
+                </code>
+              </div>
+
+              {/* CTA */}
+              <Link
+                href="/billing"
+                className="flex items-center justify-between w-full px-5 py-4 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity duration-200 hover:opacity-90"
+                style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
+                <span>Activar Quantum Access</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>→</span>
+              </Link>
+
+              <p className="text-[10px] mt-3 text-center" style={{ color: '#2a2a2a', fontFamily: "'Inter', sans-serif" }}>
+                Visa · Mastercard · Bancard · USDT
+              </p>
             </div>
           </div>
         </div>

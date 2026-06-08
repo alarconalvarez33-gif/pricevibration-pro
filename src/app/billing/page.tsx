@@ -220,9 +220,9 @@ export default function BillingPage() {
                     className="text-3xl sm:text-4xl font-bold text-white"
                     style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   >
-                    {Gs(149000)}
+                    {Gs(72000)}
                   </span>
-                  <span className="text-[#444] text-sm">/ $22 USD</span>
+                  <span className="text-[#444] text-sm">/ $12 USD</span>
                   <span className="text-[#444] text-sm">/mes</span>
                 </div>
               </div>
@@ -278,7 +278,7 @@ export default function BillingPage() {
 
               {/* Crypto alternative */}
               <div className="mt-6">
-                <CryptoPayment productName="Quantum Access · Mensual" priceGs="149.000" priceUsd="22" />
+                <CryptoPayment productName="Quantum Access · Mensual" priceGs="72.000" priceUsd="12" />
               </div>
             </div>
           </div>
