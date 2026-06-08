@@ -320,11 +320,11 @@ export default function CursosPage() {
             className="text-2xl sm:text-3xl font-black text-white mb-3"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            Quantum Access — Todo incluido
+            Señales — Todo incluido
           </h3>
           <p className="text-sm mb-6" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
-            Calculador ilimitado, niveles diarios, alertas en tiempo real y mucho más.{' '}
-            <strong style={{ color: CYAN }}>Gs. 180.000/mes</strong>.
+            Calculador ilimitado, niveles diarios, señales en tiempo real y mucho más.{' '}
+            <strong style={{ color: CYAN }}>$12 USD / Gs. 72.000/mes</strong>.
           </p>
           <Link
             href="/billing"
@@ -336,7 +336,7 @@ export default function CursosPage() {
               boxShadow: '0 8px 24px rgba(0,212,255,0.35)',
             }}
           >
-            ACTIVAR QUANTUM ACCESS →
+            ACTIVAR SEÑALES →
           </Link>
         </div>
       </section>

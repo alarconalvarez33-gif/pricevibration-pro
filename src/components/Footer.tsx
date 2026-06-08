@@ -39,7 +39,7 @@ export default function Footer() {
                 { href: '/cursos', label: 'Super Estrategia' },
                 { href: '/cursos', label: 'Génesis' },
                 { href: '/cursos/frecuencia', label: 'Frecuencia' },
-                { href: '/billing', label: 'Quantum Access' },
+                { href: '/billing', label: 'Señales' },
               ].map(item => (
                 <li key={item.label}>
                   <Link

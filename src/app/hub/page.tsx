@@ -429,7 +429,7 @@ export default function QuantumSignalHub() {
               className="text-white text-xs font-semibold uppercase tracking-[0.2em]"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Signal Hub
+              Señales
             </span>
             <span className="hidden sm:block text-[#222] text-xs">|</span>
             <span className="hidden sm:block text-[#333] text-xs tracking-wide">Sacred Levels</span>
@@ -685,7 +685,7 @@ export default function QuantumSignalHub() {
                     {!canSeeDetails && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-[9px] font-bold uppercase tracking-[0.15em] px-2 py-1" style={{ backgroundColor: '#F59E0B15', color: '#F59E0B', border: '1px solid #F59E0B30', fontFamily: "'Space Grotesk', sans-serif" }}>
-                          🔒 Quantum Access
+                          🔒 Señales
                         </span>
                       </div>
                     )}
@@ -762,14 +762,14 @@ export default function QuantumSignalHub() {
                         style={{ background: `linear-gradient(to bottom, transparent, ${CARD})` }}
                       >
                         <p className="text-xs font-bold text-center px-4" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>
-                          Para desbloquear los niveles, accedé a Quantum Access
+                          Para desbloquear los niveles, accedé a Señales
                         </p>
                         <Link
                           href="/billing"
                           className="px-5 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-black transition-opacity hover:opacity-90"
                           style={{ backgroundColor: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
                         >
-                          Quantum Access →
+                          Señales →
                         </Link>
                       </div>
                     )}
@@ -855,7 +855,7 @@ export default function QuantumSignalHub() {
               {!canSeeDetails && (
                 <div className="px-4 py-4 border-t" style={{ borderColor: '#F59E0B30', backgroundColor: '#F59E0B08' }}>
                   <p className="text-[10px] font-semibold mb-2.5 leading-snug" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Para desbloquear los niveles, accedé a Quantum Access
+                    Para desbloquear los niveles, accedé a Señales
                   </p>
                   <Link
                     href="/billing"
@@ -887,9 +887,9 @@ export default function QuantumSignalHub() {
                   className="flex items-center justify-between w-full px-4 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-black transition-opacity hover:opacity-90"
                   style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  <span>Quantum Access</span>
+                  <span>Señales</span>
                   <span className="font-bold" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                    Gs. 180.000
+                    Gs. 72.000
                   </span>
                 </Link>
               )}
@@ -909,7 +909,7 @@ export default function QuantumSignalHub() {
       <footer className="border-t py-3" style={{ borderColor: BORDER, backgroundColor: BG }}>
         <div className="max-w-[1800px] mx-auto px-6 flex items-center justify-between">
           <p className="text-[9px] uppercase tracking-[0.2em]" style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}>
-            Quantum Signal Hub · Sacred Levels © 2026
+            Señales · Sacred Levels © 2026
           </p>
           <p className="text-[9px] tracking-wide" style={{ color: '#222' }}>
             Crypto: Binance/CoinGecko · FX/Gold/Indices: Yahoo Finance · DXY: Twelve Data

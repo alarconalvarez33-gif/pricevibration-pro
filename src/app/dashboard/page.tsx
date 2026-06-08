@@ -179,7 +179,7 @@ export default function DashboardPage() {
                 <h1 className="text-2xl font-bold text-white mb-4">Pruebas gratuitas agotadas</h1>
                 <p className="text-terminal-muted mb-2">Ya utilizaste tus 3 cálculos gratuitos.</p>
                 <p className="text-terminal-muted mb-8">
-                  Suscribite a Quantum Access para seguir usando la calculadora sin límites.
+                  Suscribite a Señales para seguir usando la calculadora sin límites.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/billing" className="btn-gold">Ver Planes</Link>
@@ -679,7 +679,7 @@ export default function DashboardPage() {
                   className="flex flex-col items-center justify-center gap-2 p-4 bg-[#c9a227]/10 border border-[#c9a227]/20 rounded-xl hover:bg-[#c9a227]/20 hover:border-[#c9a227]/40 transition-all group"
                 >
                   <span className="text-2xl group-hover:scale-110 transition-transform">📡</span>
-                  <span className="text-white text-xs font-semibold text-center">Signal Hub</span>
+                  <span className="text-white text-xs font-semibold text-center">Señales</span>
                   <span className="text-[#c9a227] text-[10px] text-center">Live Signals</span>
                 </Link>
                 <Link

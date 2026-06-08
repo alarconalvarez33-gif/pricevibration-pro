@@ -225,7 +225,7 @@ export default function CursoPage() {
               Super Estrategia
             </h3>
             <p className="text-sm mb-1" style={{ color: MUTED }}>
-              Comprá el curso o suscribite a Quantum Access para desbloquear este contenido.
+              Comprá el curso o suscribite a Señales para desbloquear este contenido.
             </p>
             <div className="flex items-baseline gap-3 mt-4 mb-1 justify-center">
               <p className="text-3xl font-bold" style={{ color: '#C4A77D', fontFamily: "'JetBrains Mono', monospace" }}>
@@ -251,7 +251,7 @@ export default function CursoPage() {
                 className="inline-block border px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] transition-colors hover:text-white text-center"
                 style={{ borderColor: BORDER, color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Ver plan Quantum Access
+                Ver Señales
               </Link>
               {status === 'unauthenticated' && (
                 <Link

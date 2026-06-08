@@ -335,7 +335,7 @@ export default function QuantumPage() {
                 className="block w-full py-4 text-sm font-bold uppercase tracking-[0.12em] text-black text-center transition-opacity hover:opacity-90 mb-4"
                 style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Suscribirse a Quantum Access
+                Suscribirse a Señales
               </a>
               <a href="/dashboard" className="text-xs uppercase tracking-[0.2em] transition-colors hover:text-white" style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}>
                 ← Volver al Dashboard
@@ -495,7 +495,7 @@ export default function QuantumPage() {
                   {access.usesLeft > 0 ? `${access.usesLeft} uso${access.usesLeft !== 1 ? 's' : ''} restante${access.usesLeft !== 1 ? 's' : ''}` : 'Agotada'}
                 </span>
               </p>
-              <p className="text-[11px]" style={{ color: MUTED }}>3 usos gratuitos. Acceso completo con suscripción Quantum Access.</p>
+              <p className="text-[11px]" style={{ color: MUTED }}>3 usos gratuitos. Acceso completo con suscripción Señales.</p>
             </div>
             {access.usesLeft <= 0 && (
               <a

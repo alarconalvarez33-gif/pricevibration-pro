@@ -182,6 +182,13 @@ export default function HomePage() {
   const [buyingId, setBuyingId] = useState<string | null>(null)
   const [chartResults, setChartResults] = useState<{ id: string; description: string; date: string }[]>([])
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
+  const [cryptoCopied, setCryptoCopied] = useState(false)
+
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText('TAh8pftt2kszhrJyUMXZt3vfbctmWPFgaL')
+    setCryptoCopied(true)
+    setTimeout(() => setCryptoCopied(false), 2500)
+  }
 
   useEffect(() => {
     fetch('/api/results')
@@ -240,7 +247,7 @@ export default function HomePage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
-          <div className="max-w-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
             {/* Left — copy */}
             <div>
@@ -278,7 +285,7 @@ export default function HomePage() {
                     fontFamily: "'Space Grotesk', sans-serif",
                   }}
                 >
-                  VER SIGNAL HUB →
+                  VER SEÑALES →
                 </Link>
                 <Link
                   href="/cursos"
@@ -292,6 +299,112 @@ export default function HomePage() {
                   VER CURSOS
                 </Link>
               </div>
+            </div>
+
+            {/* Right — Binance USDT Banner */}
+            <div>
+              <div
+                className="mt-8 overflow-hidden"
+                style={{ backgroundColor: '#0d0d0d', border: '1px solid #1c1a12', outline: '1px solid #000' }}
+              >
+                {/* top bar — terminal style */}
+                <div
+                  className="flex items-center justify-between px-4 py-2"
+                  style={{ backgroundColor: '#0a0900', borderBottom: '1px solid #1c1a12' }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#F3BA2F' }} />
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-[0.35em]"
+                      style={{ color: '#4a3f10', fontFamily: "'JetBrains Mono', monospace" }}
+                    >
+                      CRYPTO_PAYMENT
+                    </span>
+                  </div>
+                  <span
+                    className="text-[9px] font-bold uppercase tracking-[0.2em]"
+                    style={{ color: '#2a2510', fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    USDT · TRC-20
+                  </span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row">
+
+                  {/* Left — Binance image */}
+                  <div
+                    className="sm:w-[140px] shrink-0 flex items-center justify-center p-4"
+                    style={{ backgroundColor: '#080700', borderRight: '1px solid #1c1a12' }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/binance.jpg"
+                      alt="Binance"
+                      className="w-full object-contain"
+                      style={{ maxHeight: '80px', filter: 'brightness(0.9)' }}
+                    />
+                  </div>
+
+                  {/* Right — info */}
+                  <div className="flex-1 p-4 space-y-3">
+
+                    {/* Heading */}
+                    <div>
+                      <p
+                        className="text-base font-black text-white leading-tight"
+                        style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.3px' }}
+                      >
+                        Pagá con USDT
+                      </p>
+                      <p className="text-[11px] mt-0.5" style={{ color: '#6b5c1a', fontFamily: "'Inter', sans-serif" }}>
+                        Binance · Red Tron TRC-20 · $12 USD / Gs. 72.000
+                      </p>
+                    </div>
+
+                    {/* Address row */}
+                    <div className="flex items-center gap-2">
+                      <code
+                        className="flex-1 text-[10px] px-2.5 py-1.5 select-all truncate"
+                        style={{
+                          backgroundColor: '#060500',
+                          border: '1px solid #1c1a12',
+                          color: '#F3BA2F',
+                          fontFamily: "'JetBrains Mono', monospace",
+                        }}
+                      >
+                        TAh8pftt2kszhrJyUMXZt3vfbctmWPFgaL
+                      </code>
+                      <button
+                        onClick={handleCopyAddress}
+                        className="shrink-0 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide transition-colors"
+                        style={{
+                          backgroundColor: cryptoCopied ? 'rgba(0,210,106,0.15)' : 'rgba(243,186,47,0.1)',
+                          border: `1px solid ${cryptoCopied ? '#00D26A40' : '#F3BA2F30'}`,
+                          color: cryptoCopied ? '#00D26A' : '#F3BA2F',
+                          fontFamily: "'Space Grotesk', sans-serif",
+                        }}
+                      >
+                        {cryptoCopied ? '✓ OK' : 'Copiar'}
+                      </button>
+                    </div>
+
+                    {/* WhatsApp CTA */}
+                    <a
+                      href="https://wa.me/595981234128?text=Hola%2C%20realic%C3%A9%20un%20pago%20USDT%20por%20Quantum%20Access%20y%20adjunto%20el%20comprobante"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-[11px] font-bold transition-opacity hover:opacity-80"
+                      style={{ color: '#25D366', fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.616l4.54-1.472A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.325 0-4.47-.744-6.228-2.01l-.435-.327-2.927.949.974-2.883-.36-.467A9.958 9.958 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/>
+                      </svg>
+                      Enviá el comprobante y activamos en menos de 1 hora →
+                    </a>
+                  </div>
+                </div>
+              </div>
 
             </div>
 
@@ -300,7 +413,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════
-          SIGNAL HUB — PREVIEW HOMEPAGE
+          SEÑALES — PREVIEW HOMEPAGE
       ════════════════════════════════════════ */}
       <section
         id="signal-hub"
@@ -318,7 +431,7 @@ export default function HomePage() {
               style={{ backgroundColor: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.2)', color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
             >
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#F59E0B' }} />
-              Signal Hub · En vivo
+              Señales · En vivo
             </div>
 
             <h2
@@ -352,7 +465,7 @@ export default function HomePage() {
                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'rgba(234,179,8,0.7)' }} />
                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'rgba(34,197,94,0.7)' }} />
                   </div>
-                  <span className="text-xs" style={{ color: '#475569', fontFamily: "'JetBrains Mono', monospace" }}>Signal Hub · Sacred Levels</span>
+                  <span className="text-xs" style={{ color: '#475569', fontFamily: "'JetBrains Mono', monospace" }}>Señales · Sacred Levels</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#00D26A' }} />
@@ -420,7 +533,7 @@ export default function HomePage() {
                           <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                           <path strokeLinecap="round" strokeLinejoin="round" d="M7 11V7a5 5 0 0110 0v4" />
                         </svg>
-                        <span className="text-xs font-semibold" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>Quantum Access</span>
+                        <span className="text-xs font-semibold" style={{ color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}>Señales</span>
                       </div>
                     </div>
                   </div>
@@ -434,7 +547,7 @@ export default function HomePage() {
                       className="flex-1 w-full sm:w-auto text-center px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 hover:-translate-y-0.5"
                       style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#000', boxShadow: '0 8px 24px rgba(245,158,11,0.25)', fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                      Ir al Signal Hub →
+                      Ir a Señales →
                     </Link>
                   ) : (
                     <Link
@@ -450,7 +563,7 @@ export default function HomePage() {
                     className="flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:bg-amber-500/10"
                     style={{ border: '1px solid rgba(245,158,11,0.3)', color: '#F59E0B', fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    ⚡ Quantum Access · Señales ilimitadas
+                    ⚡ Señales · Acceso ilimitado
                   </Link>
                 </div>
 
@@ -587,7 +700,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════
-          QUANTUM ACCESS
+          SEÑALES
       ════════════════════════════════════════ */}
       <section style={{ backgroundColor: '#0A0A0B', borderTop: '1px solid #1a1a1a' }} id="quantum">
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-20 md:py-28">
@@ -599,7 +712,7 @@ export default function HomePage() {
               className="text-[10px] font-bold uppercase tracking-[0.4em]"
               style={{ color: '#333', fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Quantum Access · Suscripción mensual
+              Señales · Suscripción mensual
             </span>
             <div className="h-px flex-1" style={{ backgroundColor: '#1a1a1a' }} />
           </div>
@@ -617,13 +730,13 @@ export default function HomePage() {
               </h2>
 
               <p className="text-base mb-10 leading-relaxed" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif" }}>
-                Acceso completo a Sacred Levels — Signal Hub sin restricciones,
+                Acceso completo a Sacred Levels — Señales sin restricciones,
                 calculadora ilimitada, niveles cuánticos diarios y más.
               </p>
 
               <ul className="space-y-5">
                 {[
-                  ['Signal Hub', 'señales en tiempo real, todos los mercados'],
+                  ['Señales', 'en tiempo real, todos los mercados'],
                   ['Calculadora Cuadrática', 'usos ilimitados, sin restricciones'],
                   ['Niveles Gann diarios', 'actualizados automáticamente cada sesión'],
                   ['Dashboard de confluencias', 'análisis cuántico en tiempo real'],
@@ -725,7 +838,7 @@ export default function HomePage() {
                 className="flex items-center justify-between w-full px-5 py-4 text-sm font-bold uppercase tracking-[0.1em] text-black transition-opacity duration-200 hover:opacity-90"
                 style={{ backgroundColor: CYAN, fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                <span>Activar Quantum Access</span>
+                <span>Activar Señales</span>
                 <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>→</span>
               </Link>
 

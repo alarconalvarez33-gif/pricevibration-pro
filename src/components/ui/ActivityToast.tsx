@@ -13,16 +13,13 @@ const BASE_EVENTS = [
   { icon: '📊', title: 'SER procesó consulta multi-timeframe', detail: 'XAUUSD M15·H1·H4' },
   { icon: '🧠', title: 'SER respondió sobre BTCUSD', detail: 'Resistencia en D1' },
   { icon: '⚡', title: 'SER identificó zona de demanda', detail: 'XAUUSD H1' },
-  // Quantum / SER suscripciones
-  { icon: '📈', title: 'Trader activó Quantum Access', detail: 'Asunción, Paraguay' },
-  { icon: '💎', title: 'Trader renovó Quantum Access', detail: 'Pago confirmado' },
-  { icon: '📈', title: 'Trader de CDE activó SER+', detail: 'Plan Pro activado' },
-  { icon: '🇵🇾', title: 'Trader de Encarnación activó SER', detail: 'Suscripción mensual' },
-  { icon: '💰', title: 'Nuevo miembro con Quantum Access', detail: 'Luque, Paraguay' },
-  { icon: '🇵🇾', title: 'Trader de San Lorenzo activó SER', detail: 'Suscripción mensual' },
-  { icon: '📈', title: 'Trader de Lambaré activó Quantum', detail: 'Pago confirmado' },
-  { icon: '🇧🇷', title: 'Trader de Brasil activó SER', detail: 'Suscripción mensual' },
-  { icon: '💎', title: 'Trader renovó SER+ Pro', detail: 'Tercer mes consecutivo' },
+  // Señales suscripciones
+  { icon: '📈', title: 'Trader activó Señales', detail: 'Asunción, Paraguay' },
+  { icon: '💎', title: 'Trader renovó Señales', detail: 'Pago confirmado' },
+  { icon: '💰', title: 'Nuevo miembro con Señales', detail: 'Luque, Paraguay' },
+  { icon: '📈', title: 'Trader de Lambaré activó Señales', detail: 'Pago confirmado' },
+  { icon: '🇧🇷', title: 'Trader de Brasil activó Señales', detail: 'Suscripción mensual' },
+  { icon: '💎', title: 'Trader renovó Señales', detail: 'Tercer mes consecutivo' },
   // Cursos
   { icon: '🎓', title: 'Compró el curso Génesis', detail: 'Método W.D. Gann' },
   { icon: '📚', title: 'Compró Super Estrategia', detail: 'Pago único confirmado' },
@@ -31,11 +28,11 @@ const BASE_EVENTS = [
   { icon: '🎓', title: 'Compró Génesis desde Brasil', detail: 'Método W.D. Gann' },
   { icon: '📚', title: 'Compró Super Estrategia desde Chile', detail: 'Pago único confirmado' },
   { icon: '🔮', title: 'Nuevo acceso al curso Frecuencia', detail: 'Zonas geométricas de reversión' },
-  // Signal Hub
-  { icon: '🎯', title: 'Signal Hub: EURUSD señal activa', detail: 'Confluencia H4' },
-  { icon: '📊', title: 'Signal Hub: 3 señales activas', detail: 'XAUUSD · EURUSD · BTC' },
-  { icon: '⚡', title: 'Signal Hub: XAUUSD nivel clave', detail: 'Confluencia D1' },
-  { icon: '🎯', title: 'Signal Hub: GBPUSD en zona crítica', detail: 'H4 + D1 confluencia' },
+  // Señales
+  { icon: '🎯', title: 'Señales: EURUSD señal activa', detail: 'Confluencia H4' },
+  { icon: '📊', title: 'Señales: 3 señales activas', detail: 'XAUUSD · EURUSD · BTC' },
+  { icon: '⚡', title: 'Señales: XAUUSD nivel clave', detail: 'Confluencia D1' },
+  { icon: '🎯', title: 'Señales: GBPUSD en zona crítica', detail: 'H4 + D1 confluencia' },
 ]
 
 function shuffle<T>(arr: T[]): T[] {

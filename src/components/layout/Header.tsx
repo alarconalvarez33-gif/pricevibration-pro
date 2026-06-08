@@ -37,8 +37,7 @@ export default function Header() {
     { href: '/', label: 'INICIO' },
     { href: '/cursos', label: 'CURSOS' },
     { href: '/metalevels', label: 'METALEVELS', badge: 'NUEVO' },
-    { href: '/hub', label: 'SIGNAL HUB', hub: true },
-    { href: '/dashboard', label: 'QUANTUM ACCESS', quantum: true },
+    { href: '/hub', label: 'SEÑALES', hub: true },
     ...(session ? [{ href: '/dashboard', label: 'DASHBOARD' }] : []),
   ]
 
@@ -96,19 +95,6 @@ export default function Header() {
                   >
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0" style={{ backgroundColor: '#F59E0B' }} />
                     {link.label}
-                  </Link>
-                ) : (link as any).quantum ? (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="relative flex items-center gap-1.5 px-3 py-1.5 mx-1 rounded-full text-[11px] font-bold tracking-[0.12em] transition-all hover:opacity-90"
-                    style={{
-                      backgroundColor: isActive(link.href) ? '#fbbf24' : 'rgba(251,191,36,0.12)',
-                      color: isActive(link.href) ? '#000' : '#fbbf24',
-                      border: `1px solid ${isActive(link.href) ? '#fbbf24' : 'rgba(251,191,36,0.4)'}`,
-                    }}
-                  >
-                    ⚡ {link.label}
                   </Link>
                 ) : (
                   <Link
@@ -170,7 +156,7 @@ export default function Header() {
                     className="px-5 py-2 text-[11px] font-bold uppercase tracking-[0.1em] rounded transition-all hover:bg-[#00D4FF] hover:text-black"
                     style={{ border: `1px solid ${CYAN}`, color: CYAN }}
                   >
-                    QUANTUM
+                    SEÑALES
                   </Link>
                 </>
               )}
@@ -252,7 +238,7 @@ export default function Header() {
                     className="px-3 py-3.5 text-sm font-bold uppercase text-center min-h-[52px] flex items-center justify-center rounded"
                     style={{ border: `1px solid ${CYAN}`, color: CYAN }}
                   >
-                    QUANTUM ACCESS
+                    SEÑALES
                   </Link>
                 </>
               )}

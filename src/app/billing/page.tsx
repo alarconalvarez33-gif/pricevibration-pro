@@ -130,7 +130,7 @@ export default function BillingPage() {
             letterSpacing: '0.02em',
           }}
         >
-          Tu acceso ha sido suspendido. Activa Quantum Access para continuar.
+          Tu acceso ha sido suspendido. Activa Señales para continuar.
         </div>
       )}
 
@@ -185,7 +185,7 @@ export default function BillingPage() {
                   className="text-[9px] font-bold uppercase tracking-[0.25em]"
                   style={{ color: CYAN }}
                 >
-                  Quantum Access
+                  Señales
                 </span>
               </div>
             </div>
@@ -198,7 +198,7 @@ export default function BillingPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/signal.png"
-                alt="Quantum Access"
+                alt="Señales"
                 className="w-full block"
                 style={{ objectFit: 'contain', maxHeight: '380px' }}
               />
@@ -212,7 +212,7 @@ export default function BillingPage() {
                   className="text-xl sm:text-2xl font-bold text-white mb-2"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  Quantum Access
+                  Señales
                 </h2>
                 <p className="text-[#444] text-sm mb-5">Todo lo que necesitás para operar con precisión matemática</p>
                 <div className="flex items-baseline gap-3 mb-1">
@@ -231,7 +231,7 @@ export default function BillingPage() {
               <div className="grid sm:grid-cols-2 gap-3 mb-8">
                 {[
                   'Calculadora Cuadrática (ilimitada)',
-                  'Signal Hub (todas las señales)',
+                  'Señales (todos los mercados)',
                   'Forex, Crypto, Oro e Índices',
                   'Análisis IA en tiempo real',
                   'Dashboard Quantum Levels',
@@ -278,7 +278,7 @@ export default function BillingPage() {
 
               {/* Crypto alternative */}
               <div className="mt-6">
-                <CryptoPayment productName="Quantum Access · Mensual" priceGs="72.000" priceUsd="12" />
+                <CryptoPayment productName="Señales · Mensual" priceGs="72.000" priceUsd="12" />
               </div>
             </div>
           </div>

@@ -59,7 +59,7 @@ function GuestPaywall({ usedAll }: { usedAll: boolean }) {
       </h3>
       <p className="text-sm mb-6" style={{ color: '#64748B', fontFamily: "'Inter', sans-serif", maxWidth: '280px' }}>
         {usedAll
-          ? 'Registrate para seguir explorando, o activá Quantum Access para uso ilimitado.'
+          ? 'Registrate para seguir explorando, o activá Señales para uso ilimitado.'
           : 'Iniciá sesión para continuar la conversación.'}
       </p>
       <div className="flex flex-col gap-3 w-full" style={{ maxWidth: '240px' }}>
@@ -75,7 +75,7 @@ function GuestPaywall({ usedAll }: { usedAll: boolean }) {
           className="py-3 text-sm font-semibold rounded-lg text-center"
           style={{ border: '1px solid rgba(0,212,255,0.2)', color: '#64748B', fontFamily: "'Inter', sans-serif" }}
         >
-          Quantum Access · Ilimitado
+          Señales · Ilimitado
         </Link>
       </div>
     </div>
