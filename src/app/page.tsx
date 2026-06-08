@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/Footer'
+import ExnessBanner from '@/components/ExnessBanner'
 
 // ── Design tokens ──────────────────────────────
 const CYAN      = '#00D4FF'
@@ -238,12 +239,18 @@ export default function HomePage() {
       <WhatsAppFloat />
 
       {/* ════════════════════════════════════════
+          EXNESS — BANNER AFILIADO (top of page)
+      ════════════════════════════════════════ */}
+      <div style={{ paddingTop: '96px' }}>
+        <ExnessBanner />
+      </div>
+
+      {/* ════════════════════════════════════════
           HERO
       ════════════════════════════════════════ */}
       <section
         style={{
           background: `linear-gradient(135deg, ${DARK_BG} 0%, ${DARK_BG2} 60%, ${DARK_BG} 100%)`,
-          paddingTop: '96px',
         }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import LegalDisclaimer from '@/components/LegalDisclaimer';
+import ExnessBanner from '@/components/ExnessBanner';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -463,6 +464,8 @@ export default function QuantumSignalHub() {
           </div>
         </div>
       </header>
+
+      <ExnessBanner />
 
       <LegalDisclaimer variant="banner" />
 
