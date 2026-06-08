@@ -6,18 +6,23 @@ const WA_URL = `https://wa.me/595981234128?text=${WA_TEXT}`
 export default function ExnessBanner() {
   return (
     <div style={{ background: '#0a0900', borderTop: '2px solid #F3BA2F', borderBottom: '1px solid #1e1a06' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+      <div style={{ maxWidth: '1020px', margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
 
-        {/* Embed exacto Exness */}
+        {/* Banner image — servida localmente para evitar problemas de CDN */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', maxWidth: '990px' }}>
+        <a
+          href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n"
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          style={{ display: 'block', width: '100%', maxWidth: '990px' }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://d3dpek1g0ty5ed.cloudfront.net/ES_Take_control_990x250.png"
+            src="/exness-banner.png"
             width="990"
             height="250"
-            alt="Exness"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
+            alt="Exness - Broker de Trading Profesional"
+            style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }}
           />
         </a>
 
@@ -36,7 +41,7 @@ export default function ExnessBanner() {
             <a
               href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer sponsored"
               style={{ background: '#F3BA2F', color: '#000', padding: '8px 16px', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.08em', textDecoration: 'none', fontFamily: 'sans-serif' }}
             >
               Abrir cuenta
