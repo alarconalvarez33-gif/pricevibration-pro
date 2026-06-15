@@ -6,8 +6,8 @@ import crypto from 'crypto'
 
 const PLAN_PRICES: Record<string, { monthly: { pyg: number; usd: number }; yearly: { pyg: number; usd: number } }> = {
   quantum: {
-    monthly: { pyg: 72000, usd: 12 },
-    yearly: { pyg: 720000, usd: 120 },
+    monthly: { pyg: 180000, usd: 30 },
+    yearly: { pyg: 1800000, usd: 300 },
   },
   ser: {
     monthly: { pyg: 89000, usd: 13 },

@@ -364,7 +364,7 @@ export default function HomePage() {
                         Pagá con USDT
                       </p>
                       <p className="text-[11px] mt-0.5" style={{ color: '#6b5c1a', fontFamily: "'Inter', sans-serif" }}>
-                        Binance · Red Tron TRC-20 · $12 USD / Gs. 72.000
+                        Binance · Red Tron TRC-20 · $30 USD / Gs. 180.000
                       </p>
                     </div>
 
@@ -772,7 +772,7 @@ export default function HomePage() {
                     className="text-[80px] font-black text-white leading-none"
                     style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-4px' }}
                   >
-                    $12
+                    $30
                   </span>
                   <div className="pb-3">
                     <p className="text-base font-bold text-white leading-tight">USD</p>
@@ -780,7 +780,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <p className="text-sm font-medium" style={{ color: '#555', fontFamily: "'JetBrains Mono', monospace" }}>
-                  Gs. 72.000 &nbsp;·&nbsp; equivalente local
+                  Gs. 180.000 &nbsp;·&nbsp; equivalente local
                 </p>
                 <p className="text-xs mt-1" style={{ color: '#2d2d2d' }}>
                   Cancelá cuando quieras · sin permanencia

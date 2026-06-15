@@ -324,7 +324,7 @@ export default function CursosPage() {
           </h3>
           <p className="text-sm mb-6" style={{ color: '#CBD5E1', fontFamily: "'Inter', sans-serif" }}>
             Calculador ilimitado, niveles diarios, señales en tiempo real y mucho más.{' '}
-            <strong style={{ color: CYAN }}>$12 USD / Gs. 72.000/mes</strong>.
+            <strong style={{ color: CYAN }}>$30 USD / Gs. 180.000/mes</strong>.
           </p>
           <Link
             href="/billing"

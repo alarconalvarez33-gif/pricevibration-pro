@@ -892,7 +892,7 @@ export default function QuantumSignalHub() {
                 >
                   <span>Señales</span>
                   <span className="font-bold" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                    Gs. 72.000
+                    Gs. 180.000
                   </span>
                 </Link>
               )}
