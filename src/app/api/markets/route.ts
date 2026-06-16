@@ -99,14 +99,19 @@ async function fetchFinnhubDXY() {
 // ── Market definitions ────────────────────────────────────────────────────────
 const FOREX_GOLD = [
   { symbol: 'XAU/USD', name: 'Gold',          yf: 'GC%3DF'      },
+  { symbol: 'XAG/USD', name: 'Silver',        yf: 'SI%3DF'      },
+  { symbol: 'USOIL',   name: 'WTI Crude',     yf: 'CL%3DF'      },
   { symbol: 'EUR/USD', name: 'Euro/Dollar',   yf: 'EURUSD%3DX'  },
   { symbol: 'GBP/USD', name: 'Pound/Dollar',  yf: 'GBPUSD%3DX'  },
   { symbol: 'USD/JPY', name: 'Dollar/Yen',    yf: 'JPY%3DX'     },
+  { symbol: 'AUD/USD', name: 'Aussie/Dollar', yf: 'AUDUSD%3DX'  },
+  { symbol: 'GBP/JPY', name: 'Pound/Yen',     yf: 'GBPJPY%3DX'  },
 ];
 
 const INDICES = [
   { symbol: 'SPX500', name: 'S&P 500',    yf: '%5EGSPC' },
   { symbol: 'NAS100', name: 'NASDAQ 100', yf: '%5ENDX'  },
+  { symbol: 'US30',   name: 'Dow Jones',  yf: '%5EDJI'  },
 ];
 
 // ── Main handler ──────────────────────────────────────────────────────────────
