@@ -379,6 +379,25 @@ export default function SignalRadar() {
         <div ref={heroEndRef} />
       </section>
 
+      {/* ── Aviso de precios + responsabilidad ── */}
+      <section className="px-4 sm:px-6 pb-4">
+        <div
+          className="max-w-7xl mx-auto rounded-md px-4 py-3 flex items-start gap-3"
+          style={{
+            backgroundColor: 'rgba(255,215,0,0.06)',
+            border: '1px solid rgba(255,215,0,0.22)',
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2" className="shrink-0 mt-0.5" aria-hidden>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-3L13.74 4a2 2 0 00-3.48 0L3.33 16a2 2 0 001.74 3z" />
+          </svg>
+          <p className="text-[12px] leading-relaxed" style={{ color: '#D9D2A8', fontFamily: "'Inter', sans-serif" }}>
+            <strong style={{ color: GOLD }}>Aviso importante:</strong> los precios pueden tener una demora respecto al spot del broker. El radar es solo informativo —
+            no constituye asesoramiento financiero. <strong style={{ color: '#EDF1F5' }}>Cada usuario es el único responsable de sus operaciones y de la gestión de su capital.</strong> Esperá siempre la vela de confirmación antes de operar.
+          </p>
+        </div>
+      </section>
+
       {/* ── Heatgrid ── */}
       <section className="px-4 sm:px-6 pb-24">
         <div className="max-w-7xl mx-auto">

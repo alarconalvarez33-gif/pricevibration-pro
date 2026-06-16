@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 const TWELVE_DATA_API_KEY = process.env.TWELVE_DATA_API_KEY
 const FINNHUB_API_KEY     = process.env.FINNHUB_API_KEY
 
-const CACHE_TTL = 62_000;
+const CACHE_TTL = 30_000;
 
 let cache: { markets: object[]; timestamp: number } | null = null;
 
@@ -96,6 +96,23 @@ async function fetchFinnhubDXY() {
   };
 }
 
+// ── Finnhub — spot quote (XAU/USD, XAG/USD via OANDA feed) ───────────────────
+async function fetchFinnhubSpot(finnhubSymbol: string) {
+  if (!FINNHUB_API_KEY) throw new Error('FINNHUB_API_KEY not configured')
+  const res = await fetch(
+    `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(finnhubSymbol)}&token=${FINNHUB_API_KEY}`,
+    { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
+  );
+  if (!res.ok) throw new Error(`Finnhub ${finnhubSymbol} ${res.status}`);
+  const data = await res.json();
+  const price = data.c;
+  const prevClose = data.pc;
+  if (!price || isNaN(price) || price === 0) throw new Error(`Finnhub ${finnhubSymbol} no price`);
+  const high = data.h && data.h > 0 ? data.h : price * 1.005;
+  const low  = data.l && data.l > 0 ? data.l : price * 0.995;
+  return { price, prevClose: prevClose || price, high, low };
+}
+
 // ── Market definitions ────────────────────────────────────────────────────────
 const FOREX_GOLD = [
   { symbol: 'XAU/USD', name: 'Gold',          yf: 'GC%3DF'      },
@@ -119,7 +136,7 @@ export async function GET() {
   if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
     return NextResponse.json(
       { markets: cache.markets, timestamp: cache.timestamp, cached: true },
-      { headers: { 'Cache-Control': 's-maxage=60, stale-while-revalidate=10' } }
+      { headers: { 'Cache-Control': 's-maxage=30, stale-while-revalidate=10' } }
     );
   }
 
@@ -182,8 +199,24 @@ export async function GET() {
     }
   }
 
-  // ── 2. Forex + Gold — Yahoo Finance (primary) ────────────────────────────────
-  const fxResults = await Promise.allSettled(FOREX_GOLD.map(m => fetchYahoo(m.yf)));
+  // ── 2. Forex + Gold — Finnhub real-time spot for metals, Yahoo for FX ────────
+  // Map FOREX_GOLD entries to a primary fetch strategy. Metals get real-time
+  // spot prices via Finnhub (OANDA feed); FX/oil keep Yahoo as primary.
+  const SPOT_OVERRIDE: Record<string, string> = {
+    'XAU/USD': 'OANDA:XAU_USD',
+    'XAG/USD': 'OANDA:XAG_USD',
+  };
+
+  const fxResults = await Promise.allSettled(
+    FOREX_GOLD.map(async m => {
+      const spot = SPOT_OVERRIDE[m.symbol];
+      if (spot) {
+        try { return await fetchFinnhubSpot(spot); }
+        catch (e) { console.warn(`Finnhub ${m.symbol} failed, falling back to Yahoo:`, (e as Error).message); }
+      }
+      return fetchYahoo(m.yf);
+    })
+  );
 
   fxResults.forEach((result, i) => {
     const cfg = FOREX_GOLD[i];
@@ -198,7 +231,7 @@ export async function GET() {
         high, low, source: 'live', offline: false,
       });
     } else {
-      console.error(`Yahoo ${cfg.symbol}:`, result.reason?.message);
+      console.error(`Market ${cfg.symbol} failed:`, result.reason?.message);
       markets.push({ symbol: cfg.symbol, name: cfg.name, price: 0, change: 0, changePercent: 0, high: 0, low: 0, source: 'offline', offline: true });
     }
   });
@@ -257,6 +290,6 @@ export async function GET() {
 
   return NextResponse.json(
     { markets, timestamp: cache.timestamp },
-    { headers: { 'Cache-Control': 's-maxage=60, stale-while-revalidate=10' } }
+    { headers: { 'Cache-Control': 's-maxage=30, stale-while-revalidate=10' } }
   );
 }

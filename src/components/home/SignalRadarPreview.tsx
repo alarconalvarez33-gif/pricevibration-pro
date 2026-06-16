@@ -205,6 +205,15 @@ export default function SignalRadarPreview() {
         <p className="text-xs text-center mt-5" style={{ color: DIM }}>
           2 activos gratis sin registro · 12 activos con acceso completo
         </p>
+
+        {/* Aviso de responsabilidad */}
+        <p
+          className="text-[11px] leading-relaxed text-center mt-4 max-w-3xl mx-auto px-4"
+          style={{ color: '#8893A4' }}
+        >
+          Los precios pueden tener una pequeña demora respecto al cotizador del broker. El radar es solo informativo
+          y no constituye asesoramiento financiero. <strong style={{ color: '#B7BFCC' }}>Cada usuario es el único responsable de sus operaciones.</strong>
+        </p>
       </div>
 
       <style jsx>{`
