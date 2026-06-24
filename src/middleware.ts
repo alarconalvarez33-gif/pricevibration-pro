@@ -13,6 +13,7 @@ const PUBLIC_PATHS = new Set([
   '/pricing',
   '/quantum',
   '/hub',        // Signal Hub handles its own auth/paywall internally
+  '/qtrader',    // QTrader gates itself with activation code in client
   '/courses',
   '/contact',
   '/terms',
@@ -45,6 +46,8 @@ const PUBLIC_PREFIXES = [
   '/api/admin/',     // Admin API routes handle their own auth internally (check session + ADMIN_EMAILS internally)
   '/api/ser/guest',  // SER guest mode — 5 free questions per IP, one-time
   '/api/signals/',   // Signal Hub check-limit and increment handle their own auth (guests allowed)
+  '/qtrader/',       // /qtrader/admin gated by QTRADER_ADMIN_KEY header server-side
+  '/api/qtrader/',   // activate is public; generate is gated by x-admin-key header
   '/metalevels/',    // MetaLevels pages handle their own access (License check)
   '/metalevels',     // /metalevels index
   '/dashboard/',     // Dashboard and sub-pages handle their own auth via getServerSession
