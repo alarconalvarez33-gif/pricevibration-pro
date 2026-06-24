@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import LegalDisclaimer from '@/components/LegalDisclaimer';
 import Tile, { type Verdict } from './_components/Tile';
-import TickerStrip from './_components/TickerStrip';
 import DetailDrawer from './_components/DetailDrawer';
 import LockedOverlay from './_components/LockedOverlay';
 import CTAFooter from './_components/CTAFooter';
+import TickerTape from '@/components/TradingView/TickerTape';
 
 // ── Design tokens ──────────────────────────────────────────────────────────────
 const BG    = '#0A0E16';
@@ -277,13 +277,6 @@ export default function SignalRadar() {
     return { buys, sells, waits, monitored };
   }, [rows]);
 
-  const tickerItems = rows.map(r => ({
-    ticker: r.def.ticker,
-    price: r.price,
-    changePct: r.changePct,
-    format: r.format,
-  }));
-
   const handleTileClick = (r: Row) => {
     if (r.locked) {
       setLockedModal(r.def.ticker);
@@ -319,8 +312,8 @@ export default function SignalRadar() {
         </div>
       </header>
 
-      {/* Ticker strip */}
-      <TickerStrip items={tickerItems} />
+      {/* TradingView ticker tape */}
+      <TickerTape colorTheme="dark" />
 
       <LegalDisclaimer variant="banner" />
 

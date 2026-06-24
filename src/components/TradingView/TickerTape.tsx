@@ -3,14 +3,18 @@
 import { useEffect, useRef, memo } from 'react'
 
 const DEFAULT_SYMBOLS = [
-  { proName: 'OANDA:XAUUSD',    title: 'Gold' },
-  { proName: 'OANDA:XAGUSD',    title: 'Silver' },
-  { proName: 'FX:EURUSD',       title: 'EUR/USD' },
-  { proName: 'FX:GBPUSD',       title: 'GBP/USD' },
-  { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' },
-  { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' },
-  { proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' },
-  { proName: 'FOREXCOM:DJI',    title: 'Dow Jones' },
+  { proName: 'OANDA:XAUUSD',     title: 'XAUUSD' },
+  { proName: 'FX:EURUSD',        title: 'EURUSD' },
+  { proName: 'BINANCE:BTCUSDT',  title: 'BTCUSD' },
+  { proName: 'DJ:DJI',           title: 'US30'   },
+  { proName: 'FX:GBPUSD',        title: 'GBPUSD' },
+  { proName: 'BINANCE:ETHUSDT',  title: 'ETHUSD' },
+  { proName: 'FX:USDJPY',        title: 'USDJPY' },
+  { proName: 'NASDAQ:NDX',       title: 'NAS100' },
+  { proName: 'OANDA:XAGUSD',     title: 'XAGUSD' },
+  { proName: 'TVC:USOIL',        title: 'USOIL'  },
+  { proName: 'FX:AUDUSD',        title: 'AUDUSD' },
+  { proName: 'FX:GBPJPY',        title: 'GBPJPY' },
 ]
 
 interface TickerTapeProps {

@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import type { Verdict } from './Tile';
+import AssetGuide from './AssetGuide';
 
 const GREEN = '#00E676';
 const RED   = '#FF4757';
@@ -183,6 +184,16 @@ export default function DetailDrawer({
             </div>
           </div>
 
+          {/* Buy/Sell guide + market education + responsibility */}
+          <AssetGuide
+            ticker={ticker}
+            verdict={verdict}
+            price={price}
+            resistances={resistances}
+            supports={supports}
+            format={format}
+          />
+
           {!isPremium && (
             <div
               className="mt-6 p-5 rounded-lg"
@@ -206,17 +217,6 @@ export default function DetailDrawer({
               </Link>
             </div>
           )}
-
-          {/* Disclaimer dentro del detalle */}
-          <div
-            className="mt-6 p-4 rounded-md"
-            style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-          >
-            <p className="text-[11px] leading-relaxed" style={{ color: '#B7BFCC' }}>
-              <strong style={{ color: GOLD }}>Aviso:</strong> los precios pueden diferir levemente del cotizador del broker. Esta información es solo educativa
-              y no constituye asesoramiento financiero. <strong style={{ color: TXT }}>Ud. es el único responsable de sus decisiones de trading.</strong> Confirmá siempre con su vela de cierre.
-            </p>
-          </div>
         </div>
       </div>
     </div>
