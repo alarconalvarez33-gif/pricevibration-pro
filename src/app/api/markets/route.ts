@@ -131,6 +131,25 @@ const INDICES = [
   { symbol: 'US30',   name: 'Dow Jones',  yf: '%5EDJI'  },
 ];
 
+// US stocks — Yahoo Finance
+const STOCKS_US = [
+  { symbol: 'NVDA', name: 'Nvidia',    yf: 'NVDA' },
+  { symbol: 'AAPL', name: 'Apple',     yf: 'AAPL' },
+  { symbol: 'TSLA', name: 'Tesla',     yf: 'TSLA' },
+];
+
+// India stocks — Yahoo Finance NSE (.NS suffix)
+const STOCKS_IN = [
+  { symbol: 'RELIANCE',   name: 'Reliance',          yf: 'RELIANCE.NS'   },
+  { symbol: 'TCS',        name: 'Tata Consultancy',  yf: 'TCS.NS'        },
+  { symbol: 'HDFCBANK',   name: 'HDFC Bank',         yf: 'HDFCBANK.NS'   },
+  { symbol: 'INFY',       name: 'Infosys',           yf: 'INFY.NS'       },
+  { symbol: 'ICICIBANK',  name: 'ICICI Bank',        yf: 'ICICIBANK.NS'  },
+  { symbol: 'SBIN',       name: 'State Bank',        yf: 'SBIN.NS'       },
+  { symbol: 'BHARTIARTL', name: 'Bharti Airtel',     yf: 'BHARTIARTL.NS' },
+  { symbol: 'TATAMOTORS', name: 'Tata Motors',       yf: 'TATAMOTORS.NS' },
+];
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 export async function GET() {
   if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
@@ -146,20 +165,20 @@ export async function GET() {
   const cryptoDefs = [
     { binance: 'BTCUSDT', gecko: 'bitcoin',  symbol: 'BTC/USD', name: 'Bitcoin'  },
     { binance: 'ETHUSDT', gecko: 'ethereum', symbol: 'ETH/USD', name: 'Ethereum' },
+    { binance: 'SOLUSDT', gecko: 'solana',   symbol: 'SOL/USD', name: 'Solana'   },
+    { binance: 'XRPUSDT', gecko: 'ripple',   symbol: 'XRP/USD', name: 'XRP'      },
   ];
 
-  const [btcRes, ethRes] = await Promise.allSettled([
-    fetchBinance('BTCUSDT'),
-    fetchBinance('ETHUSDT'),
-  ]);
-
-  const binanceResults = [btcRes, ethRes];
+  const binanceResults = await Promise.allSettled(
+    cryptoDefs.map(c => fetchBinance(c.binance))
+  );
   const binanceFailed = binanceResults.some(r => r.status === 'rejected');
 
-  // Try CoinGecko if either Binance call failed
+  // Try CoinGecko if any Binance call failed
   let geckoData: Awaited<ReturnType<typeof fetchCoinGecko>> = [];
   if (binanceFailed) {
-    const geckoRes = await Promise.allSettled([fetchCoinGecko('bitcoin,ethereum')]);
+    const geckoIds = cryptoDefs.map(c => c.gecko).join(',');
+    const geckoRes = await Promise.allSettled([fetchCoinGecko(geckoIds)]);
     if (geckoRes[0].status === 'fulfilled') {
       geckoData = geckoRes[0].value;
     } else {
@@ -236,11 +255,12 @@ export async function GET() {
     }
   });
 
-  // ── 3. Indices — Yahoo Finance ────────────────────────────────────────────────
-  const idxResults = await Promise.allSettled(INDICES.map(m => fetchYahoo(m.yf)));
+  // ── 3. Indices + stocks (US + India) — Yahoo Finance ─────────────────────────
+  const yahooBundle = [...INDICES, ...STOCKS_US, ...STOCKS_IN];
+  const yahooResults = await Promise.allSettled(yahooBundle.map(m => fetchYahoo(m.yf)));
 
-  idxResults.forEach((result, i) => {
-    const cfg = INDICES[i];
+  yahooResults.forEach((result, i) => {
+    const cfg = yahooBundle[i];
     if (result.status === 'fulfilled') {
       const { price, prevClose, high, low } = result.value;
       const change = price - prevClose;

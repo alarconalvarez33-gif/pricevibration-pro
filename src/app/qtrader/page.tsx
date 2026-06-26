@@ -56,7 +56,7 @@ const STR: Record<string, any> = {
     s3: "Enviánoslo y te devolvemos tu código de activación", copy: "Copiar dirección", copied: "¡Copiada!",
     contact_btn: "Enviar comprobante", back: "Volver",
     disc: "Herramienta de análisis con fines educativos. Los niveles son cálculo matemático, no una predicción ni asesoramiento financiero. Operar conlleva riesgo de pérdida.",
-    tfs: [["scalp", "Scalping", 0.5], ["intraday", "Intradía", 1], ["swing", "Swing", 2], ["position", "Posición", 3.5]],
+    tfs: [["m1", "1m", 0.5], ["m15", "15m", 1], ["h1", "1h", 2], ["d1", "1d", 3.5]],
   },
   en: {
     name: "QTrader", tagline: "Multi-timeframe algorithmic levels",
@@ -75,7 +75,7 @@ const STR: Record<string, any> = {
     s3: "Send it to us and we return your activation code", copy: "Copy address", copied: "Copied!",
     contact_btn: "Send receipt", back: "Back",
     disc: "Educational analysis tool. Levels are a mathematical calculation, not a prediction or financial advice. Trading involves risk of loss.",
-    tfs: [["scalp", "Scalping", 0.5], ["intraday", "Intraday", 1], ["swing", "Swing", 2], ["position", "Position", 3.5]],
+    tfs: [["m1", "1m", 0.5], ["m15", "15m", 1], ["h1", "1h", 2], ["d1", "1d", 3.5]],
   },
   hi: {
     name: "QTrader", tagline: "मल्टी-टाइमफ्रेम एल्गोरिद्मिक स्तर",
@@ -94,7 +94,7 @@ const STR: Record<string, any> = {
     s3: "हमें भेजें और हम आपका सक्रियण कोड लौटाएंगे", copy: "पता कॉपी करें", copied: "कॉपी हो गया!",
     contact_btn: "रसीद भेजें", back: "वापस",
     disc: "शैक्षिक विश्लेषण उपकरण। स्तर एक गणितीय गणना हैं, भविष्यवाणी या वित्तीय सलाह नहीं। ट्रेडिंग में हानि का जोखिम है।",
-    tfs: [["scalp", "Scalping", 0.5], ["intraday", "Intraday", 1], ["swing", "Swing", 2], ["position", "Position", 3.5]],
+    tfs: [["m1", "1m", 0.5], ["m15", "15m", 1], ["h1", "1h", 2], ["d1", "1d", 3.5]],
   },
 };
 
@@ -135,7 +135,7 @@ export default function QTrader() {
   const [sym, setSym] = useState("SPCX");
   const [customName, setCustomName] = useState("");
   const [price, setPrice] = useState("180");
-  const [tf, setTf] = useState("intraday");
+  const [tf, setTf] = useState("h1");
   const [calcErr, setCalcErr] = useState("");
   const [result, setResult] = useState<any>(null);
 

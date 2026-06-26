@@ -6,7 +6,7 @@ const FREE_TRIAL_USES = 3
 
 // Routes that are always public — no auth or plan required
 const PUBLIC_PATHS = new Set([
-  '/',
+  // '/' is now the SacredLevels Terminal and requires a session.
   '/login',
   '/register',
   '/billing',
@@ -48,6 +48,7 @@ const PUBLIC_PREFIXES = [
   '/api/signals/',   // Signal Hub check-limit and increment handle their own auth (guests allowed)
   '/qtrader/',       // /qtrader/admin gated by QTRADER_ADMIN_KEY header server-side
   '/api/qtrader/',   // activate is public; generate is gated by x-admin-key header
+  '/api/terminal/',  // terminal endpoints; gating happens server-side per request
   '/metalevels/',    // MetaLevels pages handle their own access (License check)
   '/metalevels',     // /metalevels index
   '/dashboard/',     // Dashboard and sub-pages handle their own auth via getServerSession
@@ -55,7 +56,7 @@ const PUBLIC_PREFIXES = [
   '/_next/',
 ]
 
-const PAID_PLANS = ['quantum', 'ser', 'ser-plus']
+const PAID_PLANS = ['pro', 'quantum', 'ser', 'ser-plus']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
