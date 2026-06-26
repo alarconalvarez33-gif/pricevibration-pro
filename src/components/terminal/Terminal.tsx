@@ -254,12 +254,25 @@ export default function Terminal({ userEmail, isPremium }: Props) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logonuevos.png" alt="Sacred Levels" height={30} style={{ height:30, width:'auto' }} />
         </Link>
-        <nav style={{ display:'flex', gap:22 }}>
+        <nav style={{ display:'flex', gap:22, alignItems:'center', flexWrap:'wrap' }}>
           <a href="#markets" style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_markets}</a>
           <a href="#levels"  style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_levels}</a>
           <a href="#tools"   style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_tools}</a>
-          <a href="#learn"   style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_learn}</a>
-          <a href="#planes"  style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_plans}</a>
+          {isPremium && (
+            <>
+              <span style={{ color:LINE, fontSize:13 }}>·</span>
+              <Link href="/quantum" style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>Quantum</Link>
+              <Link href="/hub"     style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>Hub</Link>
+              <Link href="/qtrader" style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>QTrader</Link>
+              <Link href="/ser"     style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>SER</Link>
+            </>
+          )}
+          {!isPremium && (
+            <>
+              <a href="#learn"  style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_learn}</a>
+              <a href="#planes" style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_plans}</a>
+            </>
+          )}
         </nav>
         <div style={{ display:'flex', gap:9, alignItems:'center' }}>
           <select className="term-sel" value={cur}  onChange={e => setCur(e.target.value as Currency)}>

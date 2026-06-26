@@ -8,7 +8,7 @@ import { hasFullAccess } from '@/lib/constants'
 const FREE_USES = 3
 
 function isPaidUser(plan?: string | null, role?: string | null, email?: string | null) {
-  return role === 'admin' || plan === 'quantum' || hasFullAccess(email ?? '')
+  return role === 'admin' || plan === 'pro' || plan === 'quantum' || hasFullAccess(email ?? '')
 }
 
 function buildKey(ip: string, email?: string | null) {

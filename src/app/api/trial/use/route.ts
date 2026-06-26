@@ -20,7 +20,7 @@ export async function POST() {
     }
 
     // Premium users always pass
-    if (user.isPremium || user.plan === 'quantum') {
+    if (user.isPremium || user.plan === 'quantum' || user.plan === 'pro') {
       return NextResponse.json({ success: true, isPremium: true, remainingUses: -1 })
     }
 

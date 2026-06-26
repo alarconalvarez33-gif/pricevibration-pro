@@ -16,7 +16,7 @@ export default function Navbar() {
   const plan = session?.user?.plan || 'free';
   const role = session?.user?.role || 'user';
   const isAdmin = role === 'admin';
-  const isQuantum = plan === 'quantum' || isAdmin;
+  const isQuantum = plan === 'quantum' || plan === 'pro' || isAdmin;
   const isWhale = plan === 'whale' || isAdmin;
   const isPro = plan === 'pro' || isAdmin;
 
