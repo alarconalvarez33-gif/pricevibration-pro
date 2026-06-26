@@ -198,7 +198,7 @@ export default function Terminal({ userEmail, isPremium }: Props) {
       const r = await fetch('/api/pagopar/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planType: 'quantum', billingPeriod: 'monthly' }),
+        body: JSON.stringify({ planType: 'pro', billingPeriod: 'monthly' }),
       });
       const j = await r.json();
       if (j?.paymentUrl) window.location.href = j.paymentUrl;

@@ -5,6 +5,10 @@ import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
 const PLAN_PRICES: Record<string, { monthly: { pyg: number; usd: number }; yearly: { pyg: number; usd: number } }> = {
+  pro: {
+    monthly: { pyg: 180000, usd: 30 },
+    yearly: { pyg: 1800000, usd: 300 },
+  },
   quantum: {
     monthly: { pyg: 180000, usd: 30 },
     yearly: { pyg: 1800000, usd: 300 },
@@ -29,7 +33,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { planType, billingPeriod = 'monthly' } = body
 
-    if (!planType || !['quantum', 'ser', 'ser-plus'].includes(planType)) {
+    if (!planType || !['pro', 'quantum', 'ser', 'ser-plus'].includes(planType)) {
       return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
     }
 
@@ -77,6 +81,7 @@ export async function POST(request: Request) {
 
     const periodLabel = billingPeriod === 'yearly' ? 'Anual' : 'Mensual'
     const PLAN_LABELS: Record<string, string> = {
+      pro: 'Sacred Levels Pro',
       quantum: 'Quantum Access',
       ser: 'Plan SER',
       'ser-plus': 'Plan SER+',

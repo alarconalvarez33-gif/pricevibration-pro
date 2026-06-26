@@ -14,6 +14,7 @@ const PUBLIC_PATHS = new Set([
   '/quantum',
   '/hub',        // Signal Hub handles its own auth/paywall internally
   '/qtrader',    // QTrader gates itself with activation code in client
+  '/pago/exito', // post-payment confirmation polls session client-side
   '/courses',
   '/contact',
   '/terms',
@@ -49,6 +50,8 @@ const PUBLIC_PREFIXES = [
   '/qtrader/',       // /qtrader/admin gated by QTRADER_ADMIN_KEY header server-side
   '/api/qtrader/',   // activate is public; generate is gated by x-admin-key header
   '/api/terminal/',  // terminal endpoints; gating happens server-side per request
+  '/api/payments/',  // payment APIs gate themselves (return 401 instead of redirect)
+  '/api/cron/',      // cron endpoints gate themselves with CRON_SECRET header
   '/metalevels/',    // MetaLevels pages handle their own access (License check)
   '/metalevels',     // /metalevels index
   '/dashboard/',     // Dashboard and sub-pages handle their own auth via getServerSession
