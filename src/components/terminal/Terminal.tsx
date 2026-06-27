@@ -69,9 +69,11 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
 
   const t = STR[lang];
 
-  // 2-minute preview timer
+  // 24h trial timer
   const [previewSecondsLeft, setPreviewSecondsLeft] = useState<number | null>(null);
   const [previewExpired, setPreviewExpired] = useState(false);
+  // Subscribe popup — dismissible, can be reopened by clicking any Subscribe CTA
+  const [popupOpen, setPopupOpen] = useState(false);
 
   // Risk calc inputs
   const [rBal,  setRBal]  = useState('');
@@ -150,6 +152,25 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
     const id = setInterval(tick, 1_000);
     return () => clearInterval(id);
   }, [isPremium, trialEndsAt, trialStartedAt]);
+
+  // Soft auto-open: only ONCE per device, with a small delay so the popup
+  // doesn't feel like an interruption. After the user dismisses it, the
+  // popup only re-appears if they click a Subscribe CTA themselves.
+  useEffect(() => {
+    if (!previewExpired || isPremium) return;
+    try {
+      const dismissedAt = parseInt(localStorage.getItem('sl_popup_dismissed_at') || '0', 10);
+      if (dismissedAt > 0) return; // user has seen it before — don't push
+    } catch { /* fall through and show */ }
+    const id = setTimeout(() => setPopupOpen(true), 4_000);
+    return () => clearTimeout(id);
+  }, [previewExpired, isPremium]);
+
+  function openSubscribePopup() { setPopupOpen(true); }
+  function closeSubscribePopup() {
+    setPopupOpen(false);
+    try { localStorage.setItem('sl_popup_dismissed_at', String(Date.now())); } catch { /* ignore */ }
+  }
 
   // Alerts: detect price crossing any N1-N6 level
   useEffect(() => {
@@ -237,7 +258,10 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
   const tvSym = useMemo(() => FLAT.find(a => a[0] === curAsset)?.[2] ?? 'OANDA:XAUUSD', [curAsset]);
 
   // Blur over premium content when user is not premium AND has used up preview
-  const shouldBlurAll = !isPremium && previewExpired;
+  // Blur the grid only while the popup is on screen; once the user closes it
+  // with X, they're free to explore the terminal (level rows still show the
+  // locked teaser so they understand what's premium).
+  const shouldBlurAll = !isPremium && previewExpired && popupOpen;
 
   // ── Render ─────────────────────────────────────────────────────────────────
   const curName = FLAT.find(a => a[0] === curAsset)?.[1] ?? '';
@@ -266,21 +290,19 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logonuevos.png" alt="Sacred Levels" height={30} style={{ height:30, width:'auto' }} />
         </Link>
-        <nav style={{ display:'flex', gap:22, alignItems:'center', flexWrap:'wrap' }}>
+        <nav style={{ display:'flex', gap:18, alignItems:'center', flexWrap:'wrap' }}>
           <a href="#markets" style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_markets}</a>
           <a href="#levels"  style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_levels}</a>
           <a href="#tools"   style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_tools}</a>
-          {isPremium && (
-            <>
-              <span style={{ color:LINE, fontSize:13 }}>·</span>
-              <Link href="/quantum" style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>Quantum</Link>
-              <Link href="/hub"     style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>Hub</Link>
-              <Link href="/qtrader" style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>QTrader</Link>
-              <Link href="/ser"     style={{ fontSize:13.5, color:GOLD, fontWeight:600 }}>SER</Link>
-            </>
-          )}
+          {/* Calculadoras — visibles para todos, accesibles durante el trial */}
+          <span style={{ color:LINE, fontSize:13 }}>·</span>
+          <Link href="/quantum" style={tabStyle()}>Quantum</Link>
+          <Link href="/hub"     style={tabStyle()}>Hub</Link>
+          <Link href="/qtrader" style={tabStyle()}>QTrader</Link>
+          <Link href="/ser"     style={tabStyle()}>SER</Link>
           {!isPremium && (
             <>
+              <span style={{ color:LINE, fontSize:13 }}>·</span>
               <a href="#learn"  style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_learn}</a>
               <a href="#planes" style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_plans}</a>
             </>
@@ -304,7 +326,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
             <a href="/login?callbackUrl=%2F"><button className="term-btn term-btn-ghost">{t.login}</button></a>
           )}
           {!isPremium && (
-            <a href="#planes"><button className="term-btn term-btn-gold">{t.subscribe}</button></a>
+            <button className="term-btn term-btn-gold" onClick={openSubscribePopup}>{t.subscribe}</button>
           )}
         </div>
       </header>
@@ -342,7 +364,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
                 : `Te quedan ${formatRemaining(previewSecondsLeft)} de acceso gratuito. Después necesitás suscribirte.`}
             </span>
           </span>
-          <a href="#planes"><button className="term-btn term-btn-gold">{t.preview_cta}</button></a>
+          <button className="term-btn term-btn-gold" onClick={openSubscribePopup}>{t.preview_cta}</button>
         </div>
       )}
 
@@ -584,10 +606,12 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
         )}
       </footer>
 
-      {/* SUBSCRIBE POPUP — shown when the 24h trial expires */}
-      {shouldBlurAll && (
+      {/* SUBSCRIBE POPUP — dismissible. Shown when trial expires (once), or
+          re-opened anytime the user clicks a Subscribe CTA. */}
+      {popupOpen && !isPremium && (
         <SubscribePopup
           isAuthed={isAuthed}
+          onClose={closeSubscribePopup}
           onPayPagopar={payWithPagopar}
           onCopyUsdt={copyUsdt}
           copied={copied}
@@ -620,8 +644,9 @@ function formatRemaining(seconds: number): string {
   return `${m}m ${s.toString().padStart(2, '0')}s`;
 }
 
-function SubscribePopup({ isAuthed, onPayPagopar, onCopyUsdt, copied }: {
+function SubscribePopup({ isAuthed, onClose, onPayPagopar, onCopyUsdt, copied }: {
   isAuthed: boolean;
+  onClose: () => void;
   onPayPagopar: () => void;
   onCopyUsdt:   () => void;
   copied:       boolean;
@@ -630,19 +655,39 @@ function SubscribePopup({ isAuthed, onPayPagopar, onCopyUsdt, copied }: {
     <div
       role="dialog"
       aria-modal="true"
+      aria-label="Suscripción"
+      onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 100,
         background: 'rgba(5,7,11,0.78)', backdropFilter: 'blur(4px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
       }}
     >
-      <div style={{
-        width: '100%', maxWidth: 480,
-        background: PANEL, border: `1px solid ${LINE}`, borderRadius: 14,
-        padding: '28px 26px',
-        boxShadow: '0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,149,42,0.08)',
-        textAlign: 'center',
-      }}>
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: 'relative',
+          width: '100%', maxWidth: 480,
+          background: PANEL, border: `1px solid ${LINE}`, borderRadius: 14,
+          padding: '28px 26px',
+          boxShadow: '0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,149,42,0.08)',
+          textAlign: 'center',
+        }}
+      >
+        {/* Close X — lets the user dismiss and keep exploring the terminal */}
+        <button
+          onClick={onClose}
+          aria-label="Cerrar"
+          style={{
+            position: 'absolute', top: 12, right: 12,
+            width: 30, height: 30, borderRadius: '50%',
+            background: 'transparent', border: `1px solid ${LINE}`,
+            color: MUTED, fontSize: 16, lineHeight: 1, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = TEXT; e.currentTarget.style.borderColor = GOLD; }}
+          onMouseLeave={e => { e.currentTarget.style.color = MUTED; e.currentTarget.style.borderColor = LINE; }}
+        >×</button>
         <div style={{ fontSize: 11, letterSpacing: 1.4, color: GOLD, textTransform: 'uppercase', fontWeight: 700, marginBottom: 12 }}>
           Tu prueba gratuita terminó
         </div>
@@ -710,9 +755,22 @@ function SubscribePopup({ isAuthed, onPayPagopar, onCopyUsdt, copied }: {
             ¿Ya tenés cuenta? <a href="/login?callbackUrl=%2F" style={{ color: GOLD, fontWeight: 600 }}>Iniciá sesión</a>
           </p>
         )}
+
+        {/* Gentle escape — keeps it user-friendly, not pushy */}
+        <button
+          onClick={onClose}
+          style={{
+            marginTop: 14, background: 'transparent', border: 'none',
+            color: MUTED, fontSize: 12, cursor: 'pointer', textDecoration: 'underline',
+          }}
+        >Seguir explorando primero</button>
       </div>
     </div>
   );
+}
+
+function tabStyle(): React.CSSProperties {
+  return { fontSize: 13.5, color: GOLD, fontWeight: 600 };
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
