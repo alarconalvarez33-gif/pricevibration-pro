@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
 import { calcLevels, type Timeframe } from '@/lib/levels/calcLevels';
-
-const ADMIN_EMAIL = 'raul@sacredlevels.com';
-const PAID_PLANS = new Set(['pro', 'quantum', 'signal_hub', 'whale', 'ser', 'ser-plus']);
+import { getTrialState, hasFullAccess } from '@/lib/services/trial-access';
 
 interface MarketRow { symbol: string; price: number; offline?: boolean; }
 
@@ -29,33 +24,21 @@ export async function POST(req: NextRequest) {
   const row = markets.find(m => m.symbol === symbol);
   const price = row && !row.offline && row.price > 0 ? row.price : null;
 
-  // Subscription gate
-  const session = await getServerSession(authOptions);
-  let isPremium = false;
-  let isAuthed = false;
+  const trial = await getTrialState(req);
+  const allowed = hasFullAccess(trial);
 
-  if (session?.user?.email) {
-    isAuthed = true;
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: {
-        email: true, role: true, plan: true, isPremium: true,
-        premiumUntil: true, subscriptionStatus: true,
-      },
-    });
-    if (user) {
-      const adminBypass = user.email === ADMIN_EMAIL || user.role === 'admin';
-      const hasPlan    = PAID_PLANS.has(user.plan ?? '');
-      const stillValid = user.premiumUntil ? user.premiumUntil > new Date() : false;
-      const active     = user.subscriptionStatus === 'active';
-      isPremium = adminBypass || (hasPlan && user.isPremium === true && stillValid && active);
-    }
-  }
+  const publicPayload = {
+    symbol,
+    timeframe,
+    price,
+    isAuthed:  trial.isAuthed,
+    isPremium: trial.isPremium,
+    inTrial:   trial.inTrial,
+    trialEndsAt: trial.trialEndsAt,
+  };
 
-  const publicPayload = { symbol, timeframe, price, isAuthed, isPremium };
-
-  // No price OR not premium → never expose levels or bias
-  if (!isPremium || price == null) {
+  // No price OR no access → never expose levels or bias
+  if (!allowed || price == null) {
     return NextResponse.json({ ...publicPayload, levels: null, bias: null });
   }
 

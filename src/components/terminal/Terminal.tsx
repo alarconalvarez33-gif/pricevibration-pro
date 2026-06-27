@@ -42,14 +42,17 @@ interface LevelsResponse {
 }
 
 interface Props {
-  userEmail: string;
+  userEmail: string | null;
+  isAuthed: boolean;
   isPremium: boolean;
+  trialStartedAt: number | null;
+  trialEndsAt: number | null;
 }
 
-const PREVIEW_SECONDS = 120; // 2 minutes of free preview for non-premium users
-const PREVIEW_KEY = 'sl_terminal_preview_started_at';
+const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000;
+const TRIAL_COOKIE = 'sl_trial_start';
 
-export default function Terminal({ userEmail, isPremium }: Props) {
+export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedAt, trialEndsAt }: Props) {
   // ── State ──────────────────────────────────────────────────────────────────
   const [lang, setLang] = useState<Lang>('es');
   const [cur,  setCur]  = useState<Currency>('USD');
@@ -120,24 +123,33 @@ export default function Terminal({ userEmail, isPremium }: Props) {
     return () => { cancelled = true; clearInterval(id); };
   }, [curAsset, tf]);
 
-  // 2-min preview countdown for non-premium users
+  // 24h trial countdown for non-premium users. Server-rendered trialEndsAt
+  // wins; client-side ensures the cookie exists so the next refresh stays
+  // anchored to the same moment.
   useEffect(() => {
     if (isPremium) { setPreviewSecondsLeft(null); setPreviewExpired(false); return; }
-    let startedAt = parseInt(localStorage.getItem(PREVIEW_KEY) || '0', 10);
-    if (!startedAt || isNaN(startedAt)) {
-      startedAt = Date.now();
-      localStorage.setItem(PREVIEW_KEY, String(startedAt));
+    // Anchor: if the server gave us an end-time, use it; else compute locally.
+    const endsAt = trialEndsAt ?? (Date.now() + TRIAL_DURATION_MS);
+
+    // Ensure the trial cookie exists so subsequent navigations / API calls
+    // see the same trial-start. (Middleware sets it server-side too, but on
+    // a hard reload the page reads the request before middleware would have
+    // a chance to persist a brand-new one — belt + braces.)
+    if (typeof document !== 'undefined' && !document.cookie.includes(`${TRIAL_COOKIE}=`)) {
+      const startedAt = trialStartedAt ?? Date.now();
+      const maxAge = 60 * 60 * 24 * 60;
+      document.cookie = `${TRIAL_COOKIE}=${startedAt}; path=/; max-age=${maxAge}; SameSite=Lax`;
     }
+
     const tick = () => {
-      const elapsed = (Date.now() - startedAt) / 1000;
-      const left = Math.max(0, Math.ceil(PREVIEW_SECONDS - elapsed));
+      const left = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
       setPreviewSecondsLeft(left);
       setPreviewExpired(left <= 0);
     };
     tick();
     const id = setInterval(tick, 1_000);
     return () => clearInterval(id);
-  }, [isPremium]);
+  }, [isPremium, trialEndsAt, trialStartedAt]);
 
   // Alerts: detect price crossing any N1-N6 level
   useEffect(() => {
@@ -285,9 +297,13 @@ export default function Terminal({ userEmail, isPremium }: Props) {
             <option value="en">EN</option>
             <option value="hi">हि</option>
           </select>
-          {isPremium ? (
+          {isAuthed && (
             <button className="term-btn term-btn-ghost" onClick={() => signOut({ callbackUrl: '/' })}>Salir</button>
-          ) : (
+          )}
+          {!isAuthed && (
+            <a href="/login?callbackUrl=%2F"><button className="term-btn term-btn-ghost">{t.login}</button></a>
+          )}
+          {!isPremium && (
             <a href="#planes"><button className="term-btn term-btn-gold">{t.subscribe}</button></a>
           )}
         </div>
@@ -307,21 +323,23 @@ export default function Terminal({ userEmail, isPremium }: Props) {
         <TickerMetric label={t.low}  value={curMarket ? money(curMarket.low,  cur) : '—'} />
       </div>
 
-      {/* 2-MIN PREVIEW BANNER */}
+      {/* 24h TRIAL BANNER */}
       {!isPremium && previewSecondsLeft != null && (
         <div style={{
           padding:'8px 20px',
           borderBottom:`1px solid ${LINE}`,
           background: previewExpired ? 'rgba(234,57,67,0.08)' : 'rgba(201,149,42,0.08)',
           fontSize:12.5,
-          display:'flex', justifyContent:'space-between', alignItems:'center',
+          display:'flex', justifyContent:'space-between', alignItems:'center', gap: 12, flexWrap: 'wrap',
         }}>
-          <span>
+          <span style={{ minWidth: 0 }}>
             <strong style={{ color: previewExpired ? DOWN : GOLD }}>
-              {previewExpired ? t.preview_blocked : t.preview_h}
+              {previewExpired ? t.preview_blocked : (isAuthed ? t.preview_h : 'Prueba gratuita · 1 día')}
             </strong>
             <span style={{ color: MUTED, marginLeft: 12 }}>
-              {previewExpired ? t.preview_sub : `${Math.floor(previewSecondsLeft / 60)}:${String(previewSecondsLeft % 60).padStart(2,'0')} · ${t.preview_sub}`}
+              {previewExpired
+                ? 'Suscribite por 30 USDT o Gs. 180.000 / mes.'
+                : `Te quedan ${formatRemaining(previewSecondsLeft)} de acceso gratuito. Después necesitás suscribirte.`}
             </span>
           </span>
           <a href="#planes"><button className="term-btn term-btn-gold">{t.preview_cta}</button></a>
@@ -336,21 +354,13 @@ export default function Terminal({ userEmail, isPremium }: Props) {
         height: 'calc(100vh - 56px - 47px)',
         minHeight: 540,
       }}>
-        {/* Blur overlay when preview expired */}
+        {/* Trial-expired curtain: blurs the grid behind it */}
         {shouldBlurAll && (
           <div style={{
             position:'absolute', inset:0, zIndex:50,
-            backdropFilter:'blur(10px)',
-            background:'rgba(10,13,18,0.65)',
-            display:'flex', alignItems:'center', justifyContent:'center',
-            flexDirection:'column', gap:18,
-          }}>
-            <div style={{ textAlign:'center', maxWidth: 420, padding:'0 20px' }}>
-              <p style={{ fontSize:16, fontWeight:700, marginBottom:8 }}>{t.preview_blocked}</p>
-              <p style={{ color:MUTED, fontSize:13.5, marginBottom:18 }}>{t.preview_sub}</p>
-              <a href="#planes"><button className="term-btn term-btn-gold" style={{ padding:'12px 22px', fontSize:14 }}>{t.preview_cta}</button></a>
-            </div>
-          </div>
+            backdropFilter:'blur(8px)',
+            background:'rgba(10,13,18,0.55)',
+          }} />
         )}
 
         {/* ── ORDER BOOK ── */}
@@ -569,8 +579,20 @@ export default function Terminal({ userEmail, isPremium }: Props) {
       {/* FOOTER */}
       <footer style={{ padding:'24px 20px', borderTop:`1px solid ${LINE}`, background:BG2 }}>
         <p style={{ color:MUTED, fontSize:11.5, textAlign:'center', maxWidth:880, margin:'0 auto', lineHeight:1.6 }}>{t.disc}</p>
-        <p style={{ color:MUTED, fontSize:10.5, textAlign:'center', marginTop:8 }}>{userEmail}</p>
+        {userEmail && (
+          <p style={{ color:MUTED, fontSize:10.5, textAlign:'center', marginTop:8 }}>{userEmail}</p>
+        )}
       </footer>
+
+      {/* SUBSCRIBE POPUP — shown when the 24h trial expires */}
+      {shouldBlurAll && (
+        <SubscribePopup
+          isAuthed={isAuthed}
+          onPayPagopar={payWithPagopar}
+          onCopyUsdt={copyUsdt}
+          copied={copied}
+        />
+      )}
 
       {/* TOAST CONTAINER */}
       <div style={{ position:'fixed', right:20, bottom:20, display:'flex', flexDirection:'column', gap:8, zIndex:60 }}>
@@ -581,6 +603,113 @@ export default function Terminal({ userEmail, isPremium }: Props) {
             boxShadow:'0 10px 24px rgba(0,0,0,0.4)',
           }}>⚠ {toast.msg}</div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Helpers + Subcomponents
+
+function formatRemaining(seconds: number): string {
+  if (seconds <= 0) return '0m';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h >= 1) return `${h}h ${m.toString().padStart(2, '0')}m`;
+  const s = seconds % 60;
+  return `${m}m ${s.toString().padStart(2, '0')}s`;
+}
+
+function SubscribePopup({ isAuthed, onPayPagopar, onCopyUsdt, copied }: {
+  isAuthed: boolean;
+  onPayPagopar: () => void;
+  onCopyUsdt:   () => void;
+  copied:       boolean;
+}) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 100,
+        background: 'rgba(5,7,11,0.78)', backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
+      }}
+    >
+      <div style={{
+        width: '100%', maxWidth: 480,
+        background: PANEL, border: `1px solid ${LINE}`, borderRadius: 14,
+        padding: '28px 26px',
+        boxShadow: '0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,149,42,0.08)',
+        textAlign: 'center',
+      }}>
+        <div style={{ fontSize: 11, letterSpacing: 1.4, color: GOLD, textTransform: 'uppercase', fontWeight: 700, marginBottom: 12 }}>
+          Tu prueba gratuita terminó
+        </div>
+        <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 6 }}>
+          Suscribite y seguí operando
+        </h2>
+        <p style={{ color: MUTED, fontSize: 13.5, lineHeight: 1.55, marginBottom: 22 }}>
+          Acceso completo a niveles N1–N6 en todos los activos, calculadoras,
+          señales y alertas. Cancelá cuando quieras.
+        </p>
+
+        <div style={{
+          padding: '14px 18px', background: BG2, borderRadius: 10, border: `1px solid ${LINE}`,
+          marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        }}>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: 11, color: MUTED, textTransform: 'uppercase', letterSpacing: .5 }}>Internacional</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: TEXT, fontFamily: MONO }}>30 USDT</div>
+          </div>
+          <div style={{ width: 1, height: 36, background: LINE }} />
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 11, color: MUTED, textTransform: 'uppercase', letterSpacing: .5 }}>Paraguay 🇵🇾</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: GOLD, fontFamily: MONO }}>Gs. 180.000</div>
+          </div>
+        </div>
+
+        {isAuthed ? (
+          <button
+            onClick={onPayPagopar}
+            className="term-btn term-btn-gold"
+            style={{ width: '100%', padding: '13px', fontSize: 14, marginBottom: 10 }}
+          >
+            Pagar con PagoPar (Gs. 180.000)
+          </button>
+        ) : (
+          <a href="/register?callbackUrl=%2F" style={{ display: 'block', marginBottom: 10 }}>
+            <button className="term-btn term-btn-gold" style={{ width: '100%', padding: '13px', fontSize: 14 }}>
+              Crear cuenta para suscribirme
+            </button>
+          </a>
+        )}
+
+        <a href="/pago/usdt" style={{ display: 'block', marginBottom: 14 }}>
+          <button className="term-btn term-btn-ghost" style={{ width: '100%', padding: '12px', fontSize: 13 }}>
+            Pagar con USDT (TRC-20) · 30 USDT
+          </button>
+        </a>
+
+        <div style={{ background: BG, padding: '10px 12px', borderRadius: 8, border: `1px solid ${LINE}`, marginBottom: 10 }}>
+          <div style={{ fontSize: 10.5, color: MUTED, textTransform: 'uppercase', letterSpacing: .5, marginBottom: 4 }}>
+            Dirección USDT · Tron (TRC-20)
+          </div>
+          <div style={{ fontFamily: MONO, fontSize: 11, wordBreak: 'break-all', color: TEXT, marginBottom: 8 }}>
+            TAh8pftt2kszhrJyUMXZt3vfbctmWPFgaL
+          </div>
+          <button onClick={onCopyUsdt} style={{
+            background: copied ? UP : 'transparent', color: copied ? '#001a0f' : MUTED,
+            border: `1px solid ${copied ? UP : LINE}`, borderRadius: 6, padding: '6px 12px',
+            fontSize: 11.5, cursor: 'pointer',
+          }}>{copied ? '✓ Copiada' : 'Copiar dirección'}</button>
+        </div>
+
+        {!isAuthed && (
+          <p style={{ fontSize: 11, color: MUTED, marginTop: 10 }}>
+            ¿Ya tenés cuenta? <a href="/login?callbackUrl=%2F" style={{ color: GOLD, fontWeight: 600 }}>Iniciá sesión</a>
+          </p>
+        )}
       </div>
     </div>
   );

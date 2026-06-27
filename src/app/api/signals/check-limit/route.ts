@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { getTrialState } from '@/lib/services/trial-access'
 
 const SIGNAL_LIMIT = 3
 const ADMIN_EMAIL = 'raul@sacredlevels.com'
@@ -36,6 +37,20 @@ async function getGuestViewed(ip: string, fingerprint: string): Promise<number> 
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions)
+
+  // ── 24h trial fast-path: anyone (anonymous or registered) inside the
+  //    trial window gets unlimited signal access.
+  const trial = await getTrialState(req)
+  if (trial.inTrial && !trial.isPremium) {
+    return NextResponse.json({
+      canView: true,
+      isPro: true,           // treat trial as pro for UI-gating purposes
+      inTrial: true,
+      trialEndsAt: trial.trialEndsAt,
+      viewed: 0,
+      limit: SIGNAL_LIMIT,
+    })
+  }
 
   // ── Logged-in user ────────────────────────────────────────────────────────
   if (session?.user?.email) {

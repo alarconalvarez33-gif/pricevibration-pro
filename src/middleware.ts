@@ -3,10 +3,13 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 const FREE_TRIAL_USES = 3
+const TRIAL_COOKIE = 'sl_trial_start'
+const TRIAL_COOKIE_MAX_AGE = 60 * 60 * 24 * 60 // 60 days persistence
 
 // Routes that are always public — no auth or plan required
 const PUBLIC_PATHS = new Set([
-  // '/' is now the SacredLevels Terminal and requires a session.
+  // Terminal home — anonymous gets a 24h trial; gating runs server-side.
+  '/',
   '/login',
   '/register',
   '/billing',
@@ -61,14 +64,32 @@ const PUBLIC_PREFIXES = [
 
 const PAID_PLANS = ['pro', 'quantum', 'ser', 'ser-plus']
 
+function withTrialCookie(request: NextRequest, response: NextResponse): NextResponse {
+  if (request.cookies.has(TRIAL_COOKIE)) return response
+  const ts = String(Date.now())
+  // Mutate the request so downstream handlers (and the very next server
+  // component render) can read the freshly-issued timestamp.
+  request.cookies.set(TRIAL_COOKIE, ts)
+  response.cookies.set({
+    name: TRIAL_COOKIE,
+    value: ts,
+    maxAge: TRIAL_COOKIE_MAX_AGE,
+    path: '/',
+    sameSite: 'lax',
+    httpOnly: false, // the client reads it for the countdown
+  })
+  return response
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Allow public paths
-  if (PUBLIC_PATHS.has(pathname)) return NextResponse.next()
+  // Allow public paths — but ensure the trial cookie exists so server pages
+  // and APIs always see a deterministic trial-start timestamp.
+  if (PUBLIC_PATHS.has(pathname)) return withTrialCookie(request, NextResponse.next())
 
   // Allow public prefixes
-  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return NextResponse.next()
+  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return withTrialCookie(request, NextResponse.next())
 
   // Decode JWT token (reads NEXTAUTH_SECRET automatically)
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
