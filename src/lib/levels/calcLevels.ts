@@ -4,7 +4,7 @@
 // on the server.
 import 'server-only';
 
-export type Timeframe = '15m' | '1h' | '4h' | '1d';
+export type Timeframe = '1m' | '5m' | '15m' | '1h' | '4h' | '1d';
 
 export interface LevelsResult {
   res: number[];   // [N1..N6] resistances, ordered by step size (N1 closest)
@@ -17,6 +17,8 @@ export interface LevelsResult {
 const STEPS = [0.125, 0.25, 0.3125, 0.375, 0.4375, 0.5];
 
 const TF_MULT: Record<Timeframe, number> = {
+  '1m':  0.35,
+  '5m':  0.7,
   '15m': 1,
   '1h':  1.6,
   '4h':  2.3,

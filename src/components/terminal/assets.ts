@@ -54,7 +54,7 @@ export function findAsset(sym: string) {
   return FLAT.find(a => a[0] === sym);
 }
 
-export const TIMEFRAMES = ['15m', '1h', '4h', '1d'] as const;
+export const TIMEFRAMES = ['1m', '5m', '15m', '1h', '4h', '1d'] as const;
 export type Timeframe = typeof TIMEFRAMES[number];
 
 export const CATEGORIES: AssetCategory[] = Object.keys(ASSETS) as AssetCategory[];

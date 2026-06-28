@@ -31,6 +31,12 @@ interface MarketRow {
   offline?: boolean;
 }
 
+interface LevelProb {
+  reactionProb: number;
+  sampleSize:   number;
+  mode:         'historical' | 'baseline';
+}
+
 interface LevelsResponse {
   symbol: string;
   timeframe: Timeframe;
@@ -39,6 +45,8 @@ interface LevelsResponse {
   isPremium: boolean;
   levels: { res: number[]; sup: number[]; resPct: number[]; supPct: number[] } | null;
   bias: { score: number; label: 'bull' | 'bear' | 'neutral' } | null;
+  resProb: LevelProb[] | null;
+  supProb: LevelProb[] | null;
 }
 
 interface Props {
@@ -485,6 +493,8 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
               cur={cur}
               t={t}
               isPremium={isPremium}
+              resProb={levels?.resProb ?? null}
+              supProb={levels?.supProb ?? null}
             />
 
             {/* Risk calculator */}
@@ -846,18 +856,20 @@ function OBRow({ side, w, price, amt }: { side: 'up' | 'down'; w: number; price:
 }
 
 function LevelsPanel({
-  levels, price, cur, t, isPremium,
+  levels, price, cur, t, isPremium, resProb, supProb,
 }: {
-  levels: LevelsResponse | null;
-  price: number | null;
-  cur: Currency;
-  t: typeof STR.es;
+  levels:   LevelsResponse | null;
+  price:    number | null;
+  cur:      Currency;
+  t:        typeof STR.es;
   isPremium: boolean;
+  resProb:  LevelProb[] | null;
+  supProb:  LevelProb[] | null;
 }) {
   if (price == null) return <div style={{ padding:16, color:MUTED, fontSize:12.5 }}>—</div>;
 
   if (!isPremium || !levels?.levels || !levels.bias) {
-    // Show locked teaser: 12 rows blurred + price center + CTA
+    // Locked teaser: blurred rows + CTA
     return (
       <div>
         <div style={{ filter:'blur(6px)', userSelect:'none', pointerEvents:'none' }}>
@@ -882,6 +894,17 @@ function LevelsPanel({
 
   return (
     <div>
+      {/* QTRADER Stats brand seal */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6, paddingBottom:6, borderBottom:`1px solid ${LINE2}` }}>
+        <span style={{ fontSize:10, textTransform:'uppercase', letterSpacing:1.1, color:MUTED }}>Niveles algorítmicos</span>
+        <span style={{
+          fontSize:9.5, fontWeight:700, color:GOLD,
+          padding:'2px 7px', borderRadius:4,
+          border:`1px solid ${GOLD}40`,
+          letterSpacing:.8, textTransform:'uppercase',
+        }}>QTRADER Stats</span>
+      </div>
+
       {/* Resistances (top → bottom: N6 → N1 just above price) */}
       {[5,4,3,2,1,0].map(i => (
         <LvRow
@@ -890,6 +913,7 @@ function LevelsPanel({
           value={money(levels.levels!.res[i], cur)}
           pct={`+${levels.levels!.resPct[i].toFixed(2)}%`}
           type="res"
+          prob={resProb?.[i] ?? null}
         />
       ))}
       <LvRow label="●" value={money(price, cur)} pct={t.price} type="price" />
@@ -900,6 +924,7 @@ function LevelsPanel({
           value={money(levels.levels!.sup[i], cur)}
           pct={`-${levels.levels!.supPct[i].toFixed(2)}%`}
           type="sup"
+          prob={supProb?.[i] ?? null}
         />
       ))}
       {/* Bias */}
@@ -916,7 +941,13 @@ function LevelsPanel({
   );
 }
 
-function LvRow({ label, value, pct, type }: { label: string; value: string; pct: string; type: 'res' | 'sup' | 'price' }) {
+function LvRow({ label, value, pct, type, prob }: {
+  label: string;
+  value: string;
+  pct:   string;
+  type:  'res' | 'sup' | 'price';
+  prob?: LevelProb | null;
+}) {
   const color = type === 'res' ? DOWN : type === 'sup' ? UP : GOLD;
   return (
     <div style={{
@@ -924,11 +955,47 @@ function LvRow({ label, value, pct, type }: { label: string; value: string; pct:
       padding:'7px 4px',
       borderBottom: type === 'price' ? `1px solid ${GOLD}40` : `1px solid ${LINE2}`,
       background: type === 'price' ? 'rgba(201,149,42,0.06)' : 'transparent',
+      gap: 4,
     }}>
       <span style={{ fontSize:11.5, color, fontWeight:600, minWidth:28 }}>{label}</span>
-      <span className="mono" style={{ fontSize:12.5, color: type === 'price' ? GOLD : TEXT, fontFamily:MONO }}>{value}</span>
-      <span style={{ fontSize:10.5, color:MUTED, minWidth:60, textAlign:'right' }}>{pct}</span>
+      <span className="mono" style={{ fontSize:12.5, color: type === 'price' ? GOLD : TEXT, fontFamily:MONO, flex:1, textAlign:'center' }}>{value}</span>
+      <span style={{ fontSize:10.5, color:MUTED, minWidth:52, textAlign:'right' }}>{pct}</span>
+      {type !== 'price' && (
+        <ProbBadge prob={prob ?? null} />
+      )}
     </div>
+  );
+}
+
+function ProbBadge({ prob }: { prob: LevelProb | null }) {
+  if (!prob) {
+    return <span style={{ minWidth:36 }} />;
+  }
+  if (prob.mode === 'baseline') {
+    return (
+      <span
+        title="Estimación base · datos históricos insuficientes"
+        style={{
+          display:'inline-block', width:7, height:7, borderRadius:'50%',
+          background:MUTED, flexShrink:0, minWidth:36, textAlign:'center',
+          marginLeft:2,
+        }}
+      />
+    );
+  }
+  const p = prob.reactionProb;
+  const bg    = p >= 65 ? 'rgba(22,199,132,0.13)'  : p >= 50 ? 'rgba(201,149,42,0.13)' : 'rgba(234,57,67,0.13)';
+  const clr   = p >= 65 ? UP : p >= 50 ? GOLD : DOWN;
+  const title = `Prob. reacción: ${p}% · ${prob.sampleSize} toques históricos`;
+  return (
+    <span
+      title={title}
+      style={{
+        fontSize:9.5, fontWeight:700, padding:'2px 5px', borderRadius:4,
+        background:bg, color:clr,
+        minWidth:36, textAlign:'center', flexShrink:0,
+      }}
+    >{p}%</span>
   );
 }
 

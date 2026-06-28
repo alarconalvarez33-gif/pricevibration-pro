@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { calcLevels, type Timeframe } from '@/lib/levels/calcLevels';
+import { computeReactionProbabilities } from '@/lib/levels/reactionProbability';
 import { getTrialState, hasFullAccess } from '@/lib/services/trial-access';
 
 interface MarketRow { symbol: string; price: number; offline?: boolean; }
 
-const VALID_TIMEFRAMES = new Set<Timeframe>(['15m', '1h', '4h', '1d']);
+const VALID_TIMEFRAMES = new Set<Timeframe>(['1m', '5m', '15m', '1h', '4h', '1d']);
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
-  const symbol: string = String(body.symbol || '').trim();
+  const symbol: string   = String(body.symbol || '').trim();
   const timeframe: Timeframe = (VALID_TIMEFRAMES.has(body.timeframe) ? body.timeframe : '1h') as Timeframe;
 
   if (!symbol) {
@@ -31,27 +32,36 @@ export async function POST(req: NextRequest) {
     symbol,
     timeframe,
     price,
-    isAuthed:  trial.isAuthed,
-    isPremium: trial.isPremium,
-    inTrial:   trial.inTrial,
+    isAuthed:    trial.isAuthed,
+    isPremium:   trial.isPremium,
+    inTrial:     trial.inTrial,
     trialEndsAt: trial.trialEndsAt,
   };
 
-  // No price OR no access → never expose levels or bias
+  // No price OR no access → send nothing gated
   if (!allowed || price == null) {
-    return NextResponse.json({ ...publicPayload, levels: null, bias: null });
+    return NextResponse.json({ ...publicPayload, levels: null, bias: null, resProb: null, supProb: null });
   }
 
   const { res, sup, resPct, supPct, bias } = calcLevels(price, timeframe);
+
+  const roundedRes = res.map(v => round(v, price));
+  const roundedSup = sup.map(v => round(v, price));
+
+  // Probability engine — runs server-side, results never reach non-premium clients
+  const { resProb, supProb } = await computeReactionProbabilities(symbol, timeframe, res, sup);
+
   return NextResponse.json({
     ...publicPayload,
     levels: {
-      res:    res.map(v    => round(v, price)),
-      sup:    sup.map(v    => round(v, price)),
+      res:    roundedRes,
+      sup:    roundedSup,
       resPct: resPct.map(v => +v.toFixed(2)),
       supPct: supPct.map(v => +v.toFixed(2)),
     },
     bias,
+    resProb,
+    supProb,
   });
 }
 
