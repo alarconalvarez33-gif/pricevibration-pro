@@ -77,12 +77,12 @@ export default function FondeoVsCapitalPage() {
 
           {/* Comparativa rápida */}
           <div className="bg-[#111120] border border-gray-800 rounded-xl overflow-hidden mb-10">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="bg-[#1a1a2e] text-gray-400">
-                  <th className="text-left px-4 py-3">Criterio</th>
-                  <th className="text-center px-4 py-3 text-blue-400">Fondeo</th>
-                  <th className="text-center px-4 py-3 text-green-400">Capital Propio</th>
+                  <th className="text-left px-2 sm:px-4 py-3">Criterio</th>
+                  <th className="text-center px-2 sm:px-4 py-3 text-blue-400">Fondeo</th>
+                  <th className="text-center px-2 sm:px-4 py-3 text-green-400">Capital Propio</th>
                 </tr>
               </thead>
               <tbody>
@@ -94,9 +94,9 @@ export default function FondeoVsCapitalPage() {
                   ['Barrera de entrada', 'Evaluación', 'Capital inicial'],
                 ].map(([crit, fondeo, propio], i) => (
                   <tr key={i} className="border-t border-gray-800">
-                    <td className="px-4 py-3 text-gray-300">{crit}</td>
-                    <td className="px-4 py-3 text-center text-blue-300">{fondeo}</td>
-                    <td className="px-4 py-3 text-center text-green-300">{propio}</td>
+                    <td className="px-2 sm:px-4 py-3 text-gray-300">{crit}</td>
+                    <td className="px-2 sm:px-4 py-3 text-center text-blue-300">{fondeo}</td>
+                    <td className="px-2 sm:px-4 py-3 text-center text-green-300">{propio}</td>
                   </tr>
                 ))}
               </tbody>

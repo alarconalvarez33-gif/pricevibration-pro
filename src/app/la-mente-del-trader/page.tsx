@@ -78,7 +78,7 @@ export default function MenteDelTraderPage() {
             </div>
 
             <h1
-              className="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-5 leading-tight"
+              className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-5 leading-tight"
               style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
             >
               Conocimiento profesional para traders que{' '}

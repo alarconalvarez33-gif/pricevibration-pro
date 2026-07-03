@@ -279,7 +279,7 @@ export default function SettingsPage() {
                   className="w-full bg-terminal-bg border border-terminal-border rounded-lg px-4 py-3 text-white focus:border-gold-500 focus:outline-none"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-terminal-muted text-sm mb-2">Latitude</label>
                   <input

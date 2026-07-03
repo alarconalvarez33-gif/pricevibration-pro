@@ -92,7 +92,7 @@ export default function MetaLevelsPage() {
 
           {/* Title */}
           <h1
-            className="text-5xl sm:text-6xl font-black text-white mb-3 leading-tight"
+            className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-3 leading-tight"
             style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
           >
             MetaLevels
@@ -571,7 +571,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
               Acceso Inmediato · Licencia Personal
             </p>
             <h2
-              className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 leading-tight"
               style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: '-1px' }}
             >
               Comenzá a operar con MetaLevels hoy

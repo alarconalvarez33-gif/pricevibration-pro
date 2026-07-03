@@ -406,4 +406,5 @@ const css = `
 .qt .sizer-out small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.qt .sizer-out b{font-family:var(--mono);font-size:18px}
 .qt .disclaimer{font-size:11px;color:var(--muted);padding:18px 20px 34px;line-height:1.5;opacity:.85;border-top:1px solid var(--line);margin-top:12px}
 @media(max-width:760px){.qt .controls{grid-template-columns:1fr 1fr}.qt .controls .btn{grid-column:1/-1}.qt .read-grid,.qt .conf-row{grid-template-columns:1fr 1fr}.qt .sizer-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.qt header{padding:0 12px}.qt .brand{font-size:15px;gap:8px}.qt .brand img{height:24px}.qt .top-actions{gap:6px}.qt .btn{padding:9px 12px;font-size:13px}.qt .controls{padding:16px 14px 8px;grid-template-columns:1fr}.qt .tf-row,.qt .results,.qt .disclaimer{padding-left:14px;padding-right:14px}.qt .gauge-head .px{font-size:20px}.qt .ladder{grid-template-columns:1fr}.qt .sizer-out{grid-template-columns:1fr}}
 `;

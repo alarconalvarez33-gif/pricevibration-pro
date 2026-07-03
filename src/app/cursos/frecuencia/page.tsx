@@ -89,7 +89,7 @@ export default function FrecuenciaPage() {
                 </div>
 
                 <h1
-                  className="text-5xl sm:text-6xl font-bold text-white mb-3 leading-[1.05]"
+                  className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-3 leading-[1.05]"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                   Frecuencia

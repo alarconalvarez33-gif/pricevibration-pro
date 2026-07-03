@@ -303,7 +303,7 @@ export default function GannCalculator({
               <label className="block text-terminal-muted text-sm mb-2">
                 Increment Level
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {INCREMENT_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}

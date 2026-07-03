@@ -290,15 +290,27 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
         .term-input:focus { outline:none; border-color:${GOLD}; }
         .pulse { animation: pulse 1.6s ease-in-out infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+
+        /* ── MOBILE: stack the 4-column terminal, keep header usable ── */
+        @media (max-width: 900px) {
+          .term-header { height:auto !important; min-height:56px; padding:8px 14px !important; flex-wrap:wrap; row-gap:8px; }
+          .term-nav { order:3; width:100%; flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+          .term-nav::-webkit-scrollbar { display:none; }
+          .term-main-grid { grid-template-columns:1fr !important; height:auto !important; min-height:0 !important; }
+          .tcol { border-right:none !important; border-bottom:1px solid ${LINE}; }
+          .tcol-ob { height:320px !important; }
+          .tcol-assets { height:52vh !important; }
+          .tcol-chart { height:66vh !important; }
+        }
       `}</style>
 
       {/* HEADER */}
-      <header style={{ display:'flex', alignItems:'center', justifyContent:'space-between', height:56, padding:'0 20px', borderBottom:`1px solid ${LINE}`, background:BG2, position:'sticky', top:0, zIndex:40 }}>
+      <header className="term-header" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', height:56, padding:'0 20px', borderBottom:`1px solid ${LINE}`, background:BG2, position:'sticky', top:0, zIndex:40 }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:18 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logonuevos.png" alt="Sacred Levels" height={30} style={{ height:30, width:'auto' }} />
         </Link>
-        <nav style={{ display:'flex', gap:18, alignItems:'center', flexWrap:'wrap' }}>
+        <nav className="term-nav" style={{ display:'flex', gap:18, alignItems:'center', flexWrap:'wrap' }}>
           <a href="#markets" style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_markets}</a>
           <a href="#levels"  style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_levels}</a>
           <a href="#tools"   style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_tools}</a>
@@ -377,7 +389,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
       )}
 
       {/* MAIN GRID */}
-      <div id="markets" style={{
+      <div id="markets" className="term-main-grid" style={{
         position: 'relative',
         display:'grid',
         gridTemplateColumns:'186px 230px 1fr 312px',
@@ -394,13 +406,13 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
         )}
 
         {/* ── ORDER BOOK ── */}
-        <aside style={col(true)}>
+        <aside className="tcol tcol-ob" style={col(true)}>
           <ColH>{t.ob}</ColH>
           <OrderBook price={livePrice} cur={cur} />
         </aside>
 
         {/* ── ASSETS LIST ── */}
-        <aside style={col(true)}>
+        <aside className="tcol tcol-assets" style={col(true)}>
           <div style={{ padding:'10px 13px', borderBottom:`1px solid ${LINE2}`, flexShrink:0 }}>
             <input
               className="term-input"
@@ -462,12 +474,12 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
         </aside>
 
         {/* ── CHART ── */}
-        <section style={col(true)}>
+        <section className="tcol tcol-chart" style={col(true)}>
           <TVChart symbol={tvSym} locale={lang === 'hi' ? 'en' : lang} />
         </section>
 
         {/* ── RIGHT: LEVELS + RISK CALC + ALERTS ── */}
-        <aside style={col(false)}>
+        <aside className="tcol tcol-right" style={col(false)}>
           <ColH>
             <span id="levels">{t.box_levels}</span>
             <div style={{ display:'flex', gap:4 }}>
@@ -526,7 +538,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
           <h2 style={{ fontSize:28, fontWeight:700, marginBottom:4 }}>{t.learn_h}</h2>
           <p style={{ color:MUTED, fontSize:14, marginBottom:28 }}>{t.learn_sub}</p>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:18 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap:18 }}>
             {t.steps.map(([n, title, body]) => (
               <div key={n} style={{ padding:20, background:PANEL, borderRadius:10, border:`1px solid ${LINE}` }}>
                 <div style={{ fontSize:10.5, color:GOLD, letterSpacing:1.5, fontWeight:700, marginBottom:8 }}>PASO {n}</div>
@@ -543,7 +555,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
           <h2 style={{ fontSize:28, fontWeight:700, marginBottom:4 }}>{t.tools_h}</h2>
           <p style={{ color:MUTED, fontSize:14, marginBottom:28 }}>{t.tools_sub}</p>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:14 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap:14 }}>
             {t.t.map((tool, i) => (
               <div key={i} style={{ padding:18, background:PANEL, borderRadius:10, border:`1px solid ${LINE}`, display:'flex', flexDirection:'column' }}>
                 <h5 style={{ fontSize:14.5, fontWeight:600, marginBottom:6 }}>{tool[0]}</h5>
@@ -568,7 +580,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
           <div style={{ fontSize:30, fontWeight:800, color:GOLD, marginBottom:32 }}>
             Gs. 180.000 <small style={{ fontSize:14, color:MUTED, fontWeight:500 }}>/ 30 USDT</small>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(320px, 1fr))', gap:18, textAlign:'left' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap:18, textAlign:'left' }}>
             {/* USDT */}
             <div style={{ padding:24, background:PANEL, borderRadius:12, border:`1px solid ${LINE}` }}>
               <b style={{ fontSize:14.5 }}>{t.m_usdt}</b>

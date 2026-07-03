@@ -97,6 +97,21 @@
 }
 
 /* ============================================
+   MOBILE OVERFLOW SAFETY NET
+   Prevents accidental horizontal scroll on phones.
+   `overflow-x: clip` does NOT break position: sticky
+   the way `overflow-x: hidden` does.
+   ============================================ */
+html, body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+/* Media should never force the page wider than the viewport */
+img, video, canvas, iframe, embed, object {
+  max-width: 100%;
+}
+
+/* ============================================
    BASE TYPOGRAPHY
    ============================================ */
 body {
