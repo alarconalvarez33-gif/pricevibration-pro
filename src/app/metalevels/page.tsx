@@ -695,7 +695,7 @@ Posicionamiento: El indicador que te hace rentable aunque aciertes el 40% (ángu
             </p>
             <div className="flex gap-6 text-xs" style={{ color: C.muted }}>
               <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
-              <Link href="/quantum" className="hover:text-white transition-colors">Calculadora</Link>
+              <Link href="/dashboard" className="hover:text-white transition-colors">Calculadora</Link>
               <Link href="/metalevels/acceso" style={{ color: C.cyan }} className="hover:opacity-80 transition-opacity">
                 Mi licencia
               </Link>

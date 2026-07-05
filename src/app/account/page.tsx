@@ -117,7 +117,7 @@ export default function AccountPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
             {[
               { href: '/dashboard',             label: 'Dashboard'    },
-              { href: '/quantum',               label: 'Calculadora'  },
+              { href: '/dashboard',             label: 'Calculadora'  },
               { href: '/hub',                   label: 'Signal Hub'   },
               { href: '/account/subscription',  label: 'Suscripción'  },
             ].map(l => (

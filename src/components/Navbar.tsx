@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
-const MOBILE_STICKY_HIDDEN_PATHS = ['/quantum']
+const MOBILE_STICKY_HIDDEN_PATHS = ['/']
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -271,7 +271,7 @@ export default function Navbar() {
         )}
       </nav>
 
-      {/* Mobile sticky bottom CTA — only for guests, hidden on /quantum */}
+      {/* Mobile sticky bottom CTA — only for guests, hidden on home */}
       {!session && !MOBILE_STICKY_HIDDEN_PATHS.includes(pathname) && (
         <div
           className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4"
@@ -285,7 +285,7 @@ export default function Navbar() {
           }}
         >
           <Link
-            href="/quantum"
+            href="/"
             className="flex items-center justify-center w-full min-h-[52px] font-bold text-sm uppercase tracking-[0.12em] transition-opacity hover:opacity-90"
             style={{ backgroundColor: '#fbbf24', color: '#000', fontFamily: "'Space Grotesk', sans-serif" }}
           >

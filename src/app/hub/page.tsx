@@ -304,10 +304,19 @@ export default function SignalRadar() {
         }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 h-[58px]">
-          <Link href="/" aria-label="Sacred Levels">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logonuevos.png" alt="Sacred Levels" height={38} style={{ height: 38, width: 'auto' }} />
-          </Link>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <Link href="/" aria-label="Sacred Levels">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logonuevos.png" alt="Sacred Levels" height={38} style={{ height: 38, width: 'auto' }} />
+            </Link>
+            <Link
+              href="/"
+              className="text-[11px] font-bold uppercase tracking-[0.15em] transition-colors hover:text-white"
+              style={{ color: '#8194B2', fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              INICIO
+            </Link>
+          </div>
           <LiveClock lastUpdatedAt={lastUpdatedAt} />
         </div>
       </header>

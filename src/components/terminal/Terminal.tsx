@@ -311,15 +311,9 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
           <img src="/logonuevos.png" alt="Sacred Levels" height={30} style={{ height:30, width:'auto' }} />
         </Link>
         <nav className="term-nav" style={{ display:'flex', gap:18, alignItems:'center', flexWrap:'wrap' }}>
-          <a href="#markets" style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_markets}</a>
-          <a href="#levels"  style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_levels}</a>
-          <a href="#tools"   style={{ fontSize:13.5, color:MUTED, fontWeight:500 }}>{t.n_tools}</a>
-          {/* Calculadoras — visibles para todos, accesibles durante el trial */}
-          <span style={{ color:LINE, fontSize:13 }}>·</span>
-          <Link href="/quantum" style={tabStyle()}>Quantum</Link>
-          <Link href="/hub"     style={tabStyle()}>Hub</Link>
-          <Link href="/qtrader" style={tabStyle()}>QTrader</Link>
-          <Link href="/ser"     style={tabStyle()}>SER</Link>
+          {/* Herramientas — visibles para todos, accesibles durante el trial */}
+          <Link href="/hub" style={tabStyle()}>Hub</Link>
+          <Link href="/ser" style={tabStyle()}>SER</Link>
           {!isPremium && (
             <>
               <span style={{ color:LINE, fontSize:13 }}>·</span>

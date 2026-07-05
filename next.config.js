@@ -27,6 +27,23 @@ const nextConfig = {
         destination: '/billing',
         permanent: false,
       },
+      // Quantum se unificó con SER — la calculadora vive en el dashboard.
+      {
+        source: '/quantum',
+        destination: '/dashboard',
+        permanent: false,
+      },
+      // QTrader fue eliminado por completo.
+      {
+        source: '/qtrader',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/qtrader/:path*',
+        destination: '/',
+        permanent: false,
+      },
     ]
   },
   async headers() {

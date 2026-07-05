@@ -29,13 +29,13 @@ export default function ExnessBanner() {
         {/* Promo strip */}
         <div style={{ width: '100%', maxWidth: '990px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', padding: '12px 16px', background: '#060500', border: '1px solid #2a2200' }}>
           <p style={{ flex: 1, minWidth: '200px', fontSize: '11px', lineHeight: '1.6', color: '#8a7a30', fontFamily: 'Inter, sans-serif', margin: 0 }}>
-            <strong style={{ color: '#F3BA2F' }}>⚡ 1 mes GRATIS</strong>
-            {' '}— Abrí cuenta en Exness usando el enlace de arriba y accedés a todas las herramientas más poderosas de Sacred Levels.
+            <strong style={{ color: '#F3BA2F' }}>⚡ 1 MES GRATIS de todos los servicios</strong>
+            {' '}— Si te registrás en EXNESS desde este enlace, tenés 1 mes gratis de todos los servicios de Sacred Levels.
             Si ya tenés cuenta, solicitá el cambio de socio en el chat de Exness con el código{' '}
             <code style={{ background: '#181200', color: '#F3BA2F', padding: '1px 6px', fontFamily: 'monospace', fontSize: '10px', fontWeight: 'bold' }}>
               xwx0gc598n
             </code>
-            {' '}y enviá el comprobante por WhatsApp.
+            {' '}y enviá el comprobante al WhatsApp <strong style={{ color: '#25D366' }}>+595 981 234 128</strong>.
           </p>
           <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
             <a

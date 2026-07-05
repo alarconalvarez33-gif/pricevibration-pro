@@ -3,6 +3,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { Analytics } from '@vercel/analytics/next'
 import DomainTitle from '@/components/DomainTitle'
+import ExnessBanner from '@/components/ExnessBanner'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -136,6 +137,8 @@ export default function RootLayout({
         <Providers>
           <DomainTitle />
           {children}
+          {/* Promo Exness — visible en todas las páginas */}
+          <ExnessBanner />
         </Providers>
         <Analytics />
       </body>

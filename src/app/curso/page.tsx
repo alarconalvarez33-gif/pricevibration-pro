@@ -118,13 +118,22 @@ export default function CursoPage() {
               Contenido premium exclusivo
             </p>
           </div>
-          <Link
-            href="/dashboard"
-            className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white"
-            style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            ← Dashboard
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/"
+              className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white"
+              style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              ← INICIO
+            </Link>
+            <Link
+              href="/dashboard"
+              className="text-xs uppercase tracking-[0.15em] transition-colors hover:text-white"
+              style={{ color: MUTED, fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Dashboard
+            </Link>
+          </div>
         </div>
       </div>
 

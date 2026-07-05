@@ -67,7 +67,7 @@ export default function Footer() {
                 { href: '/la-mente-del-trader', label: 'La Mente del Trader' },
                 { href: '/login', label: 'Iniciar Sesión' },
                 { href: '/register', label: 'Registro' },
-                { href: '/quantum', label: 'Calculador' },
+                { href: '/dashboard', label: 'Calculadora' },
                 { href: '/contact', label: 'Contacto' },
               ].map(item => (
                 <li key={item.label}>

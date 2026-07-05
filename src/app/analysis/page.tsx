@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { hasFullAccess } from '@/lib/constants';
 
 interface HistoricalData {
@@ -241,9 +242,14 @@ export default function AnalysisPage() {
             >
               Ver planes
             </a>
-            <a href="/dashboard" className="text-sm text-gray-500 hover:text-white transition-colors">
-              ← Volver al Dashboard
-            </a>
+            <div className="flex items-center justify-center gap-4">
+              <a href="/" className="text-sm text-gray-500 hover:text-white transition-colors">
+                ← INICIO
+              </a>
+              <a href="/dashboard" className="text-sm text-gray-500 hover:text-white transition-colors">
+                Dashboard
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -253,6 +259,10 @@ export default function AnalysisPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
+        {/* INICIO */}
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#c9a227] transition-colors mb-4">
+          ← INICIO
+        </Link>
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
