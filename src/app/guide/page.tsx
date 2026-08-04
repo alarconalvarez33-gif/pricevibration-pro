@@ -150,7 +150,7 @@ function EnglishContent() {
             <ul className="list-disc list-inside text-terminal-muted mt-2 space-y-1 ml-4">
               <li>Recent swing high or swing low</li>
               <li>Previous day&apos;s close</li>
-              <li>A major round number (e.g., $2,600 for Gold)</li>
+              <li>A major round number (e.g., $4,100 for Gold)</li>
               <li>A key psychological level</li>
             </ul>
           </div>
@@ -395,7 +395,7 @@ function SpanishContent() {
             <ul className="list-disc list-inside text-terminal-muted mt-2 space-y-1 ml-4">
               <li>Máximo o mínimo reciente</li>
               <li>Cierre del día anterior</li>
-              <li>Un número redondo importante (ej., $2,600 para el Oro)</li>
+              <li>Un número redondo importante (ej., $4,100 para el Oro)</li>
               <li>Un nivel psicológico clave</li>
             </ul>
           </div>

@@ -50,10 +50,10 @@ export const ASSET_FACTORS: Record<string, AssetConfig> = {
  * For forex pairs and low-priced assets, we multiply by a factor before calculation
  * and divide the results by the same factor to maintain precision.
  *
- * Example with price 3280 and increment 0.25:
- * - √3280 = 57.2713...
- * - R1: (57.2713 + 0.25)² = 3308.70
- * - S1: (57.2713 - 0.25)² = 3251.43
+ * Example with price 4100 and increment 0.25:
+ * - √4100 = 64.0312...
+ * - R1: (64.0312 + 0.25)² = 4132.08
+ * - S1: (64.0312 - 0.25)² = 4068.05
  */
 export function calculateGannLevels(
   centerPrice: number,

@@ -226,8 +226,8 @@ export default function QuantumCalcDash({ isPremium = false }: Props) {
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 {[
-                  { label: 'Máximo (High)', val: maxVal, set: setMaxVal, ph: '3100' },
-                  { label: 'Mínimo (Low)',  val: minVal, set: setMinVal, ph: '2800' },
+                  { label: 'Máximo (High)', val: maxVal, set: setMaxVal, ph: '4180' },
+                  { label: 'Mínimo (Low)',  val: minVal, set: setMinVal, ph: '4080' },
                 ].map(f => (
                   <div key={f.label}>
                     <label

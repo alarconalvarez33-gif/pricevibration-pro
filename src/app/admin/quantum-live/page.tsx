@@ -154,7 +154,7 @@ export default function AdminQuantumLivePage() {
             <div>
               <label className="text-gray-400 text-sm block mb-2">Máximo (High)</label>
               <input
-                type="number" step="0.01" placeholder="ej: 3100"
+                type="number" step="0.01" placeholder="ej: 4180"
                 value={form.maxPrice}
                 onChange={e => setForm(p => ({ ...p, maxPrice: e.target.value }))}
                 className={inputCls}
@@ -163,7 +163,7 @@ export default function AdminQuantumLivePage() {
             <div>
               <label className="text-gray-400 text-sm block mb-2">Mínimo (Low)</label>
               <input
-                type="number" step="0.01" placeholder="ej: 2800"
+                type="number" step="0.01" placeholder="ej: 4080"
                 value={form.minPrice}
                 onChange={e => setForm(p => ({ ...p, minPrice: e.target.value }))}
                 className={inputCls}

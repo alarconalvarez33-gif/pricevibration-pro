@@ -96,21 +96,21 @@ async function fetchFinnhubDXY() {
   };
 }
 
-// ── Finnhub — spot quote (XAU/USD, XAG/USD via OANDA feed) ───────────────────
-async function fetchFinnhubSpot(finnhubSymbol: string) {
-  if (!FINNHUB_API_KEY) throw new Error('FINNHUB_API_KEY not configured')
+// ── gold-api.com — real SPOT metals price (free, no key) ─────────────────────
+// Yahoo/Finnhub only expose GC=F/SI=F *futures*, which trade tens of dollars
+// above the spot XAU/USD that brokers & TradingView quote (the futures premium
+// made our center price look ~$58 too high). gold-api.com returns true spot, so
+// the price now matches what traders see on their own platform.
+async function fetchGoldApiSpot(metal: string) {
   const res = await fetch(
-    `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(finnhubSymbol)}&token=${FINNHUB_API_KEY}`,
-    { headers: { 'Accept': 'application/json' }, next: { revalidate: 0 } }
+    `https://api.gold-api.com/price/${metal}`,
+    { headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' }, next: { revalidate: 0 } }
   );
-  if (!res.ok) throw new Error(`Finnhub ${finnhubSymbol} ${res.status}`);
+  if (!res.ok) throw new Error(`gold-api ${metal} ${res.status}`);
   const data = await res.json();
-  const price = data.c;
-  const prevClose = data.pc;
-  if (!price || isNaN(price) || price === 0) throw new Error(`Finnhub ${finnhubSymbol} no price`);
-  const high = data.h && data.h > 0 ? data.h : price * 1.005;
-  const low  = data.l && data.l > 0 ? data.l : price * 0.995;
-  return { price, prevClose: prevClose || price, high, low };
+  const price = data.price;
+  if (!price || isNaN(price) || price <= 0) throw new Error(`gold-api ${metal} no price`);
+  return price as number;
 }
 
 // ── Market definitions ────────────────────────────────────────────────────────
@@ -218,20 +218,35 @@ export async function GET() {
     }
   }
 
-  // ── 2. Forex + Gold — Finnhub real-time spot for metals, Yahoo for FX ────────
-  // Map FOREX_GOLD entries to a primary fetch strategy. Metals get real-time
-  // spot prices via Finnhub (OANDA feed); FX/oil keep Yahoo as primary.
-  const SPOT_OVERRIDE: Record<string, string> = {
-    'XAU/USD': 'OANDA:XAU_USD',
-    'XAG/USD': 'OANDA:XAG_USD',
+  // ── 2. Forex + Gold — real SPOT for metals (gold-api), Yahoo for FX ──────────
+  // Metals use gold-api.com for the accurate spot price and borrow the daily
+  // move (change%, high, low) from Yahoo's GC=F/SI=F futures, rescaled onto the
+  // spot level so the figures stay coherent. FX/oil keep Yahoo as primary.
+  const SPOT_METAL: Record<string, string> = {
+    'XAU/USD': 'XAU',
+    'XAG/USD': 'XAG',
   };
 
   const fxResults = await Promise.allSettled(
     FOREX_GOLD.map(async m => {
-      const spot = SPOT_OVERRIDE[m.symbol];
-      if (spot) {
-        try { return await fetchFinnhubSpot(spot); }
-        catch (e) { console.warn(`Finnhub ${m.symbol} failed, falling back to Yahoo:`, (e as Error).message); }
+      const metal = SPOT_METAL[m.symbol];
+      if (metal) {
+        try {
+          const spot = await fetchGoldApiSpot(metal);
+          // Borrow the relative daily move from Yahoo futures, rescaled to spot.
+          let prevClose = spot, high = spot * 1.004, low = spot * 0.996;
+          try {
+            const y = await fetchYahoo(m.yf);
+            if (y.price > 0) {
+              if (y.prevClose > 0) prevClose = spot * (y.prevClose / y.price);
+              if (y.high > 0)      high      = spot * (y.high / y.price);
+              if (y.low  > 0)      low       = spot * (y.low  / y.price);
+            }
+          } catch { /* keep spot-only estimates */ }
+          return { price: spot, prevClose, high, low };
+        } catch (e) {
+          console.warn(`gold-api ${m.symbol} failed, falling back to Yahoo futures:`, (e as Error).message);
+        }
       }
       return fetchYahoo(m.yf);
     })

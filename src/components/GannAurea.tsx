@@ -171,7 +171,7 @@ export default function GannAurea({ isPremium = false }: Props) {
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-              placeholder="ej. 3024.95"
+              placeholder="ej. 4080.00"
               className="w-full bg-[#0A0A0B] border border-[#2a2a2a] text-white px-4 rounded-lg focus:border-[#fbbf24] focus:outline-none transition-colors min-h-[52px] text-sm"
             />
           </div>
@@ -182,7 +182,7 @@ export default function GannAurea({ isPremium = false }: Props) {
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-              placeholder="ej. 3180.00"
+              placeholder="ej. 4180.00"
               className="w-full bg-[#0A0A0B] border border-[#2a2a2a] text-white px-4 rounded-lg focus:border-[#fbbf24] focus:outline-none transition-colors min-h-[52px] text-sm"
             />
           </div>

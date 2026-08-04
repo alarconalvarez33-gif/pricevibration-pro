@@ -240,7 +240,7 @@ export default function BayesianPage() {
             </div>
             <div>
               <label className="text-[10px] uppercase tracking-[0.2em] block mb-1.5" style={{ color: MUTED, fontFamily: SANS }}>Nivel Sagrado (USD)</label>
-              <input type="number" value={nivel} onChange={e => setNivel(e.target.value)} placeholder="ej. 3300.00"
+              <input type="number" value={nivel} onChange={e => setNivel(e.target.value)} placeholder="ej. 4100.00"
                 className="w-full px-3 py-2 text-sm text-white rounded border outline-none"
                 style={{ backgroundColor: '#0d0d0e', borderColor: BORDER, fontFamily: MONO }}
                 onKeyDown={e => e.key === 'Enter' && run()} />

@@ -59,7 +59,7 @@ Interpretación:
 - Los niveles cardinales (90°, 180°, 270°, 360°) son los más fuertes
 - Estos niveles representan las divisiones naturales del círculo de Gann
 - El precio tiende a moverse de nivel a nivel — cuando rompe uno, busca el siguiente
-- Los niveles que coinciden con números redondos (3000, 3050, 3100) son especialmente fuertes
+- Los niveles que coinciden con números redondos (4000, 4050, 4100) son especialmente fuertes
 
 💡 Consejo: Buscá confluencia entre los niveles de Gann y los de las otras calculadoras. Donde 2 o 3 métodos coinciden, la probabilidad de reacción se multiplica.`,
 
@@ -79,7 +79,7 @@ Reading results:
 - Cardinal levels (90°, 180°, 270°, 360°) are the strongest
 - These levels represent natural divisions of Gann's circle
 - Price tends to move level to level — when it breaks one, it seeks the next
-- Levels that coincide with round numbers (3000, 3050, 3100) are especially strong
+- Levels that coincide with round numbers (4000, 4050, 4100) are especially strong
 
 💡 Tip: Look for confluence between Gann levels and those from the other calculators. Where 2 or 3 methods agree, reaction probability multiplies.`,
 }
