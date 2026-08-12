@@ -43,8 +43,8 @@ export default function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{ backgroundColor: '#000000', fontFamily: "'Space Grotesk', sans-serif" }}
+      className="sticky top-0 z-50"
+      style={{ backgroundColor: '#000000', fontFamily: "'Space Grotesk', sans-serif", marginBottom: '-88px' }}
     >
       {/* ── TopBar / Disclaimer ── */}
       <div style={{ backgroundColor: '#080808', borderBottom: '1px solid #111' }}>

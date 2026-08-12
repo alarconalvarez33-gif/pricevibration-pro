@@ -135,10 +135,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-[#0A0A0B] text-white antialiased" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
         <Providers>
+          {/* Promo Exness — arriba de todo, visible en todas las páginas */}
+          <ExnessBanner />
           <DomainTitle />
           {children}
-          {/* Promo Exness — visible en todas las páginas */}
-          <ExnessBanner />
         </Providers>
         <Analytics />
       </body>

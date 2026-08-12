@@ -10,10 +10,11 @@ export async function GET() {
     const results = await prisma.proofResult.findMany({
       where: { active: true },
       orderBy: { order: 'asc' },
-      take: 3,
+      take: 4,
       select: {
         id: true,
         mimeType: true,
+        asset: true,
         description: true,
         date: true,
         order: true,

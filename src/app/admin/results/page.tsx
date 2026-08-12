@@ -21,6 +21,7 @@ const GREEN  = '#00D26A'
 
 interface ResultSlot {
   id: string
+  asset: string | null
   description: string
   date: string
   active: boolean
@@ -31,6 +32,7 @@ interface SlotState {
   // Existing record (from DB)
   existing: ResultSlot | null
   // Editing state
+  asset: string
   description: string
   date: string
   // New upload pending
@@ -46,6 +48,7 @@ interface SlotState {
 function emptySlot(): SlotState {
   return {
     existing: null,
+    asset: '',
     description: '',
     date: '',
     pendingFile: null,
@@ -189,6 +192,23 @@ function SlotCard({
           }}
         />
 
+        {/* Asset */}
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest mb-1.5" style={{ color: MUTED }}>
+            Activo
+          </label>
+          <input
+            type="text"
+            value={slot.asset}
+            onChange={e => onChange({ asset: e.target.value, success: '' })}
+            placeholder="XAUUSD"
+            className="w-full border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none transition-colors"
+            style={{ backgroundColor: BG, borderColor: BORDER }}
+            onFocus={e => { (e.target as HTMLInputElement).style.borderColor = `${AMBER}60` }}
+            onBlur={e  => { (e.target as HTMLInputElement).style.borderColor = BORDER }}
+          />
+        </div>
+
         {/* Description */}
         <div>
           <label className="block text-[10px] uppercase tracking-widest mb-1.5" style={{ color: MUTED }}>
@@ -198,7 +218,7 @@ function SlotCard({
             type="text"
             value={slot.description}
             onChange={e => onChange({ description: e.target.value, success: '' })}
-            placeholder="XAUUSD — Rebote en nivel R4"
+            placeholder="Rebote en nivel R4 · +180 pips"
             className="w-full border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none transition-colors"
             style={{ backgroundColor: BG, borderColor: BORDER }}
             onFocus={e => { (e.target as HTMLInputElement).style.borderColor = `${AMBER}60` }}
@@ -281,7 +301,7 @@ export default function AdminResultsPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<'resultados' | 'mente'>('resultados')
-  const [slots, setSlots] = useState<SlotState[]>([emptySlot(), emptySlot(), emptySlot()])
+  const [slots, setSlots] = useState<SlotState[]>([emptySlot(), emptySlot(), emptySlot(), emptySlot()])
   const [loading, setLoading] = useState(true)
   const [globalError, setGlobalError] = useState('')
 
@@ -302,11 +322,12 @@ export default function AdminResultsPage() {
       .then(data => {
         if (!data.results) return
         setSlots(prev => {
-          const next: SlotState[] = [emptySlot(), emptySlot(), emptySlot()]
-          data.results.slice(0, 3).forEach((r: ResultSlot, i: number) => {
+          const next: SlotState[] = [emptySlot(), emptySlot(), emptySlot(), emptySlot()]
+          data.results.slice(0, 4).forEach((r: ResultSlot, i: number) => {
             next[i] = {
               ...emptySlot(),
               existing: r,
+              asset: r.asset || '',
               description: r.description,
               date: r.date || '',
             }
@@ -345,6 +366,7 @@ export default function AdminResultsPage() {
           body: JSON.stringify({
             imageData,
             mimeType: slot.pendingFile.type,
+            asset: slot.asset.trim() || null,
             description: slot.description.trim(),
             date: slot.date || null,
           }),
@@ -364,6 +386,7 @@ export default function AdminResultsPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          asset: slot.asset.trim() || null,
           description: slot.description.trim(),
           date: slot.date || null,
         }),
@@ -469,12 +492,12 @@ export default function AdminResultsPage() {
         <div
           className="mb-6 flex items-center gap-3 px-4 py-3 border rounded-lg text-sm"
           style={{
-            borderColor: activeCount >= 3 ? `${AMBER}40` : '#2a2a2a',
-            backgroundColor: activeCount >= 3 ? `${AMBER}08` : 'transparent',
+            borderColor: activeCount >= 4 ? `${AMBER}40` : '#2a2a2a',
+            backgroundColor: activeCount >= 4 ? `${AMBER}08` : 'transparent',
           }}
         >
           <div className="flex gap-1">
-            {[0, 1, 2].map(i => (
+            {[0, 1, 2, 3].map(i => (
               <div
                 key={i}
                 className="w-3 h-3 rounded-full border"
@@ -485,9 +508,9 @@ export default function AdminResultsPage() {
               />
             ))}
           </div>
-          <span style={{ color: activeCount >= 3 ? AMBER : MUTED }}>
-            {activeCount} de 3 slots activos
-            {activeCount >= 3 && ' · para agregar uno nuevo, eliminá uno existente'}
+          <span style={{ color: activeCount >= 4 ? AMBER : MUTED }}>
+            {activeCount} de 4 slots activos
+            {activeCount >= 4 && ' · para agregar uno nuevo, eliminá uno existente'}
           </span>
         </div>
 
@@ -495,8 +518,8 @@ export default function AdminResultsPage() {
           <p className="mb-4 text-sm" style={{ color: RED }}>{globalError}</p>
         )}
 
-        {/* 3 slots grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* 4 slots grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {slots.map((slot, i) => (
             <SlotCard
               key={i}

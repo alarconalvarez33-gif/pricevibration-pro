@@ -299,6 +299,7 @@ model ProofResult {
   id          String   @id @default(cuid())
   imageData   String   @db.Text    // base64 encoded image (Vercel-safe storage)
   mimeType    String   @default("image/jpeg")
+  asset       String?              // e.g. "XAUUSD", "BTCUSD" — the traded instrument
   description String
   date        String?
   order       Int      @default(0)

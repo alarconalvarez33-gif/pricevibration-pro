@@ -21,9 +21,10 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { description, date, active } = body
+    const { asset, description, date, active } = body
 
     const data: Record<string, unknown> = {}
+    if (asset !== undefined) data.asset = typeof asset === 'string' && asset.trim() ? asset.trim() : null
     if (description !== undefined) data.description = description.trim()
     if (date !== undefined) data.date = date?.trim() || null
     if (active !== undefined) data.active = active

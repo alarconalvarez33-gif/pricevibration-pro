@@ -56,7 +56,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 border-b ${
+        className={`sticky top-0 z-50 transition-all duration-200 border-b ${
           scrolled
             ? 'bg-[#0A0A0B]/98 backdrop-blur-md border-[#222]'
             : 'bg-[#0A0A0B]/95 border-[#1a1a1a]'
@@ -65,6 +65,9 @@ export default function Navbar() {
           fontFamily: "'Space Grotesk', sans-serif",
           // Safe area for iPhone notch
           paddingTop: 'env(safe-area-inset-top)',
+          // Occupy zero flow height (like the previous fixed nav) so the
+          // Exness banner can sit above it and existing page top-padding stays valid.
+          marginBottom: '-80px',
         }}
       >
         {/* ── Main bar ── */}

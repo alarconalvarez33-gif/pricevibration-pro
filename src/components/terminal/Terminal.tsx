@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { ASSETS, FLAT, CATEGORIES, TIMEFRAMES, type AssetCategory, type Timeframe } from './assets';
 import { STR, FX, SYM, money, type Lang, type Currency } from './i18n';
+import SuccessfulLevels from '@/components/home/SuccessfulLevels';
+
+const EXNESS_URL = 'https://one.exnessonelink.com/intl/es/a/xwx0gc598n';
 
 // ── Design tokens (mirrored from the mockup) ───────────────────────────────────
 const BG     = '#0A0D12';
@@ -53,6 +56,7 @@ interface Props {
   userEmail: string | null;
   isAuthed: boolean;
   isPremium: boolean;
+  isAdmin?: boolean;
   trialStartedAt: number | null;
   trialEndsAt: number | null;
 }
@@ -60,7 +64,7 @@ interface Props {
 const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000;
 const TRIAL_COOKIE = 'sl_trial_start';
 
-export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedAt, trialEndsAt }: Props) {
+export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = false, trialStartedAt, trialEndsAt }: Props) {
   // ── State ──────────────────────────────────────────────────────────────────
   const [lang, setLang] = useState<Lang>('es');
   const [cur,  setCur]  = useState<Currency>('USD');
@@ -323,6 +327,19 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
           )}
         </nav>
         <div style={{ display:'flex', gap:9, alignItems:'center' }}>
+          <a
+            href={EXNESS_URL}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            title="Abrí tu cuenta en Exness · 1 mes gratis"
+            style={{
+              display:'inline-flex', alignItems:'center', gap:6,
+              background:'#F3BA2F', color:'#000', fontWeight:800, fontSize:12,
+              padding:'7px 13px', borderRadius:6, textDecoration:'none', whiteSpace:'nowrap',
+            }}
+          >
+            ⚡ Exness
+          </a>
           <select className="term-sel" value={cur}  onChange={e => setCur(e.target.value as Currency)}>
             <option value="USD">USD $</option>
             <option value="EUR">EUR €</option>
@@ -526,6 +543,9 @@ export default function Terminal({ userEmail, isAuthed, isPremium, trialStartedA
           </div>
         </aside>
       </div>
+
+      {/* ── BELOW: ÚLTIMOS NIVELES EXITOSOS (proof screenshots) ── */}
+      <SuccessfulLevels lang={lang} isAdmin={isAdmin} />
 
       {/* ── BELOW: LEARN ── */}
       <section id="learn" style={{ padding:'60px 20px', background:BG2, borderTop:`1px solid ${LINE}` }}>

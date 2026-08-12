@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
 const ADMIN_EMAILS = ['raul@sacredlevels.com', 'alarconalvarez33@gmail.com']
-const MAX_ACTIVE = 3
+const MAX_ACTIVE = 4
 const MAX_SIZE_BYTES = 2 * 1024 * 1024 // 2 MB
 
 function isAdmin(email: string | null | undefined): boolean {
@@ -24,6 +24,7 @@ export async function GET() {
       select: {
         id: true,
         mimeType: true,
+        asset: true,
         description: true,
         date: true,
         order: true,
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { imageData, mimeType, description, date } = body
+    const { imageData, mimeType, asset, description, date } = body
 
     if (!imageData || !description?.trim()) {
       return NextResponse.json({ error: 'imageData y description son requeridos' }, { status: 400 })
@@ -84,6 +85,7 @@ export async function POST(request: NextRequest) {
       data: {
         imageData,
         mimeType: mimeType || 'image/jpeg',
+        asset: typeof asset === 'string' && asset.trim() ? asset.trim() : null,
         description: description.trim(),
         date: date?.trim() || null,
         order: nextOrder,
