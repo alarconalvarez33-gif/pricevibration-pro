@@ -114,7 +114,7 @@ export default function PagoUsdtPage() {
 
             <p style={{ color: MUTED, fontSize: 11.5, marginTop: 14, lineHeight: 1.55 }}>
               Si preferís, también podés mandar la captura por WhatsApp a{' '}
-              <a href="https://wa.me/595981234128" target="_blank" rel="noopener noreferrer" style={{ color: GOLD }}>+595 981 234 128</a>.
+              <a href="https://wa.me/trader2" target="_blank" rel="noopener noreferrer" style={{ color: GOLD }}>trader2</a>.
             </p>
           </div>
         )}
