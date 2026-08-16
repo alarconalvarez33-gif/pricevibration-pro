@@ -1,7 +1,7 @@
 'use client'
 
 const WA_TEXT = encodeURIComponent('Hola, abrí una cuenta en Exness con el código xwx0gc598n y adjunto el comprobante para activar 1 mes gratis de Sacred Levels')
-const WA_URL = `https://wa.me/trader2?text=${WA_TEXT}`
+const WA_URL = `https://wa.me/595981234128?text=${WA_TEXT}`
 
 export default function ExnessBanner() {
   return (
@@ -35,7 +35,7 @@ export default function ExnessBanner() {
             <code style={{ background: '#181200', color: '#F3BA2F', padding: '1px 6px', fontFamily: 'monospace', fontSize: '10px', fontWeight: 'bold' }}>
               xwx0gc598n
             </code>
-            {' '}y enviá el comprobante al WhatsApp <strong style={{ color: '#25D366' }}>trader2</strong>.
+            {' '}y enviá el comprobante al WhatsApp <strong style={{ color: '#25D366' }}>+595 981 234 128</strong>.
           </p>
           <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
             <a

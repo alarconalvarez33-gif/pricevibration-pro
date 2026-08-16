@@ -167,7 +167,7 @@ export default async function FrecuenciaAccesoPage() {
               <p style={{ color: '#666', fontSize: '13px', margin: 0 }}>Nuestro equipo está disponible para ayudarte</p>
             </div>
             <a
-              href={`https://wa.me/trader2?text=${encodeURIComponent('Hola, tengo una consulta sobre el curso Frecuencia')}`}
+              href={`https://wa.me/595981234128?text=${encodeURIComponent('Hola, tengo una consulta sobre el curso Frecuencia')}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{

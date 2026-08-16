@@ -136,7 +136,7 @@ export async function sendWelcomeEmail(
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td style="background:#25D366;border-radius:6px;">
-            <a href="https://wa.me/trader2?text=${encodeURIComponent('Hola, tengo dudas sobre la instalación de MetaLevels')}"
+            <a href="https://wa.me/595981234128?text=${encodeURIComponent('Hola, tengo dudas sobre la instalación de MetaLevels')}"
                style="display:inline-block;padding:12px 20px;color:#ffffff;text-decoration:none;font-weight:500;font-size:14px;">
               <img src="https://sacredlevels.com/icons/whatsapp-white.svg" width="18" height="18" alt="WhatsApp" style="vertical-align:middle;margin-right:8px;">
               Pedir ayuda por WhatsApp
@@ -197,7 +197,7 @@ export async function sendWelcomeEmail(
       </div>
       <p style="color:#4a5a6a;font-size:13px;margin-top:20px;">
         ¿Necesitás ayuda?
-        <a href="https://wa.me/trader2" style="color:#25D366;text-decoration:none;font-weight:bold;">Escribinos por WhatsApp</a>
+        <a href="https://wa.me/595981234128" style="color:#25D366;text-decoration:none;font-weight:bold;">Escribinos por WhatsApp</a>
       </p>
     `
     : product === 'metalevels'

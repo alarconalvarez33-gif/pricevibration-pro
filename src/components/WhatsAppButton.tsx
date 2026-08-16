@@ -1,8 +1,7 @@
 import React from 'react'
 
 interface WhatsAppButtonProps {
-  /** Alias de usuario de WhatsApp (no el número) */
-  contact?: string
+  phoneNumber?: string
   message?: string
   label?: string
   variant?: 'inline' | 'button' | 'icon-only'
@@ -22,13 +21,13 @@ const WhatsAppIcon = () => (
 )
 
 export function WhatsAppButton({
-  contact = 'trader2',
+  phoneNumber = '595981234128',
   message = 'Hola, tengo una consulta sobre MetaLevels',
   label = 'Contactanos por WhatsApp',
   variant = 'button',
   className = '',
 }: WhatsAppButtonProps) {
-  const whatsappUrl = `https://wa.me/${contact}?text=${encodeURIComponent(message)}`
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
 
   if (variant === 'icon-only') {
     return (

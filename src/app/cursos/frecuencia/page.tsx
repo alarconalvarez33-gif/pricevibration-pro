@@ -292,7 +292,7 @@ export default function FrecuenciaPage() {
                   </div>
                 </div>
                 <WhatsAppButton
-                  contact="trader2"
+                  phoneNumber="595981234128"
                   message={WA_MSG}
                   label="CONSULTAR CUOTAS POR WHATSAPP"
                   variant="button"

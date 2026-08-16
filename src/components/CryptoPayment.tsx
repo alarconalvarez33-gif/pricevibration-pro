@@ -22,7 +22,7 @@ export default function CryptoPayment({ productName, priceGs, priceUsd }: Crypto
   const waText = encodeURIComponent(
     `Hola, realicé un pago crypto por el producto "${productName}" y adjunto el comprobante`
   );
-  const waHref = `https://wa.me/trader2?text=${waText}`;
+  const waHref = `https://wa.me/595981234128?text=${waText}`;
 
   return (
     <div className="w-full rounded-2xl border border-amber-500/20 bg-gradient-to-b from-amber-500/5 to-transparent p-6 md:p-8">
