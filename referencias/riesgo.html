@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuánto arriesgo — Bitácora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Archivo:wght@400;500;600&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E6E8DF;--paper-2:#F2F3EC;--rule:#C3CBB8;--rule-soft:#D6DCCC;
+  --ink:#14180F;--ink-2:#525B49;--ink-3:#7C856F;
+  --stamp:#9E3323;--hit:#2F6B4F;--pending:#B0782A;--shadow:rgba(20,24,15,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:'Archivo',system-ui,sans-serif;font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--rule-soft) 31px,var(--rule-soft) 32px);
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+.mono{font-family:'Martian Mono',monospace;font-variant-numeric:tabular-nums}
+
+.top{border-bottom:1.5px solid var(--ink);background:var(--paper)}
+.top-in{display:flex;align-items:center;height:64px;gap:24px}
+.brand{font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.brand span{color:var(--stamp)}
+.back{margin-left:auto;font-size:14px;color:var(--ink-2);text-decoration:none;border-bottom:1.5px solid var(--stamp);padding-bottom:1px}
+.back:hover{color:var(--stamp)}
+
+.head{padding:60px 0 44px;border-bottom:1.5px solid var(--ink)}
+.eyebrow{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--stamp);margin-bottom:18px}
+h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(34px,5.4vw,58px);line-height:1.04;letter-spacing:-.035em;max-width:17ch;margin-bottom:18px}
+.lede{font-size:18px;color:var(--ink-2);max-width:56ch}
+
+main{padding:52px 0 72px}
+.grid{display:grid;grid-template-columns:400px 1fr;gap:48px;align-items:start}
+
+/* form */
+.panel{background:var(--paper-2);border:1.5px solid var(--ink);box-shadow:6px 6px 0 var(--shadow)}
+.panel-head{padding:14px 20px;border-bottom:1.5px solid var(--ink);font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.field{padding:16px 20px;border-bottom:1px solid var(--rule)}
+.field:last-child{border-bottom:none}
+label{display:block;font-size:13.5px;font-weight:500;color:var(--ink-2);margin-bottom:7px}
+label small{display:block;font-weight:400;font-size:12px;color:var(--ink-3);margin-top:2px}
+input[type=number],select{
+  width:100%;padding:9px 11px;border:1.5px solid var(--rule);background:var(--paper);
+  font-family:'Martian Mono',monospace;font-size:16px;color:var(--ink);
+}
+input[type=number]:focus,select:focus{outline:none;border-color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--stamp);margin-top:4px}
+.range-val{font-family:'Martian Mono',monospace;font-size:19px;font-weight:600;float:right}
+
+/* results */
+.out{border:1.5px solid var(--ink);background:var(--paper-2);margin-bottom:26px}
+.out-head{padding:14px 20px;border-bottom:1.5px solid var(--ink);font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between}
+.out-grid{display:grid;grid-template-columns:1fr 1fr}
+.stat{padding:22px 20px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat:nth-child(2n){border-right:none}
+.stat:nth-last-child(-n+2){border-bottom:none}
+.stat-k{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.stat-v{font-family:'Bricolage Grotesque';font-weight:800;font-size:32px;letter-spacing:-.03em;line-height:1}
+.stat-v.warn{color:var(--stamp)}
+.stat-v.ok{color:var(--hit)}
+.stat-u{font-size:13px;color:var(--ink-2);margin-top:5px}
+
+/* simulator */
+.sim{border:1.5px solid var(--ink);background:var(--paper-2)}
+.sim-head{padding:14px 20px;border-bottom:1.5px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.sim-title{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.sim-sub{font-size:12.5px;color:var(--ink-3)}
+.canvas-box{padding:18px 20px;background:var(--paper-2)}
+canvas{width:100%;height:260px;display:block}
+.legend{display:flex;gap:22px;padding:0 20px 18px;font-size:12.5px;color:var(--ink-2);flex-wrap:wrap}
+.dot{display:inline-block;width:11px;height:3px;vertical-align:middle;margin-right:6px}
+.verdict{
+  padding:18px 20px;border-top:1.5px solid var(--ink);
+  font-size:15px;line-height:1.6;
+}
+.verdict strong{font-family:'Bricolage Grotesque';font-weight:800}
+.rerun{
+  background:transparent;border:1.5px solid var(--ink);color:var(--ink);
+  font-family:'Archivo',sans-serif;font-size:12.5px;font-weight:600;
+  padding:6px 13px;cursor:pointer;
+}
+.rerun:hover{background:var(--ink);color:var(--paper)}
+
+.note{margin-top:34px;font-size:13.5px;color:var(--ink-3);max-width:68ch;line-height:1.65;padding-top:20px;border-top:1px solid var(--rule)}
+
+@media(max-width:880px){
+  .grid{grid-template-columns:1fr;gap:34px}
+  .out-grid{grid-template-columns:1fr}
+  .stat{border-right:none}
+  .stat:nth-last-child(-n+2){border-bottom:1px solid var(--rule)}
+  .stat:last-child{border-bottom:none}
+}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2.5px solid var(--stamp);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a href="index.html" class="brand">Bitácora<span>.</span></a>
+    <a href="index.html" class="back">← Volver al inicio</a>
+  </div>
+</header>
+
+<div class="head">
+  <div class="wrap">
+    <div class="eyebrow">Herramienta abierta · No requiere cuenta</div>
+    <h1>Cuánto podés arriesgar sin fundir la cuenta</h1>
+    <p class="lede">La mayoría de las cuentas no mueren por elegir mal la entrada. Mueren por entrar con un tamaño que no aguanta una racha normal de pérdidas. Movés el porcentaje y mirás qué le pasa a mil cuentas iguales a la tuya.</p>
+  </div>
+</div>
+
+<main>
+<div class="wrap grid">
+
+  <div class="panel">
+    <div class="panel-head">Tus datos</div>
+    <div class="field">
+      <label for="cap">Capital de la cuenta <small>En la moneda de tu cuenta</small></label>
+      <input type="number" id="cap" value="1000" min="1" step="50">
+    </div>
+    <div class="field">
+      <label for="risk">Riesgo por operación <span class="range-val" id="riskV">2%</span></label>
+      <input type="range" id="risk" min="0.25" max="10" step="0.25" value="2">
+    </div>
+    <div class="field">
+      <label for="wr">Operaciones ganadoras <span class="range-val" id="wrV">45%</span><small>Sé conservador. Casi nadie pasa de 55%.</small></label>
+      <input type="range" id="wr" min="25" max="70" step="1" value="45">
+    </div>
+    <div class="field">
+      <label for="rr">Relación ganancia / pérdida</label>
+      <select id="rr">
+        <option value="1">1 a 1 — gano lo mismo que arriesgo</option>
+        <option value="1.5">1,5 a 1</option>
+        <option value="2" selected>2 a 1 — gano el doble</option>
+        <option value="3">3 a 1</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="stop">Distancia al stop <small>En puntos o pips, para el tamaño del lote</small></label>
+      <input type="number" id="stop" value="150" min="1" step="5">
+    </div>
+  </div>
+
+  <div>
+    <div class="out">
+      <div class="out-head"><span>Antes de entrar</span><span class="mono" id="perTrade">—</span></div>
+      <div class="out-grid">
+        <div class="stat">
+          <div class="stat-k">Arriesgás por operación</div>
+          <div class="stat-v" id="oRisk">20</div>
+          <div class="stat-u" id="oRiskU">de 1.000 de capital</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Valor por punto</div>
+          <div class="stat-v" id="oPip">0,13</div>
+          <div class="stat-u">para un stop de <span id="oStop">150</span> puntos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Pérdidas seguidas que aguantás</div>
+          <div class="stat-v" id="oStreak">34</div>
+          <div class="stat-u">antes de perder la mitad de la cuenta</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Ganancia esperada por operación</div>
+          <div class="stat-v" id="oEdge">7,00</div>
+          <div class="stat-u" id="oEdgeU">con estos números, a la larga</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sim">
+      <div class="sim-head">
+        <div>
+          <div class="sim-title">Mil cuentas, doscientas operaciones</div>
+          <div class="sim-sub">Cada línea es una cuenta que empieza igual que la tuya y opera con las mismas reglas.</div>
+        </div>
+        <button class="rerun" id="rerun">Correr de nuevo</button>
+      </div>
+      <div class="canvas-box"><canvas id="cv" width="1600" height="520"></canvas></div>
+      <div class="legend">
+        <span><span class="dot" style="background:#2F6B4F"></span>Terminó arriba</span>
+        <span><span class="dot" style="background:#B0782A"></span>Terminó abajo pero sigue viva</span>
+        <span><span class="dot" style="background:#9E3323"></span>Fundida (perdió el 70%)</span>
+      </div>
+      <div class="verdict" id="verdict">—</div>
+    </div>
+
+    <p class="note">La simulación asume que cada operación es independiente y que respetás el stop siempre. En la realidad las rachas se sienten peor: después de cuatro pérdidas seguidas es cuando la gente duplica el tamaño para «recuperar», y ahí es donde se acaban las cuentas. El número que importa no es cuánto ganás en un buen mes, es cuántas cuentas siguen vivas a los seis meses.</p>
+  </div>
+
+</div>
+</main>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const cv=$('cv'), ctx=cv.getContext('2d');
+  const N=1000, T=200, SHOW=120;
+  const fmt=n=>n.toLocaleString('es-PY',{maximumFractionDigits:2});
+
+  function sim(wr,rr,risk){
+    const paths=[], results={up:0,down:0,dead:0};
+    for(let i=0;i<N;i++){
+      let eq=1, path=[1], dead=false;
+      for(let t=0;t<T;t++){
+        if(!dead){
+          eq += (Math.random()*100<wr) ? eq*(risk/100)*rr : -eq*(risk/100);
+          if(eq<=0.30){eq=0.30;dead=true;}
+        }
+        path.push(eq);
+      }
+      if(dead) results.dead++;
+      else if(eq>=1) results.up++;
+      else results.down++;
+      paths.push({path,dead,end:eq});
+    }
+    return {paths,results};
+  }
+
+  function draw(data){
+    const W=cv.width,H=cv.height,pad=8;
+    ctx.clearRect(0,0,W,H);
+    // baseline (starting capital)
+    const yFor=v=>{
+      const top=3.2, bot=0.15;
+      const r=(Math.log(Math.max(v,bot))-Math.log(bot))/(Math.log(top)-Math.log(bot));
+      return H-pad-r*(H-pad*2);
+    };
+    ctx.strokeStyle='#C3CBB8';ctx.lineWidth=2;ctx.setLineDash([7,7]);
+    ctx.beginPath();ctx.moveTo(0,yFor(1));ctx.lineTo(W,yFor(1));ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#7C856F';ctx.font='400 20px "Martian Mono",monospace';
+    ctx.fillText('capital inicial',10,yFor(1)-11);
+
+    const step=W/T;
+    const sample=data.paths.slice(0,SHOW);
+    ctx.lineWidth=1.6;
+    sample.forEach(p=>{
+      ctx.strokeStyle = p.dead ? 'rgba(158,51,35,.55)'
+                      : p.end>=1 ? 'rgba(47,107,79,.34)'
+                      : 'rgba(176,120,42,.34)';
+      ctx.beginPath();
+      p.path.forEach((v,i)=>{ i?ctx.lineTo(i*step,yFor(v)):ctx.moveTo(0,yFor(v)); });
+      ctx.stroke();
+    });
+  }
+
+  function run(){
+    const cap=Math.max(1,+$('cap').value||1000);
+    const risk=+$('risk').value, wr=+$('wr').value, rr=+$('rr').value, stop=Math.max(1,+$('stop').value||1);
+
+    $('riskV').textContent=risk+'%';
+    $('wrV').textContent=wr+'%';
+
+    const perTrade=cap*risk/100;
+    $('oRisk').textContent=fmt(perTrade);
+    $('oRiskU').textContent='de '+fmt(cap)+' de capital';
+    $('oPip').textContent=fmt(perTrade/stop);
+    $('oStop').textContent=stop;
+    $('perTrade').textContent=risk+'% · '+fmt(perTrade);
+
+    const streak=Math.floor(Math.log(0.5)/Math.log(1-risk/100));
+    const st=$('oStreak'); st.textContent=streak;
+    st.className='stat-v '+(streak<8?'warn':streak>18?'ok':'');
+
+    const edge=(wr/100*rr-(1-wr/100))*perTrade;
+    const ed=$('oEdge'); ed.textContent=fmt(edge);
+    ed.className='stat-v '+(edge>0?'ok':'warn');
+    $('oEdgeU').textContent = edge>0 ? 'con estos números, a la larga ganás' : 'con estos números perdés aunque aciertes';
+
+    const d=sim(wr,rr,risk);
+    draw(d);
+
+    const dead=(d.results.dead/N*100), up=(d.results.up/N*100);
+    let txt;
+    if(edge<=0){
+      txt='<strong>Con estos números no hay tamaño que te salve.</strong> Ganás '+wr+'% de las veces con relación '+rr+' a 1, y eso da pérdida a la larga. Antes de tocar el riesgo, hay que arreglar la entrada o el objetivo.';
+    } else if(dead>25){
+      txt='<strong>'+dead.toFixed(0)+' de cada 100 cuentas se funden</strong> arriesgando '+risk+'% por operación — y eso que la estrategia es ganadora. El problema no es tu análisis, es el tamaño. Bajá el riesgo y mirá cómo cambia.';
+    } else if(dead>8){
+      txt='<strong>'+dead.toFixed(0)+' de cada 100 no llegan al final.</strong> Sobrevivible, pero apretado. A '+risk+'% una racha de '+streak+' pérdidas seguidas te deja en la mitad, y esas rachas pasan más seguido de lo que parece.';
+    } else {
+      txt='<strong>'+up.toFixed(0)+' de cada 100 cuentas terminan arriba</strong> y sólo '+dead.toFixed(0)+' se funden. A este tamaño la estrategia tiene tiempo de funcionar: aguantás '+streak+' pérdidas seguidas antes de perder la mitad.';
+    }
+    $('verdict').innerHTML=txt;
+  }
+
+  ['cap','risk','wr','rr','stop'].forEach(id=>{
+    $(id).addEventListener('input',run);
+    $(id).addEventListener('change',run);
+  });
+  $('rerun').addEventListener('click',run);
+  run();
+})();
+</script>
+</body>
+</html>

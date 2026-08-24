@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sacred Levels — Seis niveles por sesión, gratis con tu cuenta Exness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F5F2;--card:#FFF;--ink:#11201C;--grey:#57685F;--grey-2:#9EAAA2;
+  --hair:#DDE4DE;--teal:#0F7A6B;--teal-d:#0A5A4F;--lime:#C8E86A;--sun:#FFC53D;--red:#C4472F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.mono{font-family:'Martian Mono',monospace;font-variant-numeric:tabular-nums}
+img{max-width:100%}
+
+/* ---------- barra de reloj ---------- */
+.clockbar{background:var(--ink);color:var(--bg);padding:9px 0;font-family:'Martian Mono',monospace;font-size:11.5px;letter-spacing:.06em}
+.clock-in{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between}
+.clock-l{display:flex;align-items:center;gap:10px}
+.dotlive{width:7px;height:7px;border-radius:50%;background:var(--lime);animation:p 2s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
+.clock-r{color:var(--lime)}
+
+/* ---------- cabecera ---------- */
+.top{background:var(--bg);border-bottom:1px solid var(--hair);position:sticky;top:0;z-index:30}
+.top-in{display:flex;align-items:center;gap:26px;height:88px}
+.logo{height:56px;width:auto;display:block}
+.nav{display:flex;gap:24px;margin-left:auto;align-items:center}
+.nav a{color:var(--grey);text-decoration:none;font-size:14.5px;font-weight:500}
+.nav a:hover{color:var(--teal)}
+.btn{display:inline-block;background:var(--teal);color:#fff;padding:12px 22px;font-size:14.5px;font-weight:700;text-decoration:none;border-radius:999px;border:none;cursor:pointer;font-family:'Archivo',sans-serif}
+.btn:hover{background:var(--teal-d)}
+.btn-s{background:var(--sun);color:var(--ink)}
+.btn-s:hover{background:#FFD469}
+.btn-o{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn-o:hover{background:var(--ink);color:var(--bg)}
+
+/* ---------- hero ---------- */
+.hero{padding:62px 0 58px}
+.hero-row{display:grid;grid-template-columns:1fr 420px;gap:56px;align-items:start}
+.freetag{display:inline-flex;align-items:center;gap:9px;background:var(--lime);color:var(--ink);padding:7px 15px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:20px}
+h1{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(42px,6.8vw,84px);line-height:.93;letter-spacing:-.01em;margin-bottom:22px}
+h1 .l2{display:block}
+h1 u{text-decoration:none;background:linear-gradient(transparent 62%,var(--sun) 62%)}
+.lede{font-size:19px;color:var(--grey);max-width:47ch;margin-bottom:26px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.micro{font-size:13.5px;color:var(--grey-2);margin-top:16px;max-width:48ch}
+
+.score{background:var(--card);border:1px solid var(--hair);border-radius:14px;overflow:hidden;box-shadow:0 14px 38px rgba(17,32,28,.08)}
+.score-top{display:flex;justify-content:space-between;align-items:center;padding:15px 22px;background:var(--teal);color:#fff;font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase}
+.srow{display:grid;grid-template-columns:42px 1fr auto;gap:14px;align-items:center;padding:13px 22px;border-bottom:1px solid var(--hair)}
+.sn{font-family:'Martian Mono',monospace;font-size:12px;color:var(--grey-2)}
+.sp{font-family:'Anton',sans-serif;font-size:26px;letter-spacing:.01em}
+.st{font-family:'Martian Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.t-hit{background:var(--lime);color:var(--ink)}
+.t-wait{background:var(--bg);color:var(--grey-2)}
+.slock .sp{color:var(--hair);filter:blur(5px);user-select:none}
+.score-foot{padding:14px 22px;background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;color:var(--grey);flex-wrap:wrap}
+.score-foot a{color:var(--teal);font-weight:700;text-decoration:none}
+.nextdrop{padding:12px 22px;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--grey);gap:10px;flex-wrap:wrap}
+.nextdrop b{font-family:'Martian Mono',monospace;color:var(--teal);font-size:14px}
+
+/* ---------- cinta ---------- */
+.ticker{background:var(--ink);color:var(--bg);overflow:hidden;padding:14px 0}
+.ticker-in{display:flex;gap:44px;white-space:nowrap;animation:slide 36s linear infinite;font-family:'Anton',sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:.045em}
+.ticker-in span:nth-child(even){color:var(--lime)}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker-in{animation:none}.dotlive{animation:none}}
+
+/* ---------- secciones ---------- */
+section{padding:80px 0}
+.white{background:var(--card)}
+.slabel{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:15px}
+h2{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(32px,5.2vw,56px);line-height:.95;margin-bottom:18px;max-width:19ch}
+.slede{color:var(--grey);max-width:58ch;font-size:17px;margin-bottom:42px}
+
+/* ---------- qué buscás ---------- */
+.qhead{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;margin-bottom:42px}
+.qhead h2{font-size:clamp(40px,6.6vw,80px);margin-bottom:0}
+.qhead h2 u{text-decoration:none;background:linear-gradient(transparent 60%,var(--sun) 60%)}
+.qsub{color:var(--grey);font-size:17px;max-width:34ch;text-align:right;padding-bottom:8px}
+
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.path{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--hair);border-radius:18px;padding:30px 28px 26px;text-decoration:none;color:inherit;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:hidden}
+.path:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(17,32,28,.13);border-color:var(--teal)}
+.path:before{content:"";position:absolute;top:0;left:0;right:0;height:6px}
+.p1:before{background:var(--sun)}
+.p2:before{background:var(--lime)}
+.p3:before{background:var(--teal)}
+.p-num{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey-2);margin-bottom:18px}
+.p-tag{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:999px;margin-bottom:14px}
+.tag-pago{background:var(--sun);color:var(--ink)}
+.tag-free{background:var(--lime);color:var(--ink)}
+.p-quote{font-family:'Anton',sans-serif;font-size:24px;line-height:1.07;text-transform:uppercase;margin-bottom:14px}
+.p-desc{font-size:15px;color:var(--grey);margin-bottom:22px;flex:1}
+.p-list{list-style:none;font-size:14px;margin-bottom:24px}
+.p-list li{padding:8px 0 8px 22px;position:relative;border-bottom:1px solid var(--hair);color:var(--grey)}
+.p-list li:last-child{border-bottom:none}
+.p-list li:before{content:"→";position:absolute;left:0;top:8px;font-weight:700;color:var(--teal)}
+.p1 .p-list li:before{color:#C89419}
+.p2 .p-list li:before{color:#8FB53A}
+.p-go{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14.5px;font-weight:700;padding-top:15px;border-top:2px solid var(--ink)}
+.arrow{font-family:'Anton',sans-serif;font-size:20px;line-height:1;transition:transform .18s}
+.path:hover .arrow{transform:translateX(6px)}
+.p3{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.p3 .p-num{color:var(--lime)}
+.p3 .p-desc{color:#9EAAA2}
+.p3 .p-list li{border-bottom-color:#2A3A34;color:#C7D0C9}
+.p3 .p-list li:before{color:var(--lime)}
+.p3 .p-go{border-top-color:var(--lime);color:var(--lime)}
+.p3:hover{border-color:var(--lime)}
+.qfoot{margin-top:24px;font-size:14px;color:var(--grey-2)}
+.qfoot a{color:var(--teal);font-weight:600}
+
+/* ---------- velas ---------- */
+.thesis{background:var(--ink);color:var(--bg);border-radius:16px;padding:28px 32px;margin:0 0 22px}
+.thesis .big{font-family:'Anton',sans-serif;font-size:clamp(21px,3vw,32px);text-transform:uppercase;line-height:1.08}
+.thesis .big em{font-style:normal;color:var(--lime)}
+.thesis .big u{text-decoration:none;color:var(--sun)}
+.groupttl{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-2);margin:36px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--hair)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sc{background:var(--card);border:1px solid var(--hair);border-radius:16px;overflow:hidden}
+.sc-top{padding:17px 24px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--hair);flex-wrap:wrap}
+.badge{font-family:'Anton',sans-serif;font-size:13px;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.b-sell{background:#F6DED9;color:var(--red)}
+.b-buy{background:var(--lime);color:var(--ink)}
+.sc-top h3{font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;line-height:1}
+.chart{padding:14px 16px 4px;background:var(--bg)}
+svg{width:100%;height:auto;display:block}
+.sc-body{padding:20px 24px}
+.sc-body p{font-size:14.5px;color:var(--grey);margin-bottom:14px}
+.sc-do{background:var(--bg);border-radius:10px;padding:14px 16px}
+.sc-do .k{font-family:'Martian Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-2);margin-bottom:6px}
+.sc-do .v{font-size:14.5px;font-weight:600}
+.cndl{opacity:0;animation:fadein .22s ease-out forwards}
+@keyframes fadein{to{opacity:1}}
+.mark{opacity:0;animation:pop .35s ease-out forwards}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.cndl,.mark{animation:none;opacity:1}}
+.replay{display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:transparent;border:2px solid var(--ink);color:var(--ink);border-radius:999px;padding:10px 20px;font-family:'Archivo',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.replay:hover{background:var(--ink);color:var(--bg)}
+.mistake{margin-top:34px;background:#FFF6DC;border-left:4px solid var(--sun);border-radius:0 12px 12px 0;padding:22px 26px}
+.mistake h4{font-size:17px;font-weight:700;margin-bottom:8px}
+.mistake p{font-size:15px;color:#6B5A28;max-width:74ch}
+
+/* ---------- banner ---------- */
+.bannerband{padding:34px 0;text-align:center}
+.bn800{display:none}
+.bn320 img{border-radius:6px}
+
+/* ---------- empezar de cero ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.step{padding:28px 26px;background:var(--bg);border-radius:14px}
+.step-n{font-family:'Anton',sans-serif;font-size:15px;color:#fff;background:var(--teal);width:34px;height:34px;border-radius:999px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.step h3{font-size:19px;font-weight:700;margin-bottom:8px}
+.step p{font-size:14.5px;color:var(--grey)}
+.white .step{background:var(--card);border:1px solid var(--hair)}
+
+/* ---------- estrategias pagas ---------- */
+.pricegrid{display:grid;grid-template-columns:1fr 380px;gap:50px;align-items:start}
+.strat-list{list-style:none}
+.strat-list li{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--hair)}
+.strat-list li:last-child{border-bottom:none}
+.vidn{font-family:'Anton',sans-serif;font-size:13px;color:var(--teal);border:2px solid var(--teal);border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.strat-list h4{font-size:17px;font-weight:700;margin-bottom:4px}
+.strat-list p{font-size:14.5px;color:var(--grey)}
+.pricebox{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:32px 28px;text-align:center}
+.kk{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-2);margin-bottom:14px}
+.price{font-family:'Anton',sans-serif;font-size:44px;line-height:1;text-transform:uppercase}
+.price-alt{font-family:'Anton',sans-serif;font-size:25px;color:var(--teal);margin-top:5px;text-transform:uppercase}
+.pricebox small{display:block;font-size:14.5px;color:var(--grey);margin-top:12px;line-height:1.5}
+.pays{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.pay{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--bg);border:1px solid var(--hair);border-radius:999px;padding:6px 12px;color:var(--grey)}
+.pricebox .btn{margin-top:20px;width:100%}
+.fine{font-size:12.5px;color:var(--grey-2);margin-top:14px;line-height:1.5}
+
+/* ---------- acceso gratis ---------- */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px}
+.card{padding:34px 30px;background:var(--card);border:1px solid var(--hair);border-radius:16px}
+.card.hot{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.card-k{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;color:var(--teal)}
+.card.hot .card-k{color:var(--lime)}
+.card h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:31px;line-height:1;margin-bottom:12px}
+.card p{font-size:15px;color:var(--grey);margin-bottom:20px}
+.card.hot p{color:#9EAAA2}
+.card ul{list-style:none;font-size:14.5px}
+.card li{padding:11px 0 11px 26px;position:relative;border-bottom:1px solid var(--hair)}
+.card.hot li{border-bottom-color:#2A3A34;color:#D6DED8}
+.card li:last-child{border-bottom:none}
+.card li:before{content:"→";position:absolute;left:0;top:11px;color:var(--teal);font-weight:700}
+.card.hot li:before{color:var(--lime)}
+.card .btn{margin-top:24px;width:100%;text-align:center}
+.pricenote{font-size:12.5px;color:var(--grey-2);margin-top:13px;text-align:center}
+.bannerbox{margin-top:26px;text-align:center}
+
+/* ---------- registro ---------- */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.fact{padding:28px 26px;background:var(--bg);border-radius:14px}
+.white .fact{background:var(--card);border:1px solid var(--hair)}
+.fact-v{font-family:'Anton',sans-serif;font-size:50px;line-height:.9;color:var(--teal);text-transform:uppercase}
+.fact-k{font-size:15px;color:var(--grey);margin-top:11px}
+
+/* ---------- sesión ---------- */
+.auth{display:flex;align-items:center;gap:12px;margin-left:auto}
+.link-login{color:var(--grey);text-decoration:none;font-size:14.5px;font-weight:600;white-space:nowrap}
+.link-login:hover{color:var(--teal)}
+.hola{display:flex;align-items:center;gap:11px}
+.avatar{width:36px;height:36px;border-radius:999px;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:15px}
+.hola-txt{font-size:14.5px;line-height:1.25}
+.hola-txt b{display:block;font-weight:700}
+.hola-txt small{color:var(--grey-2);font-size:12px}
+.salir{color:var(--grey-2);text-decoration:none;font-size:13px;white-space:nowrap}
+.salir:hover{color:var(--red)}
+.demo-toggle{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--bg);border:none;border-radius:999px;padding:10px 16px;font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;opacity:.85}
+.demo-toggle:hover{opacity:1}
+
+/* ---------- noticias ---------- */
+.newsgrid{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+.newsbox{background:var(--card);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+.news-top{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:var(--ink);color:var(--bg);gap:12px;flex-wrap:wrap}
+.news-top .t{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.news-top .live{display:flex;align-items:center;gap:7px;font-family:'Martian Mono',monospace;font-size:10.5px;color:var(--lime)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--hair)}
+.chip{background:var(--bg);border:1px solid var(--hair);border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:600;color:var(--grey);cursor:pointer;font-family:'Archivo',sans-serif}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.chip[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.nitem{display:grid;grid-template-columns:74px 1fr;gap:14px;padding:15px 20px;border-bottom:1px solid var(--hair);text-decoration:none;color:inherit}
+.nitem:last-child{border-bottom:none}
+.nitem:hover{background:var(--bg)}
+.nmeta{font-family:'Martian Mono',monospace;font-size:10.5px;color:var(--grey-2);line-height:1.5}
+.nsym{display:inline-block;background:var(--lime);color:var(--ink);border-radius:4px;padding:2px 6px;margin-top:5px;font-size:9.5px;letter-spacing:.04em}
+.nhead{font-size:15.5px;font-weight:600;line-height:1.35;margin-bottom:4px}
+.nsrc{font-size:12.5px;color:var(--grey-2)}
+.news-foot{padding:13px 20px;background:var(--bg);font-size:12.5px;color:var(--grey-2)}
+.tickers{background:var(--card);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+.tk-top{padding:14px 18px;background:var(--teal);color:#fff;font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.tk{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--hair)}
+.tk:last-child{border-bottom:none}
+.tk-n{font-size:14px;font-weight:600}
+.tk-n small{display:block;font-family:'Martian Mono',monospace;font-size:10.5px;color:var(--grey-2);font-weight:400}
+.tk-p{font-family:'Martian Mono',monospace;font-size:14px}
+.tk-c{font-family:'Martian Mono',monospace;font-size:11.5px;padding:3px 8px;border-radius:999px}
+.c-up{background:var(--lime);color:var(--ink)}
+.c-dn{background:#F6DED9;color:var(--red)}
+
+/* ---------- mentoría ---------- */
+.mentor{display:grid;grid-template-columns:1fr 400px;gap:50px;align-items:start}
+.mentor-hook{font-family:'Anton',sans-serif;font-size:clamp(26px,3.6vw,40px);line-height:1.06;text-transform:uppercase;margin-bottom:20px}
+.mentor-hook u{text-decoration:none;background:linear-gradient(transparent 62%,var(--sun) 62%)}
+.mentor p{font-size:16.5px;color:var(--grey);margin-bottom:16px;max-width:56ch}
+.m-incl{list-style:none;margin-top:26px}
+.m-incl li{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--hair)}
+.m-incl li:last-child{border-bottom:none}
+.m-ico{width:30px;height:30px;border-radius:999px;background:var(--lime);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.m-incl h4{font-size:16px;font-weight:700;margin-bottom:3px}
+.m-incl p{font-size:14.5px;color:var(--grey);margin:0}
+.mbox{background:var(--ink);color:var(--bg);border-radius:18px;padding:34px 30px;position:sticky;top:110px}
+.mbox .kk{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:14px}
+.mprice{font-family:'Anton',sans-serif;font-size:46px;line-height:1;text-transform:uppercase}
+.mcuotas{background:rgba(200,232,106,.12);border:1px solid #2A3A34;border-radius:10px;padding:14px 16px;margin-top:18px}
+.mcuotas b{display:block;font-family:'Anton',sans-serif;font-size:21px;color:var(--lime);text-transform:uppercase;margin-bottom:3px}
+.mcuotas span{font-size:13.5px;color:#9EAAA2}
+.mbox .btn{margin-top:22px;width:100%;text-align:center}
+.legal-mini{margin-top:20px;border-top:1px solid #2A3A34;padding-top:18px}
+.lm-row{display:flex;gap:12px;align-items:flex-start;padding:9px 0}
+.lm-ico{font-size:17px;line-height:1.3;flex-shrink:0}
+.lm-row b{display:block;font-size:14.5px;color:var(--bg)}
+.lm-row span{font-size:12.5px;color:#9EAAA2;line-height:1.45}
+.mfine{font-size:12.5px;color:#7A8880;margin-top:14px;line-height:1.55}
+.cupos{display:flex;align-items:center;gap:9px;font-size:13px;color:#C7D0C9;margin-top:16px;padding-top:16px;border-top:1px solid #2A3A34}
+
+/* ---------- contacto ---------- */
+.contacto{display:grid;grid-template-columns:1fr 460px;gap:50px;align-items:start}
+.cbenef{list-style:none;margin-top:24px}
+.cbenef li{padding:11px 0 11px 28px;position:relative;border-bottom:1px solid var(--hair);font-size:15.5px;color:var(--grey)}
+.cbenef li:last-child{border-bottom:none}
+.cbenef li:before{content:"✓";position:absolute;left:0;top:11px;color:var(--teal);font-weight:700}
+.wapp{display:inline-flex;align-items:center;gap:11px;margin-top:24px;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:16px 20px;text-decoration:none;color:inherit}
+.wapp:hover{background:var(--ink);color:var(--bg)}
+.wapp b{display:block;font-size:15.5px}
+.wapp small{font-size:13px;color:var(--grey-2)}
+.wapp:hover small{color:#9EAAA2}
+.formbox{background:var(--card);border:1px solid var(--hair);border-radius:16px;padding:30px 28px}
+.formbox label{display:block;font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-2);margin-bottom:7px;margin-top:18px}
+.formbox label:first-of-type{margin-top:0}
+.formbox input,.formbox textarea,.formbox select{width:100%;padding:12px 14px;border:1px solid var(--hair);border-radius:10px;background:var(--bg);font-family:'Archivo',sans-serif;font-size:15.5px;color:var(--ink)}
+.formbox textarea{resize:vertical;min-height:110px}
+.formbox input:focus,.formbox textarea:focus,.formbox select:focus{outline:none;border-color:var(--teal);background:var(--card)}
+.formbox .btn{margin-top:22px;width:100%}
+.fnote{font-size:12.5px;color:var(--grey-2);margin-top:13px;line-height:1.5}
+
+/* ---------- banner grande ---------- */
+.bigband{background:var(--ink);padding:56px 0}
+.bb-grid{display:grid;grid-template-columns:1fr 380px;gap:52px;align-items:center}
+.bigband .bb-k{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:14px}
+.bigband h3{font-family:'Anton',sans-serif;font-size:clamp(28px,4.4vw,50px);text-transform:uppercase;line-height:1;color:var(--bg);margin-bottom:14px}
+.bigband p{color:#9EAAA2;font-size:16.5px;max-width:48ch;margin-bottom:24px}
+.bb-list{list-style:none;margin-bottom:26px}
+.bb-list li{padding:9px 0 9px 26px;position:relative;color:#C7D0C9;font-size:15px;border-bottom:1px solid #2A3A34}
+.bb-list li:last-child{border-bottom:none}
+.bb-list li:before{content:"✓";position:absolute;left:0;top:9px;color:var(--lime);font-weight:700}
+.bb-creative{display:block;border-radius:14px;overflow:hidden;box-shadow:0 18px 46px rgba(0,0,0,.4)}
+.bb-creative img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+.bb-mini{margin-top:18px;text-align:center}
+.bb-mini img{border-radius:6px}
+
+/* ---------- pie ---------- */
+footer{background:var(--ink);color:#9EAAA2;padding:54px 0 46px;font-size:13.5px}
+.foot-main{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:34px;border-bottom:1px solid #2A3A34}
+.foot-main h5{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);margin-bottom:14px}
+.foot-main a{display:block;color:#C7D0C9;text-decoration:none;padding:5px 0;font-size:14px}
+.foot-main a:hover{color:var(--lime)}
+.tmt{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.tmt img{height:34px;width:auto}
+.tmt span{font-family:'Anton',sans-serif;font-size:20px;color:var(--bg);text-transform:uppercase;letter-spacing:.04em}
+.foot-brand p{font-size:13.5px;line-height:1.6;max-width:38ch}
+.legal{padding-top:28px;font-size:12.5px;line-height:1.65;color:#7A8880}
+.legal h5{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#C7D0C9;margin-bottom:12px}
+.legal p{margin-bottom:12px;max-width:none}
+.legal strong{color:#C7D0C9}
+.foot-end{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:24px;margin-top:8px;border-top:1px solid #2A3A34;font-family:'Martian Mono',monospace;font-size:11px;color:#7A8880}
+
+@media(min-width:901px){
+  .bn800{display:inline-block}
+  .bannerbox .bn320{display:none}
+}
+@media(max-width:900px){
+  .hero-row,.paths,.two,.cards,.facts,.steps,.pricegrid,.qhead,.newsgrid,.foot-main,.mentor,.contacto,.bb-grid{grid-template-columns:1fr}
+  .bb-creative{max-width:340px;margin:0 auto}
+  .mbox{position:static}
+  .hola-txt small{display:none}
+  .link-login{display:none}
+  .hero-row,.pricegrid{gap:36px}
+  .qhead{gap:16px;align-items:start}
+  .qsub{text-align:left;padding-bottom:0}
+  .top-in{height:76px}.logo{height:46px}
+  .nav a:not(.btn){display:none}
+  .clock-in{justify-content:center;font-size:10.5px;gap:12px}
+}
+a:focus-visible,button:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="clockbar">
+  <div class="wrap clock-in">
+    <span class="clock-l"><span class="dotlive"></span>Asunción, Paraguay · <span id="pyclock" class="mono">--:--:--</span> · UTC−3</span>
+    <span class="clock-r" id="yourtime">Tu hora local: --:--</span>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img src="https://www.trading.com.py/logonuevos.png" alt="Sacred Levels" class="logo">
+    <nav class="nav">
+      <a href="#buscas">¿Qué buscás?</a>
+      <a href="#estrategias">Estrategias</a>
+      <a href="#mentoria">Mentoría</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <!-- visitante sin sesión -->
+    <div class="auth" id="authOut">
+      <a href="/login" class="link-login">Iniciar sesión</a>
+      <a href="/registro" class="btn">Registrarse</a>
+    </div>
+
+    <!-- usuario con sesión iniciada -->
+    <div class="auth" id="authIn" style="display:none">
+      <div class="hola">
+        <span class="avatar">R</span>
+        <span class="hola-txt">
+          <b>Hola, Raúl</b>
+          <small>Cuenta vinculada · acceso completo</small>
+        </span>
+      </div>
+      <a href="/logout" class="salir">Salir</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="wrap hero-row">
+    <div>
+      <span class="freetag">✓ Gratis con tu cuenta Exness — sin cuota mensual</span>
+      <h1>Seis niveles<span class="l2">por sesión.</span><span class="l2"><u>Sin vueltas.</u></span></h1>
+      <p class="lede">Se calculan una vez, a las 07:00 de Paraguay, y quedan escritos. Al cierre marcamos cuáles el precio respetó. Los días malos también quedan.</p>
+      <div class="cta">
+        <a href="#buscas" class="btn">Ver por dónde empezar</a>
+        <a href="#registro" class="btn btn-o">Revisar el historial</a>
+      </div>
+      <p class="micro">El historial es abierto para cualquiera. La sesión en curso pide cuenta vinculada.</p>
+    </div>
+
+    <div class="score">
+      <div class="score-top"><span>XAU/USD · Oro</span><span>18 AGO · 07:00 PY</span></div>
+      <div class="srow"><span class="sn">R3</span><span class="sp">3.428,60</span><span class="st t-wait">Sin tocar</span></div>
+      <div class="srow"><span class="sn">R2</span><span class="sp">3.411,25</span><span class="st t-hit">Reaccionó</span></div>
+      <div class="srow"><span class="sn">R1</span><span class="sp">3.396,80</span><span class="st t-hit">Reaccionó</span></div>
+      <div class="srow slock"><span class="sn">S1</span><span class="sp">3.371,40</span><span class="st t-wait">Bloqueado</span></div>
+      <div class="srow slock"><span class="sn">S2</span><span class="sp">3.354,15</span><span class="st t-wait">Bloqueado</span></div>
+      <div class="srow slock"><span class="sn">S3</span><span class="sp">3.339,90</span><span class="st t-wait">Bloqueado</span></div>
+      <div class="score-foot"><span>Tres visibles sin cuenta</span><a href="#gratis">Desbloquear gratis →</a></div>
+      <div class="nextdrop"><span>Próxima publicación</span><b id="countdown">--:--:--</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="ticker-in">
+    <span>Gratis con cuenta Exness</span><span>·</span>
+    <span>Publicado 07:00 Paraguay · UTC−3</span><span>·</span>
+    <span>Historial abierto de 90 días</span><span>·</span>
+    <span>Los días malos también se muestran</span><span>·</span>
+    <span>Gratis con cuenta Exness</span><span>·</span>
+    <span>Publicado 07:00 Paraguay · UTC−3</span><span>·</span>
+    <span>Historial abierto de 90 días</span><span>·</span>
+    <span>Los días malos también se muestran</span><span>·</span>
+  </div>
+</div>
+
+<!-- ============ ¿QUÉ BUSCÁS? ============ -->
+<section id="buscas" class="white">
+  <div class="wrap">
+    <div class="qhead">
+      <div>
+        <div class="slabel">Elegí por dónde entrar</div>
+        <h2>¿Qué <u>buscás</u>?</h2>
+      </div>
+      <p class="qsub">Dos de los tres caminos no cuestan nada. Está aclarado en cada uno.</p>
+    </div>
+
+    <div class="paths">
+
+      <a class="path p1" href="#estrategias">
+        <div class="p-num">Camino 01</div>
+        <span class="p-tag tag-pago">Gs. 500.000 · pago único</span>
+        <div class="p-quote">Ya opero, pero me falta confianza</div>
+        <p class="p-desc">Sabés leer un gráfico, pero dudás al apretar el botón — o entrás antes de tiempo y el mercado te saca. Dos videos que explican el momento exacto.</p>
+        <ul class="p-list">
+          <li>Cómo confirmar una reacción en el nivel</li>
+          <li>Dónde va el stop para que el ruido no te saque</li>
+          <li>Cuándo conviene no entrar</li>
+        </ul>
+        <div class="p-go"><span>Ver las dos estrategias</span><span class="arrow">→</span></div>
+      </a>
+
+      <a class="path p2" href="#empezar">
+        <div class="p-num">Camino 02</div>
+        <span class="p-tag tag-free">Gratis · sin registro</span>
+        <div class="p-quote">Quiero empezar de cero, sin pagar nada</div>
+        <p class="p-desc">Nunca operaste o recién arrancás. Acá está lo básico en orden, sin que te pidan plata ni el email en el medio.</p>
+        <ul class="p-list">
+          <li>Qué es un nivel y para qué sirve</li>
+          <li>Cuánto arriesgar para no fundir la cuenta</li>
+          <li>Los errores que comete todo el mundo al principio</li>
+        </ul>
+        <div class="p-go"><span>Empezar por acá</span><span class="arrow">→</span></div>
+      </a>
+
+      <a class="path p3" href="#gratis">
+        <div class="p-num">Camino 03</div>
+        <span class="p-tag tag-free">Gratis con cuenta Exness</span>
+        <div class="p-quote">Quiero las calculadoras de niveles</div>
+        <p class="p-desc">Los seis niveles de todos los activos, calculados cada mañana. Se desbloquean solos al abrir tu cuenta — no hay cuota mensual.</p>
+        <ul class="p-list">
+          <li>Niveles diarios de oro, cripto, forex e índices</li>
+          <li>Calculadora de riesgo y tamaño de lote</li>
+          <li>Alertas cuando el precio toca un nivel</li>
+        </ul>
+        <div class="p-go"><span>Ver cómo se activa</span><span class="arrow">→</span></div>
+      </a>
+
+    </div>
+    <p class="qfoot">¿No sabés cuál te toca? <a href="#empezar">Andá por el segundo</a> — siempre podés volver acá.</p>
+  </div>
+</section>
+
+<!-- ============ EMPEZAR DE CERO ============ -->
+<section id="empezar">
+  <div class="wrap">
+    <div class="slabel">Camino 02 · Gratis, sin registro</div>
+    <h2>Cómo se usa un nivel</h2>
+    <p class="slede">Un nivel es un precio marcado de antemano donde el mercado suele frenarse. No te dice si va a subir o bajar. Te dice <strong>dónde mirar</strong>.</p>
+
+    <div class="thesis">
+      <div class="big">Cuando el precio llega al nivel, solo puede hacer <em>dos cosas</em>:<br><u>rebotar</u> o <u>romperlo y volver a apoyarse ahí</u>.</div>
+    </div>
+
+    <div class="groupttl">Nivel por encima del precio · Resistencia</div>
+    <div class="two">
+      <div class="sc">
+        <div class="sc-top"><span class="badge b-sell">Caso 1</span><h3>Rebota</h3></div>
+        <div class="chart"><svg id="c1" viewBox="0 0 460 210"></svg></div>
+        <div class="sc-body">
+          <p>El precio sube, toca el nivel, deja una mecha arriba y se da vuelta. Ahí había vendedores esperando.</p>
+          <div class="sc-do"><div class="k">Qué significa</div><div class="v">Zona para buscar venta, con el stop apenas arriba del nivel.</div></div>
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sc-top"><span class="badge b-buy">Caso 2</span><h3>Rompe y vuelve</h3></div>
+        <div class="chart"><svg id="c2" viewBox="0 0 460 210"></svg></div>
+        <div class="sc-body">
+          <p>Atraviesa el nivel con una vela fuerte, después baja y vuelve a tocarlo desde arriba. Si aguanta, despega. El techo se hizo piso.</p>
+          <div class="sc-do"><div class="k">Qué significa</div><div class="v">La compra se busca en el retroceso, no en la ruptura.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="groupttl">Nivel por debajo del precio · Soporte</div>
+    <div class="two">
+      <div class="sc">
+        <div class="sc-top"><span class="badge b-buy">Caso 3</span><h3>Rebota</h3></div>
+        <div class="chart"><svg id="c3" viewBox="0 0 460 210"></svg></div>
+        <div class="sc-body">
+          <p>El precio baja, toca el nivel, deja una mecha abajo y se da vuelta. Ahí había compradores esperando.</p>
+          <div class="sc-do"><div class="k">Qué significa</div><div class="v">Zona para buscar compra, con el stop apenas abajo del nivel.</div></div>
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sc-top"><span class="badge b-sell">Caso 4</span><h3>Rompe y vuelve</h3></div>
+        <div class="chart"><svg id="c4" viewBox="0 0 460 210"></svg></div>
+        <div class="sc-body">
+          <p>Perfora el nivel, después sube y vuelve a tocarlo desde abajo. Si no lo recupera, se derrumba. El piso se hizo techo.</p>
+          <div class="sc-do"><div class="k">Qué significa</div><div class="v">La venta se busca en el retroceso, no en la ruptura.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="replay" id="replay">↻ Ver las animaciones de nuevo</button>
+
+    <div class="mistake">
+      <h4>El error que comete casi todo el mundo</h4>
+      <p>Entrar apenas el precio toca el nivel, o saltar encima de la vela que rompe. En los dos momentos todavía no sabés qué está pasando: el caso 1 y el caso 2 se ven idénticos hasta que uno se confirma. El nivel te dice dónde prestar atención, no cuándo apretar el botón.</p>
+    </div>
+
+    <div class="steps" style="margin-top:44px">
+      <div class="step"><div class="step-n">1</div><h3>Elegí un solo activo</h3><p>Empezá mirando uno. Seis mercados a la vez es la forma más rápida de no entender ninguno.</p></div>
+      <div class="step"><div class="step-n">2</div><h3>Calculá cuánto arriesgar</h3><p>Antes de la entrada va el tamaño. La calculadora te dice cuántas pérdidas seguidas aguanta tu cuenta.</p></div>
+      <div class="step"><div class="step-n">3</div><h3>Anotá lo que hacés</h3><p>Sin registro no hay mejora. Al mes vas a ver qué horario y qué tamaño te están costando plata.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BANNER ============ -->
+<div class="bannerband">
+  <div class="wrap">
+    <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="sponsored noopener" class="bn320">
+      <img src="https://d3dpet1g0ty5ed.cloudfront.net/ES_Take_control_320x50.png" width="320" height="50" alt="Abrí tu cuenta con Exness" loading="lazy">
+    </a>
+  </div>
+</div>
+
+<!-- ============ ESTRATEGIAS (PAGO) ============ -->
+<section id="estrategias" class="white">
+  <div class="wrap pricegrid">
+    <div>
+      <div class="slabel">Camino 01 · Pago único</div>
+      <h2>Estrategias de precisión</h2>
+      <p class="slede">Los niveles te dicen dónde mirar. Estos dos videos explican qué hacer cuando el precio llega ahí: cómo confirmar la reacción, dónde va el stop y cuándo conviene quedarse afuera.</p>
+      <ul class="strat-list">
+        <li><span class="vidn">1</span><div><h4>Confirmación de reacción en el nivel</h4><p>Cómo distinguir un rechazo real de un toque que sigue de largo, y por qué la mayoría entra una vela antes de tiempo.</p></div></li>
+        <li><span class="vidn">2</span><div><h4>Entrada, stop y salida</h4><p>Dónde poner el stop para que el ruido no te saque, y cómo definir el objetivo antes de abrir la operación.</p></div></li>
+      </ul>
+    </div>
+
+    <div class="pricebox">
+      <div class="kk">Los dos videos · Acceso permanente</div>
+      <div class="price">Gs. 500.000</div>
+      <div class="price-alt">o USD 70</div>
+      <small>Pago único por los dos. No es suscripción y no vence.</small>
+      <div class="pays">
+        <span class="pay">PagoPar</span>
+        <span class="pay">Binance / USDT</span>
+        <span class="pay">Transferencia</span>
+      </div>
+      <a href="#" class="btn">Comprar los dos videos</a>
+      <p class="fine">Guaraníes por PagoPar (tarjeta, transferencia o billetera). Desde el exterior, USD 70 en USDT por Binance. El enlace privado de YouTube llega apenas se confirma el pago.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACCESO GRATIS ============ -->
+<section id="gratis">
+  <div class="wrap">
+    <div class="slabel">Camino 03 · Cuesta cero, se activa solo</div>
+    <h2>Gratis con tu cuenta Exness</h2>
+    <p class="slede">No hay suscripción ni comprobantes que subir. Abrís tu cuenta con nuestro código y el acceso completo queda activo mientras la cuenta siga abierta. El broker nos paga una parte de su spread: vos pagás exactamente lo mismo que pagarías igual.</p>
+
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><h3>Abrís la cuenta</h3><p>Desde el botón de acá abajo. La verificación de identidad la hace el broker, no nosotros.</p></div>
+      <div class="step"><div class="step-n">2</div><h3>Se vincula sola</h3><p>Cuando queda verificada bajo nuestro código, el sitio la detecta y desbloquea todo. Sin mandar capturas.</p></div>
+      <div class="step"><div class="step-n">3</div><h3>Entrás cada mañana</h3><p>Los seis niveles de todos los activos, alertas y confluencia. Mientras operes, el acceso sigue activo.</p></div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-k">Sin cuenta · Abierto para cualquiera</div>
+        <h3>Mirá antes de decidir</h3>
+        <p>Entrás, revisás y te vas. No pedimos ni el email.</p>
+        <ul>
+          <li>Historial completo de sesiones anteriores</li>
+          <li>Qué nivel el precio respetó y cuál atravesó</li>
+          <li>Calculadora de riesgo y tamaño de lote</li>
+          <li>Los tres primeros niveles de hoy</li>
+        </ul>
+      </div>
+      <div class="card hot">
+        <div class="card-k">Con cuenta Exness · Gratis</div>
+        <h3>Operá la sesión de hoy</h3>
+        <p>Todo lo de al lado, más lo que sirve para operar en vivo.</p>
+        <ul>
+          <li>Los seis niveles en todos los activos</li>
+          <li>Alertas cuando el precio toca uno</li>
+          <li>Confluencia entre 15m, 1h, 4h y diario</li>
+          <li>Bitácora personal de operaciones</li>
+        </ul>
+        <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="sponsored noopener" class="btn btn-s">Abrir cuenta y activar</a>
+        <p class="pricenote">¿Ya tenés cuenta en Exness? Se puede transferir el código de socio. Te pasamos el paso a paso.</p>
+      </div>
+    </div>
+
+    <div class="bannerbox">
+      <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="sponsored noopener" class="bn800">
+        <img src="https://d3dpet1g0ty5ed.cloudfront.net/ES_Take_control_800x800.png" width="400" height="400" alt="Abrí tu cuenta con Exness" loading="lazy" style="border-radius:12px">
+      </a>
+      <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="sponsored noopener" class="bn320">
+        <img src="https://d3dpet1g0ty5ed.cloudfront.net/ES_Take_control_320x50.png" width="320" height="50" alt="Abrí tu cuenta con Exness" loading="lazy">
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NOTICIAS ============ -->
+<section id="noticias" class="white">
+  <div class="wrap">
+    <div class="slabel">Contexto del día</div>
+    <h2>Qué está moviendo el mercado</h2>
+    <p class="slede">Un nivel no se opera en el vacío. Si el oro está reaccionando a una tasa de interés o el petróleo a una decisión de la OPEP, conviene saberlo antes de entrar.</p>
+
+    <div class="newsgrid">
+      <div class="newsbox">
+        <div class="news-top">
+          <span class="t">Titulares</span>
+          <span class="live"><span class="dotlive"></span>En vivo</span>
+        </div>
+        <div class="chips" role="tablist">
+          <button class="chip" role="tab" aria-selected="true">Todo</button>
+          <button class="chip" role="tab" aria-selected="false">Oro</button>
+          <button class="chip" role="tab" aria-selected="false">Petróleo</button>
+          <button class="chip" role="tab" aria-selected="false">Divisas</button>
+          <button class="chip" role="tab" aria-selected="false">Acciones</button>
+          <button class="chip" role="tab" aria-selected="false">Cripto</button>
+        </div>
+
+        <a class="nitem" href="#"><div class="nmeta">14:32<span class="nsym">XAU</span></div>
+          <div><div class="nhead">Titular de ejemplo sobre el oro y la decisión de tasas</div><div class="nsrc">Fuente · hace 12 min</div></div></a>
+        <a class="nitem" href="#"><div class="nmeta">13:05<span class="nsym">WTI</span></div>
+          <div><div class="nhead">Titular de ejemplo sobre inventarios de crudo</div><div class="nsrc">Fuente · hace 1 h</div></div></a>
+        <a class="nitem" href="#"><div class="nmeta">11:48<span class="nsym">EUR</span></div>
+          <div><div class="nhead">Titular de ejemplo sobre el euro y el banco central</div><div class="nsrc">Fuente · hace 3 h</div></div></a>
+        <a class="nitem" href="#"><div class="nmeta">10:20<span class="nsym">TSLA</span></div>
+          <div><div class="nhead">Titular de ejemplo sobre resultados de una automotriz</div><div class="nsrc">Fuente · hace 4 h</div></div></a>
+        <a class="nitem" href="#"><div class="nmeta">08:15<span class="nsym">BTC</span></div>
+          <div><div class="nhead">Titular de ejemplo sobre flujos en fondos de cripto</div><div class="nsrc">Fuente · hace 6 h</div></div></a>
+
+        <div class="news-foot">Los titulares se actualizan solos. Este bloque es informativo: no es una recomendación de operar.</div>
+      </div>
+
+      <aside class="tickers">
+        <div class="tk-top">Precios de referencia</div>
+        <div class="tk"><span class="tk-n">Oro<small>XAU/USD</small></span><span class="tk-p">3.386,42</span><span class="tk-c c-up">+0,41%</span></div>
+        <div class="tk"><span class="tk-n">Petróleo<small>WTI</small></span><span class="tk-p">72,18</span><span class="tk-c c-dn">−0,86%</span></div>
+        <div class="tk"><span class="tk-n">Euro<small>EUR/USD</small></span><span class="tk-p">1,08450</span><span class="tk-c c-up">+0,09%</span></div>
+        <div class="tk"><span class="tk-n">Libra<small>GBP/USD</small></span><span class="tk-p">1,27310</span><span class="tk-c c-dn">−0,14%</span></div>
+        <div class="tk"><span class="tk-n">Tesla<small>TSLA</small></span><span class="tk-p">248,60</span><span class="tk-c c-up">+1,72%</span></div>
+        <div class="tk"><span class="tk-n">Nasdaq<small>US100</small></span><span class="tk-p">19.845,5</span><span class="tk-c c-up">+0,73%</span></div>
+        <div class="tk"><span class="tk-n">Bitcoin<small>BTC/USD</small></span><span class="tk-p">63.210</span><span class="tk-c c-up">+0,18%</span></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REGISTRO ============ -->
+<section id="registro">
+  <div class="wrap">
+    <div class="slabel">Sin porcentajes inventados</div>
+    <h2>No decimos que acertamos 87%</h2>
+    <p class="slede">Ese número no significa nada si nadie lo puede verificar. Mostramos las sesiones una por una, con la hora en que se publicó cada nivel, y sacás tu propia conclusión antes de abrir nada.</p>
+    <div class="facts">
+      <div class="fact"><div class="fact-v">6</div><div class="fact-k">niveles por activo, siempre los mismos, sin métodos que se contradicen entre sí.</div></div>
+      <div class="fact"><div class="fact-v">07:00</div><div class="fact-k">hora fija de Paraguay (UTC−3), antes de que abra la sesión de Londres.</div></div>
+      <div class="fact"><div class="fact-v">90 días</div><div class="fact-k">de historial abierto. Nada se corrige ni se borra hacia atrás.</div></div>
+    </div>
+    <div style="margin-top:38px"><a href="#" class="btn btn-o">Abrir el registro completo</a></div>
+  </div>
+</section>
+
+<!-- ============ MENTORÍA ============ -->
+<section id="mentoria">
+  <div class="wrap mentor">
+    <div>
+      <div class="slabel">Cupos limitados · Uno a uno</div>
+      <h2>Mentoría personalizada</h2>
+
+      <p class="mentor-hook">Ninguna página web <u>puede ver tu pantalla.</u></p>
+
+      <p>Los niveles, la calculadora de riesgo y los videos te dan el sistema entero, y funcionan. Pero ninguno de los tres puede mirar la operación que abriste ayer a las diez de la mañana y decirte por qué la cerraste antes de tiempo.</p>
+
+      <p>Eso aparece recién cuando alguien revisa <strong>lo que hiciste vos</strong>: con tu capital, en tu horario, con las decisiones que tomaste en el momento. La mentoría empieza justo donde termina el resto del sitio.</p>
+
+      <ul class="m-incl">
+        <li><span class="m-ico">1</span><div><h4>Ocho sesiones en vivo, uno a uno</h4><p>Por videollamada, con pantalla compartida y tus gráficos reales. No es un curso grabado.</p></div></li>
+        <li><span class="m-ico">2</span><div><h4>Revisión de tus operaciones</h4><p>Vos operás durante la semana y yo reviso qué hiciste, dónde entraste y por qué salió como salió.</p></div></li>
+        <li><span class="m-ico">3</span><div><h4>Un plan escrito, tuyo</h4><p>Reglas concretas de entrada, tamaño y salida, adaptadas a tu capital y al horario en que podés operar.</p></div></li>
+        <li><span class="m-ico">4</span><div><h4>Contacto directo entre sesiones</h4><p>Consultas por WhatsApp durante todo el programa. Cuando aparece la duda, no una semana después.</p></div></li>
+      </ul>
+    </div>
+
+    <aside class="mbox">
+      <div class="kk">Programa completo · 8 semanas</div>
+      <div class="mprice">Gs. 3.000.000</div>
+
+      <div class="mcuotas">
+        <b>o 2 cuotas de 1.500.000</b>
+        <span>La primera al empezar, la segunda a la cuarta semana.</span>
+      </div>
+
+      <a href="#contacto" class="btn btn-s">Consultar disponibilidad</a>
+
+      <div class="legal-mini">
+        <div class="lm-row"><span class="lm-ico">📄</span><div><b>Contrato firmado</b><span>Alcance, fechas y condiciones por escrito antes de pagar.</span></div></div>
+        <div class="lm-row"><span class="lm-ico">🧾</span><div><b>Factura legal</b><span>Comprobante fiscal emitido por cada pago o cuota.</span></div></div>
+      </div>
+
+      <p class="mfine">Antes de cobrar nada hacemos una charla breve para ver si tiene sentido en tu caso. Si no, te lo digo y no perdés plata.</p>
+
+      <div class="cupos"><span class="dotlive"></span>Se toman pocos alumnos por vez para poder revisar las operaciones de cada uno.</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ CONTACTO ============ ============ -->
+<section id="contacto" class="white">
+  <div class="wrap contacto">
+    <div>
+      <div class="slabel">Sin compromiso</div>
+      <h2>Consultá directo con The Mentor</h2>
+      <p class="slede" style="margin-bottom:0">Dudas sobre los niveles, sobre las estrategias, sobre si la mentoría te sirve, o sobre cualquier cosa del sitio. Contesto yo, no un bot.</p>
+
+      <ul class="cbenef">
+        <li>Respuesta en menos de 24 horas hábiles</li>
+        <li>Si tu duda se resuelve con algo gratis, te lo digo</li>
+        <li>No te vamos a agregar a ninguna lista sin avisarte</li>
+      </ul>
+
+      <a href="https://wa.me/595981234128" target="_blank" rel="noopener" class="wapp">
+        <span style="font-size:24px">💬</span>
+        <span><b>WhatsApp directo</b><small>+595 981 234 128</small></span>
+      </a>
+    </div>
+
+    <form class="formbox" action="https://formspree.io/f/xreapnkb" method="POST">
+      <label for="f-nombre">Tu nombre</label>
+      <input type="text" id="f-nombre" name="nombre" required placeholder="Cómo te llamás">
+
+      <label for="f-email">Email</label>
+      <input type="email" id="f-email" name="email" required placeholder="tu@email.com">
+
+      <label for="f-tema">Sobre qué querés consultar</label>
+      <select id="f-tema" name="tema">
+        <option>Mentoría personalizada</option>
+        <option>Estrategias de precisión</option>
+        <option>Acceso a los niveles</option>
+        <option>Otra cosa</option>
+      </select>
+
+      <label for="f-msg">Tu mensaje</label>
+      <textarea id="f-msg" name="mensaje" required placeholder="Contame en qué estás y qué te gustaría resolver."></textarea>
+
+      <button type="submit" class="btn">Enviar consulta →</button>
+      <p class="fnote">Tus datos se usan solo para responderte. No se comparten con terceros ni se venden.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ BANNER GRANDE ============ -->
+<div class="bigband">
+  <div class="wrap bb-grid">
+    <div>
+      <div class="bb-k">Requisito para el acceso gratis</div>
+      <h3>Abrí tu cuenta y desbloqueá todo</h3>
+      <p>Se activa solo cuando la cuenta queda verificada bajo nuestro código. Sin cuota mensual, sin comprobantes, sin trámite.</p>
+      <ul class="bb-list">
+        <li>Los seis niveles en todos los activos, cada mañana</li>
+        <li>Alertas cuando el precio toca un nivel</li>
+        <li>Confluencia entre 15m, 1h, 4h y diario</li>
+        <li>Bitácora personal de operaciones</li>
+      </ul>
+      <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="sponsored noopener" class="btn btn-s">Abrir cuenta y activar →</a>
+      <div class="bb-mini">
+        <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="sponsored noopener">
+          <img src="https://d3dpet1g0ty5ed.cloudfront.net/ES_Take_control_320x50.png" width="320" height="50" alt="Abrí tu cuenta con Exness" loading="lazy">
+        </a>
+      </div>
+    </div>
+
+    <a href="https://one.exnessonelink.com/intl/es/a/xwx0gc598n" target="_blank" rel="sponsored noopener" class="bb-creative">
+      <img src="https://d3dpet1g0ty5ed.cloudfront.net/1_ES_NBP_4_5.jpg" width="1080" height="1350" alt="Abrí tu cuenta con Exness" loading="lazy">
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+
+    <div class="foot-main">
+      <div class="foot-brand">
+        <div class="tmt"><img src="tmtlogo.png" alt="TMT"><span>TMT</span></div>
+        <p>Niveles algorítmicos publicados cada mañana a las 07:00 de Paraguay, con registro público verificado al cierre.</p>
+      </div>
+      <div>
+        <h5>El sitio</h5>
+        <a href="#buscas">¿Qué buscás?</a>
+        <a href="#empezar">Empezar de cero</a>
+        <a href="#estrategias">Estrategias de precisión</a>
+        <a href="#registro">Registro público</a>
+      </div>
+      <div>
+        <h5>Legales</h5>
+        <a href="/terminos">Términos y condiciones</a>
+        <a href="/privacidad">Política de privacidad</a>
+        <a href="/riesgo">Advertencia de riesgo</a>
+        <a href="/contacto">Contacto</a>
+      </div>
+    </div>
+
+    <div class="legal">
+      <h5>Advertencia de riesgo y aviso legal</h5>
+
+      <p><strong>Esto no es asesoramiento financiero.</strong> Todo el contenido de este sitio — niveles, análisis, materiales educativos y titulares — tiene fines informativos y educativos únicamente. No constituye asesoramiento de inversión, recomendación personalizada, ni oferta o solicitud de compra o venta de ningún instrumento financiero. No conocemos tu situación patrimonial, tus objetivos ni tu tolerancia al riesgo, y por lo tanto nada de lo publicado acá está adaptado a tu caso particular.</p>
+
+      <p><strong>Los niveles son un cálculo, no una predicción.</strong> Se obtienen aplicando una fórmula determinista sobre el precio histórico. Que el precio haya respetado un nivel en el pasado no implica que vaya a hacerlo de nuevo. El registro público describe lo que ocurrió; no anticipa lo que va a ocurrir. <strong>El rendimiento pasado no garantiza resultados futuros.</strong></p>
+
+      <p><strong>Operar con apalancamiento es de alto riesgo.</strong> Los CFD, el mercado de divisas y los productos apalancados pueden hacerte perder dinero rápidamente, incluso más de lo que depositaste. Un porcentaje elevado de las cuentas minoristas pierde dinero operando estos instrumentos. No inviertas dinero que no puedas permitirte perder, ni fondos destinados a gastos esenciales, deudas o emergencias.</p>
+
+      <p><strong>Relación con el broker.</strong> Sacred Levels es socio introductor de Exness y percibe una comisión por las cuentas abiertas a través de nuestros enlaces. Esa comisión la paga el broker con parte de su diferencial y no representa un costo adicional para vos. Aun así, queremos que lo sepas: es un incentivo económico que conviene tener presente al leer cualquier recomendación de abrir cuenta. La elección del broker es tuya y podés compararlo con otras opciones.</p>
+
+      <p><strong>Contenido de terceros.</strong> Los titulares financieros provienen de fuentes externas. No verificamos ni respaldamos su exactitud, y los mostramos solo como contexto de mercado.</p>
+
+      <p><strong>Disponibilidad y errores.</strong> Los datos pueden presentar retrasos, interrupciones o errores. No garantizamos disponibilidad continua ni exactitud de los precios mostrados, y no somos responsables por decisiones tomadas a partir de información incompleta o desactualizada.</p>
+
+      <p><strong>Materiales de pago.</strong> Los videos de estrategias son material educativo. No prometen ni garantizan ganancias de ningún tipo. Al comprarlos accedés a contenido informativo, no a un servicio de gestión de inversiones ni a señales de operación.</p>
+
+      <p><strong>Jurisdicción y edad.</strong> Este sitio se opera desde Paraguay. Es tu responsabilidad verificar que operar instrumentos financieros sea legal en tu país de residencia y cumplir con la normativa fiscal aplicable. El contenido está dirigido exclusivamente a mayores de 18 años.</p>
+    </div>
+
+    <div class="foot-end">
+      <span>© 2026 Sacred Levels · TMT</span>
+      <span>ASUNCIÓN, PARAGUAY · UTC−3</span>
+    </div>
+
+  </div>
+</footer>
+
+<button class="demo-toggle" id="demoToggle">Ver como usuario con sesión</button>
+
+<script>
+/* ---------- reloj y cuenta regresiva ---------- */
+(function(){
+  const pad=n=>String(n).padStart(2,'0');
+  function pyNow(){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000-3*3600000);}
+  function tick(){
+    const py=pyNow(), l=new Date();
+    document.getElementById('pyclock').textContent=pad(py.getHours())+':'+pad(py.getMinutes())+':'+pad(py.getSeconds());
+    document.getElementById('yourtime').textContent='Tu hora local: '+pad(l.getHours())+':'+pad(l.getMinutes());
+    const next=new Date(py); next.setHours(7,0,0,0);
+    if(py>=next) next.setDate(next.getDate()+1);
+    let d=Math.floor((next-py)/1000);
+    const h=Math.floor(d/3600); d%=3600;
+    document.getElementById('countdown').textContent=pad(h)+':'+pad(Math.floor(d/60))+':'+pad(d%60);
+  }
+  tick(); setInterval(tick,1000);
+})();
+
+/* ---------- demo: alternar estado de sesión (borrar en producción) ---------- */
+(function(){
+  let dentro=false;
+  const b=document.getElementById('demoToggle');
+  b.addEventListener('click',()=>{
+    dentro=!dentro;
+    document.getElementById('authOut').style.display = dentro?'none':'flex';
+    document.getElementById('authIn').style.display  = dentro?'flex':'none';
+    b.textContent = dentro?'Ver como visitante':'Ver como usuario con sesión';
+  });
+})();
+
+/* ---------- velas ---------- */
+(function(){
+const NS='http://www.w3.org/2000/svg';
+const DATA={
+  c1:{level:100,color:'#C4472F',tag:'RESISTENCIA',markAt:6,
+    c:[[88,90,87,89.5],[89.5,91,89,90.5],[90.5,93,90,92.5],[92.5,95,92,94.5],[94.5,97,94,96.5],
+       [96.5,99,96,98.5],[98.5,100.4,98,99],[99,99.5,96,96.5],[96.5,97,94,94.5],[94.5,95,92,92.5],
+       [92.5,93,90,90.5],[90.5,91,88,88.5],[88.5,89,86,86.5],[86.5,87,84,84.5]]},
+  c2:{level:100,color:'#0F7A6B',tag:'RESISTENCIA',markAt:9,
+    c:[[86,88,85,87.5],[87.5,89,87,88.5],[88.5,91,88,90.5],[90.5,93,90,92.5],[92.5,95,92,94.5],
+       [94.5,97,94,96.5],[96.5,99,96,98.5],[98.5,103.5,98,102.5],[102.5,103.5,100.5,101],
+       [101,101.5,99.7,100.3],[100.3,103,100,102.5],[102.5,105.5,102,105],[105,108.5,104.5,108],[108,112,107.5,111.5]]},
+  c3:{level:100,color:'#0F7A6B',tag:'SOPORTE',markAt:6,
+    c:[[112,113,110,110.5],[110.5,111,108,108.5],[108.5,109,106,106.5],[106.5,107,104,104.5],
+       [104.5,105,102,102.5],[102.5,103,100.5,101],[101,101.5,99.6,101],[101,104,100.8,103.5],
+       [103.5,106,103,105.5],[105.5,108,105,107.5],[107.5,110,107,109.5],[109.5,112,109,111.5],
+       [111.5,114,111,113.5],[113.5,116,113,115.5]]},
+  c4:{level:100,color:'#C4472F',tag:'SOPORTE',markAt:9,
+    c:[[114,115,112,112.5],[112.5,113,110,110.5],[110.5,111,108,108.5],[108.5,109,106,106.5],
+       [106.5,107,104,104.5],[104.5,105,102,102.5],[102.5,103,100.5,101],[101,101.5,96.5,97],
+       [97,99.5,96.5,99],[99,100.3,98.5,99.7],[99.7,100,97,97.5],[97.5,98,94.5,95],
+       [95,95.5,92,92.5],[92.5,93,89,89.5]]}
+};
+function draw(id){
+  const d=DATA[id], svg=document.getElementById(id);
+  if(!svg) return;
+  svg.innerHTML='';
+  const W=460,H=210,padL=8,padR=8,padT=14,padB=14;
+  const all=d.c.flat().concat([d.level]);
+  const hi=Math.max(...all)+2, lo=Math.min(...all)-2;
+  const y=v=>padT+(hi-v)/(hi-lo)*(H-padT-padB);
+  const n=d.c.length, slot=(W-padL-padR)/n, bw=slot*0.56;
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  [0.25,0.75].forEach(f=>svg.appendChild(el('line',{x1:0,y1:padT+f*(H-padT-padB),x2:W,y2:padT+f*(H-padT-padB),stroke:'#DDE4DE','stroke-width':1})));
+  svg.appendChild(el('line',{x1:0,y1:y(d.level),x2:W,y2:y(d.level),stroke:d.color,'stroke-width':2.5,'stroke-dasharray':'7 6'}));
+  const lb=el('text',{x:8,y:y(d.level)-8,'font-family':'Martian Mono, monospace','font-size':10.5,fill:d.color});
+  lb.textContent=d.tag+' · 3.396,80'; svg.appendChild(lb);
+  d.c.forEach((k,i)=>{
+    const [o,h,l,c]=k, x=padL+i*slot+slot/2, up=c>=o, col=up?'#0F7A6B':'#C4472F';
+    const g=el('g',{class:'cndl',style:'animation-delay:'+(i*0.075)+'s'});
+    g.appendChild(el('line',{x1:x,y1:y(h),x2:x,y2:y(l),stroke:col,'stroke-width':1.6,'stroke-linecap':'round'}));
+    const top=y(Math.max(o,c)), bot=y(Math.min(o,c));
+    g.appendChild(el('rect',{x:x-bw/2,y:top,width:bw,height:Math.max(2,bot-top),fill:up?col:'#fff',stroke:col,'stroke-width':1.6,rx:1}));
+    svg.appendChild(g);
+  });
+  const mx=padL+d.markAt*slot+slot/2, my=y(d.level);
+  const mg=el('g',{class:'mark',style:'transform-origin:'+mx+'px '+my+'px;animation-delay:'+((d.markAt+1)*0.075+0.1)+'s'});
+  mg.appendChild(el('circle',{cx:mx,cy:my,r:8.5,fill:'none',stroke:d.color,'stroke-width':2.5}));
+  mg.appendChild(el('circle',{cx:mx,cy:my,r:3,fill:d.color}));
+  svg.appendChild(mg);
+}
+function drawAll(){['c1','c2','c3','c4'].forEach(draw);}
+drawAll();
+document.getElementById('replay').addEventListener('click',drawAll);
+})();
+</script>
+</body>
+</html>

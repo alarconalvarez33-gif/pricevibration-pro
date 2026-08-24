@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Niveles y registro — Sacred Levels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F5F2;--card:#FFFFFF;--ink:#11201C;--grey:#57685F;--grey-2:#9EAAA2;
+  --hair:#DDE4DE;--teal:#0F7A6B;--teal-d:#0A5A4F;--lime:#C8E86A;--sun:#FFC53D;--red:#C4472F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.mono{font-family:'Martian Mono',monospace;font-variant-numeric:tabular-nums}
+img{max-width:100%}
+
+.clockbar{background:var(--ink);color:var(--bg);padding:9px 0;font-family:'Martian Mono',monospace;font-size:11.5px;letter-spacing:.06em}
+.clock-in{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:space-between}
+.clock-l{display:flex;align-items:center;gap:10px}
+.dotlive{width:7px;height:7px;border-radius:50%;background:var(--lime);animation:p 2s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
+.clock-r{color:var(--lime)}
+
+.top{background:var(--bg);border-bottom:1px solid var(--hair);position:sticky;top:0;z-index:20}
+.top-in{display:flex;align-items:center;gap:28px;height:88px}
+.logo{height:56px;width:auto;display:block}
+.nav{display:flex;gap:26px;margin-left:auto;align-items:center}
+.nav a{color:var(--grey);text-decoration:none;font-size:14.5px;font-weight:500}
+.nav a:hover{color:var(--teal)}
+.btn{display:inline-block;background:var(--teal);color:#fff;padding:12px 22px;font-size:14.5px;font-weight:700;text-decoration:none;border-radius:999px;border:none;cursor:pointer;font-family:'Archivo',sans-serif}
+.btn:hover{background:var(--teal-d)}
+.btn-s{background:var(--sun);color:var(--ink)}
+.btn-s:hover{background:#FFD469}
+.btn-o{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn-o:hover{background:var(--ink);color:var(--bg)}
+
+.head{padding:52px 0 40px}
+.slabel{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:16px}
+h1{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(36px,6vw,68px);line-height:.94;margin-bottom:16px}
+h2{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(30px,4.6vw,50px);line-height:.96;margin-bottom:16px;max-width:19ch}
+.slede{color:var(--grey);max-width:58ch;font-size:17px}
+
+/* ---- asset tabs ---- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.tab{
+  background:var(--card);border:1px solid var(--hair);border-radius:999px;
+  padding:9px 17px;font-size:14px;font-weight:600;cursor:pointer;color:var(--grey);
+  font-family:'Archivo',sans-serif;display:flex;align-items:center;gap:8px;
+}
+.tab:hover{border-color:var(--teal);color:var(--teal)}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.tab .tk{font-family:'Martian Mono',monospace;font-size:10.5px;opacity:.65}
+
+/* ---- level board ---- */
+.boardwrap{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+.board{background:var(--card);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+.b-top{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;background:var(--teal);color:#fff;gap:12px;flex-wrap:wrap}
+.b-name{font-family:'Anton',sans-serif;font-size:21px;text-transform:uppercase;letter-spacing:.01em}
+.b-meta{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.08em;opacity:.85}
+.b-spot{padding:16px 22px;border-bottom:1px solid var(--hair);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.b-spot .lbl{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-2)}
+.b-spot .val{font-family:'Anton',sans-serif;font-size:34px;line-height:1}
+.b-chg{font-family:'Martian Mono',monospace;font-size:13px;padding:3px 9px;border-radius:999px}
+.up{background:var(--lime);color:var(--ink)}
+.down{background:#F6DED9;color:var(--red)}
+
+.lrow{display:grid;grid-template-columns:44px 1fr 96px auto;gap:14px;align-items:center;padding:13px 22px;border-bottom:1px solid var(--hair)}
+.lrow.spotline{background:var(--bg);border-top:2px dashed var(--teal);border-bottom:2px dashed var(--teal)}
+.ln{font-family:'Martian Mono',monospace;font-size:12px;color:var(--grey-2)}
+.lp{font-family:'Anton',sans-serif;font-size:25px;letter-spacing:.01em}
+.ld{font-family:'Martian Mono',monospace;font-size:12px;color:var(--grey);text-align:right}
+.lt{font-family:'Martian Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.t-hit{background:var(--lime);color:var(--ink)}
+.t-wait{background:var(--bg);color:var(--grey-2)}
+.t-thru{background:#F6DED9;color:var(--red)}
+.lrow.locked .lp,.lrow.locked .ld{color:var(--hair);filter:blur(5px);user-select:none}
+.b-foot{padding:15px 22px;background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;color:var(--grey);flex-wrap:wrap}
+.b-foot a{color:var(--teal);font-weight:700;text-decoration:none}
+.spotlbl{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:600}
+
+.side{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:24px 22px}
+.side h3{font-size:17px;font-weight:700;margin-bottom:10px}
+.side p{font-size:14px;color:var(--grey);margin-bottom:16px}
+.side dl{font-size:13.5px}
+.side dt{font-family:'Martian Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-2);margin-top:14px}
+.side dd{color:var(--ink);margin-top:3px}
+
+/* ---- registry ---- */
+section{padding:74px 0}
+.white{background:var(--card)}
+.regwrap{border:1px solid var(--hair);border-radius:14px;overflow:hidden;background:var(--card)}
+.reg-top{padding:16px 22px;background:var(--ink);color:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.reg-top .t{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.reg-top .c{font-family:'Anton',sans-serif;font-size:17px;color:var(--lime);text-transform:uppercase}
+table{width:100%;border-collapse:collapse}
+th{font-family:'Martian Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:13px 16px;color:var(--grey-2);font-weight:400;border-bottom:1px solid var(--hair);background:var(--bg)}
+td{padding:13px 16px;border-bottom:1px solid var(--hair);font-size:14.5px}
+tbody tr:last-child td{border-bottom:none}
+td.n{font-family:'Martian Mono',monospace;font-variant-numeric:tabular-nums}
+.bar{display:flex;gap:3px;align-items:center}
+.pip{width:11px;height:11px;border-radius:2px}
+.pip.h{background:var(--teal)}
+.pip.m{background:var(--hair)}
+.reg-note{font-size:13.5px;color:var(--grey-2);margin-top:18px;max-width:66ch;line-height:1.6}
+
+/* rule box */
+.rule{background:var(--bg);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:22px 24px;margin-top:30px}
+.rule h4{font-size:15px;font-weight:700;margin-bottom:8px}
+.rule p{font-size:14.5px;color:var(--grey)}
+.rule code{font-family:'Martian Mono',monospace;font-size:13px;background:var(--card);padding:2px 6px;border-radius:4px}
+
+/* pricing */
+.pricegrid{display:grid;grid-template-columns:1fr 380px;gap:52px;align-items:start}
+.strat-list{list-style:none}
+.strat-list li{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--hair)}
+.strat-list li:last-child{border-bottom:none}
+.vidn{font-family:'Anton',sans-serif;font-size:13px;color:var(--teal);border:2px solid var(--teal);border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.strat-list h4{font-size:17px;font-weight:700;margin-bottom:4px}
+.strat-list p{font-size:14.5px;color:var(--grey)}
+.pricebox{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:32px 28px;text-align:center}
+.kk{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-2);margin-bottom:14px}
+.price{font-family:'Anton',sans-serif;font-size:46px;line-height:1;text-transform:uppercase}
+.price-alt{font-family:'Anton',sans-serif;font-size:26px;color:var(--teal);margin-top:6px;text-transform:uppercase}
+.price small{display:block;font-family:'Archivo',sans-serif;font-size:14.5px;font-weight:500;color:var(--grey);text-transform:none;margin-top:12px;line-height:1.5}
+.pays{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.pay{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--bg);border:1px solid var(--hair);border-radius:999px;padding:6px 12px;color:var(--grey)}
+.pricebox .btn{margin-top:20px;width:100%}
+.fine{font-size:12.5px;color:var(--grey-2);margin-top:14px;line-height:1.5}
+
+footer{border-top:1px solid var(--hair);padding:44px 0 54px;font-size:13px;color:var(--grey-2)}
+.foot{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.foot p{max-width:60ch;line-height:1.6}
+
+@media(max-width:900px){
+  .boardwrap,.pricegrid{grid-template-columns:1fr}
+  .top-in{height:76px}.logo{height:46px}
+  .nav a:not(.btn){display:none}
+  .clock-in{justify-content:center;font-size:10.5px;gap:12px}
+  .lrow{grid-template-columns:38px 1fr auto;gap:10px}
+  .ld{display:none}
+  th:nth-child(3),td:nth-child(3){display:none}
+}
+a:focus-visible,button:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="clockbar">
+  <div class="wrap clock-in">
+    <span class="clock-l"><span class="dotlive"></span>Asunción, Paraguay · <span id="pyclock" class="mono">--:--:--</span> · UTC−3</span>
+    <span class="clock-r" id="yourtime">Tu hora local: --:--</span>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img src="https://www.trading.com.py/logonuevos.png" alt="Sacred Levels" class="logo">
+    <nav class="nav">
+      <a href="#niveles">Niveles de hoy</a>
+      <a href="#registro">Registro</a>
+      <a href="#estrategias">Estrategias</a>
+      <a href="#" class="btn">Activar gratis</a>
+    </nav>
+  </div>
+</header>
+
+<div class="head" id="niveles">
+  <div class="wrap">
+    <div class="slabel">Sesión del 18 de agosto · Publicado 07:00 PY (UTC−3)</div>
+    <h1>Niveles de hoy</h1>
+    <p class="slede">Los mismos seis niveles para todos los activos, calculados con la misma fórmula. Elegí el mercado que operás.</p>
+  </div>
+</div>
+
+<div class="wrap" style="padding-bottom:70px">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-a="xau">Oro <span class="tk">XAU/USD</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-a="btc">Bitcoin <span class="tk">BTC/USD</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-a="eth">Ethereum <span class="tk">ETH/USD</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-a="eur">Euro <span class="tk">EUR/USD</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-a="gbp">Libra <span class="tk">GBP/USD</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-a="nas">Nasdaq <span class="tk">US100</span></button>
+  </div>
+
+  <div class="boardwrap">
+    <div class="board">
+      <div class="b-top">
+        <span class="b-name" id="bName">Oro · XAU/USD</span>
+        <span class="b-meta" id="bMeta">Publicado 18 AGO 07:00 PY</span>
+      </div>
+      <div class="b-spot">
+        <span class="lbl">Precio ahora</span>
+        <span class="val" id="bSpot">3.386,42</span>
+        <span class="b-chg up" id="bChg">+0,41%</span>
+      </div>
+      <div id="rows"></div>
+      <div class="b-foot">
+        <span id="bFoot">Tres niveles visibles sin cuenta</span>
+        <a href="#">Desbloquear gratis con Exness →</a>
+      </div>
+    </div>
+
+    <aside class="side">
+      <h3>Cómo leer esto</h3>
+      <p>R1 a R3 quedan arriba del precio y actúan como techo. S1 a S3 quedan abajo y actúan como piso. La línea punteada marca dónde está el precio ahora mismo.</p>
+      <dl>
+        <dt>Reaccionó</dt>
+        <dd>El precio entró en la zona del nivel y giró en contra.</dd>
+        <dt>Atravesado</dt>
+        <dd>El precio pasó de largo sin frenarse.</dd>
+        <dt>Sin tocar</dt>
+        <dd>El precio todavía no llegó ahí en esta sesión.</dd>
+      </dl>
+    </aside>
+  </div>
+</div>
+
+<section id="registro" class="white">
+  <div class="wrap">
+    <div class="slabel">Se llena solo, una sesión por día</div>
+    <h2>Registro público</h2>
+    <p class="slede" style="margin-bottom:34px">Cada fila se escribió a las 07:00, antes de que el mercado se moviera, y se verificó al cierre. No se puede corregir hacia atrás.</p>
+
+    <div class="regwrap">
+      <div class="reg-top">
+        <span class="t">Sesiones verificadas</span>
+        <span class="c">12 de 90 · empezamos el 3 de agosto</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Sesión</th><th>Activo</th><th>Publicado</th><th>Niveles</th><th>Reaccionaron</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="n">15.08</td><td>XAU/USD</td><td class="n">07:00 PY</td><td><span class="bar"><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip m"></i></span></td><td class="n">5 de 6</td></tr>
+          <tr><td class="n">15.08</td><td>BTC/USD</td><td class="n">07:00 PY</td><td><span class="bar"><i class="pip h"></i><i class="pip h"></i><i class="pip m"></i><i class="pip m"></i><i class="pip m"></i><i class="pip m"></i></span></td><td class="n">2 de 6</td></tr>
+          <tr><td class="n">14.08</td><td>XAU/USD</td><td class="n">07:00 PY</td><td><span class="bar"><i class="pip h"></i><i class="pip m"></i><i class="pip m"></i><i class="pip m"></i><i class="pip m"></i><i class="pip m"></i></span></td><td class="n">1 de 6</td></tr>
+          <tr><td class="n">14.08</td><td>EUR/USD</td><td class="n">07:00 PY</td><td><span class="bar"><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip m"></i><i class="pip m"></i></span></td><td class="n">4 de 6</td></tr>
+          <tr><td class="n">13.08</td><td>XAU/USD</td><td class="n">07:00 PY</td><td><span class="bar"><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip m"></i><i class="pip m"></i><i class="pip m"></i></span></td><td class="n">3 de 6</td></tr>
+          <tr><td class="n">13.08</td><td>US100</td><td class="n">07:00 PY</td><td><span class="bar"><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip h"></i><i class="pip m"></i></span></td><td class="n">5 de 6</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rule">
+      <h4>La regla, escrita antes de empezar</h4>
+      <p>Un nivel cuenta como <code>reaccionó</code> cuando el precio entra en una franja de <code>±0,15%</code> alrededor del nivel y después se aleja <code>0,30%</code> en dirección contraria dentro de la misma sesión. Si pasa de largo sin frenarse, cuenta como <code>atravesado</code>. Esta definición no cambia: si algún día la cambiamos, se avisa y el registro anterior queda marcado con la regla vieja.</p>
+    </div>
+
+    <p class="reg-note">Los niveles se congelan en la base de datos a las 07:00 con la hora exacta de publicación. A las 21:00 un proceso automático trae el máximo, el mínimo y el cierre de la sesión y marca cada nivel. Nadie toca esa tabla a mano.</p>
+  </div>
+</section>
+
+<section id="estrategias">
+  <div class="wrap pricegrid">
+    <div>
+      <div class="slabel">Aparte del acceso gratis</div>
+      <h2>Estrategias de precisión</h2>
+      <p class="slede">Los niveles te dicen dónde mirar. Estos videos explican qué hacer cuando el precio llega ahí: cómo confirmar la reacción, dónde va el stop y cuándo conviene no entrar.</p>
+      <ul class="strat-list">
+        <li><span class="vidn">1</span><div><h4>Confirmación de reacción en el nivel</h4><p>Cómo distinguir un rechazo real de un toque que sigue de largo, y por qué la mayoría entra una vela antes de tiempo.</p></div></li>
+        <li><span class="vidn">2</span><div><h4>Entrada, stop y salida</h4><p>Dónde poner el stop para que el ruido no te saque, y cómo definir el objetivo antes de abrir la operación.</p></div></li>
+      </ul>
+    </div>
+
+    <div class="pricebox">
+      <div class="kk">Los dos videos · Acceso permanente</div>
+      <div class="price">Gs. 500.000</div>
+      <div class="price-alt">o USD 70</div>
+      <small>Pago único por los dos. No es suscripción y no vence.</small>
+      <div class="pays">
+        <span class="pay">PagoPar</span>
+        <span class="pay">Binance / USDT</span>
+        <span class="pay">Transferencia</span>
+      </div>
+      <a href="#" class="btn">Comprar los dos videos</a>
+      <p class="fine">Guaraníes por PagoPar (tarjeta, transferencia o billetera). Desde el exterior, USD 70 en USDT por Binance. El enlace privado llega apenas se confirma el pago.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <p>Los niveles son un cálculo sobre el precio, no una predicción ni una recomendación de compra o venta. El registro describe lo que ocurrió, no lo que va a ocurrir. Operar con apalancamiento puede costarte más de lo que depositaste. Sacred Levels recibe una comisión del broker por las cuentas referidas.</p>
+    <p class="mono">SACRED LEVELS · ASUNCIÓN · UTC−3</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const pad=n=>String(n).padStart(2,'0');
+  function pyNow(){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*60000-3*3600000);}
+  function tick(){
+    const py=pyNow();
+    document.getElementById('pyclock').textContent=pad(py.getHours())+':'+pad(py.getMinutes())+':'+pad(py.getSeconds());
+    const l=new Date();
+    document.getElementById('yourtime').textContent='Tu hora local: '+pad(l.getHours())+':'+pad(l.getMinutes());
+  }
+  tick();setInterval(tick,1000);
+
+  // Cada activo tiene su propia precisión decimal — esto importa de verdad
+  const A={
+    xau:{name:'Oro · XAU/USD',dec:2,spot:3386.42,chg:'+0,41%',up:true,
+         lv:[[3428.60,'wait'],[3411.25,'wait'],[3396.80,'hit'],[3371.40,'hit'],[3354.15,'thru'],[3339.90,'wait']]},
+    btc:{name:'Bitcoin · BTC/USD',dec:0,spot:63210,chg:'+0,18%',up:true,
+         lv:[[64890,'wait'],[64120,'wait'],[63540,'hit'],[62880,'hit'],[62310,'wait'],[61740,'wait']]},
+    eth:{name:'Ethereum · ETH/USD',dec:2,spot:2456.20,chg:'−0,62%',up:false,
+         lv:[[2588.40,'wait'],[2534.10,'wait'],[2489.75,'thru'],[2431.60,'hit'],[2388.20,'wait'],[2344.85,'wait']]},
+    eur:{name:'Euro · EUR/USD',dec:5,spot:1.08450,chg:'+0,09%',up:true,
+         lv:[[1.09240,'wait'],[1.08910,'wait'],[1.08620,'hit'],[1.08210,'hit'],[1.07880,'wait'],[1.07540,'wait']]},
+    gbp:{name:'Libra · GBP/USD',dec:5,spot:1.27310,chg:'−0,14%',up:false,
+         lv:[[1.28150,'wait'],[1.27820,'wait'],[1.27540,'hit'],[1.27080,'thru'],[1.26710,'wait'],[1.26340,'wait']]},
+    nas:{name:'Nasdaq · US100',dec:1,spot:19845.5,chg:'+0,73%',up:true,
+         lv:[[20180.0,'wait'],[20035.5,'wait'],[19920.0,'hit'],[19768.5,'hit'],[19640.0,'wait'],[19512.5,'wait']]}
+  };
+  const TAG={hit:['t-hit','Reaccionó'],wait:['t-wait','Sin tocar'],thru:['t-thru','Atravesado']};
+  const N=['R3','R2','R1','S1','S2','S3'];
+  const fmt=(v,d)=>v.toLocaleString('es-PY',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+  function render(key){
+    const a=A[key];
+    document.getElementById('bName').textContent=a.name;
+    document.getElementById('bSpot').textContent=fmt(a.spot,a.dec);
+    const chg=document.getElementById('bChg');
+    chg.textContent=a.chg; chg.className='b-chg '+(a.up?'up':'down');
+
+    let html='';
+    a.lv.forEach((L,i)=>{
+      const [price,st]=L;
+      const locked=i>2;                       // los tres de abajo, bloqueados
+      const dist=((price-a.spot)/a.spot*100);
+      const distTxt=(dist>0?'+':'−')+Math.abs(dist).toFixed(2)+'%';
+      // línea del precio actual entre resistencias y soportes
+      if(i===3){
+        html+='<div class="lrow spotline"><span class="ln"></span><span class="spotlbl">Precio ahora · '+fmt(a.spot,a.dec)+'</span><span></span><span></span></div>';
+      }
+      const [cls,txt]=TAG[st];
+      html+='<div class="lrow'+(locked?' locked':'')+'">'
+          + '<span class="ln">'+N[i]+'</span>'
+          + '<span class="lp">'+fmt(price,a.dec)+'</span>'
+          + '<span class="ld">'+distTxt+'</span>'
+          + '<span class="lt '+(locked?'t-wait':cls)+'">'+(locked?'Bloqueado':txt)+'</span>'
+          + '</div>';
+    });
+    document.getElementById('rows').innerHTML=html;
+  }
+
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      render(t.dataset.a);
+    });
+  });
+  render('xau');
+})();
+</script>
+</body>
+</html>
