@@ -59,25 +59,45 @@ interface Props {
   isAdmin?: boolean;
   trialStartedAt: number | null;
   trialEndsAt: number | null;
+  /** Prices resolved during the server render, so the first paint has real numbers. */
+  initialMarkets: MarketRow[];
+  /** Levels for the default asset, likewise resolved server-side. */
+  initialLevels: LevelsResponse | null;
 }
 
 const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000;
 const TRIAL_COOKIE = 'sl_trial_start';
 
-export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = false, trialStartedAt, trialEndsAt }: Props) {
+function indexBySymbol(rows: MarketRow[]): Record<string, MarketRow> {
+  const out: Record<string, MarketRow> = {};
+  for (const row of rows) out[row.symbol] = row;
+  return out;
+}
+
+export default function Terminal({
+  userEmail, isAuthed, isPremium, isAdmin = false, trialStartedAt, trialEndsAt,
+  initialMarkets, initialLevels,
+}: Props) {
   // ── State ──────────────────────────────────────────────────────────────────
   const [lang, setLang] = useState<Lang>('es');
   const [cur,  setCur]  = useState<Currency>('USD');
-  const [tf,   setTf]   = useState<Timeframe>('1h');
+  const [tf,   setTf]   = useState<Timeframe>(initialLevels?.timeframe ?? '1h');
   const [tab,  setTab]  = useState<AssetCategory>('Cripto');
   const [search, setSearch] = useState('');
-  const [curAsset, setCurAsset] = useState<string>('XAU/USD');
+  const [curAsset, setCurAsset] = useState<string>(initialLevels?.symbol ?? 'XAU/USD');
 
-  const [markets, setMarkets] = useState<Record<string, MarketRow>>({});
-  const [levels,  setLevels]  = useState<LevelsResponse | null>(null);
+  // Seeded from the server render — never an empty object on the first paint
+  // unless the upstream snapshot itself timed out.
+  const [markets, setMarkets] = useState<Record<string, MarketRow>>(() => indexBySymbol(initialMarkets));
+  const [levels,  setLevels]  = useState<LevelsResponse | null>(initialLevels);
+  // Distinguishes "prices haven't arrived yet" (show a skeleton) from "this
+  // instrument has no price" (show a dash). Conflating the two is what made the
+  // terminal look broken to first-time visitors.
+  const [marketsLoaded, setMarketsLoaded] = useState(initialMarkets.length > 0);
   const [toasts,  setToasts]  = useState<{ id: number; msg: string }[]>([]);
   const lastPriceRef = useRef<Record<string, number>>({});
   const alertedRef   = useRef<Record<string, number>>({});
+  const serverLevelsUsed = useRef(false);
 
   const t = STR[lang];
 
@@ -100,7 +120,8 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
 
   // ── Side effects ───────────────────────────────────────────────────────────
 
-  // Poll /api/markets every 12s
+  // Poll /api/markets every 12s. The server already resolved the first snapshot,
+  // so skip straight to polling instead of duplicating that request on mount.
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -108,17 +129,17 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
         const r = await fetch('/api/markets', { cache: 'no-store' });
         const j = await r.json();
         if (cancelled || !Array.isArray(j?.markets)) return;
-        const next: Record<string, MarketRow> = {};
-        for (const m of j.markets as MarketRow[]) next[m.symbol] = m;
-        setMarkets(next);
+        setMarkets(indexBySymbol(j.markets as MarketRow[]));
+        setMarketsLoaded(true);
       } catch { /* network blip — keep last */ }
     };
-    load();
+    if (initialMarkets.length === 0) load();
     const id = setInterval(load, 12_000);
     return () => { cancelled = true; clearInterval(id); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fetch server-side levels whenever asset or timeframe changes (every 30s too)
+  // Fetch levels whenever asset or timeframe changes (and refresh every 30s).
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -132,9 +153,19 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
         if (!cancelled) setLevels(j);
       } catch { /* keep last */ }
     };
-    load();
+
+    // The server already computed this exact symbol/timeframe pair for the first
+    // paint; re-requesting it on mount would only duplicate the work.
+    const alreadyServed =
+      !serverLevelsUsed.current &&
+      initialLevels?.symbol === curAsset &&
+      initialLevels?.timeframe === tf;
+    serverLevelsUsed.current = true;
+    if (!alreadyServed) load();
+
     const id = setInterval(load, 30_000);
     return () => { cancelled = true; clearInterval(id); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curAsset, tf]);
 
   // 24h trial countdown for non-premium users. Server-rendered trialEndsAt
@@ -369,11 +400,13 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
           <small style={{ fontSize:11, color:MUTED, fontWeight:400 }}>{curName}</small>
         </div>
         <div className="mono" style={{ fontSize:19, fontFamily:MONO }}>
-          {livePrice != null ? money(livePrice, cur) : '—'}
+          {marketsLoaded
+            ? (livePrice != null ? money(livePrice, cur) : '—')
+            : <Skeleton width={96} height={17} />}
         </div>
-        <TickerMetric label={t.chg}  value={curMarket ? `${upChg ? '+' : ''}${curMarket.changePercent.toFixed(2)}%` : '—'} color={upChg ? UP : DOWN} />
-        <TickerMetric label={t.high} value={curMarket ? money(curMarket.high, cur) : '—'} />
-        <TickerMetric label={t.low}  value={curMarket ? money(curMarket.low,  cur) : '—'} />
+        <TickerMetric label={t.chg}  loaded={marketsLoaded} value={curMarket ? `${upChg ? '+' : ''}${curMarket.changePercent.toFixed(2)}%` : null} color={upChg ? UP : DOWN} />
+        <TickerMetric label={t.high} loaded={marketsLoaded} value={curMarket ? money(curMarket.high, cur) : null} />
+        <TickerMetric label={t.low}  loaded={marketsLoaded} value={curMarket ? money(curMarket.low,  cur) : null} />
       </div>
 
       {/* 24h TRIAL BANNER */}
@@ -419,7 +452,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
         {/* ── ORDER BOOK ── */}
         <aside className="tcol tcol-ob" style={col(true)}>
           <ColH>{t.ob}</ColH>
-          <OrderBook price={livePrice} cur={cur} />
+          <OrderBook price={livePrice} cur={cur} loaded={marketsLoaded} />
         </aside>
 
         {/* ── ASSETS LIST ── */}
@@ -473,9 +506,15 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
                     <div style={{ fontSize:10.5, color:MUTED }}>{name}</div>
                   </div>
                   <div style={{ textAlign:'right' }}>
-                    <div className="mono" style={{ fontSize:12 }}>{p != null ? money(p, cur) : '—'}</div>
+                    <div className="mono" style={{ fontSize:12 }}>
+                      {marketsLoaded
+                        ? (p != null ? money(p, cur) : '—')
+                        : <Skeleton width={58} height={11} />}
+                    </div>
                     <div style={{ fontSize:10.5, color: chg >= 0 ? UP : DOWN }}>
-                      {chg >= 0 ? '+' : ''}{chg.toFixed(2)}%
+                      {marketsLoaded
+                        ? `${chg >= 0 ? '+' : ''}${chg.toFixed(2)}%`
+                        : <Skeleton width={34} height={9} />}
                     </div>
                   </div>
                 </div>
@@ -516,6 +555,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
               cur={cur}
               t={t}
               isPremium={isPremium}
+              loaded={marketsLoaded}
               resProb={levels?.resProb ?? null}
               supProb={levels?.supProb ?? null}
             />
@@ -525,7 +565,7 @@ export default function Terminal({ userEmail, isAuthed, isPremium, isAdmin = fal
               <p style={{ fontSize:11, textTransform:'uppercase', letterSpacing:.7, color:MUTED, marginBottom:10 }}>{t.risk_h}</p>
               <RiskInput label={t.r_bal}  value={rBal}  onChange={setRBal} placeholder="1000" />
               <RiskInput label={t.r_pct}  value={rPct}  onChange={setRPct} />
-              <RiskInput label={t.r_stop} value={rStop} onChange={setRStop} placeholder="—" />
+              <RiskInput label={t.r_stop} value={rStop} onChange={setRStop} placeholder={livePrice != null ? money(livePrice, cur) : ''} />
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginTop:10 }}>
                 <RiskOut label={t.r_amt}   value={riskOut.amt}   color={DOWN} />
                 <RiskOut label={t.r_units} value={riskOut.units} color={UP} />
@@ -832,17 +872,47 @@ function ColH({ children }: { children: React.ReactNode }) {
   );
 }
 
-function TickerMetric({ label, value, color }: { label: string; value: string; color?: string }) {
+/**
+ * Placeholder for a value that is on its way. Deliberately not a dash: a dash
+ * reads as "there is no number here", which is how the terminal used to greet
+ * every first-time visitor.
+ */
+function Skeleton({ width, height = 12 }: { width: number; height?: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="pulse"
+      style={{
+        display:'inline-block', width, height,
+        borderRadius:3, background:'#1B222E', verticalAlign:'middle',
+      }}
+    />
+  );
+}
+
+function TickerMetric({ label, value, color, loaded = true }: { label: string; value: string | null; color?: string; loaded?: boolean }) {
   return (
     <div style={{ minWidth:0 }}>
       <small style={{ display:'block', color:MUTED, fontSize:10.5, textTransform:'uppercase', letterSpacing:.4, marginBottom:2 }}>{label}</small>
-      <b className="mono" style={{ fontSize:13, fontWeight:600, color: color || TEXT, fontFamily:MONO }}>{value}</b>
+      <b className="mono" style={{ fontSize:13, fontWeight:600, color: color || TEXT, fontFamily:MONO }}>
+        {loaded ? (value ?? '—') : <Skeleton width={62} />}
+      </b>
     </div>
   );
 }
 
-function OrderBook({ price, cur }: { price: number | null; cur: Currency }) {
-  if (price == null) return <div style={{ padding:20, color:MUTED, fontSize:12 }}>—</div>;
+function OrderBook({ price, cur, loaded = true }: { price: number | null; cur: Currency; loaded?: boolean }) {
+  if (price == null) {
+    return (
+      <div style={{ padding:'14px 13px', display:'flex', flexDirection:'column', gap:7 }}>
+        {loaded
+          ? <span style={{ color:MUTED, fontSize:12 }}>Sin cotización disponible</span>
+          : Array.from({ length: 9 }).map((_, i) => (
+              <Skeleton key={i} width={i === 4 ? 120 : 150} height={9} />
+            ))}
+      </div>
+    );
+  }
   // Synthetic order-book preview based on real price (purely visual)
   const asks: React.ReactNode[] = [];
   const bids: React.ReactNode[] = [];
@@ -882,7 +952,7 @@ function OBRow({ side, w, price, amt }: { side: 'up' | 'down'; w: number; price:
 }
 
 function LevelsPanel({
-  levels, price, cur, t, isPremium, resProb, supProb,
+  levels, price, cur, t, isPremium, resProb, supProb, loaded = true,
 }: {
   levels:   LevelsResponse | null;
   price:    number | null;
@@ -891,8 +961,24 @@ function LevelsPanel({
   isPremium: boolean;
   resProb:  LevelProb[] | null;
   supProb:  LevelProb[] | null;
+  loaded?:  boolean;
 }) {
-  if (price == null) return <div style={{ padding:16, color:MUTED, fontSize:12.5 }}>—</div>;
+  if (price == null) {
+    if (!loaded) {
+      return (
+        <div style={{ display:'flex', flexDirection:'column', gap:9, padding:'6px 2px' }}>
+          {Array.from({ length: 13 }).map((_, i) => (
+            <Skeleton key={i} width={i === 6 ? 200 : 168} height={10} />
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div style={{ padding:16, color:MUTED, fontSize:12.5 }}>
+        Sin cotización para este activo. Probá con otro.
+      </div>
+    );
+  }
 
   if (!isPremium || !levels?.levels || !levels.bias) {
     // Locked teaser: blurred rows + CTA

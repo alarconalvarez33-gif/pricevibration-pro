@@ -55,10 +55,17 @@ export async function getCandles(symbol: string, tf: Timeframe): Promise<Candle[
 
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SacredLevels/1.0)' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TradingComPy/1.0)' },
       next: { revalidate: 300 },
+      // Yahoo's chart endpoint is undocumented and unauthenticated; when it
+      // stalls it can stall for a long time. The probability badges are worth
+      // far less than a page that renders.
+      signal: AbortSignal.timeout(4_000),
     });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.warn(`getCandles ${symbol} ${tf}: Yahoo ${res.status}`);
+      return [];
+    }
 
     const json = await res.json();
     const result = json?.chart?.result?.[0];
@@ -80,7 +87,10 @@ export async function getCandles(symbol: string, tf: Timeframe): Promise<Candle[
 
     if (tf === '4h') return aggregate(candles, 4);
     return candles;
-  } catch {
+  } catch (e) {
+    // Used to swallow this silently, which meant a dead feed produced a wrong
+    // ATR with no trace of why.
+    console.warn(`getCandles ${symbol} ${tf} failed:`, (e as Error).message);
     return [];
   }
 }
