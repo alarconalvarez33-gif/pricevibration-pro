@@ -95,6 +95,13 @@ export default async function LevelsBoard({ allowed }: Props) {
             : `Los ${total} activos con sus tres niveles superiores. Los tres de abajo se abren con tu cuenta de Exness verificada.`}
         </p>
 
+        {/* Always visible, both states: the terminal is where a visitor can
+            check the same levels against a live chart. */}
+        <div className="board-open">
+          <Link href="/terminal" className="btn">Abrir terminal de niveles →</Link>
+          <span>Gráfico en vivo, cambio de marco temporal y alertas.</span>
+        </div>
+
         {!allowed && (
           <div className="board-cta">
             <div>

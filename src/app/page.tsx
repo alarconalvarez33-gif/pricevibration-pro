@@ -159,8 +159,8 @@ export default async function Home() {
               marcamos cuáles el precio respetó. Los días malos también quedan.
             </p>
             <div className="cta">
-              <a href="#buscas" className="btn">Ver por dónde empezar</a>
-              <a href="#registro" className="btn btn-o">Revisar el historial</a>
+              <a href="#niveles" className="btn">Ver los niveles de hoy</a>
+              <Link href="/terminal" className="btn btn-o">Abrir terminal de niveles</Link>
             </div>
             <p className="micro">
               El historial es abierto para cualquiera. La sesión en curso pide cuenta vinculada.

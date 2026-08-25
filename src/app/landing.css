@@ -297,6 +297,9 @@
 .lp .board-cta b { display: block; font-family: var(--font-anton), sans-serif; font-size: 21px; text-transform: uppercase; letter-spacing: .01em; }
 .lp .board-cta span { display: block; font-size: 14.5px; color: #9EAAA2; margin-top: 4px; }
 
+.lp .board-open { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
+.lp .board-open span { font-size: 14px; color: var(--grey-2); }
+
 .lp .board { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 16px; }
 .lp .bcard { background: var(--card); border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; }
 .lp .white .bcard { background: var(--bg); border-color: var(--hair); }
