@@ -28,7 +28,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Hero
     'hero.title1': 'Professional Trading Analysis',
-    'hero.title2': 'Based on W.D. Gann Methodology',
+    'hero.title2': 'Algorithmic levels, verified at the close',
     'hero.subtitle': 'Advanced mathematical calculations and planetary cycle analysis for institutional-grade market insights. Trusted by professional traders worldwide.',
     'hero.cta.start': 'Start Free Trial',
     'hero.cta.pricing': 'View Plans',
@@ -48,13 +48,13 @@ const translations: Record<Language, Record<string, string>> = {
     // Dashboard
     'dashboard.title': 'TMT Dashboard',
     'dashboard.welcome': 'Welcome back',
-    'dashboard.calculator': 'Gann Calculator',
-    'dashboard.astro': 'Astro-Gann',
+    'dashboard.calculator': 'Algorithmic Calculator',
+    'dashboard.astro': 'Time Cycles',
     'dashboard.chart': 'Live Chart',
     'dashboard.calendar': 'Calendar',
 
     // Calculator
-    'calc.title': 'Gann Square Calculator',
+    'calc.title': 'Algorithmic Level Calculator',
     'calc.centerPrice': 'Center Price',
     'calc.placeholder': 'Enter the price of a minimum or maximum',
     'calc.increment': 'Increment Level',
@@ -84,7 +84,7 @@ const translations: Record<Language, Record<string, string>> = {
     'trial.usesRemaining': 'uses remaining',
     'trial.subscribe': 'Subscribe for unlimited calculations',
     'trial.expired': 'Free Trial Ended',
-    'trial.expiredMessage': 'You\'ve used all your free trial calculations. Subscribe to continue using the Gann Calculator and unlock unlimited calculations.',
+    'trial.expiredMessage': 'You\'ve used all your free trial calculations. Subscribe to continue using the Algorithmic Calculator and unlock unlimited calculations.',
     'trial.viewPlans': 'View Plans & Subscribe',
 
     // Footer
@@ -134,7 +134,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Hero
     'hero.title1': 'Análisis Profesional de Trading',
-    'hero.title2': 'Basado en la Metodología de W.D. Gann',
+    'hero.title2': 'Niveles algorítmicos, verificados al cierre',
     'hero.subtitle': 'Cálculos matemáticos avanzados y análisis de ciclos planetarios para insights de mercado de nivel institucional. Confiado por traders profesionales en todo el mundo.',
     'hero.cta.start': 'Comenzar Prueba Gratis',
     'hero.cta.pricing': 'Ver Planes',
@@ -154,13 +154,13 @@ const translations: Record<Language, Record<string, string>> = {
     // Dashboard
     'dashboard.title': 'Panel TMT',
     'dashboard.welcome': 'Bienvenido de nuevo',
-    'dashboard.calculator': 'Calculadora Gann',
-    'dashboard.astro': 'Astro-Gann',
+    'dashboard.calculator': 'Calculadora algorítmica',
+    'dashboard.astro': 'Ciclos temporales',
     'dashboard.chart': 'Gráfico en Vivo',
     'dashboard.calendar': 'Calendario',
 
     // Calculator
-    'calc.title': 'Calculadora Cuadrado de Gann',
+    'calc.title': 'Calculadora de niveles algorítmicos',
     'calc.centerPrice': 'Precio Central',
     'calc.placeholder': 'Coloca aquí el precio de un mínimo o máximo',
     'calc.increment': 'Nivel de Incremento',
@@ -190,7 +190,7 @@ const translations: Record<Language, Record<string, string>> = {
     'trial.usesRemaining': 'usos restantes',
     'trial.subscribe': 'Suscríbete para cálculos ilimitados',
     'trial.expired': 'Prueba Gratuita Finalizada',
-    'trial.expiredMessage': 'Has usado todos tus cálculos de prueba gratuitos. Suscríbete para continuar usando la Calculadora Gann y desbloquear cálculos ilimitados.',
+    'trial.expiredMessage': 'Has usado todos tus cálculos de prueba gratuitos. Suscribite para continuar usando la Calculadora algorítmica y desbloquear cálculos ilimitados.',
     'trial.viewPlans': 'Ver Planes y Suscribirse',
 
     // Footer

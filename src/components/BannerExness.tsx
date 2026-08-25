@@ -12,22 +12,35 @@ export const EXNESS_URL =
 
 const CDN = 'https://d3dpet1g0ty5ed.cloudfront.net';
 
+/**
+ * `cap` is the widest this creative may ever render.
+ *
+ * The 320x50 strip is only 320px of real pixels, so letting it stretch to a
+ * 1160px container upscaled it 3.6x and it showed — visibly pixelated. Each
+ * variant is now capped at a width the source can actually fill.
+ */
 const CREATIVES = {
   '320x50': {
     src: `${CDN}/ES_Take_control_320x50.png`,
     width: 320,
     height: 50,
+    cap: 320,
+    sizes: '320px',
   },
-  // Never rendered at its native size — 400px is the ceiling.
+  // Never rendered at its native 800px — 400 is the ceiling.
   '800x800': {
     src: `${CDN}/ES_Take_control_800x800.png`,
-    width: 400,
-    height: 400,
+    width: 800,
+    height: 800,
+    cap: 400,
+    sizes: '400px',
   },
   vertical: {
     src: `${CDN}/1_ES_NBP_4_5.jpg`,
     width: 1080,
     height: 1350,
+    cap: 380,
+    sizes: '(max-width: 900px) 340px, 380px',
   },
 } as const;
 
@@ -50,6 +63,14 @@ export default function BannerExness({ variante, className, priority = false }: 
       rel="sponsored noopener"
       className={className}
       aria-label="Abrí tu cuenta con Exness"
+      // The strips shrink-wrap so a wide container cannot stretch them. The
+      // vertical creative is meant to fill its column, and stays block-level so
+      // `margin: 0 auto` can still centre it on mobile.
+      style={{
+        display: variante === 'vertical' ? 'block' : 'inline-block',
+        maxWidth: '100%',
+        lineHeight: 0,
+      }}
     >
       <Image
         src={creative.src}
@@ -58,11 +79,15 @@ export default function BannerExness({ variante, className, priority = false }: 
         alt="Abrí tu cuenta con Exness"
         priority={priority}
         loading={priority ? undefined : 'lazy'}
-        sizes={variante === 'vertical' ? '(max-width: 900px) 340px, 380px' : undefined}
+        sizes={creative.sizes}
         style={{
           display: 'block',
+          // Never wider than the source can fill; still shrinks on narrow
+          // screens. aspect-ratio holds the row so the layout cannot jump.
           width: '100%',
+          maxWidth: creative.cap,
           height: 'auto',
+          aspectRatio: `${creative.width} / ${creative.height}`,
           borderRadius: variante === '320x50' ? 6 : 12,
         }}
       />

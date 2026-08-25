@@ -10,7 +10,7 @@ const plans = [
     name: 'Free',
     price: 0,
     period: 'forever',
-    description: 'Basic access to learn about Gann trading',
+    description: 'Basic access to learn about algorithmic levels',
     features: [
       'Landing page access',
       'Educational content',
@@ -18,7 +18,7 @@ const plans = [
       'Email support',
     ],
     notIncluded: [
-      'Gann Calculator',
+      'Algorithmic Calculator',
       'Cosmogram Visualization',
       'Save calculations',
       'Priority support',
@@ -32,7 +32,7 @@ const plans = [
     period: 'month',
     description: 'Full access to all trading tools',
     features: [
-      'Unlimited Gann calculations',
+      'Unlimited level calculations',
       'Interactive cosmogram',
       'Save & export calculations',
       'Real-time XAU/USD data',

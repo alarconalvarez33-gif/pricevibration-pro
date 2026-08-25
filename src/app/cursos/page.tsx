@@ -48,9 +48,9 @@ const COURSES = [
     action:    'api' as const,
     subtitle:  'Expansión matemática del precio',
     description:
-      'El método de raíz cuadrada de W.D. Gann aplicado con precisión quirúrgica. Aprendé a calcular los niveles exactos donde el precio reacciona en cualquier temporalidad.',
+      'El método algorítmico de raíz cuadrada aplicado con precisión quirúrgica. Aprendé a calcular los niveles exactos donde el precio reacciona en cualquier temporalidad.',
     features: [
-      'Método de raíz cuadrada de W.D. Gann',
+      'Método algorítmico de raíz cuadrada',
       'Cálculo de niveles exactos de precio',
       'Proyecciones combinadas de precio y tiempo',
       'Técnicas nunca antes vistas públicamente',
@@ -302,7 +302,7 @@ export default function CursosPage() {
         </div>
       </section>
 
-      {/* ── Quantum upsell ── */}
+      {/* ── Upsell del plan Pro ── */}
       <section
         style={{
           background: `linear-gradient(135deg, ${DARK_BG} 0%, #1A2845 100%)`,

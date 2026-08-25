@@ -31,7 +31,7 @@ const COURSES: Array<{
     name: 'Génesis', level: 'Intermedio', icon: '⚡', flyer: '/flyer1.jpg',
     pricePyg: 500000, priceUsd: 78, popular: true,
     features: [
-      'Método de raíz cuadrada de W.D. Gann',
+      'Método algorítmico de raíz cuadrada',
       'Cálculo de niveles exactos de precio',
       'Proyecciones de precio y tiempo',
       'Acceso de por vida sin cuotas',
@@ -157,7 +157,7 @@ export default function BillingPage() {
             </p>
           </div>
 
-          {/* ── Quantum Access Card ── */}
+          {/* ── Tarjeta del plan Pro ── */}
           <div
             className="border mb-3"
             style={{ backgroundColor: CARD, borderColor: BORDER }}
@@ -234,9 +234,9 @@ export default function BillingPage() {
                   'Señales (todos los mercados)',
                   'Forex, Crypto, Oro e Índices',
                   'Análisis IA en tiempo real',
-                  'Dashboard Quantum Levels',
+                  'Tablero de niveles algorítmicos',
                   'Acceso 24/7',
-                  'Niveles cuánticos automáticos',
+                  'Niveles algorítmicos automáticos',
                 ].map((f, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <span className="w-1 h-1 shrink-0" style={{ backgroundColor: CYAN }} />

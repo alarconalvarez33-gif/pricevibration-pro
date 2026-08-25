@@ -38,7 +38,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">2. Description of Service</h2>
                 <p>
-                  Sacred Levels provides financial analysis tools based on W.D. Gann&apos;s methodologies and heliocentric planetary calculations. The Service includes calculators, charts, and educational content for trading analysis purposes.
+                  Trading.com.py provides algorithmic financial analysis tools. The Service includes level calculators, charts, and educational content for trading analysis purposes.
                 </p>
               </section>
 
@@ -55,7 +55,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">4. Educational Purpose Statement</h2>
                 <p>
-                  All tools, calculations, and information provided through Sacred Levels are designed for educational and analytical purposes. The calculated levels (support, resistance, time cycles, planetary aspects) are mathematical projections based on W.D. Gann methodologies and should be used as one component of a comprehensive trading strategy, never as the sole basis for trading decisions.
+                  All tools, calculations, and information provided through Trading.com.py are designed for educational and analytical purposes. The calculated levels (support, resistance, time cycles) are deterministic mathematical projections over historical price and should be used as one component of a comprehensive trading strategy, never as the sole basis for trading decisions.
                 </p>
               </section>
 

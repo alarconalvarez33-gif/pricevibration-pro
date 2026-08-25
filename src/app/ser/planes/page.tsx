@@ -33,7 +33,7 @@ const PLANS = [
   },
   {
     id: 'quantum',
-    name: 'Quantum Access',
+    name: 'Acceso Pro',
     price: 'USD 19',
     priceNote: 'por mes',
     color: CYAN,
@@ -50,7 +50,7 @@ const PLANS = [
       { text: 'Modelo de análisis profundo', included: false },
       { text: 'Historial de conversaciones', included: true },
     ],
-    cta: 'Activar Quantum',
+    cta: 'Activar Pro',
     ctaHref: '/billing',
     ctaStyle: 'primary',
   },
@@ -211,7 +211,7 @@ export default function SerPlanesPage() {
                 Packs de preguntas extra
               </h2>
               <p className="text-sm" style={{ color: '#64748B' }}>
-                No expiran y se acumulan a tu cuota diaria. Disponibles para Quantum y SER+.
+                No expiran y se acumulan a tu cuota diaria. Disponibles para Pro y SER+.
               </p>
             </div>
 
@@ -270,7 +270,7 @@ export default function SerPlanesPage() {
                 },
                 {
                   q: '¿Qué tecnología de IA usa SER?',
-                  a: 'SER utiliza modelos de inteligencia artificial de última generación, entrenados y configurados por el equipo de The Mentor para análisis financiero en español. Quantum Access ofrece respuestas rápidas y efectivas; SER+ habilita análisis profundo multi-timeframe.',
+                  a: 'SER utiliza modelos de inteligencia artificial de última generación, entrenados y configurados por el equipo de The Mentor para análisis financiero en español. El plan Pro ofrece respuestas rápidas y efectivas; SER+ habilita análisis profundo multi-timeframe.',
                 },
                 {
                   q: '¿SER constituye asesoría financiera?',

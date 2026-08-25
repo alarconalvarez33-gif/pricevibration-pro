@@ -5,7 +5,10 @@ import './landing.css';
 import { getTrialState } from '@/lib/services/trial-access';
 import { getMarkets } from '@/lib/markets/getMarkets';
 import { calcLevels } from '@/lib/levels/calcLevels';
+import { DEFAULT_TIMEFRAME } from '@/lib/levels/terminalLevels';
+import { formatPrice, formatPercent } from '@/lib/levels/instrumentFormat';
 import BannerExness, { EXNESS_URL } from '@/components/BannerExness';
+import LevelsBoard from '@/components/landing/LevelsBoard';
 import ClockBar from '@/components/landing/ClockBar';
 import Countdown from '@/components/landing/Countdown';
 import CandleScenario from '@/components/landing/CandleScenario';
@@ -19,22 +22,14 @@ export const dynamic = 'force-dynamic';
 const WHATSAPP = 'https://wa.me/595981234128';
 const FORMSPREE = 'https://formspree.io/f/xreapnkb';
 
-/** Decimals per instrument. 1,08 for EUR/USD instead of 1,08450 is a useless level. */
-const DECIMALS: Record<string, number> = {
-  'XAU/USD': 2, 'XAG/USD': 2, 'BTC/USD': 0, 'ETH/USD': 2,
-  'EUR/USD': 5, 'GBP/USD': 5, 'USD/JPY': 3, 'USOIL': 2,
-  'NAS100': 1, 'US30': 1, 'SPX500': 1,
-};
-
-function formatPrice(value: number, symbol: string): string {
-  const decimals = DECIMALS[symbol] ?? 2;
-  return value.toLocaleString('es-PY', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-}
-
 const HERO_SYMBOL = 'XAU/USD';
+
+/** Match the terminal's rounding so both surfaces print the same figure. */
+function roundToScale(value: number, reference: number): number {
+  if (reference >= 1000) return +value.toFixed(1);
+  if (reference >= 1) return +value.toFixed(2);
+  return +value.toFixed(5);
+}
 
 interface ScoreRow {
   label: string;
@@ -61,14 +56,18 @@ async function buildScore(allowed: boolean): Promise<{ rows: ScoreRow[]; hasPric
     return { rows: labels.map(label => ({ label, price: null })), hasPrice: false };
   }
 
-  const { res, sup } = calcLevels(price, '1d');
+  // Same timeframe the terminal defaults to. On '1d' the ladder came out so far
+  // from spot that the levels looked unusable — R1 sat almost 5% away.
+  const { res, sup } = calcLevels(price, DEFAULT_TIMEFRAME);
   const values = [res[2], res[1], res[0], sup[0], sup[1], sup[2]];
 
   return {
     rows: labels.map((label, i) => ({
       label,
       // Index 3, 4 and 5 are S1..S3 — the gated half.
-      price: i < 3 || allowed ? formatPrice(values[i], HERO_SYMBOL) : null,
+      price: i < 3 || allowed
+        ? formatPrice(roundToScale(values[i], price), HERO_SYMBOL)
+        : null,
     })),
     hasPrice: true,
   };
@@ -112,6 +111,7 @@ export default async function Home() {
           </Link>
 
           <nav className="nav">
+            <a href="#niveles">Niveles de hoy</a>
             <a href="#buscas">¿Qué buscás?</a>
             <a href="#estrategias">Estrategias</a>
             <a href="#mentoria">Mentoría</a>
@@ -192,7 +192,7 @@ export default async function Home() {
               {allowed ? (
                 <>
                   <span>Los seis niveles, desbloqueados</span>
-                  <Link href="/terminal">Abrir el terminal →</Link>
+                  <a href="#niveles">Ver todos los activos →</a>
                 </>
               ) : (
                 <>
@@ -226,8 +226,13 @@ export default async function Home() {
         </div>
       </div>
 
+      {/* ============ TABLERO DE NIVELES ============
+          All instruments, right here, so an authorised visitor never has to
+          open the terminal to see the session. */}
+      <LevelsBoard allowed={allowed} />
+
       {/* ============ ¿QUÉ BUSCÁS? ============ */}
-      <section id="buscas" className="white">
+      <section id="buscas">
         <div className="wrap">
           <div className="qhead">
             <div>
@@ -795,7 +800,7 @@ async function ReferencePrices() {
             <span className="tk-n">{name}<small>{short}</small></span>
             <span className="tk-p">{live ? formatPrice(row!.price, symbol) : '—'}</span>
             <span className={`tk-c ${up ? 'c-up' : 'c-dn'}`}>
-              {live ? `${up ? '+' : '−'}${Math.abs(row!.changePercent).toFixed(2)}%` : '·'}
+              {live ? formatPercent(row!.changePercent) : '·'}
             </span>
           </div>
         );

@@ -43,8 +43,8 @@ const PRODUCT_LABEL: Record<string, string> = {
   'canal-paralelo':       'Canal Paralelo',
   'fibonacci':            'Fibonacci',
   'super-estrategia':     'Super Estrategia',
-  'quantum-access':       'Quantum Access',
-  'quantum':              'Quantum Access',
+  'quantum-access':       'Acceso Pro',
+  'quantum':              'Acceso Pro',
   'adx':                  'ADX',
   'metalevels':           'MetaLevels',
 }
@@ -196,7 +196,7 @@ export default function DashboardPage() {
   const modules = [
     {
       id: 'quantica' as ModuleType,
-      name: 'SER QUANTUM',
+      name: 'SER PRO',
       sub: 'Distribución E=n²',
       icon: '⚡',
       accent: '#00D4FF',
@@ -206,7 +206,7 @@ export default function DashboardPage() {
     {
       id: 'clasica' as ModuleType,
       name: 'SER SUPER',
-      sub: 'Raíz cuadrada Gann',
+      sub: 'Raíz cuadrada algorítmica',
       icon: '◆',
       accent: '#fbbf24',
       glow: 'rgba(251,191,36,0.35)',
@@ -292,7 +292,7 @@ export default function DashboardPage() {
                 )
               })}
 
-              {/* Guía Gann */}
+              {/* Guía de la calculadora */}
               {activeModule === 'clasica' && (
                 <button
                   onClick={() => setClasicaGuideOpen(true)}
@@ -340,7 +340,7 @@ export default function DashboardPage() {
             <QuantumCalcDash isPremium={isPremium} />
           )}
 
-          {/* Gann Clásica */}
+          {/* Calculadora algorítmica */}
           {activeModule === 'clasica' && (
             <GannCalculator
               onCalculate={setLevels}
@@ -359,7 +359,7 @@ export default function DashboardPage() {
             </div>{/* fin área calculadora */}
           </div>{/* fin layout sidebar+calc */}
 
-          {/* Quick Stats (Gann Clásica results) */}
+          {/* Quick Stats (resultados de la calculadora) */}
           {levels && activeModule === 'clasica' && (
             <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="card-terminal text-center">
@@ -405,7 +405,7 @@ export default function DashboardPage() {
                 )}
                 {tier === 'quantum' ? (
                   <span className="px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-purple-600 to-purple-400 text-white flex items-center gap-2">
-                    <span>⚡</span> Acceso cuántico
+                    <span>⚡</span> Acceso completo
                   </span>
                 ) : tier === 'whale' ? (
                   <span className="px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center gap-2">
@@ -662,7 +662,7 @@ export default function DashboardPage() {
             <div className="bg-gradient-to-br from-purple-950/50 to-[#0d1421] border border-purple-500/30 rounded-xl p-5">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-xl">⚡</span>
-                <h2 className="text-white font-bold text-lg tracking-wide">QUANTUM LEVELS</h2>
+                <h2 className="text-white font-bold text-lg tracking-wide">NIVELES ALGORÍTMICOS</h2>
                 <div className="h-px flex-1 bg-purple-500/20" />
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -672,7 +672,7 @@ export default function DashboardPage() {
                 >
                   <span className="text-2xl group-hover:scale-110 transition-transform">🔬</span>
                   <span className="text-white text-xs font-semibold text-center">Calculator</span>
-                  <span className="text-purple-400 text-[10px] text-center">Quantum Levels</span>
+                  <span className="text-purple-400 text-[10px] text-center">Niveles algorítmicos</span>
                 </Link>
                 <Link
                   href="/hub"
@@ -696,7 +696,7 @@ export default function DashboardPage() {
                 >
                   <span className="text-2xl group-hover:scale-110 transition-transform">🤖</span>
                   <span className="text-white text-xs font-semibold text-center">AI Analysis</span>
-                  <span className="text-[#8a9bb3] text-[10px] text-center">Quantum AI</span>
+                  <span className="text-[#8a9bb3] text-[10px] text-center">Análisis IA</span>
                 </Link>
                 <Link
                   href="/account"
@@ -715,10 +715,10 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white font-medium">
-                      🐋 Unlock WHALE features: Advanced Gann Tools, Hexagon, Wheel of 24, and more!
+                      🐋 Unlock WHALE features: advanced level tools, Hexagon, Wheel of 24, and more!
                     </p>
                     <p className="text-terminal-muted text-sm mt-1">
-                      Get access to all advanced W.D. Gann techniques and priority support.
+                      Get access to every advanced level tool and priority support.
                     </p>
                   </div>
                   <Link href="/billing" className="btn-gold whitespace-nowrap ml-4">
@@ -732,11 +732,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Gann Clásica guide modal */}
+      {/* Calculator guide modal */}
       <CalcGuide
         isOpen={clasicaGuideOpen}
         onClose={() => setClasicaGuideOpen(false)}
-        title="Guía · Calculadora Gann Clásica"
+        title="Guía · Calculadora algorítmica"
         content={GUIDE_CLASICA}
       />
 

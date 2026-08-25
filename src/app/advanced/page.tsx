@@ -6,11 +6,11 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 
 const tools: Record<string, { name: string; icon: string }> = {
-  hexagono:  { name: 'Hexágono de Gann', icon: '⬡' },
+  hexagono:  { name: 'Hexágono de precios', icon: '⬡' },
   serie144:  { name: 'Serie 144',         icon: '🔢' },
   cuadrado9: { name: 'Cuadrado de 9',     icon: '⬜' },
-  quantum:   { name: 'Niveles Cuánticos', icon: '🔬' },
-  gann:      { name: 'Calculadora Gann',  icon: '📐' },
+  quantum:   { name: 'Niveles algorítmicos', icon: '🔬' },
+  gann:      { name: 'Calculadora algorítmica',  icon: '📐' },
 }
 
 type GalleryResult = {

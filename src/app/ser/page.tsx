@@ -25,7 +25,7 @@ interface Message {
 
 const INITIAL_MESSAGE: Message = {
   role: 'assistant',
-  content: 'Bienvenido al sistema SER — Sacred Levels · Econofísica Resonante\nVersión 2.0  Copyright (C) Sacred Levels Corp. Todos los derechos reservados.\n\nCapacidades disponibles:\n  [1] Análisis de gráficos (imagen)\n  [2] Niveles cuánticos Sacred Levels\n  [3] Multi-timeframe H1 + H4 + D1\n  [4] Correlaciones inter-mercado\n\nEscriba su consulta o presione ENTER para continuar_',
+  content: 'Bienvenido al sistema SER — Trading.com.py\nVersión 2.0  Copyright (C) The Mentor Trading. Todos los derechos reservados.\n\nCapacidades disponibles:\n  [1] Análisis de gráficos (imagen)\n  [2] Niveles algorítmicos\n  [3] Multi-timeframe H1 + H4 + D1\n  [4] Correlaciones inter-mercado\n\nEscriba su consulta o presione ENTER para continuar_',
 }
 
 const QUICK_SUGGESTIONS = [
@@ -228,7 +228,7 @@ export default function SerPage() {
 
             {/* Session header line */}
             <p style={{ color: TEXT_DIM, fontSize: 11, marginBottom: 16, borderBottom: '1px solid #e0e0e0', paddingBottom: 8 }}>
-              Microsoft Windows [SER Quantum Terminal 2.0.0]
+              Microsoft Windows [SER Terminal 2.0.0]
               <br />(c) Sacred Levels Corporation. All rights reserved.
             </p>
 

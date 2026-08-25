@@ -28,7 +28,7 @@ export default function CoursesPage() {
             {/* Física Cuántica */}
             <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden border border-purple-500/30 hover:border-purple-500/60 transition-all">
               <div className="relative h-80 bg-[#0a0a0a] overflow-hidden">
-                <Image src="/cuantico.png" alt="Física Cuántica" fill className="object-contain p-4" />
+                <Image src="/cuantico.png" alt="Niveles algorítmicos" fill className="object-contain p-4" />
                 <div className="absolute top-4 left-4">
                   <span className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Especial</span>
                 </div>
@@ -36,7 +36,7 @@ export default function CoursesPage() {
               <div className="p-8">
                 <h3 className="text-2xl font-bold text-white mb-3">Física Cuántica</h3>
                 <p className="text-gray-400 mb-6">
-                  Acceso completo a la calculadora de niveles cuánticos. Incluye todas las funciones avanzadas:
+                  Acceso completo a la calculadora de niveles algorítmicos. Incluye todas las funciones avanzadas:
                   subarmónicos, zonas Entelechy, y más.
                 </p>
                 <div className="flex items-center justify-between">
@@ -91,7 +91,7 @@ export default function CoursesPage() {
                 <h3 className="text-2xl font-bold text-white mb-3">Fibonacci Avanzado</h3>
                 <p className="text-gray-400 mb-6">
                   Domina los retrocesos y extensiones de Fibonacci. Aprende a combinarlos con
-                  niveles cuánticos para máxima precisión en tus entradas.
+                  niveles algorítmicos para máxima precisión en tus entradas.
                 </p>
                 <div className="flex items-center justify-between">
                   <div>
