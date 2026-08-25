@@ -297,6 +297,18 @@
 .lp .board-cta b { display: block; font-family: var(--font-anton), sans-serif; font-size: 21px; text-transform: uppercase; letter-spacing: .01em; }
 .lp .board-cta span { display: block; font-size: 14.5px; color: #9EAAA2; margin-top: 4px; }
 
+.lp .tfbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 26px; }
+.lp .tfbar-k { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey-2); margin-right: 4px; }
+.lp .tfchip {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; min-width: 56px; padding: 0 14px;
+  border: 1px solid var(--hair); border-radius: 999px; background: var(--card);
+  font-family: var(--font-martian), monospace; font-size: 12.5px;
+  color: var(--grey); text-decoration: none;
+}
+.lp .tfchip:hover { border-color: var(--teal); color: var(--teal); }
+.lp .tfchip[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+
 .lp .board-open { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
 .lp .board-open span { font-size: 14px; color: var(--grey-2); }
 

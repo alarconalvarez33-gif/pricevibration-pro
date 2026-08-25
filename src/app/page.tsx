@@ -5,10 +5,10 @@ import './landing.css';
 import { getTrialState } from '@/lib/services/trial-access';
 import { getMarkets } from '@/lib/markets/getMarkets';
 import { calcLevels } from '@/lib/levels/calcLevels';
-import { DEFAULT_TIMEFRAME } from '@/lib/levels/terminalLevels';
+import type { Timeframe } from '@/lib/levels/calcLevels';
 import { formatPrice, formatPercent } from '@/lib/levels/instrumentFormat';
 import BannerExness, { EXNESS_URL } from '@/components/BannerExness';
-import LevelsBoard from '@/components/landing/LevelsBoard';
+import LevelsBoard, { parseBoardTimeframe } from '@/components/landing/LevelsBoard';
 import ClockBar from '@/components/landing/ClockBar';
 import Countdown from '@/components/landing/Countdown';
 import CandleScenario from '@/components/landing/CandleScenario';
@@ -45,7 +45,10 @@ interface ScoreRow {
  * numbers travelled in the HTML, the blur would be decoration and anyone could
  * read them with the inspector.
  */
-async function buildScore(allowed: boolean): Promise<{ rows: ScoreRow[]; hasPrice: boolean }> {
+async function buildScore(
+  allowed: boolean,
+  timeframe: Timeframe,
+): Promise<{ rows: ScoreRow[]; hasPrice: boolean }> {
   const { markets } = await getMarkets();
   const row = markets.find(m => m.symbol === HERO_SYMBOL);
   const price = row && !row.offline && row.price > 0 ? row.price : null;
@@ -56,9 +59,9 @@ async function buildScore(allowed: boolean): Promise<{ rows: ScoreRow[]; hasPric
     return { rows: labels.map(label => ({ label, price: null })), hasPrice: false };
   }
 
-  // Same timeframe the terminal defaults to. On '1d' the ladder came out so far
-  // from spot that the levels looked unusable — R1 sat almost 5% away.
-  const { res, sup } = calcLevels(price, DEFAULT_TIMEFRAME);
+  // Follows whatever the board is showing, so the hero and the board can never
+  // disagree about the same instrument.
+  const { res, sup } = calcLevels(price, timeframe);
   const values = [res[2], res[1], res[0], sup[0], sup[1], sup[2]];
 
   return {
@@ -73,7 +76,12 @@ async function buildScore(allowed: boolean): Promise<{ rows: ScoreRow[]; hasPric
   };
 }
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: { tf?: string };
+}) {
+  const timeframe = parseBoardTimeframe(searchParams?.tf);
   const trial = await getTrialState();
 
   // Deliberately NOT hasFullAccess(): that also counts the 24h anonymous trial,
@@ -82,7 +90,7 @@ export default async function Home() {
   // cuenta"). The lower three open only for real, granted access.
   const allowed = trial.isPremium;
 
-  const { rows, hasPrice } = await buildScore(allowed);
+  const { rows, hasPrice } = await buildScore(allowed, timeframe);
 
   const initial = (trial.email?.trim()?.[0] ?? 'T').toUpperCase();
   const displayName = trial.email ? trial.email.split('@')[0] : '';
@@ -229,7 +237,7 @@ export default async function Home() {
       {/* ============ TABLERO DE NIVELES ============
           All instruments, right here, so an authorised visitor never has to
           open the terminal to see the session. */}
-      <LevelsBoard allowed={allowed} />
+      <LevelsBoard allowed={allowed} timeframe={timeframe} />
 
       {/* ============ ¿QUÉ BUSCÁS? ============ */}
       <section id="buscas">

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getMarkets } from '@/lib/markets/getMarkets';
 import { calcLevels } from '@/lib/levels/calcLevels';
 import { DEFAULT_TIMEFRAME } from '@/lib/levels/terminalLevels';
+import type { Timeframe } from '@/lib/levels/calcLevels';
 import { formatPrice, formatPercent } from '@/lib/levels/instrumentFormat';
 import { ASSETS, type AssetCategory } from '@/components/terminal/assets';
 import { EXNESS_URL } from '@/components/BannerExness';
@@ -21,6 +22,21 @@ import { EXNESS_URL } from '@/components/BannerExness';
 interface Props {
   /** True only for real granted access — not the anonymous 24h trial. */
   allowed: boolean;
+  /** Chosen timeframe, same set the terminal offers. */
+  timeframe: Timeframe;
+}
+
+/**
+ * The timeframes offered on the home board. Daily is left to the terminal: on
+ * '1d' the ladder sits over two days of range away from spot, which is not a
+ * level anyone can trade in the session.
+ */
+export const BOARD_TIMEFRAMES = ['1m', '5m', '15m', '1h', '4h'] as const;
+
+export function parseBoardTimeframe(value: unknown): Timeframe {
+  return (BOARD_TIMEFRAMES as readonly string[]).includes(String(value))
+    ? (value as Timeframe)
+    : DEFAULT_TIMEFRAME;
 }
 
 interface AssetRow {
@@ -50,7 +66,7 @@ function roundToScale(value: number, reference: number): number {
   return +value.toFixed(5);
 }
 
-export default async function LevelsBoard({ allowed }: Props) {
+export default async function LevelsBoard({ allowed, timeframe }: Props) {
   const { markets } = await getMarkets();
   const bySymbol = new Map(markets.map(m => [m.symbol, m]));
 
@@ -64,7 +80,7 @@ export default async function LevelsBoard({ allowed }: Props) {
       if (!market || market.offline || market.price <= 0) continue;
 
       const price = market.price;
-      const { res, sup } = calcLevels(price, DEFAULT_TIMEFRAME);
+      const { res, sup } = calcLevels(price, timeframe);
 
       rows.push({
         symbol,
@@ -87,8 +103,25 @@ export default async function LevelsBoard({ allowed }: Props) {
   return (
     <section id="niveles" className="white">
       <div className="wrap">
-        <div className="slabel">Sesión en curso · {DEFAULT_TIMEFRAME} · actualizado en vivo</div>
+        <div className="slabel">Sesión en curso · actualizado en vivo</div>
         <h2>Los niveles de hoy</h2>
+
+        {/* Plain links, not client state: the gated half is filtered on the
+            server, so switching timeframe has to be a server round trip. */}
+        <div className="tfbar" role="group" aria-label="Marco temporal">
+          <span className="tfbar-k">Marco</span>
+          {BOARD_TIMEFRAMES.map(tf => (
+            <Link
+              key={tf}
+              href={`/?tf=${tf}#niveles`}
+              scroll={false}
+              className="tfchip"
+              aria-current={tf === timeframe ? 'true' : undefined}
+            >
+              {tf}
+            </Link>
+          ))}
+        </div>
         <p className="slede">
           {allowed
             ? `Los seis niveles de los ${total} activos, acá mismo. Son exactamente los que ves en el terminal.`
@@ -169,9 +202,9 @@ export default async function LevelsBoard({ allowed }: Props) {
         ))}
 
         <p className="board-foot">
-          Calculados sobre el precio en vivo, en marco de {DEFAULT_TIMEFRAME}. Para cambiar de
-          marco temporal, ver el gráfico y activar alertas,{' '}
-          <Link href="/terminal">abrí el terminal</Link>.
+          Calculados sobre el precio en vivo, en marco de {timeframe}. Cuanto más corto el
+          marco, más cerca del precio quedan los niveles. Para verlos sobre el gráfico y
+          activar alertas, <Link href="/terminal">abrí el terminal</Link>.
         </p>
       </div>
     </section>
