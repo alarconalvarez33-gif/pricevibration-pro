@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['@anthropic-ai/sdk'],
   experimental: {
+    // `serverExternalPackages` is the Next 15 spelling; on 14.x it lives under
+    // experimental and the top-level key was being ignored with a build warning.
+    serverComponentsExternalPackages: ['@anthropic-ai/sdk'],
     serverActions: {
       bodySizeLimit: '10mb',
     },

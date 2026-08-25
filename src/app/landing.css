@@ -1,0 +1,460 @@
+/*
+ * Portada — dirección visual "Marcador Verde".
+ *
+ * Every rule is scoped under `.lp` so the light palette cannot leak into the
+ * terminal or the older pages, which still run on the dark theme set by the
+ * root layout.
+ */
+
+.lp {
+  --bg: #F2F5F2;
+  --card: #FFFFFF;
+  --ink: #11201C;
+  --grey: #57685F;
+  --grey-2: #9EAAA2;
+  --hair: #DDE4DE;
+  --teal: #0F7A6B;
+  --teal-d: #0A5A4F;
+  --lime: #C8E86A;
+  --sun: #FFC53D;
+  --red: #C4472F;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* The landing owns the whole viewport regardless of the dark body behind it.
+     dvh, not vh: the mobile browser chrome makes vh taller than the visible
+     area, which leaves a dark strip at the bottom. */
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Nothing may scroll sideways at any width. */
+  overflow-x: hidden;
+}
+
+.lp * { box-sizing: border-box; margin: 0; padding: 0; }
+.lp img { max-width: 100%; }
+.lp .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+.lp .mono { font-family: var(--font-martian), monospace; font-variant-numeric: tabular-nums; }
+
+/* Touch targets: 44x44 minimum, per Apple's guidance. */
+.lp a, .lp button { min-height: 44px; }
+.lp .nav a, .lp .foot-main a, .lp .nitem, .lp .salir, .lp .link-login {
+  display: inline-flex; align-items: center;
+}
+.lp .foot-main a, .lp .nitem { display: flex; }
+
+.lp a:focus-visible, .lp button:focus-visible {
+  outline: 3px solid var(--teal); outline-offset: 3px;
+}
+
+/* ---------- barra de reloj ---------- */
+.lp .clockbar {
+  background: var(--ink); color: var(--bg); padding: 9px 0;
+  font-family: var(--font-martian), monospace; font-size: 11.5px; letter-spacing: .06em;
+  padding-top: max(9px, env(safe-area-inset-top));
+}
+.lp .clock-in { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+.lp .clock-l { display: flex; align-items: center; gap: 10px; }
+.lp .dotlive { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); animation: lp-p 2s infinite; flex-shrink: 0; }
+@keyframes lp-p { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
+.lp .clock-r { color: var(--lime); }
+
+/* ---------- cabecera ---------- */
+.lp .top { background: var(--bg); border-bottom: 1px solid var(--hair); position: sticky; top: 0; z-index: 30; }
+.lp .top-in { display: flex; align-items: center; gap: 26px; height: 88px; }
+/* The wordmark asset is white — built for the dark terminal. On the light
+   header it was all but invisible (near-white on #F2F5F2). brightness(0)
+   repaints every opaque pixel black while leaving the alpha channel alone, and
+   the slight opacity pulls it back toward --ink instead of a hard black. */
+.lp .logo { height: 56px; width: auto; display: block; filter: brightness(0); opacity: .88; }
+.lp .nav { display: flex; gap: 24px; margin-left: auto; align-items: center; }
+.lp .nav a { color: var(--grey); text-decoration: none; font-size: 14.5px; font-weight: 500; }
+.lp .nav a:hover { color: var(--teal); }
+.lp .btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--teal); color: #fff; padding: 12px 22px; font-size: 14.5px;
+  font-weight: 700; text-decoration: none; border-radius: 999px; border: none;
+  cursor: pointer; font-family: var(--font-archivo), sans-serif; min-height: 44px;
+}
+.lp .btn:hover { background: var(--teal-d); }
+.lp .btn-s { background: var(--sun); color: var(--ink); }
+.lp .btn-s:hover { background: #FFD469; }
+.lp .btn-o { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+.lp .btn-o:hover { background: var(--ink); color: var(--bg); }
+
+/* ---------- sesión ---------- */
+.lp .auth { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.lp .link-login { color: var(--grey); text-decoration: none; font-size: 14.5px; font-weight: 600; white-space: nowrap; }
+.lp .link-login:hover { color: var(--teal); }
+.lp .hola { display: flex; align-items: center; gap: 11px; }
+.lp .avatar {
+  width: 36px; height: 36px; border-radius: 999px; background: var(--teal); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-anton), sans-serif; font-size: 15px; flex-shrink: 0;
+}
+.lp .hola-txt { font-size: 14.5px; line-height: 1.25; }
+.lp .hola-txt b { display: block; font-weight: 700; }
+.lp .hola-txt small { color: var(--grey-2); font-size: 12px; }
+.lp .salir { color: var(--grey-2); text-decoration: none; font-size: 13px; white-space: nowrap; }
+.lp .salir:hover { color: var(--red); }
+
+/* ---------- hero ---------- */
+.lp .hero { padding: 62px 0 58px; }
+.lp .hero-row { display: grid; grid-template-columns: 1fr 420px; gap: 56px; align-items: start; }
+.lp .freetag {
+  display: inline-flex; align-items: center; gap: 9px; background: var(--lime); color: var(--ink);
+  padding: 7px 15px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 20px;
+}
+.lp h1 {
+  font-family: var(--font-anton), sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(38px, 6.8vw, 84px); line-height: .93; letter-spacing: -.01em; margin-bottom: 22px;
+}
+.lp h1 .l2 { display: block; }
+.lp h1 u { text-decoration: none; background: linear-gradient(transparent 62%, var(--sun) 62%); }
+.lp .lede { font-size: 19px; color: var(--grey); max-width: 47ch; margin-bottom: 26px; }
+.lp .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+.lp .micro { font-size: 13.5px; color: var(--grey-2); margin-top: 16px; max-width: 48ch; }
+
+.lp .score { background: var(--card); border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; box-shadow: 0 14px 38px rgba(17, 32, 28, .08); }
+.lp .score-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 15px 22px; background: var(--teal); color: #fff;
+  font-family: var(--font-martian), monospace; font-size: 11px; letter-spacing: .09em; text-transform: uppercase;
+}
+.lp .srow { display: grid; grid-template-columns: 42px 1fr auto; gap: 14px; align-items: center; padding: 13px 22px; border-bottom: 1px solid var(--hair); }
+.lp .sn { font-family: var(--font-martian), monospace; font-size: 12px; color: var(--grey-2); }
+.lp .sp { font-family: var(--font-anton), sans-serif; font-size: 26px; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+.lp .st { font-family: var(--font-martian), monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+.lp .t-hit { background: var(--lime); color: var(--ink); }
+.lp .t-wait { background: var(--bg); color: var(--grey-2); }
+.lp .t-cross { background: #F6DED9; color: var(--red); }
+/* The blur is only the visual state of the permitted case. The three gated
+   prices never reach the client — the server sends this row without a value. */
+.lp .slock .sp { color: var(--hair); filter: blur(5px); user-select: none; }
+.lp .score-foot { padding: 14px 22px; background: var(--bg); display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13.5px; color: var(--grey); flex-wrap: wrap; }
+.lp .score-foot a { color: var(--teal); font-weight: 700; text-decoration: none; }
+.lp .nextdrop { padding: 12px 22px; border-top: 1px solid var(--hair); display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--grey); gap: 10px; flex-wrap: wrap; }
+.lp .nextdrop b { font-family: var(--font-martian), monospace; color: var(--teal); font-size: 14px; }
+
+/* ---------- cinta ---------- */
+.lp .ticker { background: var(--ink); color: var(--bg); overflow: hidden; padding: 14px 0; }
+.lp .ticker-in {
+  display: flex; gap: 44px; white-space: nowrap; animation: lp-slide 36s linear infinite;
+  font-family: var(--font-anton), sans-serif; font-size: 15px; text-transform: uppercase; letter-spacing: .045em;
+  width: max-content;
+}
+.lp .ticker-in span:nth-child(even) { color: var(--lime); }
+@keyframes lp-slide { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+
+/* ---------- secciones ---------- */
+.lp section { padding: 80px 0; }
+.lp .white { background: var(--card); }
+.lp .slabel { font-family: var(--font-martian), monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin-bottom: 15px; }
+.lp h2 { font-family: var(--font-anton), sans-serif; font-weight: 400; text-transform: uppercase; font-size: clamp(30px, 5.2vw, 56px); line-height: .95; margin-bottom: 18px; max-width: 19ch; }
+.lp .slede { color: var(--grey); max-width: 58ch; font-size: 17px; margin-bottom: 42px; }
+
+/* ---------- qué buscás ---------- */
+.lp .qhead { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; margin-bottom: 42px; }
+.lp .qhead h2 { font-size: clamp(36px, 6.6vw, 80px); margin-bottom: 0; }
+.lp .qhead h2 u { text-decoration: none; background: linear-gradient(transparent 60%, var(--sun) 60%); }
+.lp .qsub { color: var(--grey); font-size: 17px; max-width: 34ch; text-align: right; padding-bottom: 8px; }
+
+.lp .paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.lp .path {
+  position: relative; display: flex; flex-direction: column; background: var(--card);
+  border: 1px solid var(--hair); border-radius: 18px; padding: 30px 28px 26px;
+  text-decoration: none; color: inherit; overflow: hidden;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+.lp .path:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(17, 32, 28, .13); border-color: var(--teal); }
+.lp .path:before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px; }
+.lp .p1:before { background: var(--sun); }
+.lp .p2:before { background: var(--lime); }
+.lp .p3:before { background: var(--teal); }
+.lp .p-num { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--grey-2); margin-bottom: 18px; }
+.lp .p-tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px; margin-bottom: 14px; align-self: flex-start; }
+.lp .tag-pago { background: var(--sun); color: var(--ink); }
+.lp .tag-free { background: var(--lime); color: var(--ink); }
+.lp .p-quote { font-family: var(--font-anton), sans-serif; font-size: 24px; line-height: 1.07; text-transform: uppercase; margin-bottom: 14px; }
+.lp .p-desc { font-size: 15px; color: var(--grey); margin-bottom: 22px; flex: 1; }
+.lp .p-list { list-style: none; font-size: 14px; margin-bottom: 24px; }
+.lp .p-list li { padding: 8px 0 8px 22px; position: relative; border-bottom: 1px solid var(--hair); color: var(--grey); }
+.lp .p-list li:last-child { border-bottom: none; }
+.lp .p-list li:before { content: "→"; position: absolute; left: 0; top: 8px; font-weight: 700; color: var(--teal); }
+.lp .p1 .p-list li:before { color: #C89419; }
+.lp .p2 .p-list li:before { color: #8FB53A; }
+.lp .p-go { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14.5px; font-weight: 700; padding-top: 15px; border-top: 2px solid var(--ink); }
+.lp .arrow { font-family: var(--font-anton), sans-serif; font-size: 20px; line-height: 1; transition: transform .18s; }
+.lp .path:hover .arrow { transform: translateX(6px); }
+.lp .p3 { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.lp .p3 .p-num { color: var(--lime); }
+.lp .p3 .p-desc { color: #9EAAA2; }
+.lp .p3 .p-list li { border-bottom-color: #2A3A34; color: #C7D0C9; }
+.lp .p3 .p-list li:before { color: var(--lime); }
+.lp .p3 .p-go { border-top-color: var(--lime); color: var(--lime); }
+.lp .p3:hover { border-color: var(--lime); }
+.lp .qfoot { margin-top: 24px; font-size: 14px; color: var(--grey-2); }
+/* Inline link inside a sentence: it cannot be 44px tall without wrecking the
+   line, so the hit area is grown with padding and a negative margin instead. */
+.lp .qfoot a {
+  color: var(--teal); font-weight: 600;
+  display: inline-block; min-height: 0;
+  padding: 14px 4px; margin: -14px 0;
+}
+
+/* ---------- velas ---------- */
+.lp .thesis { background: var(--ink); color: var(--bg); border-radius: 16px; padding: 28px 32px; margin: 0 0 22px; }
+.lp .thesis .big { font-family: var(--font-anton), sans-serif; font-size: clamp(19px, 3vw, 32px); text-transform: uppercase; line-height: 1.08; }
+.lp .thesis .big em { font-style: normal; color: var(--lime); }
+.lp .thesis .big u { text-decoration: none; color: var(--sun); }
+.lp .groupttl { font-family: var(--font-martian), monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey-2); margin: 36px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--hair); }
+.lp .two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.lp .sc { background: var(--card); border: 1px solid var(--hair); border-radius: 16px; overflow: hidden; }
+.lp .sc-top { padding: 17px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--hair); flex-wrap: wrap; }
+.lp .badge { font-family: var(--font-anton), sans-serif; font-size: 13px; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+.lp .b-sell { background: #F6DED9; color: var(--red); }
+.lp .b-buy { background: var(--lime); color: var(--ink); }
+.lp .sc-top h3 { font-family: var(--font-anton), sans-serif; font-size: 22px; text-transform: uppercase; line-height: 1; }
+.lp .chart { padding: 14px 16px 4px; background: var(--bg); }
+/* aspect-ratio keeps the row from jumping while the SVG paints. */
+.lp .chart svg { width: 100%; height: auto; display: block; aspect-ratio: 460 / 210; }
+.lp .sc-body { padding: 20px 24px; }
+.lp .sc-body p { font-size: 14.5px; color: var(--grey); margin-bottom: 14px; }
+.lp .sc-do { background: var(--bg); border-radius: 10px; padding: 14px 16px; }
+.lp .sc-do .k { font-family: var(--font-martian), monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey-2); margin-bottom: 6px; }
+.lp .sc-do .v { font-size: 14.5px; font-weight: 600; }
+.lp .cndl { opacity: 0; animation: lp-fadein .22s ease-out forwards; }
+@keyframes lp-fadein { to { opacity: 1 } }
+.lp .mark { opacity: 0; animation: lp-pop .35s ease-out forwards; }
+@keyframes lp-pop { from { opacity: 0; transform: scale(.4) } to { opacity: 1; transform: scale(1) } }
+.lp .replay {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; background: transparent;
+  border: 2px solid var(--ink); color: var(--ink); border-radius: 999px; padding: 10px 20px;
+  font-family: var(--font-archivo), sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.lp .replay:hover { background: var(--ink); color: var(--bg); }
+.lp .mistake { margin-top: 34px; background: #FFF6DC; border-left: 4px solid var(--sun); border-radius: 0 12px 12px 0; padding: 22px 26px; }
+.lp .mistake h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.lp .mistake p { font-size: 15px; color: #6B5A28; max-width: 74ch; }
+
+/* ---------- empezar de cero ---------- */
+.lp .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.lp .step { padding: 28px 26px; background: var(--bg); border-radius: 14px; }
+.lp .step-n { font-family: var(--font-anton), sans-serif; font-size: 15px; color: #fff; background: var(--teal); width: 34px; height: 34px; border-radius: 999px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.lp .step h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+.lp .step p { font-size: 14.5px; color: var(--grey); }
+.lp .white .step { background: var(--card); border: 1px solid var(--hair); }
+
+/* ---------- banner ---------- */
+.lp .bannerband { padding: 34px 0; text-align: center; }
+.lp .bannerbox { margin-top: 26px; text-align: center; }
+
+/* ---------- estrategias pagas ---------- */
+.lp .pricegrid { display: grid; grid-template-columns: 1fr 380px; gap: 50px; align-items: start; }
+.lp .strat-list { list-style: none; }
+.lp .strat-list li { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--hair); }
+.lp .strat-list li:last-child { border-bottom: none; }
+.lp .vidn { font-family: var(--font-anton), sans-serif; font-size: 13px; color: var(--teal); border: 2px solid var(--teal); border-radius: 999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.lp .strat-list h4 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.lp .strat-list p { font-size: 14.5px; color: var(--grey); }
+.lp .pricebox { background: var(--card); border: 2px solid var(--ink); border-radius: 16px; padding: 32px 28px; text-align: center; }
+.lp .kk { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey-2); margin-bottom: 14px; }
+.lp .price { font-family: var(--font-anton), sans-serif; font-size: 44px; line-height: 1; text-transform: uppercase; }
+.lp .price-alt { font-family: var(--font-anton), sans-serif; font-size: 25px; color: var(--teal); margin-top: 5px; text-transform: uppercase; }
+.lp .pricebox small { display: block; font-size: 14.5px; color: var(--grey); margin-top: 12px; line-height: 1.5; }
+.lp .pays { display: flex; gap: 8px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+.lp .pay { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; background: var(--bg); border: 1px solid var(--hair); border-radius: 999px; padding: 6px 12px; color: var(--grey); }
+.lp .pricebox .btn { margin-top: 20px; width: 100%; }
+.lp .fine { font-size: 12.5px; color: var(--grey-2); margin-top: 14px; line-height: 1.5; }
+
+/* ---------- acceso gratis ---------- */
+.lp .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 40px; }
+.lp .card { padding: 34px 30px; background: var(--card); border: 1px solid var(--hair); border-radius: 16px; }
+.lp .card.hot { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.lp .card-k { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 18px; color: var(--teal); }
+.lp .card.hot .card-k { color: var(--lime); }
+.lp .card h3 { font-family: var(--font-anton), sans-serif; font-weight: 400; text-transform: uppercase; font-size: 31px; line-height: 1; margin-bottom: 12px; }
+.lp .card p { font-size: 15px; color: var(--grey); margin-bottom: 20px; }
+.lp .card.hot p { color: #9EAAA2; }
+.lp .card ul { list-style: none; font-size: 14.5px; }
+.lp .card li { padding: 11px 0 11px 26px; position: relative; border-bottom: 1px solid var(--hair); }
+.lp .card.hot li { border-bottom-color: #2A3A34; color: #D6DED8; }
+.lp .card li:last-child { border-bottom: none; }
+.lp .card li:before { content: "→"; position: absolute; left: 0; top: 11px; color: var(--teal); font-weight: 700; }
+.lp .card.hot li:before { color: var(--lime); }
+.lp .card .btn { margin-top: 24px; width: 100%; text-align: center; }
+.lp .pricenote { font-size: 12.5px; color: var(--grey-2); margin-top: 13px; text-align: center; }
+
+/* ---------- registro ---------- */
+.lp .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.lp .fact { padding: 28px 26px; background: var(--bg); border-radius: 14px; }
+.lp .white .fact { background: var(--card); border: 1px solid var(--hair); }
+.lp .fact-v { font-family: var(--font-anton), sans-serif; font-size: 50px; line-height: .9; color: var(--teal); text-transform: uppercase; }
+.lp .fact-k { font-size: 15px; color: var(--grey); margin-top: 11px; }
+
+/* ---------- noticias ---------- */
+.lp .newsgrid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+.lp .newsbox { background: var(--card); border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; }
+.lp .news-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--ink); color: var(--bg); gap: 12px; flex-wrap: wrap; }
+.lp .news-top .t { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; }
+.lp .news-top .live { display: flex; align-items: center; gap: 7px; font-family: var(--font-martian), monospace; font-size: 10.5px; color: var(--lime); }
+.lp .chips { display: flex; gap: 7px; flex-wrap: wrap; padding: 14px 20px; border-bottom: 1px solid var(--hair); }
+.lp .chip { background: var(--bg); border: 1px solid var(--hair); border-radius: 999px; padding: 6px 13px; font-size: 12.5px; font-weight: 600; color: var(--grey); cursor: pointer; font-family: var(--font-archivo), sans-serif; }
+.lp .chip:hover { border-color: var(--teal); color: var(--teal); }
+.lp .chip[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.lp .nitem { display: grid; grid-template-columns: 74px 1fr; gap: 14px; padding: 15px 20px; border-bottom: 1px solid var(--hair); text-decoration: none; color: inherit; }
+.lp .nitem:last-of-type { border-bottom: none; }
+.lp .nitem:hover { background: var(--bg); }
+.lp .nmeta { font-family: var(--font-martian), monospace; font-size: 10.5px; color: var(--grey-2); line-height: 1.5; }
+.lp .nsym { display: inline-block; background: var(--lime); color: var(--ink); border-radius: 4px; padding: 2px 6px; margin-top: 5px; font-size: 9.5px; letter-spacing: .04em; }
+.lp .nhead { font-size: 15.5px; font-weight: 600; line-height: 1.35; margin-bottom: 4px; }
+.lp .nsrc { font-size: 12.5px; color: var(--grey-2); }
+.lp .news-foot { padding: 13px 20px; background: var(--bg); font-size: 12.5px; color: var(--grey-2); }
+.lp .news-empty { padding: 26px 20px; font-size: 14.5px; color: var(--grey); }
+.lp .tickers { background: var(--card); border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; }
+.lp .tk-top { padding: 14px 18px; background: var(--teal); color: #fff; font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; }
+.lp .tk { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--hair); }
+.lp .tk:last-child { border-bottom: none; }
+.lp .tk-n { font-size: 14px; font-weight: 600; }
+.lp .tk-n small { display: block; font-family: var(--font-martian), monospace; font-size: 10.5px; color: var(--grey-2); font-weight: 400; }
+.lp .tk-p { font-family: var(--font-martian), monospace; font-size: 14px; font-variant-numeric: tabular-nums; }
+.lp .tk-c { font-family: var(--font-martian), monospace; font-size: 11.5px; padding: 3px 8px; border-radius: 999px; }
+.lp .c-up { background: var(--lime); color: var(--ink); }
+.lp .c-dn { background: #F6DED9; color: var(--red); }
+
+/* ---------- mentoría ---------- */
+.lp .mentor { display: grid; grid-template-columns: 1fr 400px; gap: 50px; align-items: start; }
+.lp .mentor-hook { font-family: var(--font-anton), sans-serif; font-size: clamp(24px, 3.6vw, 40px); line-height: 1.06; text-transform: uppercase; margin-bottom: 20px; }
+.lp .mentor-hook u { text-decoration: none; background: linear-gradient(transparent 62%, var(--sun) 62%); }
+.lp .mentor p { font-size: 16.5px; color: var(--grey); margin-bottom: 16px; max-width: 56ch; }
+.lp .m-incl { list-style: none; margin-top: 26px; }
+.lp .m-incl li { display: flex; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--hair); }
+.lp .m-incl li:last-child { border-bottom: none; }
+.lp .m-ico { width: 30px; height: 30px; border-radius: 999px; background: var(--lime); color: var(--ink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.lp .m-incl h4 { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+.lp .m-incl p { font-size: 14.5px; color: var(--grey); margin: 0; }
+.lp .mbox { background: var(--ink); color: var(--bg); border-radius: 18px; padding: 34px 30px; position: sticky; top: 110px; }
+.lp .mbox .kk { color: var(--lime); }
+.lp .mprice { font-family: var(--font-anton), sans-serif; font-size: 46px; line-height: 1; text-transform: uppercase; }
+.lp .mcuotas { background: rgba(200, 232, 106, .12); border: 1px solid #2A3A34; border-radius: 10px; padding: 14px 16px; margin-top: 18px; }
+.lp .mcuotas b { display: block; font-family: var(--font-anton), sans-serif; font-size: 21px; color: var(--lime); text-transform: uppercase; margin-bottom: 3px; }
+.lp .mcuotas span { font-size: 13.5px; color: #9EAAA2; }
+.lp .mbox .btn { margin-top: 22px; width: 100%; text-align: center; }
+.lp .legal-mini { margin-top: 20px; border-top: 1px solid #2A3A34; padding-top: 18px; }
+.lp .lm-row { display: flex; gap: 12px; align-items: flex-start; padding: 9px 0; }
+.lp .lm-ico { font-size: 17px; line-height: 1.3; flex-shrink: 0; }
+.lp .lm-row b { display: block; font-size: 14.5px; color: var(--bg); }
+.lp .lm-row span { font-size: 12.5px; color: #9EAAA2; line-height: 1.45; }
+.lp .mfine { font-size: 12.5px; color: #7A8880; margin-top: 14px; line-height: 1.55; }
+.lp .cupos { display: flex; align-items: center; gap: 9px; font-size: 13px; color: #C7D0C9; margin-top: 16px; padding-top: 16px; border-top: 1px solid #2A3A34; }
+
+/* ---------- contacto ---------- */
+.lp .contacto { display: grid; grid-template-columns: 1fr 460px; gap: 50px; align-items: start; }
+.lp .cbenef { list-style: none; margin-top: 24px; }
+.lp .cbenef li { padding: 11px 0 11px 28px; position: relative; border-bottom: 1px solid var(--hair); font-size: 15.5px; color: var(--grey); }
+.lp .cbenef li:last-child { border-bottom: none; }
+.lp .cbenef li:before { content: "✓"; position: absolute; left: 0; top: 11px; color: var(--teal); font-weight: 700; }
+.lp .wapp { display: inline-flex; align-items: center; gap: 11px; margin-top: 24px; background: var(--card); border: 2px solid var(--ink); border-radius: 14px; padding: 16px 20px; text-decoration: none; color: inherit; }
+.lp .wapp:hover { background: var(--ink); color: var(--bg); }
+.lp .wapp b { display: block; font-size: 15.5px; }
+.lp .wapp small { font-size: 13px; color: var(--grey-2); }
+.lp .wapp:hover small { color: #9EAAA2; }
+.lp .formbox { background: var(--card); border: 1px solid var(--hair); border-radius: 16px; padding: 30px 28px; }
+.lp .formbox label { display: block; font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--grey-2); margin-bottom: 7px; margin-top: 18px; }
+.lp .formbox label:first-of-type { margin-top: 0; }
+.lp .formbox input, .lp .formbox textarea, .lp .formbox select {
+  width: 100%; padding: 12px 14px; border: 1px solid var(--hair); border-radius: 10px;
+  background: var(--bg); font-family: var(--font-archivo), sans-serif; color: var(--ink);
+  /* 16px minimum: anything smaller makes Safari on iOS zoom in on focus and
+     shove the layout sideways. */
+  font-size: 16px;
+}
+.lp .formbox textarea { resize: vertical; min-height: 110px; }
+.lp .formbox input:focus, .lp .formbox textarea:focus, .lp .formbox select:focus { outline: none; border-color: var(--teal); background: var(--card); }
+.lp .formbox .btn { margin-top: 22px; width: 100%; }
+.lp .fnote { font-size: 12.5px; color: var(--grey-2); margin-top: 13px; line-height: 1.5; }
+
+/* ---------- banda final ---------- */
+.lp .bigband { background: var(--ink); padding: 56px 0; }
+.lp .bb-grid { display: grid; grid-template-columns: 1fr 380px; gap: 52px; align-items: center; }
+.lp .bigband .bb-k { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--lime); margin-bottom: 14px; }
+.lp .bigband h3 { font-family: var(--font-anton), sans-serif; font-size: clamp(26px, 4.4vw, 50px); text-transform: uppercase; line-height: 1; color: var(--bg); margin-bottom: 14px; }
+.lp .bigband p { color: #9EAAA2; font-size: 16.5px; max-width: 48ch; margin-bottom: 24px; }
+.lp .bb-list { list-style: none; margin-bottom: 26px; }
+.lp .bb-list li { padding: 9px 0 9px 26px; position: relative; color: #C7D0C9; font-size: 15px; border-bottom: 1px solid #2A3A34; }
+.lp .bb-list li:last-child { border-bottom: none; }
+.lp .bb-list li:before { content: "✓"; position: absolute; left: 0; top: 9px; color: var(--lime); font-weight: 700; }
+.lp .bb-creative { display: block; border-radius: 14px; overflow: hidden; box-shadow: 0 18px 46px rgba(0, 0, 0, .4); }
+.lp .bb-creative img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+.lp .bb-mini { margin-top: 18px; text-align: center; }
+.lp .bb-mini img { border-radius: 6px; }
+
+/* ---------- pie ---------- */
+.lp footer { background: var(--ink); color: #9EAAA2; padding: 54px 0 46px; font-size: 13.5px; padding-bottom: max(46px, env(safe-area-inset-bottom)); }
+.lp .foot-main { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; padding-bottom: 34px; border-bottom: 1px solid #2A3A34; }
+.lp .foot-main h5 { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--lime); margin-bottom: 14px; }
+.lp .foot-main a { display: flex; color: #C7D0C9; text-decoration: none; padding: 5px 0; font-size: 14px; }
+.lp .foot-main a:hover { color: var(--lime); }
+.lp .tmt { display: flex; align-items: center; gap: 11px; margin-bottom: 16px; }
+/* The monogram is white letterforms with a navy outline, so it reads cleanly
+   against the dark footer as shipped — no chip or filter needed. */
+.lp .tmt img { height: 34px; width: auto; }
+.lp .tmt span { font-family: var(--font-anton), sans-serif; font-size: 20px; color: var(--bg); text-transform: uppercase; letter-spacing: .04em; }
+.lp .foot-brand p { font-size: 13.5px; line-height: 1.6; max-width: 38ch; }
+.lp .legal { padding-top: 28px; font-size: 12.5px; line-height: 1.65; color: #7A8880; }
+.lp .legal h5 { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: #C7D0C9; margin-bottom: 12px; }
+.lp .legal p { margin-bottom: 12px; max-width: none; }
+.lp .legal strong { color: #C7D0C9; }
+.lp .foot-end { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-top: 24px; margin-top: 8px; border-top: 1px solid #2A3A34; font-family: var(--font-martian), monospace; font-size: 11px; color: #7A8880; }
+
+/* ---------- responsive ---------- */
+@media (min-width: 901px) {
+  .lp .bn800 { display: inline-block; }
+  .lp .bannerbox .bn320 { display: none; }
+}
+@media (max-width: 900px) {
+  /* The 800x800 creative is replaced by the 320x50 strip, never shrunk. */
+  .lp .bn800 { display: none; }
+  .lp .hero-row, .lp .paths, .lp .two, .lp .cards, .lp .facts, .lp .steps,
+  .lp .pricegrid, .lp .qhead, .lp .newsgrid, .lp .foot-main, .lp .mentor,
+  .lp .contacto, .lp .bb-grid { grid-template-columns: 1fr; }
+  .lp .bb-creative { max-width: 340px; margin: 0 auto; }
+  .lp .mbox { position: static; }
+  .lp .hola-txt small { display: none; }
+  .lp .link-login { display: none; }
+  .lp .hero-row, .lp .pricegrid { gap: 36px; }
+  .lp .qhead { gap: 16px; align-items: start; }
+  .lp .qsub { text-align: left; padding-bottom: 0; }
+  .lp .top-in { height: 76px; }
+  .lp .logo { height: 46px; }
+  .lp .nav a:not(.btn) { display: none; }
+  .lp .clock-in { justify-content: center; font-size: 10.5px; gap: 12px; }
+  .lp section { padding: 56px 0; }
+  .lp .hero { padding: 40px 0 44px; }
+}
+@media (max-width: 560px) {
+  .lp .wrap { padding: 0 18px; }
+  /* Tabular figures must never be clipped, so the score card stacks its label
+     and status above the price rather than squeezing three columns. */
+  .lp .srow { grid-template-columns: 34px 1fr; row-gap: 4px; padding: 12px 18px; }
+  .lp .srow .st { grid-column: 2; justify-self: start; }
+  .lp .sp { font-size: 23px; }
+  .lp .score-top, .lp .score-foot, .lp .nextdrop { padding-left: 18px; padding-right: 18px; }
+  .lp .nitem { grid-template-columns: 1fr; gap: 6px; }
+  .lp .nmeta { display: flex; align-items: center; gap: 8px; }
+  .lp .nsym { margin-top: 0; }
+  .lp .card, .lp .pricebox, .lp .mbox, .lp .formbox { padding: 26px 20px; }
+  .lp .path { padding: 26px 20px 22px; }
+  .lp .thesis { padding: 22px 20px; }
+  .lp .foot-end { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp .ticker-in { animation: none; }
+  .lp .dotlive { animation: none; }
+  .lp .cndl, .lp .mark { animation: none; opacity: 1; }
+  .lp .path, .lp .arrow { transition: none; }
+}

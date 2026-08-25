@@ -315,13 +315,25 @@ export default function Terminal({
       <style jsx global>{`
         .mono { font-family: ${MONO}; }
         .up { color: ${UP}; } .down { color: ${DOWN}; }
-        .term-sel { background:${PANEL}; color:${TEXT}; border:1px solid ${LINE}; border-radius:6px; padding:7px 8px; font-size:12px; cursor:pointer; font-family:inherit; }
-        .term-btn { font-weight:600; border:none; border-radius:6px; cursor:pointer; padding:8px 15px; font-size:13px; font-family:inherit; transition: background .15s; }
+        /* 16px is the floor on every form control: below it, Safari on iOS
+           zooms the page in when the field takes focus and knocks the layout
+           sideways. */
+        .term-sel { background:${PANEL}; color:${TEXT}; border:1px solid ${LINE}; border-radius:6px; padding:7px 8px; font-size:16px; cursor:pointer; font-family:inherit; min-height:44px; }
+        .term-btn { font-weight:600; border:none; border-radius:6px; cursor:pointer; padding:8px 15px; font-size:13px; font-family:inherit; transition: background .15s; min-height:44px; }
+        /* Touch targets: 44px minimum on everything clickable. */
+        .term-header a, .term-nav a { display:inline-flex; align-items:center; min-height:44px; padding:0 4px; }
+        .term-main-grid button { min-height:44px; }
+        /* Anchors wrapping a button collapse to the line box unless they are
+           block-level, which left the CTA with a 19px tap area. */
+        .term-main-grid a:has(> button) { display:block; }
+        /* A 13px checkbox is not a touch target. */
+        .term-check { width:22px; height:22px; flex-shrink:0; accent-color:${GOLD}; }
+        .term-check-label { min-height:44px; }
         .term-btn-gold { background:${GOLD}; color:#160F00; }
         .term-btn-gold:hover { background:${GOLD_L}; }
         .term-btn-ghost { background:transparent; color:${MUTED}; border:1px solid ${LINE}; }
         .term-btn-ghost:hover { color:${TEXT}; }
-        .term-input { background:${BG}; color:${TEXT}; border:1px solid ${LINE}; border-radius:6px; padding:8px 10px; font-size:13px; font-family:inherit; width:100%; }
+        .term-input { background:${BG}; color:${TEXT}; border:1px solid ${LINE}; border-radius:6px; padding:8px 10px; font-size:16px; font-family:inherit; width:100%; min-height:44px; }
         .term-input:focus { outline:none; border-color:${GOLD}; }
         .pulse { animation: pulse 1.6s ease-in-out infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
@@ -463,7 +475,6 @@ export default function Terminal({
               placeholder="Buscar..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              style={{ fontSize:12, padding:'7px 9px' }}
             />
           </div>
           <div style={{ display:'flex', flexWrap:'wrap', gap:4, padding:'8px 10px', borderBottom:`1px solid ${LINE2}`, flexShrink:0 }}>
@@ -575,8 +586,8 @@ export default function Terminal({
             {/* Alerts */}
             <div style={{ marginTop:12, padding:12, background:PANEL2, borderRadius:8, border:`1px solid ${LINE2}` }}>
               <p style={{ fontSize:11, textTransform:'uppercase', letterSpacing:.7, color:MUTED, marginBottom:8 }}>{t.alert_h}</p>
-              <label style={{ display:'flex', alignItems:'center', gap:8, fontSize:12.5, cursor:'pointer' }}>
-                <input type="checkbox" checked={alertsOn} onChange={e => setAlertsOn(e.target.checked)} />
+              <label className="term-check-label" style={{ display:'flex', alignItems:'center', gap:10, fontSize:12.5, cursor:'pointer' }}>
+                <input className="term-check" type="checkbox" checked={alertsOn} onChange={e => setAlertsOn(e.target.checked)} />
                 <span style={{ color:MUTED }}>{t.alert_txt}</span>
               </label>
             </div>
@@ -1115,7 +1126,7 @@ function RiskInput({ label, value, onChange, placeholder }: { label: string; val
   return (
     <div style={{ marginBottom:8 }}>
       <label style={{ display:'block', fontSize:10.5, color:MUTED, marginBottom:4, textTransform:'uppercase', letterSpacing:.4 }}>{label}</label>
-      <input className="term-input" type="number" value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={{ fontSize:12 }} />
+      <input className="term-input" type="number" value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />
     </div>
   );
 }

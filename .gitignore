@@ -44,6 +44,11 @@ prisma/dev.db-journal
 .claude/
 dev.log
 
+# Local server output + responsive check artefacts
+server.log
+server.err.log
+.responsive/
+
 # Uploads (keep folder, ignore files)
 public/uploads/gallery/*
 !public/uploads/gallery/.gitkeep

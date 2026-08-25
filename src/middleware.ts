@@ -8,8 +8,12 @@ const TRIAL_COOKIE_MAX_AGE = 60 * 60 * 24 * 60 // 60 days persistence
 
 // Routes that are always public — no auth or plan required
 const PUBLIC_PATHS = new Set([
-  // Terminal home — anonymous gets a 24h trial; gating runs server-side.
+  // Landing page. Public by design: the gated half of the levels is filtered
+  // out in the server component, so there is nothing here to protect at the
+  // routing layer.
   '/',
+  // Terminal — anonymous gets a 24h trial; gating runs server-side per request.
+  '/terminal',
   '/login',
   '/register',
   '/billing',
