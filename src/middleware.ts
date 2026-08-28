@@ -14,6 +14,10 @@ const PUBLIC_PATHS = new Set([
   '/',
   // Terminal — anonymous gets a 24h trial; gating runs server-side per request.
   '/terminal',
+  // Instructions for reading a level. Deliberately open: it is the page that
+  // explains how not to lose money on the levels, so putting it behind a login
+  // would gate the warning, not the product.
+  '/instrucciones',
   '/login',
   '/register',
   '/billing',
