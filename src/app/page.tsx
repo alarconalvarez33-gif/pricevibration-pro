@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import './landing.css';
 
@@ -14,6 +13,7 @@ import Countdown from '@/components/landing/Countdown';
 import CandleScenario from '@/components/landing/CandleScenario';
 import ReplayButton from '@/components/landing/ReplayButton';
 import NewsPanel from '@/components/landing/NewsPanel';
+import SiteHeader from '@/components/landing/SiteHeader';
 import SiteFooter from '@/components/landing/SiteFooter';
 
 // The header reflects the session, so this cannot be cached across visitors.
@@ -92,9 +92,6 @@ export default async function Home({
 
   const { rows, hasPrice } = await buildScore(allowed, timeframe);
 
-  const initial = (trial.email?.trim()?.[0] ?? 'T').toUpperCase();
-  const displayName = trial.email ? trial.email.split('@')[0] : '';
-
   const todayPY = new Date(Date.now() - 3 * 3_600_000)
     .toLocaleDateString('es-PY', { day: '2-digit', month: 'short', timeZone: 'UTC' })
     .toUpperCase()
@@ -105,52 +102,7 @@ export default async function Home({
       <ClockBar />
 
       {/* ============ CABECERA ============ */}
-      <header className="top">
-        <div className="wrap top-in">
-          <Link href="/" aria-label="Trading.com.py — inicio">
-            <Image
-              src="/logonuevos.png"
-              alt="Trading.com.py"
-              width={993}
-              height={238}
-              priority
-              className="logo"
-            />
-          </Link>
-
-          <nav className="nav">
-            <a href="#niveles">Niveles de hoy</a>
-            <a href="#buscas">¿Qué buscás?</a>
-            <a href="#estrategias">Estrategias</a>
-            <a href="#mentoria">Mentoría</a>
-            <a href="#contacto">Contacto</a>
-          </nav>
-
-          {trial.isAuthed ? (
-            <div className="auth">
-              <div className="hola">
-                <span className="avatar" aria-hidden="true">{initial}</span>
-                <span className="hola-txt">
-                  <b>Hola, {displayName}</b>
-                  <small>
-                    {trial.isPremium
-                      ? 'Cuenta vinculada · acceso completo'
-                      : trial.inTrial
-                        ? 'Acceso de prueba activo'
-                        : 'Acceso al plan abierto'}
-                  </small>
-                </span>
-              </div>
-              <Link href="/account" className="salir">Mi cuenta</Link>
-            </div>
-          ) : (
-            <div className="auth">
-              <Link href="/login" className="link-login">Iniciar sesión</Link>
-              <Link href="/register" className="btn">Registrarse</Link>
-            </div>
-          )}
-        </div>
-      </header>
+      <SiteHeader trial={trial} />
 
       {/* ============ HERO ============ */}
       <div className="hero">
@@ -401,6 +353,15 @@ export default async function Home({
               cuándo apretar el botón.
             </p>
           </div>
+
+          <Link href="/instrucciones" className="btn-instr">
+            <span className="bi-ico" aria-hidden="true">📘</span>
+            <span className="bi-txt">
+              <b>Instrucciones de uso del sistema</b>
+              <small>Cómo confirmar un nivel antes de entrar · 3 min de lectura</small>
+            </span>
+            <span className="bi-arrow" aria-hidden="true">→</span>
+          </Link>
 
           <div className="steps" style={{ marginTop: 44 }}>
             <div className="step">

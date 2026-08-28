@@ -1,0 +1,103 @@
+/*
+ * /instrucciones — page-specific rules.
+ *
+ * The palette, typography, buttons, headings and footer all come from
+ * landing.css, which this page imports first. Only the pieces that exist
+ * nowhere else are defined here, and every one stays scoped under `.lp` for the
+ * same reason: the light theme must not leak into the dark terminal.
+ */
+
+/* ---------- encabezado ---------- */
+.lp .ins-hero { padding: 46px 0 54px; }
+.lp .ins-crumb {
+  display: flex; align-items: center; gap: 9px; margin-bottom: 24px;
+  font-family: var(--font-martian), monospace; font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--grey-2);
+}
+.lp .ins-crumb a { color: var(--teal); text-decoration: none; font-weight: 600; }
+.lp .ins-crumb a:hover { text-decoration: underline; }
+
+.lp .ins-hero h1 { max-width: 20ch; }
+.lp .ins-hook {
+  font-family: var(--font-anton), sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(20px, 3.2vw, 34px); line-height: 1.06; margin-bottom: 20px; max-width: 26ch;
+}
+.lp .ins-hook strong { font-weight: 400; color: var(--teal); }
+.lp .ins-hero .lede { margin-bottom: 0; }
+
+/* ---------- los cinco pasos ---------- */
+.lp .ins-pasos { list-style: none; counter-reset: none; }
+.lp .ins-paso {
+  display: grid; grid-template-columns: 66px 1fr; gap: 24px; align-items: start;
+  padding: 26px 0; border-top: 1px solid var(--hair);
+}
+.lp .ins-paso:last-child { border-bottom: 1px solid var(--hair); }
+.lp .ins-paso-n {
+  font-family: var(--font-anton), sans-serif; font-size: 34px; line-height: 1;
+  color: var(--grey-2); font-variant-numeric: tabular-nums;
+}
+.lp .ins-paso h3 {
+  font-family: var(--font-anton), sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(21px, 3vw, 30px); line-height: 1.02; margin-bottom: 10px;
+}
+/* The one-line takeaway: this is what someone skimming mid-session reads. */
+.lp .ins-paso-clave {
+  display: inline-block; background: var(--lime); color: var(--ink);
+  font-size: 14.5px; font-weight: 700; line-height: 1.35;
+  padding: 7px 14px; border-radius: 10px; margin-bottom: 12px;
+}
+.lp .ins-paso-txt { font-size: 16px; color: var(--grey); max-width: 62ch; }
+
+/* ---------- cuándo no entrar ---------- */
+.lp .ins-two { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: start; }
+.lp .ins-two h2 u { text-decoration: none; background: linear-gradient(transparent 60%, var(--sun) 60%); }
+.lp .ins-no { list-style: none; }
+.lp .ins-no li {
+  position: relative; background: var(--card); border: 1px solid var(--hair);
+  border-left: 4px solid var(--red); border-radius: 0 12px 12px 0;
+  padding: 18px 22px 18px 52px; margin-bottom: 12px;
+  font-size: 15.5px; color: var(--grey);
+}
+.lp .ins-no li:last-child { margin-bottom: 0; }
+.lp .ins-no li:before {
+  content: "✕"; position: absolute; left: 20px; top: 17px;
+  color: var(--red); font-weight: 700; font-size: 15px;
+}
+
+/* ---------- lo importante ---------- */
+.lp .ins-warn {
+  margin-top: 46px; background: var(--ink); color: var(--bg);
+  border-radius: 16px; padding: 34px 36px;
+}
+.lp .ins-warn-k {
+  font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--sun); margin-bottom: 16px;
+}
+.lp .ins-warn-big {
+  font-family: var(--font-anton), sans-serif; text-transform: uppercase;
+  font-size: clamp(22px, 3.6vw, 38px); line-height: 1.06; margin-bottom: 16px;
+}
+.lp .ins-warn-big u { text-decoration: none; color: var(--sun); }
+.lp .ins-warn p:last-child { font-size: 16.5px; color: #C7D0C9; max-width: 64ch; }
+
+/* ---------- cierre ---------- */
+.lp .ins-cta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.lp .ins-link {
+  display: inline-flex; align-items: center;
+  color: var(--lime); font-size: 14.5px; font-weight: 600; text-decoration: none;
+}
+.lp .ins-link:hover { text-decoration: underline; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .lp .ins-two { grid-template-columns: 1fr; gap: 28px; }
+  .lp .ins-hero { padding: 32px 0 40px; }
+}
+@media (max-width: 560px) {
+  /* The number moves above the heading rather than eating half the line width. */
+  .lp .ins-paso { grid-template-columns: 1fr; gap: 10px; padding: 22px 0; }
+  .lp .ins-paso-n { font-size: 26px; }
+  .lp .ins-warn { padding: 26px 20px; }
+  .lp .ins-no li { padding: 16px 18px 16px 46px; }
+  .lp .ins-cta .btn { width: 100%; }
+}

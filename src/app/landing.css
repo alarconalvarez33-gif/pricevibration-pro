@@ -240,6 +240,21 @@
 .lp .mistake h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
 .lp .mistake p { font-size: 15px; color: #6B5A28; max-width: 74ch; }
 
+/* Pase a /instrucciones — responde justo la pregunta que deja el bloque de
+   arriba: el nivel dice dónde, la vela dice cuándo. */
+.lp .btn-instr {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+  margin-top: 26px; padding: 20px 24px; text-decoration: none; color: inherit;
+  background: var(--sun); border-radius: 14px;
+  transition: transform .18s, box-shadow .18s;
+}
+.lp .btn-instr:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(255, 197, 61, .35); }
+.lp .bi-ico { font-size: 26px; flex-shrink: 0; }
+.lp .bi-txt b { display: block; font-family: var(--font-anton), sans-serif; font-size: 20px; text-transform: uppercase; line-height: 1.1; }
+.lp .bi-txt small { font-size: 13.5px; color: #6B5A28; }
+.lp .bi-arrow { margin-left: auto; font-family: var(--font-anton), sans-serif; font-size: 24px; transition: transform .18s; }
+.lp .btn-instr:hover .bi-arrow { transform: translateX(6px); }
+
 /* ---------- empezar de cero ---------- */
 .lp .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .lp .step { padding: 28px 26px; background: var(--bg); border-radius: 14px; }
@@ -505,6 +520,8 @@
   .lp .card, .lp .pricebox, .lp .mbox, .lp .formbox { padding: 26px 20px; }
   .lp .path { padding: 26px 20px 22px; }
   .lp .thesis { padding: 22px 20px; }
+  .lp .btn-instr { padding: 18px 18px; gap: 13px; }
+  .lp .bi-txt b { font-size: 17px; }
   .lp .foot-end { font-size: 10px; }
 }
 
@@ -513,4 +530,7 @@
   .lp .dotlive { animation: none; }
   .lp .cndl, .lp .mark { animation: none; opacity: 1; }
   .lp .path, .lp .arrow { transition: none; }
+  .lp .btn-instr, .lp .bi-arrow { transition: none; }
+  .lp .btn-instr:hover { transform: none; }
+  .lp .btn-instr:hover .bi-arrow { transform: none; }
 }
