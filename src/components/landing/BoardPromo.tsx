@@ -90,7 +90,7 @@ export default function BoardPromo() {
       {/* El acceso se habilita a mano, contra la prueba de la cuenta. El copy no
           puede prometer una activación automática que no existe. */}
       <p className="board-promo-p">
-        Abrí tu cuenta con este enlace y mandanos la captura: te habilitamos S1, S2 y S3.
+        Abrí tu cuenta con este enlace y avisanos: te habilitamos S1, S2 y S3 a mano.
         Sin pago mensual y sin tarjeta.
       </p>
 
@@ -101,7 +101,7 @@ export default function BoardPromo() {
         className="board-promo-btn"
         onClick={() => void track('click')}
       >
-        Abrir cuenta y activar los seis niveles →
+        Abrir cuenta y pedir los seis niveles →
       </a>
     </div>
   );

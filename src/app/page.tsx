@@ -240,15 +240,15 @@ export default async function Home({
               <span className="p-tag tag-free">Gratis con cuenta Exness</span>
               <div className="p-quote">Quiero las calculadoras de niveles</div>
               <p className="p-desc">
-                Los seis niveles de todos los activos, calculados cada mañana. Se desbloquean
-                solos al abrir tu cuenta — no hay cuota mensual.
+                Los seis niveles de todos los activos, calculados cada mañana. Abrís tu cuenta,
+                nos avisás y te los habilitamos — no hay cuota mensual.
               </p>
               <ul className="p-list">
                 <li>Niveles diarios de oro, cripto, forex e índices</li>
                 <li>Calculadora de riesgo y tamaño de lote</li>
                 <li>Alertas cuando el precio toca un nivel</li>
               </ul>
-              <div className="p-go"><span>Ver cómo se activa</span><span className="arrow">→</span></div>
+              <div className="p-go"><span>Ver cómo se habilita</span><span className="arrow">→</span></div>
             </a>
           </div>
 
@@ -442,12 +442,12 @@ export default async function Home({
       {/* ============ ACCESO GRATIS ============ */}
       <section id="gratis">
         <div className="wrap">
-          <div className="slabel">Camino 03 · Cuesta cero, se activa solo</div>
+          <div className="slabel">Camino 03 · Cuesta cero, lo habilitamos a mano</div>
           <h2>Gratis con tu cuenta Exness</h2>
           <p className="slede">
-            No hay suscripción ni comprobantes que subir. Abrís tu cuenta con nuestro código y el
-            acceso completo queda activo mientras la cuenta siga abierta. El broker nos paga una
-            parte de su spread: vos pagás exactamente lo mismo que pagarías igual.
+            No hay suscripción. Abrís tu cuenta con nuestro código, nos avisás, y te habilitamos
+            el acceso completo mientras la cuenta siga abierta. El broker nos paga una parte de su
+            spread: vos pagás exactamente lo mismo que pagarías igual.
           </p>
 
           <div className="steps">
@@ -458,8 +458,8 @@ export default async function Home({
             </div>
             <div className="step">
               <div className="step-n">2</div>
-              <h3>Cargás tu número de cuenta</h3>
-              <p>El acceso queda activo al instante mientras revisamos la vinculación contra el reporte del broker.</p>
+              <h3>Nos avisás</h3>
+              <p>Por WhatsApp, con tu número de cuenta. Lo verificamos contra el reporte del broker y te habilitamos el acceso a mano.</p>
             </div>
             <div className="step">
               <div className="step-n">3</div>
@@ -492,7 +492,7 @@ export default async function Home({
                 <li>Bitácora personal de operaciones</li>
               </ul>
               <a href={EXNESS_URL} target="_blank" rel="sponsored noopener" className="btn btn-s">
-                Abrir cuenta y activar
+                Abrir cuenta y pedir acceso
               </a>
               <p className="pricenote">
                 ¿Ya tenés cuenta en Exness? Se puede transferir el código de socio. Te pasamos el
@@ -713,8 +713,8 @@ export default async function Home({
             <div className="bb-k">Requisito para el acceso gratis</div>
             <h3>Abrí tu cuenta y desbloqueá todo</h3>
             <p>
-              Se activa apenas cargás tu número de cuenta, mientras verificamos la vinculación
-              contra el reporte del broker. Sin cuota mensual, sin comprobantes.
+              Abrís tu cuenta, nos pasás el número y te habilitamos el acceso en cuanto
+              verificamos la vinculación contra el reporte del broker. Sin cuota mensual.
             </p>
             <ul className="bb-list">
               <li>Los seis niveles en todos los activos, cada mañana</li>
@@ -723,7 +723,7 @@ export default async function Home({
               <li>Bitácora personal de operaciones</li>
             </ul>
             <a href={EXNESS_URL} target="_blank" rel="sponsored noopener" className="btn btn-s">
-              Abrir cuenta y activar →
+              Abrir cuenta y pedir acceso →
             </a>
             <div className="bb-mini">
               <BannerExness variante="320x50" />
