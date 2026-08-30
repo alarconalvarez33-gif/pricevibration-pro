@@ -52,6 +52,7 @@ const PUBLIC_PREFIXES = [
   '/cursos',         // /cursos index
   '/curso',          // /curso and /curso/* handle their own access (cursoPurchased check)
   '/api/curso/',     // check-access must be reachable by course-only users
+  '/api/promo/',     // impresiones/clics de los bloques de conversión: el visitante anónimo es el que más cuenta
   '/api/proofs',     // proof images shown publicly on home page
   '/api/reservations', // reservation form is public
   '/admin/',         // Admin pages handle their own auth internally

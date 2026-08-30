@@ -37,6 +37,7 @@ model User {
   serDailyQuotas     SerDailyQuota[]
   serPacks           SerQuestionPack[]
   serConversations   SerConversation[]
+  promoEvents        PromoEvent[]
 }
 
 model License {
@@ -461,4 +462,24 @@ model BlockedIP {
   createdAt      DateTime  @default(now())
 
   @@index([ipAddressHash, blockedUntil])
+}
+
+model PromoEvent {
+  id        String   @id @default(cuid())
+  promo     String   // slug del bloque: "board_exness"
+  event     String   // impression | click | dismiss
+
+  // Nulo para el visitante anónimo. visitorId agrupa igual sus filas, así una
+  // impresión sin sesión y el clic posterior siguen siendo la misma persona.
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  visitorId String?
+
+  path      String?
+  createdAt DateTime @default(now())
+
+  // El embudo se lee por bloque y por evento en una ventana de fechas.
+  @@index([promo, event, createdAt])
+  @@index([userId])
+  @@index([visitorId])
 }

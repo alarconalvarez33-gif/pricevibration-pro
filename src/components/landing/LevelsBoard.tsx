@@ -5,7 +5,8 @@ import { DEFAULT_TIMEFRAME } from '@/lib/levels/terminalLevels';
 import type { Timeframe } from '@/lib/levels/calcLevels';
 import { formatPrice, formatPercent } from '@/lib/levels/instrumentFormat';
 import { ASSETS, type AssetCategory } from '@/components/terminal/assets';
-import { EXNESS_URL } from '@/components/BannerExness';
+import BoardPromo from '@/components/landing/BoardPromo';
+import { isBoardPromoHidden } from '@/lib/promo/boardPromo.server';
 
 /**
  * Every instrument's six levels, on the home page.
@@ -135,17 +136,11 @@ export default async function LevelsBoard({ allowed, timeframe }: Props) {
           <span>Gráfico en vivo, cambio de marco temporal y alertas.</span>
         </div>
 
-        {!allowed && (
-          <div className="board-cta">
-            <div>
-              <b>Te faltan los tres niveles de abajo</b>
-              <span>Se activan solos al vincular tu cuenta. Sin cuota mensual.</span>
-            </div>
-            <a href={EXNESS_URL} target="_blank" rel="sponsored noopener" className="btn btn-s">
-              Abrir cuenta y activar
-            </a>
-          </div>
-        )}
+        {/* Justo arriba de la tabla, y sólo para quien todavía no tiene los seis
+            niveles: al visitante con acceso, pedirle que abra cuenta es ruido.
+            El bloque se puede cerrar, y el estado se decide acá, en el servidor,
+            para que no aparezca y desaparezca en el cliente. */}
+        {!allowed && !isBoardPromoHidden() && <BoardPromo />}
 
         {groups.map(group => (
           <div key={group.category}>

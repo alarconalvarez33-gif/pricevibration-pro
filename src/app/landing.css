@@ -312,6 +312,43 @@
 .lp .board-cta b { display: block; font-family: var(--font-anton), sans-serif; font-size: 21px; text-transform: uppercase; letter-spacing: .01em; }
 .lp .board-cta span { display: block; font-size: 14.5px; color: #9EAAA2; margin-top: 4px; }
 
+/* Bloque de conversión sobre la tabla. Fondo oscuro: el lime de la etiqueta y
+   el sol del botón no tienen contraste suficiente sobre el fondo claro. */
+.lp .board-promo {
+  position: relative;
+  background: var(--ink); color: var(--bg);
+  border-radius: 16px; padding: 24px 26px 22px; margin-bottom: 26px;
+}
+.lp .board-promo-k {
+  display: block; font-family: var(--font-martian), monospace;
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--lime); margin-bottom: 10px;
+}
+.lp .board-promo-h {
+  font-family: var(--font-anton), sans-serif; font-weight: 400;
+  font-size: 27px; line-height: 1.05; text-transform: uppercase; letter-spacing: .01em;
+  /* Deja libre la esquina donde vive el botón de cerrar. */
+  padding-right: 46px;
+}
+.lp .board-promo-p { font-size: 14.5px; color: #9EAAA2; margin-top: 8px; max-width: 62ch; }
+.lp .board-promo-btn {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  /* Ancho completo del contenedor de la tabla, en todos los anchos. */
+  width: 100%; margin-top: 18px; padding: 14px 20px;
+  background: var(--sun); color: var(--ink);
+  border-radius: 16px; text-decoration: none;
+  font-size: 15.5px; font-weight: 700;
+}
+.lp .board-promo-btn:hover { background: #FFD264; }
+.lp .board-promo-x {
+  position: absolute; top: 6px; right: 6px;
+  width: 44px; height: 44px; /* objetivo táctil mínimo */
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer;
+  color: #9EAAA2; font-size: 24px; line-height: 1;
+}
+.lp .board-promo-x:hover { color: var(--bg); }
+
 .lp .tfbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 26px; }
 .lp .tfbar-k { font-family: var(--font-martian), monospace; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey-2); margin-right: 4px; }
 .lp .tfchip {
@@ -505,6 +542,11 @@
   .lp .clock-in { justify-content: center; font-size: 10.5px; gap: 12px; }
   .lp section { padding: 56px 0; }
   .lp .hero { padding: 40px 0 44px; }
+}
+@media (max-width: 600px) {
+  .lp .board-promo { padding: 20px 18px 18px; }
+  .lp .board-promo-h { font-size: 20px; }
+  .lp .board-promo-btn { width: 100%; }
 }
 @media (max-width: 560px) {
   .lp .wrap { padding: 0 18px; }
